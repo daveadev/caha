@@ -23,7 +23,10 @@
 					<label class="clear-fix">Accounts</label>
 				</div>
 				<div class="list-group-canvas list-group-search-results" >
-					<div class="list-group-item" ng-class="{active: account.id===Account.id}"ng-repeat="account in Accounts" ng-click="openAccountInfo(account)">
+					<div class="list-group-item text-center" ng-if="!Accounts.length">
+						Loading...
+					</div>
+					<div class="list-group-item" ng-class="{active: account.id===Account.id}"ng-repeat="account in Accounts" ng-if="Accounts.length" ng-click="openAccountInfo(account)">
 						<h4 class="list-group-item-heading">{{account.account_name}}</h4>
 						<p class="list-group-item-text"><span>Acct. no:{{account.account_no}}</span> | <span>Balance: {{account.outstanding_balance | currency: 'P'}}</span></p>
 					</div>
