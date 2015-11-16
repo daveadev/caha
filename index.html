@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Simple UI/X Template</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="app/assets/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="app/assets/css/simple-uix.css" rel="stylesheet">
+ 
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+	<script data-main="config/main.js" src="app/bower_components/requirejs/require.js"> </script>
+</head>
+
+<body ng-controller="RootController">
+    <div id="wrapper" class="ease" ng-class="{'toggled':__SIDEBAR_OPEN}">
+		<div class="sidebar-blind ease">
+			<div class="btn-group btn-sm" ng-if="__SIDEBAR_OPEN"> 
+				<button class="btn btn-reverse">Today</button>
+				<button class="btn btn-reverse">Notifications</button>
+			</div>
+		</div>
+        <!-- Sidebar -->
+        <div id="sidebar-wrapper" class="ease">
+			<div class="navbar navbar-default" id="offcanvas-navbar-toggle">
+				<button type="button" class="navbar-toggle c-hamburger c-hamburger--htx" ng-class="{'is-active':__SIDEBAR_OPEN}" id="menu-toggle-1" ng-click="__toggleSideBar()" >
+				   <span>Toggle Menu</span>
+				</button>
+			</div>
+            <ul class="sidebar-nav">
+                <li class="sidebar-brand">
+                    <div id="user-name"> User Name</div>
+                    <div id="school-name">School Name</div>
+                </li>
+				<li class="separator">
+                </li>
+                <li>
+                    <a href="#/pages/home">Home</a>
+                </li>
+                <li>
+                    <a href="#/pages/sample">Sample</a>
+                </li>
+				<li>
+					<a>Module</a>
+					<ul>
+						<li>
+							<a href="#/submodule">Submodule</a>
+						</li>
+					</ul>
+				</li>
+            </ul>
+        </div>
+        <!-- /#sidebar-wrapper -->
+
+        <!-- Page Content -->
+		<div class="navbar navbar-default navbar-fixed-top" id="navbar-toggle">
+				<button type="button" class=" navbar-toggle c-hamburger c-hamburger--htx fade out"  ng-class="{'in':__APP_READY}" id="menu-toggle-1"  ng-click="__toggleSideBar()">
+				   <span>Toggle Menu</span>
+				</button>
+				<a class="navbar-brand fade out"  ng-class="{'in':__FAB_READY}">{{__MODULE_NAME}}</a>
+				<div class="loader fade in" ng-class="{'out':__APP_READY,'in':!__APP_READY}"></div>
+			</div>
+		<div id="page-content-wrapper" class="animate hide-fab  fade out"  ng-class="{'hide-fab':!__FAB_READY,'in':__APP_READY,'blur':__SIDEBAR_OPEN}">
+            <div class="container" ng-view></div>
+		</div>
+     </div>
+    <!-- /#wrapper -->
+</body>
+
+</html>
