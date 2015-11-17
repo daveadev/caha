@@ -20,7 +20,11 @@ define(['app','api'], function (app) {
 				$scope.Account = null;
 			};
 			$scope.filterAccount = function(account){
-				return account.account_no==$scope.searchAccount || !$scope.searchAccount;
+				var searchBox = $scope.searchAccount;
+				var keyword = new RegExp(searchBox,'i');
+				var test = keyword.test(account.account_name);
+				return !searchBox || account.account_no==searchBox || test;
+				//return account.account_no==$scope.searchAccount || !$scope.searchAccount;
 			};
 		};
     }]);
