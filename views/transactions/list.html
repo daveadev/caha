@@ -69,12 +69,14 @@
 					</div>
 					<div class="list-group-item" ng-show="hasInfo">
 						<dl class="dl-horizontal">
-								<dt>Type</dt>
-								<dd>{{Transaction.type}}</dd>
+								<dt>Account No</dt>
+								<dd>{{Transaction.account.account_no}}</dd>
+								<dt>Name</dt>
+								<dd>{{Transaction.account.account_name}}</dd>
 								<dt>Date</dt>
 								<dd>{{Transaction.date}}</dd>
-								<dt>Account</dt>
-								<dd>{{Transaction.account.account_no}}</dd>
+								<dt>Type</dt>
+								<dd>{{Transaction.account.account_type}}</dd>
 								<dt>Amount</dt>
 								<dd>{{Transaction.amount | currency: 'P'}}</dd>
 						</dl>
