@@ -24,7 +24,9 @@ define(['app','api'], function (app) {
 				var keyword = new RegExp(searchBox,'i');
 				var test = keyword.test(account.account_name);
 				return !searchBox || account.account_no==searchBox || test;
-				//return account.account_no==$scope.searchAccount || !$scope.searchAccount;
+			};
+			$scope.clearSearch = function(){
+				$scope.searchAccount = null;
 			};
 		};
     }]);

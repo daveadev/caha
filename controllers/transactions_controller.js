@@ -20,7 +20,13 @@ define(['app','api'], function (app) {
 				$scope.Transaction = null;
 			};
 			$scope.filterTransaction=function(transaction){
-				return transaction.account.account_name == $scope.searchTransaction || !$scope.searchTransaction;
+				var searchBox = $scope.searchTransaction;
+				var keyword = new RegExp(searchBox,'i');	
+				var test = keyword.test(transaction.account.account_name);
+				return !searchBox || test;
+			};
+			$scope.clearSearch = function(){
+				$scope.searchTransaction = null;
 			};
 		};
     }]);
