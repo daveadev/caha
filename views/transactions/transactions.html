@@ -23,10 +23,10 @@
 					<label class="clear-fix">Transactions</label>
 				</div>
 				<div class="list-group-canvas list-group-search-results" >
-					<!--<div class="list-group-item text-center" ng-if="!Transactionss.length">
+					<div class="list-group-item text-center" ng-if="!Transactions.length">
 						Loading...
-					</div> -->
-					<div class="list-group-item" ng-repeat="transaction in Transactions" ng-click="openTransactionInfo(transaction)">
+					</div>
+					<div class="list-group-item" ng-class="{active: transaction.account.account_name===Transaction.account.account_name}" ng-repeat="transaction in Transactions" ng-click="openTransactionInfo(transaction)">
 						<h4 class="list-group-item-heading">{{transaction.account.account_name}}</h4>
 						<p class="list-group-item-text">
 						<span ng-if="!transaction.transaction_details.length">No Details</span>
