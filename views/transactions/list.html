@@ -1,4 +1,4 @@
-<div ng-controller="AccountController" ng-init="list()">
+<div ng-controller="TransactionController" ng-init="list()">
 	<div class="row">
 		<div class="col-md-6">
 			<div class="list-group">
@@ -20,21 +20,25 @@
 							
 						  </ul>
 					</div>
-					<label class="clear-fix">Accounts</label>
+					<label class="clear-fix">Transactions</label>
 				</div>
 				<div class="list-group-canvas list-group-search-results" >
-					<div class="list-group-item text-center" ng-if="!Accounts.length">
+					<div class="list-group-item text-center" ng-if="!Transactions.length">
 						Loading...
 					</div>
-					<div class="list-group-item" ng-class="{active: account.id===Account.id}"ng-repeat="account in Accounts | filter:filterAccount" ng-if="Accounts.length" ng-click="openAccountInfo(account)">
-						<h4 class="list-group-item-heading">{{account.account_name}}</h4>
-						<p class="list-group-item-text"><span>Acct. no:{{account.account_no}}</span> | <span>Balance: {{account.outstanding_balance | currency: 'P'}}</span></p>
+					<div class="list-group-item" ng-class="{active: transaction.account.account_name===Transaction.account.account_name}" ng-repeat="transaction in Transactions | filter: filterTransaction" ng-click="openTransactionInfo(transaction)">
+						<h4 class="list-group-item-heading">{{transaction.account.account_name}}</h4>
+						<p class="list-group-item-text">
+						<span ng-if="!transaction.transaction_details.length">No Details</span>
+						<span ng-if="transaction.transaction_details.length">{{transaction.transaction_details[0].details}} <span ng-if="transaction.transaction_details.length > 1">and {{transaction.transaction_details.length - 1}} more</span></span>
+						 | <span>{{transaction.amount | currency: 'P'}}</span></p>
+						 
 					</div>
 				</div>
 				<div class="list-group-item list-group-search-box">
 					<div class="input-group"> 
 						<div class="input-group-btn"><button class="btn btn-default"><span class="glyphicon glyphicon-search"></span></button></div>
-						<input type="text" class="form-control" placeholder="Search" ng-model="searchAccount"/>
+						<input type="text" class="form-control" placeholder="Search" ng-model="searchTransaction"/>
 						<div class="input-group-btn"><button class="btn btn-default" ng-click="clearSearch()"><span class="glyphicon glyphicon-remove"></span></button></div>
 					</div>
 				</div>
@@ -43,9 +47,9 @@
 		<div class="col-md-6">
 			<div class="list-group">
 				<div class="list-group-item list-group-header">
-					<button class="btn btn-xs btn-danger" ng-click="removeAccountInfo()"> <span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
-					<label ng-if="Account">{{Account.account_name}}</label>
-					<label ng-if="!Account">Account Information</label>
+					<button class="btn btn-xs btn-danger" ng-click="removeTransactionInfo()"> <span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
+					<label ng-if="Transaction">{{Transaction.account.account_name}}</label>
+					<label ng-if="!Transaction">Transaction Information</label>
 					<div class="btn-group btn-group-sm pull-right" uib-dropdown>
 						  <button class="btn btn-default dropdown-toggle" type="button"  uib-dropdown-toggle>
 							<span class="glyphicon glyphicon-chevron-down"></span>
@@ -65,81 +69,56 @@
 					</div>
 					<div class="list-group-item" ng-show="hasInfo">
 						<dl class="dl-horizontal">
-								<dt>Account No.</dt>
-								<dd>{{Account.account_no}}</dd>
-								<dt>Account Type</dt>
-								<dd>{{Account.account_type}}</dd>
-								<dt>Account Name</dt>
-								<dd>{{Account.account_name}}</dd>
-								<dt>Payment Scheme</dt>
-								<dd>{{Account.payment_scheme}}</dd>
-								<dt>Outsanding Balance</dt>
-								<dd>{{Account.outstanding_balance}}</dd>
+								<dt>Account No</dt>
+								<dd>{{Transaction.account.account_no}}</dd>
+								<dt>Name</dt>
+								<dd>{{Transaction.account.account_name}}</dd>
+								<dt>Date</dt>
+								<dd>{{Transaction.date}}</dd>
+								<dt>Type</dt>
+								<dd>{{Transaction.account.account_type}}</dd>
+								<dt>Amount</dt>
+								<dd>{{Transaction.amount | currency: 'P'}}</dd>
 						</dl>
 					</div>
 					<div class="list-group-item list-group-header" ng-show="hasInfo">
-						<h5>Payment Breakdown</h5>
+						<h5>Details</h5>
 					</div>
 					<div class="list-group-item" ng-show="hasInfo">
 						<table class="table table-condensed table-bordered">
 							<thead>
 								<tr>
-									<th class="text-center">Fee</th>
-									<th class="text-center">Amount</th>
-									<th class="text-center">Paid</th>
-									<th class="text-center">Balance</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr ng-repeat="fee in Account.payment_breakdown">
-									<td>{{fee.fee}}</td>
-									<td class="text-right">{{fee.amount | currency: 'P'}}</td>
-									<td class="text-right">{{fee.paid | currency: 'P'}}</td>
-									<td class="text-right">{{fee.balance | currency: 'P'}}</td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
-					<div class="list-group-item list-group-header" ng-show="hasInfo">
-						<h5>Payment Schedule</h5>
-					</div>
-					<div class="list-group-item" ng-show="hasInfo">
-						<table class="table table-condensed table-bordered">
-							<thead>
-								<tr>
-									<th class="text-center">Billing Period</th>
-									<th class="text-center">Due Date</th>
-									<th class="text-center">Amount</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr ng-repeat="schedule in Account.payment_schedule">
-									<td>{{schedule.billing_period}}</td>
-									<td>{{schedule.date_due}}</td>
-									<td class="text-right">{{schedule.amount_due | currency: 'P'}}</td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
-					<div class="list-group-item list-group-header" ng-show="hasInfo">
-						<h5>Payment History</h5>
-					</div>
-					<div class="list-group-item" ng-show="hasInfo" >
-						<table class="table table-condensed table-bordered">
-							<thead>
-								<tr>
-									<th class="text-center">Date</th>
-									<th class="text-center">Ref No.</th>
+									<th class="text-center">Ref No</th>
 									<th class="text-center">Details</th>
 									<th class="text-center">Amount</th>
 								</tr>
 							</thead>
 							<tbody>
-								<tr ng-repeat="history in Account.payment_history">
-									<td>{{history.date}}</td>
-									<td>{{history.ref_no}}</td>
-									<td>{{history.details}}</td>
-									<td class="text-right">{{history.amount | currency: 'P'}}</td>
+								<tr ng-repeat="details in Transaction.transaction_details">
+									<td>{{details.ref_no}}</td>
+									<td>{{details.details}}</td>
+									<td class="text-right">{{details.amount | currency: 'P'}}</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<div class="list-group-item list-group-header" ng-show="hasInfo">
+						<h5>Payments</h5>
+					</div>
+					<div class="list-group-item" ng-show="hasInfo">
+						<table class="table table-condensed table-bordered">
+							<thead>
+								<tr>
+									<th class="text-center">Type</th>
+									<th class="text-center">Details</th>
+									<th class="text-center">Amount</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ng-repeat="payments in Transaction.transaction_payments">
+									<td>{{payments.type}}</td>
+									<td>{{payments.details}}</td>
+									<td class="text-right">{{payments.amount | currency: 'P'}}</td>
 								</tr>
 							</tbody>
 						</table>

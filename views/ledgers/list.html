@@ -1,0 +1,118 @@
+<style type="text/css">
+	h3.debit{
+		color: #D9534F;
+	}
+	h3.credit{
+		color: #449D44;
+	}
+	.active h3{
+		color: white;
+	}
+</style>
+<div ng-controller="LedgerController" ng-init="list()">
+	<div class="row">
+		<div class="col-md-6">
+			<div class="list-group">
+				<div class="list-group-item list-group-header">
+					<div class="btn-group btn-group-sm pull-right" uib-dropdown>
+						<button class="btn btn-default disabled">1 - 5 of 10</button>
+						<button class="btn btn-default"><span class="glyphicon glyphicon-chevron-left"></span></button>
+						<button class="btn btn-default"><span class="glyphicon glyphicon-chevron-right"></span></button>
+						
+						  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" uib-dropdown-toggle>
+							<span class="glyphicon glyphicon-chevron-down"></span>
+						  </button>
+						  <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+							<li><a href="#/">Sort</a></li>
+							<li><a href="#/">Filter</a></li>
+							<li><a href="#/">Go to Page</a></li>
+							<li role="separator" class="divider"></li>
+							<li><a href="#/">Some other link</a></li>
+							
+						  </ul>
+					</div>
+					<label class="clear-fix">Ledgers</label>
+				</div>
+				<div class="list-group-canvas list-group-search-results" >
+					<div class="list-group-item text-center" ng-if="!Ledgers.length">
+						Loading...
+					</div>
+					<div class="list-group-item" ng-class="{active: ledger.account.account_name===Ledger.account.account_name}" ng-repeat="ledger in Ledgers | filter: filterLedger" ng-click="openLedgerInfo(ledger)">
+						<div class="row">
+							<div class="col-md-6">
+								<h4 class="list-group-item-heading" >{{ledger.details}}</h4>
+								<p class="list-group-item-text">
+								<span ng-if="!ledger.account.account_name.length">No Details</span>
+								<span>{{ledger.date}}</span> | <span>{{ledger.account.account_name}}</span></p>
+							</div>
+							<div class="col-md-6">
+								<h3 class="{{ledger.type}} pull-right"><span class="flag">{{ledger.type=='debit'?'-':'+'}}</span>{{ledger.amount | currency: 'P'}}</h3>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="list-group-item list-group-search-box">
+					<div class="input-group"> 
+						<div class="input-group-btn"><button class="btn btn-default"><span class="glyphicon glyphicon-search"></span></button></div>
+						<input type="text" class="form-control" placeholder="Search" ng-model="searchLedger"/>
+						<div class="input-group-btn"><button class="btn btn-default" ng-click="clearSearch()"><span class="glyphicon glyphicon-remove"></span></button></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-6">
+			<div class="list-group">
+				<div class="list-group-item list-group-header">
+					<button class="btn btn-xs btn-danger" ng-click="removeTransactionInfo()"> <span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
+					<label ng-if="Ledger">{{Ledger.account.account_name}}</label>
+					<label ng-if="!Ledger">Ledger Information</label>
+					<div class="btn-group btn-group-sm pull-right" uib-dropdown>
+						  <button class="btn btn-default dropdown-toggle" type="button"  uib-dropdown-toggle>
+							<span class="glyphicon glyphicon-chevron-down"></span>
+						  </button>
+						  <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+							<li><a href="#/">Edit</a></li>
+							<li><a href="#/">Delete</a></li>
+							<li role="separator" class="divider"></li>
+							<li><a href="#/">Some other link</a></li>
+							
+						  </ul>
+					</div>
+				</div>
+				<div class="list-group-canvas">
+					<div class="list-group-item list-group-header" ng-show="hasInfo">
+						<h5>Account Information</h5>
+					</div>
+					<div class="list-group-item" ng-show="hasInfo">
+						<dl class="dl-horizontal">
+								<dt>Account No.</dt>
+								<dd>{{Ledger.account.account_no}}</dd>
+								<dt>Account Name</dt>
+								<dd>{{Ledger.account.account_name}}</dd>
+						</dl>
+					</div>
+					<div class="list-group-item list-group-header" ng-show="hasInfo">
+						<h5>Transaction Information</h5>
+					</div>
+					<div class="list-group-item" ng-show="hasInfo">
+						<dl class="dl-horizontal">
+								<dt>Date</dt>
+								<dd>{{Ledger.date}}</dd>
+								<dt>Ref No.</dt>
+								<dd>{{Ledger.ref_no}}</dd>
+								<dt>Transaction</dt>
+								<dd>{{Ledger.details}}</dd>
+								<dt>Ref No.</dt>
+								<dd>{{Ledger.amount}}</dd>
+						</dl>
+					</div>
+					<div class="list-group-item" ng-show="hasNoInfo">
+						<div class="well">
+							<span>No Information</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

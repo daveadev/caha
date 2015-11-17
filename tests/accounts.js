@@ -3,7 +3,7 @@ define(['model'],function($model){
 	return new $model(
 			{
 				meta:{
-					title: 'Test title',
+					title: 'Accounts',
 				},
 				data:[
 					{
