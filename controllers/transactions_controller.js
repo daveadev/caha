@@ -17,7 +17,7 @@ define(['app','api'], function (app) {
 			$scope.removeTransactionInfo=function(){
 				$scope.hasInfo = false;
 				$scope.hasNoInfo = true;
-				$scope.Trancsaction = null;
+				$scope.Transaction = null;
 			};
 		};
     }]);
