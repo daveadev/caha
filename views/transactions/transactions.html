@@ -1,0 +1,133 @@
+<div ng-controller="TransactionController" ng-init="list()">
+	<div class="row">
+		<div class="col-md-6">
+			<div class="list-group">
+				<div class="list-group-item list-group-header">
+					<div class="btn-group btn-group-sm pull-right" uib-dropdown>
+						<button class="btn btn-default disabled">1 - 5 of 10</button>
+						<button class="btn btn-default"><span class="glyphicon glyphicon-chevron-left"></span></button>
+						<button class="btn btn-default"><span class="glyphicon glyphicon-chevron-right"></span></button>
+						
+						  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" uib-dropdown-toggle>
+							<span class="glyphicon glyphicon-chevron-down"></span>
+						  </button>
+						  <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+							<li><a href="#/">Sort</a></li>
+							<li><a href="#/">Filter</a></li>
+							<li><a href="#/">Go to Page</a></li>
+							<li role="separator" class="divider"></li>
+							<li><a href="#/">Some other link</a></li>
+							
+						  </ul>
+					</div>
+					<label class="clear-fix">Transactions</label>
+				</div>
+				<div class="list-group-canvas list-group-search-results" >
+					<!--<div class="list-group-item text-center" ng-if="!Transactionss.length">
+						Loading...
+					</div> -->
+					<div class="list-group-item" ng-repeat="transaction in Transactions" ng-click="openTransactionInfo(transaction)">
+						<h4 class="list-group-item-heading">{{transaction.account.account_name}}</h4>
+						<p class="list-group-item-text">
+						<span ng-if="!transaction.transaction_details.length">No Details</span>
+						<span ng-if="transaction.transaction_details.length">{{transaction.transaction_details[0].details}} <span ng-if="transaction.transaction_details.length > 1">and {{transaction.transaction_details.length - 1}} more</span></span>
+						 | <span>{{transaction.amount | currency: 'P'}}</span></p>
+						 
+					</div>
+				</div>
+				<div class="list-group-item list-group-search-box">
+					<div class="input-group"> 
+						<div class="input-group-btn"><button class="btn btn-default"><span class="glyphicon glyphicon-search"></span></button></div>
+						<input type="text" class="form-control" placeholder="Search" />
+						<div class="input-group-btn"><button class="btn btn-default"><span class="glyphicon glyphicon-remove"></span></button></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-6">
+			<div class="list-group">
+				<div class="list-group-item list-group-header">
+					<button class="btn btn-xs btn-danger" ng-click="removeTransactionInfo()"> <span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
+					<label ng-if="Transaction">{{Transaction.account.account_name}}</label>
+					<label ng-if="!Transaction">Transaction Information</label>
+					<div class="btn-group btn-group-sm pull-right" uib-dropdown>
+						  <button class="btn btn-default dropdown-toggle" type="button"  uib-dropdown-toggle>
+							<span class="glyphicon glyphicon-chevron-down"></span>
+						  </button>
+						  <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+							<li><a href="#/">Edit</a></li>
+							<li><a href="#/">Delete</a></li>
+							<li role="separator" class="divider"></li>
+							<li><a href="#/">Some other link</a></li>
+							
+						  </ul>
+					</div>
+				</div>
+				<div class="list-group-canvas">
+					<div class="list-group-item list-group-header" ng-show="hasInfo">
+						<h5>Accounts Information</h5>
+					</div>
+					<div class="list-group-item" ng-show="hasInfo">
+						<dl class="dl-horizontal">
+								<dt>Type</dt>
+								<dd>{{Transaction.type}}</dd>
+								<dt>Date</dt>
+								<dd>{{Transaction.date}}</dd>
+								<dt>Account</dt>
+								<dd>{{Transaction.account.account_no}}</dd>
+								<dt>Amount</dt>
+								<dd>{{Transaction.amount | currency: 'P'}}</dd>
+						</dl>
+					</div>
+					<div class="list-group-item list-group-header" ng-show="hasInfo">
+						<h5>Details</h5>
+					</div>
+					<div class="list-group-item" ng-show="hasInfo">
+						<table class="table table-condensed table-bordered">
+							<thead>
+								<tr>
+									<th class="text-center">Ref No</th>
+									<th class="text-center">Details</th>
+									<th class="text-center">Amount</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ng-repeat="details in Transaction.transaction_details">
+									<td>{{details.ref_no}}</td>
+									<td>{{details.details}}</td>
+									<td class="text-right">{{details.amount | currency: 'P'}}</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<div class="list-group-item list-group-header" ng-show="hasInfo">
+						<h5>Payments</h5>
+					</div>
+					<div class="list-group-item" ng-show="hasInfo">
+						<table class="table table-condensed table-bordered">
+							<thead>
+								<tr>
+									<th class="text-center">Type</th>
+									<th class="text-center">Details</th>
+									<th class="text-center">Amount</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ng-repeat="payments in Transaction.transaction_payments">
+									<td>{{payments.type}}</td>
+									<td>{{payments.details}}</td>
+									<td class="text-right">{{payments.amount | currency: 'P'}}</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<div class="list-group-item" ng-show="hasNoInfo">
+						<div class="well">
+							<span>No Information</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
