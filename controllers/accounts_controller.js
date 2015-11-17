@@ -7,8 +7,17 @@ define(['app','api'], function (app) {
 				console.log(response.data);
 				$scope.Accounts=response.data;	
 			});
+			$scope.hasInfo = false;
+			$scope.hasNoInfo = true;
 			$scope.openAccountInfo=function(account){
 				$scope.Account = account;
+				$scope.hasInfo = true;
+				$scope.hasNoInfo = false;
+			};
+			$scope.removeAccountInfo=function(){
+				$scope.hasInfo = false;
+				$scope.hasNoInfo = true;
+				$scope.Account = null;
 			};
 		};
     }]);

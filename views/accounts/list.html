@@ -43,7 +43,7 @@
 		<div class="col-md-6">
 			<div class="list-group">
 				<div class="list-group-item list-group-header">
-					<button class="btn btn-xs btn-danger" ng-click="removeStudentInfo()"> <span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
+					<button class="btn btn-xs btn-danger" ng-click="removeAccountInfo()"> <span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
 					<label ng-if="Account">{{Account.account_name}}</label>
 					<label ng-if="!Account">Account Information</label>
 					<div class="btn-group btn-group-sm pull-right" uib-dropdown>
@@ -60,10 +60,10 @@
 					</div>
 				</div>
 				<div class="list-group-canvas">
-					<div class="list-group-item list-group-header">
+					<div class="list-group-item list-group-header" ng-show="hasInfo">
 						<h5>Accounts Information</h5>
 					</div>
-					<div class="list-group-item">
+					<div class="list-group-item" ng-show="hasInfo">
 						<dl class="dl-horizontal">
 								<dt>Account No.</dt>
 								<dd>{{Account.account_no}}</dd>
@@ -77,10 +77,10 @@
 								<dd>{{Account.outstanding_balance}}</dd>
 						</dl>
 					</div>
-					<div class="list-group-item list-group-header">
+					<div class="list-group-item list-group-header" ng-show="hasInfo">
 						<h5>Payment Breakdown</h5>
 					</div>
-					<div class="list-group-item">
+					<div class="list-group-item" ng-show="hasInfo">
 						<table class="table table-condensed table-bordered">
 							<thead>
 								<tr>
@@ -100,10 +100,10 @@
 							</tbody>
 						</table>
 					</div>
-					<div class="list-group-item list-group-header">
+					<div class="list-group-item list-group-header" ng-show="hasInfo">
 						<h5>Payment Schedule</h5>
 					</div>
-					<div class="list-group-item">
+					<div class="list-group-item" ng-show="hasInfo">
 						<table class="table table-condensed table-bordered">
 							<thead>
 								<tr>
@@ -121,10 +121,10 @@
 							</tbody>
 						</table>
 					</div>
-					<div class="list-group-item list-group-header">
+					<div class="list-group-item list-group-header" ng-show="hasInfo">
 						<h5>Payment History</h5>
 					</div>
-					<div class="list-group-item">
+					<div class="list-group-item" ng-show="hasInfo" >
 						<table class="table table-condensed table-bordered">
 							<thead>
 								<tr>
@@ -144,8 +144,8 @@
 							</tbody>
 						</table>
 					</div>
-					<div class="list-group-item">
-						<div class="well" ng-show="hasNoInformation">
+					<div class="list-group-item" ng-show="hasNoInfo">
+						<div class="well">
 							<span>No Information</span>
 						</div>
 					</div>
