@@ -19,6 +19,9 @@ define(['app','api'], function (app) {
 				$scope.hasNoInfo = true;
 				$scope.Transaction = null;
 			};
+			$scope.filterTransaction=function(transaction){
+				return transaction.account.account_name == $scope.searchTransaction || !$scope.searchTransaction;
+			};
 		};
     }]);
 });
