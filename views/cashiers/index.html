@@ -1,0 +1,151 @@
+<style type="text/css">
+	.input-amount{
+		padding-top: 1.4rem;
+	}
+</style>
+<div ng-controller="CashierController" ng-init="index()">
+	<div class="row">
+		<div class="col-md-12">
+			<ul class="nav nav-pills nav-wizard">
+				<li ng-class="{active:ActiveStep===step.id}" ng-repeat="step in Steps" ng-click="updateStep(step)">
+					<div ng-if="!$first" class="nav-wedge"></div>
+					<a data-toggle="tab"><span class="badge">{{step.id}}</span> {{step.description}}</a>
+					<div ng-if="!$last" class="nav-arrow"></div>
+				</li>
+			</ul>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-6">
+			<div class="list-group">
+				<div class="list-group-item list-group-header">
+					<label class="">Summary</label>
+				</div>
+				<div class="list-group-canvas">
+				</div>
+			</div>
+		</div>
+		<div class="col-md-6">
+			<button class="btn btn-primary btn-fab top right" ng-click="nextStep()">
+			<span class="glyphicon " ng-class="{'glyphicon-chevron-right':ActiveStep!=4,'glyphicon-ok': ActiveStep===4}" aria-hidden="true"></span>
+			</button>
+			<div class="list-group" ng-show="ActiveStep===1">
+				<div class="list-group-item list-group-header">
+					<button class="btn btn-xs btn-danger" ng-click="removeTransactionInfo()"> <span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
+					<button class="btn btn-xs btn-warning" ng-click="prevStep()"> <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span></button>
+					<label>Student</label>
+				</div>
+				<div class="list-group-canvas list-group-search-results">
+					<div class="list-group-item list-group-header">
+						<h5>Select Student</h5>
+					</div>
+					<div class="list-group-item text-center" ng-if="!Students.length">
+						Loading...
+					</div>
+					<div class="list-group-item ng-class:{active:student.id===SelectedStudent.id}" ng-repeat="student in Students" ng-click="setSelecetedStudent(student)">
+						<h4 class="list-group-item-heading">{{student.first_name}} {{student.last_name}} {{student.middle_name}} {{student.suffix_name}}</h4>
+						<p class="list-group-item-text">
+						<span>{{student.id}}</span> | <span>{{student.year_level_id}}</span></p>
+					</div>
+				</div>
+				<div class="list-group-item list-group-search-box">
+					<div class="input-group"> 
+						<div class="input-group-btn"><button class="btn btn-default"><span class="glyphicon glyphicon-search"></span></button></div>
+						<input type="text" class="form-control" placeholder="Search" ng-model="searchTransaction"/>
+						<div class="input-group-btn"><button class="btn btn-default" ng-click="clearSearch()"><span class="glyphicon glyphicon-remove"></span></button></div>
+					</div>
+				</div>
+			</div>
+			<div class="list-group" ng-show="ActiveStep===2">
+				<div class="list-group-item list-group-header">
+					<button class="btn btn-xs btn-danger" ng-click="clearField2()"> <span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
+					<button class="btn btn-xs btn-warning" ng-click="prevStep()"> <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span></button>
+					<label for="">Transaction</label>
+				</div>
+				<div class="list-group-canvas list-group-search-results">
+					<div class="list-group-item list-group-header">
+						<h5>Select Transactions</h5>
+					</div>
+					<div class="list-group-item" ng-repeat="transaction_type in TransactionTypes">
+						<div class="row">
+							<div class="col-md-8">
+								<div class="checkbox checkbox-lg">
+									<label >
+									<input type="checkbox" ng-checked="false">
+										<span class="cr" ng-click="toggleSelectTransaction(transaction_type.id)"><i class="cr-icon glyphicon glyphicon-ok"></i></span>
+									</label>
+									<div class="description"">
+										<h4 class="list-group-item-heading">{{transaction_type.name}}</h4>
+										<p class="list-group-item-text">Description Here</p>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-4" ng-show="SelectedTransactions[transaction_type.id]">
+								<div class="input-group input-amount">
+								<span class="input-group-addon">P</span>
+								<input type="number" class="form-control" ng-model="transaction_type.amount"/>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="list-group-item list-group-search-box">
+					<div class="input-group"> 
+						<div class="input-group-btn"><button class="btn btn-default"><span class="glyphicon glyphicon-search"></span></button></div>
+						<input type="text" class="form-control" placeholder="Search" ng-model="searchTransaction"/>
+						<div class="input-group-btn"><button class="btn btn-default" ng-click="clearSearch()"><span class="glyphicon glyphicon-remove"></span></button></div>
+					</div>
+				</div>
+			</div>			
+			<div class="list-group" ng-show="ActiveStep===3">
+				<div class="list-group-item list-group-header">
+					<button class="btn btn-xs btn-danger" ng-click="clearField2()"> <span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
+					<button class="btn btn-xs btn-warning" ng-click="prevStep()"> <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span></button>
+					<label for="">Payment</label>
+				</div>
+				<div class="list-group-canvas">
+					<div class="list-group-item list-group-header">
+						<h5>Select Payment Method</h5>
+					</div>
+					<div class="list-group-item" ng-repeat="payment in Payments">
+						<div class="row">
+							<div class="col-md-8">
+								<div class="checkbox checkbox-lg">
+									<label >
+									<input type="checkbox" ng-checked="false">
+										<span class="cr" ng-click="toggleSelectPayment(payment.id)"><i class="cr-icon glyphicon glyphicon-ok"></i></span>
+									</label>
+									<div class="description">
+										<h4 class="list-group-item-heading">{{payment.name}}</h4>
+										<p class="list-group-item-text">Description Here</p>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-4" ng-show="SelectedPayments[payment.id]">
+								<div class="input-group input-amount">
+									<span class="input-group-addon">P</span>
+									<input type="number" class="form-control" ng-model="payment.amount"/>
+									<div class="input-group-btn">
+										<button class="btn btn-default">
+											<span class="glyphicon glyphicon-{{payment.icon}}"></span>
+										</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>				
+			</div>
+			<div class="list-group" ng-show="ActiveStep===4">
+				<div class="list-group-item list-group-header">
+					<button class="btn btn-xs btn-danger"> <span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
+					<button class="btn btn-xs btn-warning" ng-click="prevStep()"> <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span></button>
+					<label for="">Confirmation</label>
+				</div>
+				<div class="list-group-canvas">
+					
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
