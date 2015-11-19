@@ -71,12 +71,12 @@
 						<dl class="dl-horizontal">
 								<dt>Status</dt>
 								<dd>{{Booklet.status}}</dd>
+								<dt>Cashier</dt>
+								<dd>{{Booklet.cashier}}</dd>
 								<dt>Series No.</dt>
 								<dd>{{Booklet.series_start}} - {{Booklet.series_end}}</dd>
 								<dt>Current Series No.</dt>
 								<dd>{{Booklet.series_counter}}</dd>
-								<dt>Cashier</dt>
-								<dd>{{Booklet.cashier}}</dd>
 						</dl>
 					</div>
 					<div class="list-group-item" ng-show="hasNoInfo">
@@ -102,17 +102,17 @@
 				<div class="row">
 					<div class="col-md-4">
 						<div class="form-group">
-							<input type="text" placeholder="Series Start" class="form-control" ng-model="seriesStart" ng-blur="seriesStart"/>
+							<input type="number" placeholder="Series Start" class="form-control" ng-model="seriesStart" ng-blur="setSeriesCounter(seriesStart)"/>
 						</div>
 					</div>
 					<div class="col-md-4">
 						<div class="form-group">
-							<input type="text" placeholder="Series End" class="form-control" ng-model="seriesEnd"/>
+							<input type="number" placeholder="Series End" class="form-control" ng-model="seriesEnd"/>
 						</div>
 					</div>
 					<div class="col-md-4">
 						<div class="form-group">
-							<input type="text" placeholder="Series Counter" class="form-control" ng-model="seriesCounter"/>
+							<input type="number" placeholder="Series Counter" class="form-control" ng-model="seriesCounter"/>
 						</div>
 					</div>
 				</div>
@@ -132,8 +132,8 @@
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button class="btn btn-primary pull-left" type="button" ng-click="confirmBooklet()">Confirm</button>
-				<button class="btn btn-warning" type="button" ng-click="cancelBooklet()">Cancel</button>
+				<button class="btn btn-primary" type="button" ng-click="confirmBooklet()">Confirm</button>
+				<button class="btn btn-default pull-left" type="button" ng-click="cancelBooklet()">Cancel</button>
 			</div>
 		</script>
 	</div>

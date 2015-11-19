@@ -42,20 +42,27 @@ define(['app','api'], function (app) {
 				modalInstance.result.then(function (selectedItem) {
 				  $scope.selected = selectedItem;
 				}, function (source) {
-					console.log(source);
+					if(source==='confirm')
+						$scope.initBooklets();
 				});
 			};
 		};
     }]);
 	app.register.controller('ModalInstanceController',['$scope','$uibModalInstance','api', function ($scope, $uibModalInstance, api){
 		$scope.confirmBooklet = function(){
-			var Booklets={
+			 $scope.Booklets={
 						  series_start: $scope.seriesStart,
 						  series_end: $scope.seriesEnd,
 						  series_counter: $scope.seriesCounter,
+						  status: "active",
 						  cashier: $scope.cashier
 						 };
-			console.log(Booklets);
+			api.POST('booklets',$scope.Booklets,function success(response){
+				$uibModalInstance.dismiss('confirm');
+			});
+		};
+		$scope.setSeriesCounter=function(seriesStart){
+			$scope.seriesCounter=$scope.seriesStart;
 		};
 		$scope.cancelBooklet = function(){
 			$uibModalInstance.dismiss('cancel');
