@@ -1,4 +1,7 @@
 <div ng-controller="LedgerController" ng-init="list()">
+	<button class="btn btn-primary btn-fab bottom right fixed" ng-click="openModal()">
+	<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+	</button>
 	<div class="row">
 		<div class="col-md-6">
 			<div class="list-group">
@@ -103,5 +106,91 @@
 				</div>
 			</div>
 		</div>
+		<script type="text/ng-template" id="myModalContent.html">
+			<div class="modal-header">
+				<h3 class="modal-title">Booklet Information</h3>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-md-12">
+						<div class="form-group">
+							Account
+						</div>						
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12">
+						<div class="form-group">
+							<input type="text" placeholder="Account Name" class="form-control" ng-model="accountName"/>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-4">
+						<div class="form-group">
+							Date
+						</div>
+					</div>
+					<div class="col-md-4">
+						<div class="form-group">
+							Ref No.
+						</div>
+					</div>
+					<div class="col-md-4">
+						<div class="form-group">
+							Details
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-4">
+						<div class="form-group">
+							<input type="text" placeholder="Date" class="form-control" ng-model="date"/>
+						</div>
+					</div>
+					<div class="col-md-4">
+						<div class="form-group">
+							<input type="text" placeholder="Ref No." class="form-control" ng-model="refNo"/>
+						</div>
+					</div>
+					<div class="col-md-4">
+						<div class="form-group">
+							<input type="text" placeholder="Details" class="form-control" ng-model="details"/>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12">
+						<div class="form-group">
+							Amount
+						</div>						
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12">
+						<div class="form-group">
+							<div class="input-group input-group-lg">
+								<span class="input-group-addon">
+									<span ng-if="type">{{type==='credit'?'Credit':'Debit'}}</span>
+								</span>
+								<input type="number" class="form-control" ng-model="amount"/>
+								<div class="input-group-btn">
+									<button class="btn btn-default" ng-class="{'btn-success': type==='credit'}"ng-click="setType('credit')">
+										<span class="glyphicon glyphicon-plus"></span>
+									</button>
+									<button class="btn btn-default" ng-class="{'btn-danger': type==='debit'}" ng-click="setType('debit')">
+										<span class="glyphicon glyphicon-minus"></span>
+									</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button class="btn btn-primary" type="button" ng-click="confirmLedger()">Confirm</button>
+				<button class="btn btn-default pull-left" type="button" ng-click="cancelLedger()">Cancel</button>
+			</div>
+		</script>
 	</div>
 </div>
