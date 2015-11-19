@@ -4,10 +4,14 @@ define(['app','api'], function (app) {
 		console.log($uibModal);
 		$scope.list=function(){
 			$rootScope.__MODULE_NAME = 'Booklets';
-			api.GET('booklets',function success(response){
-				console.log(response.data);
-				$scope.Booklets=response.data;	
-			});
+			$scope.initBooklets=function(){
+				$scope.Booklets=[];
+				api.GET('booklets',function success(response){
+					console.log(response.data);
+					$scope.Booklets=response.data;	
+				});
+			};
+			$scope.initBooklets();
 			$scope.hasInfo = false;
 			$scope.hasNoInfo = true;
 			$scope.openBooklet=function(booklet){
@@ -35,20 +39,27 @@ define(['app','api'], function (app) {
 					templateUrl: 'myModalContent.html',
 					controller: 'ModalInstanceController',
 				});
-
 				modalInstance.result.then(function (selectedItem) {
 				  $scope.selected = selectedItem;
-				}, function () {
-				  $log.info('Modal dismissed at: ' + new Date());
+				}, function (source) {
+					console.log(source);
 				});
 			};
 		};
     }]);
-	app.register.controller('ModalInstanceController',['$scope','$uibModalInstance', function ($scope, $uibModalInstance){
+	app.register.controller('ModalInstanceController',['$scope','$uibModalInstance','api', function ($scope, $uibModalInstance, api){
 		$scope.confirmBooklet = function(){
-			alert(1);
+			var Booklets={
+						  series_start: $scope.seriesStart,
+						  series_end: $scope.seriesEnd,
+						  series_counter: $scope.seriesCounter,
+						  cashier: $scope.cashier
+						 };
+			console.log(Booklets);
 		};
-		
+		$scope.cancelBooklet = function(){
+			$uibModalInstance.dismiss('cancel');
+		};
 	}]);
 	
 });

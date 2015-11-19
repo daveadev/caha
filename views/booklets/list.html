@@ -89,19 +89,51 @@
 		</div>
 		<script type="text/ng-template" id="myModalContent.html">
 			<div class="modal-header">
-				<h3 class="modal-title">I'm a modal!</h3>
+				<h3 class="modal-title">Booklet Information</h3>
 			</div>
 			<div class="modal-body">
-				<ul>
-					<li ng-repeat="item in items">
-						<a href="#" ng-click="$event.preventDefault(); selected.item = item">{{ item }}</a>
-					</li>
-				</ul>
-				Selected: <b>{{ selected.item }}</b>
+				<div class="row">
+					<div class="col-md-12">
+						<div class="form-group">
+							Series No.
+						</div>						
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-4">
+						<div class="form-group">
+							<input type="text" placeholder="Series Start" class="form-control" ng-model="seriesStart" ng-blur="seriesStart"/>
+						</div>
+					</div>
+					<div class="col-md-4">
+						<div class="form-group">
+							<input type="text" placeholder="Series End" class="form-control" ng-model="seriesEnd"/>
+						</div>
+					</div>
+					<div class="col-md-4">
+						<div class="form-group">
+							<input type="text" placeholder="Series Counter" class="form-control" ng-model="seriesCounter"/>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12">
+						<div class="form-group">
+							Cashier.
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12">
+						<div class="form-group">
+							<input type="text" placeholder="Cashier" class="form-control" ng-model="cashier"/>
+						</div>
+					</div>
+				</div>
 			</div>
 			<div class="modal-footer">
-				<button class="btn btn-primary" type="button" ng-click="confirmBooklet()">Confirm</button>
-				<button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+				<button class="btn btn-primary pull-left" type="button" ng-click="confirmBooklet()">Confirm</button>
+				<button class="btn btn-warning" type="button" ng-click="cancelBooklet()">Cancel</button>
 			</div>
 		</script>
 	</div>
