@@ -31,7 +31,7 @@
 			</button>
 			<div class="list-group" ng-show="ActiveStep===1">
 				<div class="list-group-item list-group-header">
-					<button class="btn btn-xs btn-danger" ng-click="removeTransactionInfo()"> <span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
+					<button class="btn btn-xs btn-danger" ng-click="resetStudent()"> <span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
 					<button class="btn btn-xs btn-warning" ng-click="prevStep()"> <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span></button>
 					<label>Student</label>
 				</div>
@@ -58,7 +58,7 @@
 			</div>
 			<div class="list-group" ng-show="ActiveStep===2">
 				<div class="list-group-item list-group-header">
-					<button class="btn btn-xs btn-danger" ng-click="clearField2()"> <span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
+					<button class="btn btn-xs btn-danger" ng-click="resetTransactions()"> <span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
 					<button class="btn btn-xs btn-warning" ng-click="prevStep()"> <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span></button>
 					<label for="">Transaction</label>
 				</div>
@@ -74,7 +74,7 @@
 									<input type="checkbox" ng-checked="false">
 										<span class="cr" ng-click="toggleSelectTransaction(transaction_type.id)"><i class="cr-icon glyphicon glyphicon-ok"></i></span>
 									</label>
-									<div class="description"">
+									<div class="description">
 										<h4 class="list-group-item-heading">{{transaction_type.name}}</h4>
 										<p class="list-group-item-text">Description Here</p>
 									</div>
@@ -99,7 +99,7 @@
 			</div>			
 			<div class="list-group" ng-show="ActiveStep===3">
 				<div class="list-group-item list-group-header">
-					<button class="btn btn-xs btn-danger" ng-click="clearField2()"> <span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
+					<button class="btn btn-xs btn-danger" ng-click="resetPayments()"> <span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
 					<button class="btn btn-xs btn-warning" ng-click="prevStep()"> <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span></button>
 					<label for="">Payment</label>
 				</div>

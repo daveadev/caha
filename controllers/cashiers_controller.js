@@ -19,7 +19,7 @@ define(['app','api'], function (app) {
 			});
 			$scope.Steps = [
 				{id:1, title: "Student", description:"Select Student"},
-				{id:2, title: "Transaction", description:"Select Transactionss"},
+				{id:2, title: "Transaction", description:"Select Transactions"},
 				{id:3, title: "Payment", description:"Select Payment Methods"},
 				{id:4, title: "Confirmation", description:"Confirmation"}
 			];
@@ -92,6 +92,17 @@ define(['app','api'], function (app) {
 			$scope.toggleSelectPayment=function(id){
 				$scope.SelectedPayments[id] = !$scope.SelectedPayments[id]; 
 			}
+			$scope.resetStudent = function(){
+				$scope.SelectedStudent = null;
+			};
+			$scope.resetTransactions = function(){
+				$scope.SelectedTransactions={};
+				$scope.ActiveTransactions = null;
+			};
+			$scope.resetPayments = function(){
+				$scope.SelectedPayments={};
+				$scope.ActivePayments = null;
+			};
 		};
     }]);
 });
