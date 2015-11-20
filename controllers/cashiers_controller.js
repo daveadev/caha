@@ -124,6 +124,12 @@ define(['app','api'], function (app) {
 			$scope.filterIncludedPayments = function(payment){
 				return $scope.SelectedPayments[payment.id] && $scope.ActivePayments.length;
 			};
+			$scope.filterStudent=function(student){
+				var searchBox = $scope.searchStudent;
+				var keyword = new RegExp(searchBox,'i');	
+				var test = keyword.test(student.first_name) || keyword.test(student.middle_name) || keyword.test(student.last_name) || keyword.test(student.suffix_name) || keyword.test(student.id);
+				return !searchBox || test;
+			};
 		};
     }]);
 });

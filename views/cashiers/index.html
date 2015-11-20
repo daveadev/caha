@@ -124,7 +124,7 @@
 					<div class="list-group-item text-center" ng-if="!Students.length">
 						Loading...
 					</div>
-					<div class="list-group-item ng-class:{active:student.id===SelectedStudent.id}" ng-repeat="student in Students" ng-click="setSelecetedStudent(student)">
+					<div class="list-group-item ng-class:{active:student.id===SelectedStudent.id}" ng-repeat="student in Students | filter:filterStudent" ng-click="setSelecetedStudent(student)">
 						<h4 class="list-group-item-heading">{{student.first_name}} {{student.last_name}} {{student.middle_name}} {{student.suffix_name}}</h4>
 						<p class="list-group-item-text">
 						<span>{{student.id}}</span> | <span>{{student.year_level_id}}</span></p>
@@ -133,7 +133,7 @@
 				<div class="list-group-item list-group-search-box">
 					<div class="input-group"> 
 						<div class="input-group-btn"><button class="btn btn-default"><span class="glyphicon glyphicon-search"></span></button></div>
-						<input type="text" class="form-control" placeholder="Search" ng-model="searchTransaction"/>
+						<input type="text" class="form-control" placeholder="Search" ng-model="searchStudent"/>
 						<div class="input-group-btn"><button class="btn btn-default" ng-click="clearSearch()"><span class="glyphicon glyphicon-remove"></span></button></div>
 					</div>
 				</div>
