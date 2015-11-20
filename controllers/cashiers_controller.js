@@ -130,6 +130,18 @@ define(['app','api'], function (app) {
 				var test = keyword.test(student.first_name) || keyword.test(student.middle_name) || keyword.test(student.last_name) || keyword.test(student.suffix_name) || keyword.test(student.id);
 				return !searchBox || test;
 			};
+			$scope.filterTransaction=function(transaction){
+				var searchBox = $scope.searchTransaction;
+				var keyword = new RegExp(searchBox,'i');	
+				var test = keyword.test(transaction.name);
+				return !searchBox || test;
+			};
+			$scope.clearSearchStudent=function(){
+				$scope.searchStudent = null;
+			};
+			$scope.clearSearchTransaction=function(){
+				$scope.searchTransaction = null;
+			};
 		};
     }]);
 });
