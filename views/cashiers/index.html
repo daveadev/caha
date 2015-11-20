@@ -22,6 +22,88 @@
 					<label class="">Summary</label>
 				</div>
 				<div class="list-group-canvas">
+					<div class="list-group-item">
+						<div class="row">
+							<div class="col-md-8">
+								<dl class="dl-horizontal">
+									<dt>Date</dt>
+									<dd>November 20, 2015</dd>
+									<dt>Series</dt>
+									<dd>1800</dd>
+									<dt>Account</dt>
+									<dd>{{ActiveStudent.id}} | {{ActiveStudent.name}}</dd>
+								</dl>
+							</div>
+							<div class="col-md-4">
+								<label class="pull-right">Total</label>
+								<h3 class="amount">{{TotalDue | currency: 'P'}}</h3>
+							</div>
+						</div>
+					</div>
+					<div class="list-group-item list-group-header">
+						<h5>Details</h5>
+					</div>
+					<div class="list-group-item">
+						<table class="table table-condensed table-bordered">
+							<thead>
+								<tr>
+									<th class="text-center">Transaction</td>
+									<th class="text-center">Amount</td>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ng-if="!ActiveTransactions.length">
+									<td class="text-center" colspan="2">No Transaction</td>
+								</tr>
+								<tr ng-if="ActiveTransactions.length" ng-repeat="transaction in TransactionTypes | filter:filterIncludedTransactions">
+									<td>{{transaction.name}}</td>
+									<td class="text-right">{{transaction.amount | currency: 'P'}}</td>
+								</tr>
+							</tbody>
+							<tfoot>
+								<tr>
+									<td>Total</td>
+									<td class="text-right">{{TotalDue | currency: 'P'}}</td>
+								</tr>
+							</tfoot>
+						</table>
+					</div>
+					<div class="list-group-item list-group-header">
+						<h5>Payment</h5>
+					</div>
+					<div class="list-group-item">
+						<table class="table table-condensed table-bordered">
+							<thead>
+								<tr>
+									<th class="text-center">Method</td>
+									<th class="text-center">Details</td>
+									<th class="text-center">Amount</td>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ng-if="!ActivePayments.length">
+									<td class="text-center" colspan="3">No Transaction</td>
+								</tr ng-if="ActivePayments.length">
+								<tr ng-repeat="payment in Payments | filter:filterIncludedPayments">
+									<td>{{payment.name}}</td>
+									<td>BDO</td>
+									<td class="text-right">{{payment.amount | currency: 'P'}}</td>
+								</tr>
+							</tbody>
+							<tfoot>
+								<tr>
+									<td>&nbsp</td>
+									<td>Total</td>
+									<td class="text-right">{{TotalPaid | currency: 'P'}}</td>
+								</tr>
+							</tfoot>
+						</table>
+					</div>
+					<div class="list-group-item" ng-show="hasNoInfo">
+						<div class="well">
+							<span>No Information</span>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
