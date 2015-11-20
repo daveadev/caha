@@ -22,7 +22,7 @@
 					<label class="">Summary</label>
 				</div>
 				<div class="list-group-canvas">
-					<div class="list-group-item">
+					<div class="list-group-item" ng-show="hasStudentInfo">
 						<div class="row">
 							<div class="col-md-8">
 								<dl class="dl-horizontal">
@@ -40,10 +40,10 @@
 							</div>
 						</div>
 					</div>
-					<div class="list-group-item list-group-header">
+					<div class="list-group-item list-group-header" ng-show="hasTransactionInfo">
 						<h5>Details</h5>
 					</div>
-					<div class="list-group-item">
+					<div class="list-group-item" ng-show="hasTransactionInfo">
 						<table class="table table-condensed table-bordered">
 							<thead>
 								<tr>
@@ -68,10 +68,10 @@
 							</tfoot>
 						</table>
 					</div>
-					<div class="list-group-item list-group-header">
+					<div class="list-group-item list-group-header" ng-show="hasPaymentInfo">
 						<h5>Payment</h5>
 					</div>
-					<div class="list-group-item">
+					<div class="list-group-item" ng-show="hasPaymentInfo">
 						<table class="table table-condensed table-bordered">
 							<thead>
 								<tr>
@@ -99,7 +99,7 @@
 							</tfoot>
 						</table>
 					</div>
-					<div class="list-group-item" ng-show="hasNoInfo">
+					<div class="list-group-item" ng-show="!hasInfo">
 						<div class="well">
 							<span>No Information</span>
 						</div>
@@ -153,7 +153,7 @@
 							<div class="col-md-8">
 								<div class="checkbox checkbox-lg">
 									<label >
-									<input type="checkbox" ng-checked="false">
+									<input type="checkbox" ng-checked="SelectedTransactions[transaction_type.id] && SelectedTransactions.length">
 										<span class="cr" ng-click="toggleSelectTransaction(transaction_type.id)"><i class="cr-icon glyphicon glyphicon-ok"></i></span>
 									</label>
 									<div class="description">
@@ -194,7 +194,7 @@
 							<div class="col-md-8">
 								<div class="checkbox checkbox-lg">
 									<label >
-									<input type="checkbox" ng-checked="false">
+									<input type="checkbox" ng-checked="SelectedPayments[payment.id] && SelectedPayments.length">
 										<span class="cr" ng-click="toggleSelectPayment(payment.id)"><i class="cr-icon glyphicon glyphicon-ok"></i></span>
 									</label>
 									<div class="description">

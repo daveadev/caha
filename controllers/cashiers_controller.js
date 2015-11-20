@@ -15,12 +15,31 @@ define(['app','api'], function (app) {
 				$scope.ActiveStep=1;
 				$scope.ActiveStudent={};
 				$scope.SelectedStudent={};
-				$scope.ActiveTransactions={};
-				$scope.SelectedTransactions={};
-				$scope.ActivePayments={};
-				$scope.SelectedPayments={};
+				$scope.ActiveTransactions=[];
+				$scope.SelectedTransactions=[];
+				$scope.ActivePayments=[];
+				$scope.SelectedPayments=[];
 				$scope.TotalDue=0;
-				$scope.TotalPaid=0;			
+				$scope.TotalPaid=0;
+				$scope.hasInfo = false;
+				$scope.hasStudentInfo = false;
+				$scope.hasTransactionInfo = false;
+				$scope.hasPaymentInfo = false;
+				$scope.$watch('hasStudentInfo',updateHasInfo);
+				$scope.$watch('hasTransactionInfo',updateHasInfo);
+				$scope.$watch('hasPaymentInfo',updateHasInfo);
+				$scope.$watch('ActiveStudent', function(){
+					$scope.hasStudentInfo = $scope.ActiveStudent.id;
+				});
+				$scope.$watch('ActiveTransactions',function(){
+					$scope.hasTransactionInfo = $scope.ActiveTransactions.length;
+				});
+				$scope.$watch('ActivePayments',function(){
+					$scope.hasPaymentInfo = $scope.ActivePayments.length;
+				});
+				function updateHasInfo(){
+					$scope.hasInfo = $scope.hasStudentInfo || $scope.hasTransactionInfo || $scope.hasPaymentInfo;
+				};
 			};
 			$scope.initCashier();
 			//Get students.js
@@ -44,6 +63,7 @@ define(['app','api'], function (app) {
 					//Pass value of student information
 					$scope.ActiveStudent = $scope.SelectedStudent;
 					console.log($scope.ActiveStudent);
+									
 				}
 				if($scope.ActiveStep===2){
 					//Pass value of transaction information
@@ -61,6 +81,7 @@ define(['app','api'], function (app) {
 							console.log($scope.ActiveTransactions);
 							};
 					};
+
 				}
 				if($scope.ActiveStep===3){
 					//Pass value of payment information
@@ -77,6 +98,7 @@ define(['app','api'], function (app) {
 							$scope.ActivePayments.push(payment);
 							};
 					};
+					
 				};
 				if($scope.ActiveStep===4){
 					//Push the gathered info to payments.js
@@ -93,6 +115,7 @@ define(['app','api'], function (app) {
 				if($scope.ActiveStep<$scope.Steps.length){
 					$scope.ActiveStep++;
 				}
+				
 			};
 			//Previous step for navigation
 			$scope.prevStep = function(){
@@ -122,17 +145,18 @@ define(['app','api'], function (app) {
 			}
 			//Reset the value of student
 			$scope.resetStudent = function(){
-				$scope.SelectedStudent = null;
+				$scope.SelectedStudent = {};
+				$scope.ActiveStudent = {};
 			};
 			//Reset the value of transaction
 			$scope.resetTransactions = function(){
 				$scope.SelectedTransactions={};
-				$scope.ActiveTransactions = null;
+				$scope.ActiveTransactions = [];
 			};
 			//Reset the value of payment
 			$scope.resetPayments = function(){
 				$scope.SelectedPayments={};
-				$scope.ActivePayments = null;
+				$scope.ActivePayments = [];
 			};
 			//Filter transaction if selected
 			$scope.filterIncludedTransactions = function(transaction){
