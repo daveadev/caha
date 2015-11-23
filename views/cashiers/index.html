@@ -22,6 +22,88 @@
 					<label class="">Summary</label>
 				</div>
 				<div class="list-group-canvas">
+					<div class="list-group-item" ng-show="hasStudentInfo">
+						<div class="row">
+							<div class="col-md-8">
+								<dl class="dl-horizontal">
+									<dt>Date</dt>
+									<dd>November 20, 2015</dd>
+									<dt>Series</dt>
+									<dd>1800</dd>
+									<dt>Account</dt>
+									<dd>{{ActiveStudent.id}} | {{ActiveStudent.name}}</dd>
+								</dl>
+							</div>
+							<div class="col-md-4">
+								<label class="pull-right">Total</label>
+								<h3 class="amount">{{TotalDue | currency: 'P'}}</h3>
+							</div>
+						</div>
+					</div>
+					<div class="list-group-item list-group-header" ng-show="hasTransactionInfo">
+						<h5>Details</h5>
+					</div>
+					<div class="list-group-item" ng-show="hasTransactionInfo">
+						<table class="table table-condensed table-bordered">
+							<thead>
+								<tr>
+									<th class="text-center">Transaction</td>
+									<th class="text-center">Amount</td>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ng-if="!ActiveTransactions.length">
+									<td class="text-center" colspan="2">No Transaction</td>
+								</tr>
+								<tr ng-if="ActiveTransactions.length" ng-repeat="transaction in TransactionTypes | filter:filterIncludedTransactions">
+									<td>{{transaction.name}}</td>
+									<td class="text-right">{{transaction.amount | currency: 'P'}}</td>
+								</tr>
+							</tbody>
+							<tfoot>
+								<tr>
+									<td>Total</td>
+									<td class="text-right">{{TotalDue | currency: 'P'}}</td>
+								</tr>
+							</tfoot>
+						</table>
+					</div>
+					<div class="list-group-item list-group-header" ng-show="hasPaymentInfo">
+						<h5>Payment</h5>
+					</div>
+					<div class="list-group-item" ng-show="hasPaymentInfo">
+						<table class="table table-condensed table-bordered">
+							<thead>
+								<tr>
+									<th class="text-center">Method</td>
+									<th class="text-center">Details</td>
+									<th class="text-center">Amount</td>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ng-if="!ActivePayments.length">
+									<td class="text-center" colspan="3">No Transaction</td>
+								</tr ng-if="ActivePayments.length">
+								<tr ng-repeat="payment in Payments | filter:filterIncludedPayments">
+									<td>{{payment.name}}</td>
+									<td>BDO</td>
+									<td class="text-right">{{payment.amount | currency: 'P'}}</td>
+								</tr>
+							</tbody>
+							<tfoot>
+								<tr>
+									<td>&nbsp</td>
+									<td>Total</td>
+									<td class="text-right">{{TotalPaid | currency: 'P'}}</td>
+								</tr>
+							</tfoot>
+						</table>
+					</div>
+					<div class="list-group-item" ng-show="!hasInfo">
+						<div class="well">
+							<span>No Information</span>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -42,7 +124,7 @@
 					<div class="list-group-item text-center" ng-if="!Students.length">
 						Loading...
 					</div>
-					<div class="list-group-item ng-class:{active:student.id===SelectedStudent.id}" ng-repeat="student in Students" ng-click="setSelecetedStudent(student)">
+					<div class="list-group-item ng-class:{active:student.id===SelectedStudent.id}" ng-repeat="student in Students | filter:filterStudent" ng-click="setSelecetedStudent(student)">
 						<h4 class="list-group-item-heading">{{student.first_name}} {{student.last_name}} {{student.middle_name}} {{student.suffix_name}}</h4>
 						<p class="list-group-item-text">
 						<span>{{student.id}}</span> | <span>{{student.year_level_id}}</span></p>
@@ -51,8 +133,8 @@
 				<div class="list-group-item list-group-search-box">
 					<div class="input-group"> 
 						<div class="input-group-btn"><button class="btn btn-default"><span class="glyphicon glyphicon-search"></span></button></div>
-						<input type="text" class="form-control" placeholder="Search" ng-model="searchTransaction"/>
-						<div class="input-group-btn"><button class="btn btn-default" ng-click="clearSearch()"><span class="glyphicon glyphicon-remove"></span></button></div>
+						<input type="text" class="form-control" placeholder="Search" ng-model="searchStudent"/>
+						<div class="input-group-btn"><button class="btn btn-default" ng-click="clearSearchStudent()"><span class="glyphicon glyphicon-remove"></span></button></div>
 					</div>
 				</div>
 			</div>
@@ -66,12 +148,12 @@
 					<div class="list-group-item list-group-header">
 						<h5>Select Transactions</h5>
 					</div>
-					<div class="list-group-item" ng-repeat="transaction_type in TransactionTypes">
+					<div class="list-group-item" ng-repeat="transaction_type in TransactionTypes | filter:filterTransaction">
 						<div class="row">
 							<div class="col-md-8">
 								<div class="checkbox checkbox-lg">
 									<label >
-									<input type="checkbox" ng-checked="false">
+									<input type="checkbox" ng-checked="SelectedTransactions[transaction_type.id] && SelectedTransactions.length">
 										<span class="cr" ng-click="toggleSelectTransaction(transaction_type.id)"><i class="cr-icon glyphicon glyphicon-ok"></i></span>
 									</label>
 									<div class="description">
@@ -93,7 +175,7 @@
 					<div class="input-group"> 
 						<div class="input-group-btn"><button class="btn btn-default"><span class="glyphicon glyphicon-search"></span></button></div>
 						<input type="text" class="form-control" placeholder="Search" ng-model="searchTransaction"/>
-						<div class="input-group-btn"><button class="btn btn-default" ng-click="clearSearch()"><span class="glyphicon glyphicon-remove"></span></button></div>
+						<div class="input-group-btn"><button class="btn btn-default" ng-click="clearSearchTransaction()"><span class="glyphicon glyphicon-remove"></span></button></div>
 					</div>
 				</div>
 			</div>			
@@ -112,7 +194,7 @@
 							<div class="col-md-8">
 								<div class="checkbox checkbox-lg">
 									<label >
-									<input type="checkbox" ng-checked="false">
+									<input type="checkbox" ng-checked="SelectedPayments[payment.id] && SelectedPayments.length">
 										<span class="cr" ng-click="toggleSelectPayment(payment.id)"><i class="cr-icon glyphicon glyphicon-ok"></i></span>
 									</label>
 									<div class="description">
