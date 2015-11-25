@@ -56,13 +56,10 @@ define(['app','api'], function (app) {
 			$scope.deleteTransaction = function(id){
 				var data = {id:id};
 				api.DELETE('transactions',data,function(response){
-					$scope.closeTransaction();
+					$scope.removeTransactionInfo();
 					getTransactions({page:$scope.ActivePage});
 				});
 			};
-			$scope.closeTransaction = function(){
-				$scope.Transaction = null;
-			}
 		};
     }]);
 });
