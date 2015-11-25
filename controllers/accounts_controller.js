@@ -4,10 +4,26 @@ define(['app','api'], function (app) {
 		$scope.list=function(){
 			$rootScope.__MODULE_NAME = 'Account';
 			//Get accounts.js
-			api.GET('accounts',function success(response){
+			$scope.ActivePage = 1;
+			$scope.NextPage=null;
+			$scope.PrevPage=null;
+			$scope.DataLoading = false;
+			
+			function getAccounts(data){
+				$scope.DataLoading = true;
+				api.GET('accounts',data,function success(response){
 				console.log(response.data);
 				$scope.Accounts=response.data;	
-			});
+				$scope.NextPage=response.meta.next;
+				$scope.PrevPage=response.meta.prev;
+				$scope.DataLoading = false;
+				});
+			}
+			getAccounts({page:$scope.ActivePage});
+			$scope.navigatePage=function(page){
+				$scope.ActivePage=page;
+				getAccounts({page:$scope.ActivePage});
+			};
 			//Set for ng-show
 			$scope.hasInfo = false;
 			$scope.hasNoInfo = true;

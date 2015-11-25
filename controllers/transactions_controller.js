@@ -9,15 +9,15 @@ define(['app','api'], function (app) {
 			$scope.PrevPage=null;
 			$scope.DataLoading = false;
 			function getTransactions(data){
-			$scope.DataLoading = true;	
-			api.GET('transactions',data,function success(response){
-				$scope.DataLoading = true;
-				console.log(response.data);
-				$scope.Transactions=response.data;
-				$scope.NextPage=response.meta.next;
-				$scope.PrevPage=response.meta.prev;
-				$scope.DataLoading = false;
-			});
+				$scope.DataLoading = true;	
+				api.GET('transactions',data,function success(response){
+					$scope.DataLoading = true;
+					console.log(response.data);
+					$scope.Transactions=response.data;
+					$scope.NextPage=response.meta.next;
+					$scope.PrevPage=response.meta.prev;
+					$scope.DataLoading = false;
+				});
 			}
 			getTransactions({page:$scope.ActivePage});
 			$scope.navigatePage=function(page){
