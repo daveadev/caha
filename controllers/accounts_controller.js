@@ -4,13 +4,36 @@ define(['app','api'], function (app) {
 		$scope.list=function(){
 			$rootScope.__MODULE_NAME = 'Account';
 			//Get accounts.js
-			api.GET('accounts',function success(response){
+			function getAccounts(data){
+				$scope.DataLoading = true;
+				api.GET('accounts',data,function success(response){
 				console.log(response.data);
 				$scope.Accounts=response.data;	
-			});
-			//Set for ng-show
-			$scope.hasInfo = false;
-			$scope.hasNoInfo = true;
+				$scope.NextPage=response.meta.next;
+				$scope.PrevPage=response.meta.prev;
+				$scope.TotalItems=response.meta.count;
+				$scope.LastItem=response.meta.page*response.meta.limit;
+				$scope.FirstItem=$scope.LastItem-(response.meta.limit-1);
+				if($scope.LastItem>$scope.TotalItems){
+					$scope.LastItem=$scope.TotalItems;
+				};
+				$scope.DataLoading = false;
+				});
+			}
+			$scope.initAccounts=function(){
+				$scope.hasInfo = false;
+				$scope.hasNoInfo = true;
+				$scope.ActivePage = 1;
+				$scope.NextPage=null;
+				$scope.PrevPage=null;
+				$scope.DataLoading = false;
+				getAccounts({page:$scope.ActivePage});
+			};
+			$scope.initAccounts();
+			$scope.navigatePage=function(page){
+				$scope.ActivePage=page;
+				getAccounts({page:$scope.ActivePage});
+			};
 			//Open account information
 			$scope.openAccountInfo=function(account){
 				$scope.Account = account;
@@ -30,9 +53,19 @@ define(['app','api'], function (app) {
 				var test = keyword.test(account.account_name);
 				return !searchBox || account.account_no==searchBox || test;
 			};
+			$scope.confirmSearch = function(){
+				getAccounts({page:$scope.ActivePage,keyword:$scope.searchAccount,fields:['account_name']});
+			}
 			//Clear searchbox
 			$scope.clearSearch = function(){
 				$scope.searchAccount = null;
+			};
+			$scope.deleteAccounts = function(id){
+				var data = {id:id};
+				api.DELETE('accounts',data,function(response){
+					$scope.removeAccountInfo();
+					getAccounts({page:$scope.ActivePage});
+				});
 			};
 		};
     }]);

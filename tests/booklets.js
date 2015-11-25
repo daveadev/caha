@@ -29,6 +29,70 @@ define(['model'],function($model){
 					  "series_counter": 1701,
 					  "status": "active",
 					  "cashier": "Cashier C"
+					},
+					{
+					  "id": 4,
+					  "series_start": 1700,
+					  "series_end": 2700,
+					  "series_counter": 1701,
+					  "status": "active",
+					  "cashier": "Cashier C"
+					},
+					{
+					  "id": 5,
+					  "series_start": 1700,
+					  "series_end": 2700,
+					  "series_counter": 1701,
+					  "status": "active",
+					  "cashier": "Cashier C"
+					},
+					{
+					  "id": 6,
+					  "series_start": 1700,
+					  "series_end": 2700,
+					  "series_counter": 1701,
+					  "status": "active",
+					  "cashier": "Cashier C"
+					},
+					{
+					  "id": 7,
+					  "series_start": 1700,
+					  "series_end": 2700,
+					  "series_counter": 1701,
+					  "status": "active",
+					  "cashier": "Cashier C"
+					},
+					{
+					  "id": 8,
+					  "series_start": 1700,
+					  "series_end": 2700,
+					  "series_counter": 1701,
+					  "status": "active",
+					  "cashier": "Cashier C"
+					},
+					{
+					  "id": 9,
+					  "series_start": 1700,
+					  "series_end": 2700,
+					  "series_counter": 1701,
+					  "status": "active",
+					  "cashier": "Cashier C"
+					},
+					{
+					  "id": 10,
+					  "series_start": 1700,
+					  "series_end": 2700,
+					  "series_counter": 1701,
+					  "status": "active",
+					  "cashier": "Cashier C"
+					},
+					{
+					  "id": 11,
+					  "series_start": 1700,
+					  "series_end": 2700,
+					  "series_counter": 1701,
+					  "status": "active",
+					  "cashier": "Cashier C"
 					}
 				]
 			}

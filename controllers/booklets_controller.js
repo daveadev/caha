@@ -5,17 +5,37 @@ define(['app','api'], function (app) {
 		$scope.list=function(){
 			$rootScope.__MODULE_NAME = 'Booklets';
 			//Initialize components
+			function getBooklets(data){
+				$scope.DataLoading=true;
+				api.GET('booklets',data,function success(response){
+					console.log(response.data);
+					$scope.Booklets=response.data;
+					$scope.NextPage=response.meta.next;
+					$scope.PrevPage=response.meta.prev;
+					$scope.TotalItems=response.meta.count;
+					$scope.LastItem=response.meta.page*response.meta.limit;
+					$scope.FirstItem=$scope.LastItem-(response.meta.limit-1);
+					if($scope.LastItem>$scope.TotalItems){
+						$scope.LastItem=$scope.TotalItems;
+					};
+					$scope.DataLoading = false;							
+				});
+			}
 			$scope.initBooklets=function(){
 				$scope.Booklets=[];
-				api.GET('booklets',function success(response){
-					console.log(response.data);
-					$scope.Booklets=response.data;	
-				});
+				$scope.hasInfo = false;
+				$scope.hasNoInfo = true;
+				$scope.ActivePage = 1;
+				$scope.NextPage=null;
+				$scope.PrevPage=null;
+				$scope.DataLoading = false;
+				getBooklets({page:$scope.ActivePage});
 			};
 			$scope.initBooklets();
-			//Set for ng-show
-			$scope.hasInfo = false;
-			$scope.hasNoInfo = true;
+			$scope.navigatePage=function(page){
+				$scope.ActivePage=page;
+				getBooklets({page:$scope.ActivePage});
+			};
 			//Open Booklet Information
 			$scope.openBooklet=function(booklet){
 				$scope.Booklet = booklet;
@@ -35,9 +55,19 @@ define(['app','api'], function (app) {
 				var test = keyword.test(booklet.series_start) || keyword.test(booklet.series_end);
 				return !searchBox || test;
 			};
+			$scope.confirmSearch = function(){
+				getBooklets({page:$scope.ActivePage,keyword:$scope.searchBooklet,fields:['series_end']});
+			}
 			//Filter search box
 			$scope.clearSearch = function(){
 				$scope.searchBooklet = null;
+			};
+			$scope.deleteBooklet = function(id){
+				var data = {id:id};
+				api.DELETE('booklets',data,function(response){
+					$scope.removeBookletInfo();
+					getBooklets({page:$scope.ActivePage});
+				});
 			};
 			//Opening the modal
 			$scope.openModal=function(){
