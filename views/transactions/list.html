@@ -4,7 +4,7 @@
 			<div class="list-group">
 				<div class="list-group-item list-group-header">
 					<div class="btn-group btn-group-sm pull-right" uib-dropdown>
-						<button class="btn btn-default disabled">1 - 5 of 10</button>
+						<button class="btn btn-default disabled">{{FirstItem}} - {{LastItem}} of {{TotalItems}}</button>
 						<button class="btn btn-default" ng-disabled="!PrevPage || DataLoading" ng-click="navigatePage(PrevPage)"><span class="glyphicon glyphicon-chevron-left"></span></button>
 						<button class="btn btn-default" ng-disabled="!NextPage || DataLoading" ng-click="navigatePage(NextPage)"><span class="glyphicon glyphicon-chevron-right"></span></button>
 						
@@ -40,7 +40,7 @@
 								 | <span>{{transaction.amount | currency: 'P'}}</span></p>
 							</div>
 							<div class="col-md-4" ng-if="transaction.status==='cancelled'">
-								<h4><span class="label label-danger">{{transaction.status}}</span></h4>
+								<h4><span class="label label-danger">Cancelled</span></h4>
 							</div>
 						</div>
 					</div>

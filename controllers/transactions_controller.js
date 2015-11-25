@@ -7,11 +7,16 @@ define(['app','api'], function (app) {
 			function getTransactions(data){
 				$scope.DataLoading = true;	
 				api.GET('transactions',data,function success(response){
-					$scope.DataLoading = true;
-					console.log(response.data);
+					console.log(response.meta);
 					$scope.Transactions=response.data;
 					$scope.NextPage=response.meta.next;
 					$scope.PrevPage=response.meta.prev;
+					$scope.TotalItems=response.meta.count;
+					$scope.LastItem=response.meta.page*response.meta.limit;
+					$scope.FirstItem=$scope.LastItem-(response.meta.limit-1);
+					if($scope.LastItem>$scope.TotalItems){
+						$scope.LastItem=$scope.TotalItems;
+					};
 					$scope.DataLoading = false;
 				});
 			}
@@ -50,7 +55,7 @@ define(['app','api'], function (app) {
 				return !searchBox || test;
 			};
 			$scope.confirmSearch = function(){
-				getTransactions({page:$scope.ActivePage,keyword:$scope.searchTransaction,fields:['account.account_name']});
+				getTransactions({page:$scope.ActivePage,keyword:$scope.searchTransaction,fields:['type']});
 			}
 			//Clear search box
 			$scope.clearSearch = function(){
@@ -64,10 +69,10 @@ define(['app','api'], function (app) {
 				});
 			};
 			$scope.cancelTransaction = function(id){
-				var data = {id:id};
-				var ted = $scope.Transaction.status='cancelled';
-				api.POST('ledgers',data,ted,function success(response){
+				var data = {id:id,status:'cancelled'};
+				api.POST('transactions',data,function success(response){
 					$scope.removeTransactionInfo();
+					getTransactions({page:$scope.ActivePage});
 				});
 			};
 		};
