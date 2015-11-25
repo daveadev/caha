@@ -5,8 +5,8 @@
 				<div class="list-group-item list-group-header">
 					<div class="btn-group btn-group-sm pull-right" uib-dropdown>
 						<button class="btn btn-default disabled">1 - 5 of 10</button>
-						<button class="btn btn-default"><span class="glyphicon glyphicon-chevron-left"></span></button>
-						<button class="btn btn-default"><span class="glyphicon glyphicon-chevron-right"></span></button>
+						<button class="btn btn-default" ng-disabled="!PrevPage || DataLoading" ng-click="navigatePage(PrevPage)"><span class="glyphicon glyphicon-chevron-left"></span></button>
+						<button class="btn btn-default" ng-disabled="!NextPage || DataLoading" ng-click="navigatePage(NextPage)"><span class="glyphicon glyphicon-chevron-right"></span></button>
 						
 						  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" uib-dropdown-toggle>
 							<span class="glyphicon glyphicon-chevron-down"></span>
@@ -23,10 +23,10 @@
 					<label class="clear-fix">Transactions</label>
 				</div>
 				<div class="list-group-canvas list-group-search-results" >
-					<div class="list-group-item text-center" ng-if="!Transactions.length">
+					<div class="list-group-item text-center" ng-if="!Transactions.length || DataLoading">
 						Loading...
 					</div>
-					<div class="list-group-item" ng-class="{active: transaction.account.account_name===Transaction.account.account_name}" ng-repeat="transaction in Transactions | filter: filterTransaction" ng-click="openTransactionInfo(transaction)">
+					<div class="list-group-item" ng-hide="DataLoading" ng-class="{active: transaction.account.account_name===Transaction.account.account_name}" ng-repeat="transaction in Transactions | filter: filterTransaction" ng-if="Transactions.length" ng-click="openTransactionInfo(transaction)">
 						<h4 class="list-group-item-heading">{{transaction.account.account_name}}</h4>
 						<p class="list-group-item-text">
 						<span ng-if="!transaction.transaction_details.length">No Details</span>

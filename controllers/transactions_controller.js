@@ -4,10 +4,27 @@ define(['app','api'], function (app) {
 		$scope.list=function(){
 			$rootScope.__MODULE_NAME = 'Trancsaction';
 			//Get transactions.js
-			api.GET('transactions',function success(response){
+			$scope.ActivePage = 1;
+			$scope.NextPage=null;
+			$scope.PrevPage=null;
+			$scope.DataLoading = false;
+			function getTransactions(data){
+			$scope.DataLoading = true;	
+			api.GET('transactions',data,function success(response){
+				$scope.DataLoading = true;
 				console.log(response.data);
-				$scope.Transactions=response.data;	
+				$scope.Transactions=response.data;
+				console.log(response.meta);
+				$scope.NextPage=response.meta.next;
+				$scope.PrevPage=response.meta.prev;
+				$scope.DataLoading = false;
 			});
+			}
+			getTransactions({page:$scope.ActivePage});
+			$scope.navigatePage=function(page){
+				$scope.ActivePage=page;
+				getTransactions({page:$scope.ActivePage});
+			};
 			//Set for ng-show
 			$scope.hasInfo = false;
 			$scope.hasNoInfo = true;
