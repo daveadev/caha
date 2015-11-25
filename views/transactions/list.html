@@ -31,12 +31,18 @@
 						</p>
 					</div>
 					<div class="list-group-item" ng-hide="DataLoading" ng-class="{active: transaction.account.account_name===Transaction.account.account_name}" ng-repeat="transaction in Transactions | filter: filterTransaction" ng-if="Transactions.length" ng-click="openTransactionInfo(transaction)">
-						<h4 class="list-group-item-heading">{{transaction.account.account_name}}</h4>
-						<p class="list-group-item-text">
-						<span ng-if="!transaction.transaction_details.length">No Details</span>
-						<span ng-if="transaction.transaction_details.length">{{transaction.transaction_details[0].details}} <span ng-if="transaction.transaction_details.length > 1">and {{transaction.transaction_details.length - 1}} more</span></span>
-						 | <span>{{transaction.amount | currency: 'P'}}</span></p>
-						 
+						<div class="row">
+							<div class="col-md-8">
+								<h4 class="list-group-item-heading">{{transaction.account.account_name}}</h4>
+								<p class="list-group-item-text">
+								<span ng-if="!transaction.transaction_details.length">No Details</span>
+								<span ng-if="transaction.transaction_details.length">{{transaction.transaction_details[0].details}} <span ng-if="transaction.transaction_details.length > 1">and {{transaction.transaction_details.length - 1}} more</span></span>
+								 | <span>{{transaction.amount | currency: 'P'}}</span></p>
+							</div>
+							<div class="col-md-4" ng-if="transaction.status==='cancelled'">
+								<h4><span class="label label-danger">{{transaction.status}}</span></h4>
+							</div>
+						</div>
 					</div>
 					<div class="list-group-item text-center" ng-if="!Transactions.length || DataLoading">
 						Loading...
@@ -62,11 +68,8 @@
 							<span class="glyphicon glyphicon-chevron-down"></span>
 						  </button>
 						  <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-							<li><a href="#/">Edit</a></li>
 							<li><a ng-click="deleteTransaction(Transaction.id)">Delete</a></li>
-							<li role="separator" class="divider"></li>
-							<li><a href="#/">Some other link</a></li>
-							
+							<li><a ng-click="cancelTransaction(Transaction.id)">Cancel</a></li>
 						  </ul>
 					</div>
 				</div>

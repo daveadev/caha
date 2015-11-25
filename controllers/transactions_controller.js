@@ -63,6 +63,13 @@ define(['app','api'], function (app) {
 					getTransactions({page:$scope.ActivePage});
 				});
 			};
+			$scope.cancelTransaction = function(id){
+				var data = {id:id};
+				var ted = $scope.Transaction.status='cancelled';
+				api.POST('ledgers',data,ted,function success(response){
+					$scope.removeTransactionInfo();
+				});
+			};
 		};
     }]);
 });
