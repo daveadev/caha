@@ -23,9 +23,6 @@
 					<label class="clear-fix">Transactions</label>
 				</div>
 				<div class="list-group-canvas list-group-search-results" >
-					<div class="list-group-item text-center" ng-if="!Transactions.length || DataLoading">
-						Loading...
-					</div>
 					<div class="list-group-item" ng-hide="DataLoading" ng-class="{active: transaction.account.account_name===Transaction.account.account_name}" ng-repeat="transaction in Transactions | filter: filterTransaction" ng-if="Transactions.length" ng-click="openTransactionInfo(transaction)">
 						<h4 class="list-group-item-heading">{{transaction.account.account_name}}</h4>
 						<p class="list-group-item-text">
@@ -34,10 +31,13 @@
 						 | <span>{{transaction.amount | currency: 'P'}}</span></p>
 						 
 					</div>
+					<div class="list-group-item text-center" ng-if="!Transactions.length || DataLoading">
+						Loading...
+					</div>
 				</div>
 				<div class="list-group-item list-group-search-box">
 					<div class="input-group"> 
-						<div class="input-group-btn"><button class="btn btn-default"><span class="glyphicon glyphicon-search"></span></button></div>
+						<div class="input-group-btn"><button class="btn btn-default" ng-click="confirmSearch()"><span class="glyphicon glyphicon-search"></span></button></div>
 						<input type="text" class="form-control" placeholder="Search" ng-model="searchTransaction"/>
 						<div class="input-group-btn"><button class="btn btn-default" ng-click="clearSearch()"><span class="glyphicon glyphicon-remove"></span></button></div>
 					</div>

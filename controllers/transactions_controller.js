@@ -14,7 +14,6 @@ define(['app','api'], function (app) {
 				$scope.DataLoading = true;
 				console.log(response.data);
 				$scope.Transactions=response.data;
-				console.log(response.meta);
 				$scope.NextPage=response.meta.next;
 				$scope.PrevPage=response.meta.prev;
 				$scope.DataLoading = false;
@@ -47,6 +46,9 @@ define(['app','api'], function (app) {
 				var test = keyword.test(transaction.account.account_name);
 				return !searchBox || test;
 			};
+			$scope.confirmSearch = function(){
+				getTransactions({page:$scope.ActivePage,keyword:$scope.searchTransaction,fields:['account.account_name']});
+			}
 			//Clear search box
 			$scope.clearSearch = function(){
 				$scope.searchTransaction = null;
