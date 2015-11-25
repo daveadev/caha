@@ -4,16 +4,30 @@ define(['app','api'], function (app) {
 		$scope.list=function(){
 			$rootScope.__MODULE_NAME = 'Ledger';
 			//Initialize ledger and get ledgers.js
-			$scope.initLedgers=function(){
-				api.GET('ledgers',function success(response){
-					console.log(response.data);
-					$scope.Ledgers=response.data;	
+			function getLedgers(data){
+				$scope.DataLoading = true;
+				api.GET('ledgers',data,function success(response){
+				console.log(response.data);
+				$scope.Ledgers=response.data;
+				$scope.NextPage=response.meta.next;
+				$scope.PrevPage=response.meta.prev;
+				$scope.DataLoading = false;				
 				});
+			}
+			$scope.initLedgers=function(){
+				$scope.hasInfo = false;
+				$scope.hasNoInfo = true;
+				$scope.ActivePage = 1;
+				$scope.NextPage=null;
+				$scope.PrevPage=null;
+				$scope.DataLoading = false;
+				getLedgers({page:$scope.ActivePage});
 			};
 			$scope.initLedgers();
-			//Set for Ng-show
-			$scope.hasInfo = false;
-			$scope.hasNoInfo = true;
+			$scope.navigatePage=function(page){
+				$scope.ActivePage=page;
+				getLedgers({page:$scope.ActivePage});
+			};
 			//Open ledger Information
 			$scope.openLedgerInfo=function(ledger){
 				$scope.Ledger = ledger;
@@ -21,7 +35,7 @@ define(['app','api'], function (app) {
 				$scope.hasNoInfo = false;
 			};
 			//Remove Transaction Info
-			$scope.removeTransactionInfo=function(){
+			$scope.removeLedgerInfo=function(){
 				$scope.hasInfo = false;
 				$scope.hasNoInfo = true;
 				$scope.Ledger = null;
@@ -50,6 +64,13 @@ define(['app','api'], function (app) {
 					//Re initialize ledger when confirmed
 					if(source==='confirm')
 						$scope.initLedgers();
+				});
+			};
+			$scope.deleteLedger = function(id){
+				var data = {id:id};
+				api.DELETE('ledgers',data,function(response){
+					$scope.removeLedgerInfo();
+					getLedgers({page:$scope.ActivePage});
 				});
 			};
 		};

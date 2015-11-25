@@ -4,11 +4,6 @@ define(['app','api'], function (app) {
 		$scope.list=function(){
 			$rootScope.__MODULE_NAME = 'Account';
 			//Get accounts.js
-			$scope.ActivePage = 1;
-			$scope.NextPage=null;
-			$scope.PrevPage=null;
-			$scope.DataLoading = false;
-			
 			function getAccounts(data){
 				$scope.DataLoading = true;
 				api.GET('accounts',data,function success(response){
@@ -19,14 +14,20 @@ define(['app','api'], function (app) {
 				$scope.DataLoading = false;
 				});
 			}
-			getAccounts({page:$scope.ActivePage});
+			$scope.initAccounts=function(){
+				$scope.hasInfo = false;
+				$scope.hasNoInfo = true;
+				$scope.ActivePage = 1;
+				$scope.NextPage=null;
+				$scope.PrevPage=null;
+				$scope.DataLoading = false;
+				getAccounts({page:$scope.ActivePage});
+			};
+			$scope.initAccounts();
 			$scope.navigatePage=function(page){
 				$scope.ActivePage=page;
 				getAccounts({page:$scope.ActivePage});
 			};
-			//Set for ng-show
-			$scope.hasInfo = false;
-			$scope.hasNoInfo = true;
 			//Open account information
 			$scope.openAccountInfo=function(account){
 				$scope.Account = account;

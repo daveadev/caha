@@ -4,10 +4,6 @@ define(['app','api'], function (app) {
 		$scope.list=function(){
 			$rootScope.__MODULE_NAME = 'Transaction';
 			//Get transactions.js
-			$scope.ActivePage = 1;
-			$scope.NextPage=null;
-			$scope.PrevPage=null;
-			$scope.DataLoading = false;
 			function getTransactions(data){
 				$scope.DataLoading = true;	
 				api.GET('transactions',data,function success(response){
@@ -19,7 +15,14 @@ define(['app','api'], function (app) {
 					$scope.DataLoading = false;
 				});
 			}
-			getTransactions({page:$scope.ActivePage});
+			$scope.initTransaction=function(){
+				$scope.ActivePage = 1;
+				$scope.NextPage=null;
+				$scope.PrevPage=null;
+				$scope.DataLoading = false;
+				getTransactions({page:$scope.ActivePage});
+			};
+			$scope.initTransaction();
 			$scope.navigatePage=function(page){
 				$scope.ActivePage=page;
 				getTransactions({page:$scope.ActivePage});
