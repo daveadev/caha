@@ -47,9 +47,19 @@ define(['app','api'], function (app) {
 				var test = keyword.test(ledger.details) || keyword.test(ledger.account.account_name);
 				return !searchBox || test;
 			};
+			$scope.confirmSearch = function(){
+				getLedgers({page:$scope.ActivePage,keyword:$scope.searchLedger,fields:['account.account_name']});
+			}
 			//Clear search box
 			$scope.clearSearch = function(){
 				$scope.searchLedger = null;
+			};
+			$scope.deleteLedger = function(id){
+				var data = {id:id};
+				api.DELETE('ledgers',data,function(response){
+					$scope.removeLedgerInfo();
+					getLedgers({page:$scope.ActivePage});
+				});
 			};
 			//Open modal
 			$scope.openModal=function(){
@@ -64,13 +74,6 @@ define(['app','api'], function (app) {
 					//Re initialize ledger when confirmed
 					if(source==='confirm')
 						$scope.initLedgers();
-				});
-			};
-			$scope.deleteLedger = function(id){
-				var data = {id:id};
-				api.DELETE('ledgers',data,function(response){
-					$scope.removeLedgerInfo();
-					getLedgers({page:$scope.ActivePage});
 				});
 			};
 		};

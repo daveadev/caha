@@ -52,7 +52,7 @@
 				</div>
 				<div class="list-group-item list-group-search-box">
 					<div class="input-group"> 
-						<div class="input-group-btn"><button class="btn btn-default"><span class="glyphicon glyphicon-search"></span></button></div>
+						<div class="input-group-btn"><button class="btn btn-default" ng-click="confirmSearch()"><span class="glyphicon glyphicon-search"></span></button></div>
 						<input type="text" class="form-control" placeholder="Search" ng-model="searchLedger"/>
 						<div class="input-group-btn"><button class="btn btn-default" ng-click="clearSearch()"><span class="glyphicon glyphicon-remove"></span></button></div>
 					</div>
@@ -70,7 +70,7 @@
 							<span class="glyphicon glyphicon-chevron-down"></span>
 						  </button>
 						  <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-							<li><a ng-click="deleteLedger(Ledger.id)"">Delete</a></li>
+							<li><a ng-click="deleteLedger(Ledger.id)">Delete</a></li>
 						  </ul>
 					</div>
 				</div>
