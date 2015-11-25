@@ -11,6 +11,12 @@ define(['app','api'], function (app) {
 				$scope.Ledgers=response.data;
 				$scope.NextPage=response.meta.next;
 				$scope.PrevPage=response.meta.prev;
+				$scope.TotalItems=response.meta.count;
+				$scope.LastItem=response.meta.page*response.meta.limit;
+				$scope.FirstItem=$scope.LastItem-(response.meta.limit-1);
+				if($scope.LastItem>$scope.TotalItems){
+					$scope.LastItem=$scope.TotalItems;
+				};
 				$scope.DataLoading = false;				
 				});
 			}
