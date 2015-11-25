@@ -7,7 +7,9 @@ define(['model'],function($model){
 				},
 				data:[
 					{
+					  "id": 1,
 					  "type": "payment",
+					  "status": "fulfilled",
 					  "date": "June 5, 2015",
 					  "account": {
 						"account_no": 12345,
@@ -36,7 +38,9 @@ define(['model'],function($model){
 					  ]
 					},
 					{
+					  "id": 2,
 					  "type": "payment",
+					  "status": "cancelled",
 					  "date": "June 5, 2015",
 					  "account": {
 						"account_no": 12345,
@@ -65,7 +69,9 @@ define(['model'],function($model){
 					  ]
 					},
 					{
+					  "id": 3,
 					  "type": "payment",
+					  "status": "fulfilled",
 					  "date": "June 5, 2015",
 					  "account": {
 						"account_no": 12345,

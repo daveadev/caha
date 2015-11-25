@@ -46,9 +46,19 @@ define(['app','api'], function (app) {
 				var test = keyword.test(account.account_name);
 				return !searchBox || account.account_no==searchBox || test;
 			};
+			$scope.confirmSearch = function(){
+				getAccounts({page:$scope.ActivePage,keyword:$scope.searchAccount,fields:['account_name']});
+			}
 			//Clear searchbox
 			$scope.clearSearch = function(){
 				$scope.searchAccount = null;
+			};
+			$scope.deleteAccounts = function(id){
+				var data = {id:id};
+				api.DELETE('accounts',data,function(response){
+					$scope.removeAccountInfo();
+					getAccounts({page:$scope.ActivePage});
+				});
 			};
 		};
     }]);

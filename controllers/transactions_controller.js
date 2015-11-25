@@ -2,7 +2,7 @@
 define(['app','api'], function (app) {
     app.register.controller('TransactionController',['$scope','$rootScope','api', function ($scope,$rootScope,api) {
 		$scope.list=function(){
-			$rootScope.__MODULE_NAME = 'Trancsaction';
+			$rootScope.__MODULE_NAME = 'Transaction';
 			//Get transactions.js
 			$scope.ActivePage = 1;
 			$scope.NextPage=null;
