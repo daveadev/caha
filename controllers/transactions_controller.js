@@ -53,6 +53,16 @@ define(['app','api'], function (app) {
 			$scope.clearSearch = function(){
 				$scope.searchTransaction = null;
 			};
+			$scope.deleteTransaction = function(id){
+				var data = {id:id};
+				api.DELETE('transactions',data,function(response){
+					$scope.closeTransaction();
+					getTransactions({page:$scope.ActivePage});
+				});
+			};
+			$scope.closeTransaction = function(){
+				$scope.Transaction = null;
+			}
 		};
     }]);
 });

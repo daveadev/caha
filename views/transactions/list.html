@@ -23,6 +23,13 @@
 					<label class="clear-fix">Transactions</label>
 				</div>
 				<div class="list-group-canvas list-group-search-results" >
+					<div class="list-group-item text-center" ng-if="searchTransaction">
+						<h4 class="list-group-item-heading">Search result(s) for <b><i>{{searchTransaction}}</i></b>.</h4>
+						<p class="list-group-item-text">
+							Click the <span class="glyphicon glyphicon-search" aria-hidden="true"></span> to look further.
+							Click the <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> to cancel.
+						</p>
+					</div>
 					<div class="list-group-item" ng-hide="DataLoading" ng-class="{active: transaction.account.account_name===Transaction.account.account_name}" ng-repeat="transaction in Transactions | filter: filterTransaction" ng-if="Transactions.length" ng-click="openTransactionInfo(transaction)">
 						<h4 class="list-group-item-heading">{{transaction.account.account_name}}</h4>
 						<p class="list-group-item-text">
@@ -56,7 +63,7 @@
 						  </button>
 						  <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
 							<li><a href="#/">Edit</a></li>
-							<li><a href="#/">Delete</a></li>
+							<li><a ng-click="deleteTransaction(Transaction.id)">Delete</a></li>
 							<li role="separator" class="divider"></li>
 							<li><a href="#/">Some other link</a></li>
 							
