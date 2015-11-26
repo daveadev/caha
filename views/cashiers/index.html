@@ -25,7 +25,7 @@
 					<div class="list-group-item" ng-show="hasStudentInfo">
 						<div class="row">
 							<div class="col-md-8">
-								<dl class="dl-horizontal">
+								<dl>
 									<dt>Date</dt>
 									<dd>November 20, 2015</dd>
 									<dt>Series</dt>
@@ -153,7 +153,7 @@
 							<div class="col-md-8">
 								<div class="checkbox checkbox-lg">
 									<label >
-									<input type="checkbox" ng-checked="SelectedTransactions[transaction_type.id] && SelectedTransactions.length">
+									<input type="checkbox" ng-checked="SelectedTransactions[transaction_type.id] && && isEmpty(SelectedTransactions)">
 										<span class="cr" ng-click="toggleSelectTransaction(transaction_type.id)"><i class="cr-icon glyphicon glyphicon-ok"></i></span>
 									</label>
 									<div class="description">
@@ -192,9 +192,10 @@
 					<div class="list-group-item" ng-repeat="payment in Payments">
 						<div class="row">
 							<div class="col-md-8">
+							
 								<div class="checkbox checkbox-lg">
 									<label >
-									<input type="checkbox" ng-checked="SelectedPayments[payment.id] && SelectedPayments.length">
+									<input type="checkbox" ng-checked="SelectedPayments[payment.id] && isEmpty(SelectedPayments)">
 										<span class="cr" ng-click="toggleSelectPayment(payment.id)"><i class="cr-icon glyphicon glyphicon-ok"></i></span>
 									</label>
 									<div class="description">
