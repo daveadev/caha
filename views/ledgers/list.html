@@ -33,7 +33,7 @@
 							Click the <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> to cancel.
 						</p>
 					</div>
-					<div class="list-group-item" ng-hide="DataLoading" ng-class="{active: ledger.account.account_name===Ledger.account.account_name}" ng-repeat="ledger in Ledgers | filter: filterLedger" ng-click="openLedgerInfo(ledger)">
+					<div class="list-group-item" ng-hide="DataLoading" ng-class="{active: ledger.id===Ledger.id}" ng-repeat="ledger in Ledgers | filter: filterLedger" ng-click="openLedgerInfo(ledger)">
 						<div class="row" >
 							<div class="col-md-6">
 								<h4 class="list-group-item-heading" >{{ledger.details}}</h4>
