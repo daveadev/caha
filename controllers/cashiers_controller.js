@@ -2,7 +2,7 @@
 define(['app','api'], function (app) {
     app.register.controller('CashierController',['$scope','$rootScope','api', function ($scope,$rootScope,api) {
 		$scope.index=function(){
-			$rootScope.__MODULE_NAME = 'Cashier';
+			$rootScope.__MODULE_NAME = 'Cashiers';
 			//Steps in Nav-pills
 			$scope.Steps = [
 				{id:1, title: "Student", description:"Select Student"},

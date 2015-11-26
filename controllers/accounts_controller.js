@@ -2,7 +2,7 @@
 define(['app','api'], function (app) {
     app.register.controller('AccountController',['$scope','$rootScope','api', function ($scope,$rootScope,api) {
 		$scope.list=function(){
-			$rootScope.__MODULE_NAME = 'Account';
+			$rootScope.__MODULE_NAME = 'Accounts';
 			//Get accounts.js
 			function getAccounts(data){
 				$scope.DataLoading = true;

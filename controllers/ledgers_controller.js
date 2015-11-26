@@ -2,7 +2,7 @@
 define(['app','api'], function (app) {
     app.register.controller('LedgerController',['$scope','$rootScope','$uibModal','api', function ($scope,$rootScope,$uibModal,api) {
 		$scope.list=function(){
-			$rootScope.__MODULE_NAME = 'Ledger';
+			$rootScope.__MODULE_NAME = 'Ledgers';
 			//Initialize ledger and get ledgers.js
 			function getLedgers(data){
 				$scope.DataLoading = true;
