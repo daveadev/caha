@@ -109,6 +109,7 @@ define(['app','api'], function (app) {
 								   };
 					api.POST('payments',$scope.Payment,function success(response){
 						console.log(response.data);
+						$scope.initCashier();
 					});
 					
 				};
