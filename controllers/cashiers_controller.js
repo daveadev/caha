@@ -16,9 +16,9 @@ define(['app','api'], function (app) {
 				$scope.ActiveStudent={};
 				$scope.SelectedStudent={};
 				$scope.ActiveTransactions=[];
-				$scope.SelectedTransactions=[];
+				$scope.SelectedTransactions={};
 				$scope.ActivePayments=[];
-				$scope.SelectedPayments=[];
+				$scope.SelectedPayments={};
 				$scope.TotalDue=0;
 				$scope.TotalPaid=0;
 				$scope.hasInfo = false;
@@ -188,6 +188,13 @@ define(['app','api'], function (app) {
 			$scope.clearSearchTransaction=function(){
 				$scope.searchTransaction = null;
 			};
+			$scope.isEmpty =function(obj){
+				 for(var key in obj) {
+					if(obj.hasOwnProperty(key))
+						return false;
+				}
+				return true;
+			}
 		};
     }]);
 });
