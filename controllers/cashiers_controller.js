@@ -1,6 +1,6 @@
 "use strict";
 define(['app','api'], function (app) {
-    app.register.controller('CashierController',['$scope','$rootScope','api', function ($scope,$rootScope,api) {
+    app.register.controller('CashierController',['$scope','$rootScope','$uibModal','api', function ($scope,$rootScope,$uibModal,api) {
 		$scope.index=function(){
 			$rootScope.__MODULE_NAME = 'Cashiers';
 			//Steps in Nav-pills
@@ -195,8 +195,28 @@ define(['app','api'], function (app) {
 				}
 				return true;
 			}
+			//Opening the modal
+			$scope.displaySettings=function(){
+				var modalInstance = $uibModal.open({
+					animation: true,
+					templateUrl: 'myModalContent.html',
+					controller: 'ModalInstanceController',
+				});
+				
+			};
 		};
     }]);
+	app.register.controller('ModalInstanceController',['$scope','$uibModalInstance','api', function ($scope, $uibModalInstance, api){
+		//Get the data entered and push it to booklets.js
+		$scope.confirmBooklet = function(){
+			 $uibModalInstance.dismiss('confirm');
+		};
+		//Close modal
+		$scope.cancelBooklet = function(){
+			$uibModalInstance.dismiss('cancel');
+		};
+	}]);
+	
 });
 
 

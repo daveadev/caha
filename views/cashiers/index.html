@@ -20,6 +20,11 @@
 			<div class="list-group">
 				<div class="list-group-item list-group-header">
 					<label class="">Summary</label>
+					<div class="pull-right">
+						<button class="btn btn-xs btn-default" ng-click="initCashier()"> <span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
+					<button class="btn btn-xs btn-default" ng-click="displaySettings()"> <span class="glyphicon glyphicon-cog" aria-hidden="true"></span></button>
+				
+					</div>
 				</div>
 				<div class="list-group-canvas">
 					<div class="list-group-item" ng-show="hasStudentInfo">
@@ -231,4 +236,53 @@
 			</div>
 		</div>
 	</div>
+	<script type="text/ng-template" id="myModalContent.html">
+			<div class="modal-header">
+				<h3 class="modal-title">Cashier Config</h3>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-md-12">
+						<div class="form-group">
+							Series No.
+						</div>						
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-4">
+						<div class="form-group">
+							<input type="number" placeholder="Series Start" class="form-control" ng-model="seriesStart" ng-blur="setSeriesCounter(seriesStart)"/>
+						</div>
+					</div>
+					<div class="col-md-4">
+						<div class="form-group">
+							<input type="number" placeholder="Series End" class="form-control" ng-model="seriesEnd"/>
+						</div>
+					</div>
+					<div class="col-md-4">
+						<div class="form-group">
+							<input type="number" placeholder="Series Counter" class="form-control" ng-model="seriesCounter"/>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12">
+						<div class="form-group">
+							Cashier.
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12">
+						<div class="form-group">
+							<input type="text" placeholder="Cashier" class="form-control" ng-model="cashier"/>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button class="btn btn-default pull-left" type="button" ng-click="cancelBooklet()">Cancel</button>
+				<button class="btn btn-primary" type="button" ng-click="confirmBooklet()">Confirm</button>
+			</div>
+		</script>
 </div>
