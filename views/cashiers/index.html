@@ -65,12 +65,12 @@
 									<td class="text-right">{{transaction.amount | currency: 'P'}}</td>
 								</tr>
 							</tbody>
-							<tfoot>
+							<thead>
 								<tr>
-									<td>Total</td>
-									<td class="text-right">{{TotalDue | currency: 'P'}}</td>
+									<th>Total</th>
+									<th class="text-right">{{TotalDue | currency: 'P'}}</th>
 								</tr>
-							</tfoot>
+							</thead>
 						</table>
 					</div>
 					<div class="list-group-item list-group-header" ng-show="hasPaymentInfo">
@@ -95,13 +95,13 @@
 									<td class="text-right">{{payment.amount | currency: 'P'}}</td>
 								</tr>
 							</tbody>
-							<tfoot>
+							<thead>
 								<tr>
-									<td>&nbsp</td>
-									<td>Total</td>
-									<td class="text-right">{{TotalPaid | currency: 'P'}}</td>
+									<th>Total</th>
+									<th>&nbsp</td>
+									<th class="text-right">{{TotalPaid | currency: 'P'}}</th>
 								</tr>
-							</tfoot>
+							</thead>
 						</table>
 					</div>
 					<div class="list-group-item" ng-show="!hasInfo">
