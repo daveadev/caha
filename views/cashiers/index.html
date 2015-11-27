@@ -29,19 +29,39 @@
 				<div class="list-group-canvas">
 					<div class="list-group-item" ng-show="hasStudentInfo">
 						<div class="row">
-							<div class="col-md-8">
+							<div class="col-md-4">
 								<dl>
 									<dt>Date</dt>
 									<dd>November 20, 2015</dd>
-									<dt>Series</dt>
-									<dd>1800</dd>
-									<dt>Account</dt>
-									<dd>{{ActiveStudent.id}} | {{ActiveStudent.name}}</dd>
 								</dl>
 							</div>
 							<div class="col-md-4">
-								<label class="pull-right">Total</label>
-								<h3 class="amount">{{TotalDue | currency: 'P'}}</h3>
+								<dl>
+									<dt>Series</dt>
+									<dd>1800</dd>
+								</dl>
+							</div>
+							<div class="col-md-4">
+								<dt>Account</dt>
+								<dd>{{ActiveStudent.id}} | {{ActiveStudent.name}}</dd>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-4">
+								<dl>
+									<dt>Total</dt>
+									<dd class="amount"><h4>{{TotalDue | currency: 'P'}}</h4></dd>
+								</dl>
+							</div>
+							<div class="col-md-4">
+								<dl>
+									<dt>Amount Received</dt>
+									<dd class="amount">P1,800.00</dd>
+								</dl>
+							</div>
+							<div class="col-md-4">
+								<dt>Change</dt>
+								<dd class="amount">P1,800.00</dd>
 							</div>
 						</div>
 					</div>
