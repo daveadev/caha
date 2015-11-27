@@ -61,13 +61,6 @@ define(['app','api'], function (app) {
 			$scope.clearSearch = function(){
 				$scope.searchTransaction = null;
 			};
-			$scope.deleteTransaction = function(id){
-				var data = {id:id};
-				api.DELETE('transactions',data,function(response){
-					$scope.removeTransactionInfo();
-					getTransactions({page:$scope.ActivePage});
-				});
-			};
 			$scope.cancelTransaction = function(id){
 				var data = {id:id,status:'cancelled'};
 				api.POST('transactions',data,function success(response){
