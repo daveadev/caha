@@ -14,6 +14,7 @@ require.config({
 		'ui-bootstrap' : 'bower_components/angular-bootstrap/ui-bootstrap-tpls.min',
         'ngload': 'bower_components/angularAMD/ngload.min', 
 		'root': 'controllers/root_controller',
+		'directives': 'directives/bootstrap_directive',
 		'api': 'controllers/api_controller',
     },
     // Add angular modules that does not support AMD out of the box, put it in a shim
