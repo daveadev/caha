@@ -9,7 +9,7 @@
 						<button class="btn btn-default" ng-disabled="!NextPage || DataLoading" ng-click="navigatePage(NextPage)"><span class="glyphicon glyphicon-chevron-right"></span></button>
 						
 						  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" uib-dropdown-toggle>
-							<span class="glyphicon glyphicon-chevron-down"></span>
+							<span class="glyphicon glyphicon-filter"></span>
 						  </button>
 						  <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
 							<li><a href="#/">Sort</a></li>
@@ -39,7 +39,7 @@
 								<span ng-if="transaction.transaction_details.length">{{transaction.transaction_details[0].details}} <span ng-if="transaction.transaction_details.length > 1">and {{transaction.transaction_details.length - 1}} more</span></span>
 								 | <span>{{transaction.amount | currency: 'P'}}</span></p>
 							</div>
-							<div class="col-md-4" ng-if="transaction.status==='cancelled'">
+							<div class="col-md-4 text-right" ng-if="transaction.status==='cancelled'">
 								<h4><span class="label label-danger">Cancelled</span></h4>
 							</div>
 						</div>
