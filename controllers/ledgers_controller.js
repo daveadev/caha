@@ -74,9 +74,12 @@ define(['app','api'], function (app) {
 					templateUrl: 'myModalContent.html',
 					controller: 'ModalInstanceController',
 				});
+				$rootScope.__MODAL_OPEN=true;
 				modalInstance.result.then(function (selectedItem) {
 				  $scope.selected = selectedItem;
+				  $rootScope.__MODAL_OPEN=false;
 				}, function (source) {
+					$rootScope.__MODAL_OPEN=false;
 					//Re initialize ledger when confirmed
 					if(source==='confirm')
 						$scope.initLedgers();
