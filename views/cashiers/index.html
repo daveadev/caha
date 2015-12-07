@@ -16,7 +16,7 @@
 		</div>
 	</div>
 	<div class="row">
-		<div class="col-md-6 col-md-push-6">
+		<div class="col-md-6">
 			<div class="list-group">
 				<div class="list-group-item list-group-header">
 					<label class="">Summary</label>
@@ -29,42 +29,24 @@
 				<div class="list-group-canvas">
 					<div class="list-group-item" ng-show="hasStudentInfo">
 						<div class="row">
-							<div class="col-md-4">
+							<div class="col-md-7">
 								<dl>
+									<dt>Account</dt>
+									<dd>{{ActiveStudent.id}} | {{ActiveStudent.name}}</dd>
 									<dt>Date</dt>
 									<dd>November 20, 2015</dd>
-								</dl>
-							</div>
-							<div class="col-md-4">
-								<dl>
 									<dt>Series</dt>
 									<dd>1800</dd>
 								</dl>
 							</div>
-							<div class="col-md-4">
-								<dt>Account</dt>
-								<dd>{{ActiveStudent.id}} | {{ActiveStudent.name}}</dd>
+							<div class="col-md-5 amount amount-total">
+								<label>Total</label>
+								<h3><div class="amount total peso">{{TotalDue | currency}}</div></h3>
+								<h5><label>Received</label><div class="amount">1,180.88</div></h5>
+								<h5><label>Change</label><div class="amount">(1,180.88)</div></h5>
 							</div>
 						</div>
-						<div class="row">
-							<div class="col-md-4">
-								<dl>
-									<dt>Total</dt>
-									<dd class="amount"><h4>{{TotalDue | currency: 'P'}}</h4></dd>
-								</dl>
 							</div>
-							<div class="col-md-4">
-								<dl>
-									<dt>Amount Received</dt>
-									<dd class="amount">P1,800.00</dd>
-								</dl>
-							</div>
-							<div class="col-md-4">
-								<dt>Change</dt>
-								<dd class="amount">P1,800.00</dd>
-							</div>
-						</div>
-					</div>
 					<div class="list-group-item list-group-header" ng-show="hasTransactionInfo">
 						<h5>Details</h5>
 					</div>
@@ -132,7 +114,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="col-md-6 col-md-pull-6">
+		<div class="col-md-6">
 			<button class="btn btn-primary btn-fab top right" ng-click="nextStep()">
 			<span class="glyphicon " ng-class="{'glyphicon-chevron-right':ActiveStep!=4,'glyphicon-ok': ActiveStep===4}" aria-hidden="true"></span>
 			</button>
