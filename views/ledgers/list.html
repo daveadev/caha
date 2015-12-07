@@ -62,16 +62,18 @@
 		<div class="col-md-6">
 			<div class="list-group">
 				<div class="list-group-item list-group-header">
-					<button class="btn btn-xs btn-danger" ng-click="removeLedgerInfo()"> <span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
 					<label ng-if="Ledger">{{Ledger.account.account_name}}</label>
 					<label ng-if="!Ledger">Ledger Information</label>
-					<div class="btn-group btn-group-sm pull-right" uib-dropdown>
+					<div class="pull-right">
+					<div class="btn-group btn-group-xs " uib-dropdown>
 						  <button class="btn btn-default dropdown-toggle" type="button"  uib-dropdown-toggle>
 							<span class="glyphicon glyphicon-chevron-down"></span>
 						  </button>
-						  <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+						  <ul class="dropdown-menu pull-right" aria-labelledby="dropdownMenu1">
 							<li><a ng-click="deleteLedger(Ledger.id)">Delete</a></li>
 						  </ul>
+					</div>
+					<button class="btn btn-xs btn-danger" ng-click="removeLedgerInfo()"> <span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
 					</div>
 				</div>
 				<div class="list-group-canvas">
