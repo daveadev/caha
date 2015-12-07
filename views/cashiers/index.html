@@ -21,7 +21,7 @@
 				<div class="list-group-item list-group-header">
 					<label class="">Summary</label>
 					<div class="pull-right">
-					<button class="btn btn-xs btn-success" uib-popover-template="dynamicPopover.templateUrl" popover-append-to-body="true" popover-placement="bottom" ng-disabled="!ActiveStudent.id"> <span class="glyphicon glyphicon-user" aria-hidden="true"></span></button>
+					<button class="btn btn-xs btn-success" uib-popover-template="'accountInfoBox.html'" popover-append-to-body="true" popover-placement="bottom" ng-disabled="!ActiveStudent.id"> <span class="glyphicon glyphicon-user" aria-hidden="true"></span></button>
 					<button class="btn btn-xs btn-info" ng-click="displaySettings()"> <span class="glyphicon glyphicon-cog" aria-hidden="true"></span></button>
 					<button class="btn btn-xs btn-danger" ng-click="initCashier()"> <span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
 					</div>
@@ -249,7 +249,7 @@
 									<i class="glyphicon glyphicon-thumbs-up"></i>
 								</div>
 								<h4>Almost there!</h4>
-								<p class="empty-state-message">Review your assessment summary.</p>
+								<p class="empty-state-message">Review your transaction summary.</p>
 							</div>
 							<div class="empty-state-help alert alert-info"> 
 								<span class="empty-state-action-icon glyphicon glyphicon-ok"></span> Click to confirm.
