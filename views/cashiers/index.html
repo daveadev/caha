@@ -21,10 +21,9 @@
 				<div class="list-group-item list-group-header">
 					<label class="">Summary</label>
 					<div class="pull-right">
-					<button class="btn btn-xs btn-success"> <span class="glyphicon glyphicon-user" aria-hidden="true"></span></button>
-					<button class="btn btn-xs btn-danger" ng-click="initCashier()"> <span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
+					<button class="btn btn-xs btn-success" uib-popover-template="dynamicPopover.templateUrl" popover-append-to-body="true" popover-placement="bottom" ng-disabled="!ActiveStudent.id"> <span class="glyphicon glyphicon-user" aria-hidden="true"></span></button>
 					<button class="btn btn-xs btn-info" ng-click="displaySettings()"> <span class="glyphicon glyphicon-cog" aria-hidden="true"></span></button>
-				
+					<button class="btn btn-xs btn-danger" ng-click="initCashier()"> <span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
 					</div>
 				</div>
 				<div class="list-group-canvas">
@@ -108,8 +107,17 @@
 						</table>
 					</div>
 					<div class="list-group-item" ng-show="!hasInfo">
-						<div class="well">
-							<span>No Information</span>
+						<div class="empty-state">
+							<div class="well">
+								<div class="empty-state-icon">
+									&#x20b1;
+								</div>
+								<h4>No transaction yet!</h4>
+								<p class="empty-state-message">Choose a student and transact.</p>
+							</div>
+							<div class="empty-state-help alert alert-info"> 
+								<span class="empty-state-action-icon glyphicon glyphicon-chevron-right"></span> Click to proceed, after completing each step.
+							</div>
 						</div>
 					</div>
 				</div>
@@ -234,7 +242,20 @@
 					<label for="">Confirmation</label>
 				</div>
 				<div class="list-group-canvas">
-					
+					<div class="list-group-item">
+						<div class="empty-state">
+							<div class="well">
+								<div class="empty-state-icon">
+									<i class="glyphicon glyphicon-thumbs-up"></i>
+								</div>
+								<h4>Almost there!</h4>
+								<p class="empty-state-message">Review your assessment summary.</p>
+							</div>
+							<div class="empty-state-help alert alert-info"> 
+								<span class="empty-state-action-icon glyphicon glyphicon-ok"></span> Click to confirm.
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -287,5 +308,13 @@
 				<button class="btn btn-default pull-left" type="button" ng-click="cancelBooklet()">Cancel</button>
 				<button class="btn btn-primary" type="button" ng-click="confirmBooklet()">Confirm</button>
 			</div>
+		</script>
+		<script type="text/ng-template" id="accountInfoBox.html">
+			<dl>
+				<dt>Account</dt>
+				<dd>{{ActiveStudent.name}}</dd>
+				<dt>Balance</dt>
+				<dd><span class="amount total peso">1,234.56</span></dd>
+			</dl>
 		</script>
 </div>
