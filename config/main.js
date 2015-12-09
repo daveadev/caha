@@ -13,7 +13,9 @@ require.config({
         'angular-cookies': 'bower_components/angular-cookies/angular-cookies.min',
 		'ui-bootstrap' : 'bower_components/angular-bootstrap/ui-bootstrap-tpls.min',
         'ngload': 'bower_components/angularAMD/ngload.min', 
+        'ui.tree': 'bower_components/angular-ui-tree/dist/angular-ui-tree', 
 		'root': 'controllers/root_controller',
+		'directives': 'directives/bootstrap_directive',
 		'api': 'controllers/api_controller',
     },
     // Add angular modules that does not support AMD out of the box, put it in a shim
@@ -22,6 +24,7 @@ require.config({
 		'angular-cookies': ['angular'],         
 		'angularAMD': ['angular'],
         'ui-bootstrap': ['angular'],
+        'ui.tree': ['angular'],
     },
     // kick start application
     deps: ['app']

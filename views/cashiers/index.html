@@ -16,55 +16,37 @@
 		</div>
 	</div>
 	<div class="row">
-		<div class="col-md-6 col-md-push-6">
+		<div class="col-md-6">
 			<div class="list-group">
 				<div class="list-group-item list-group-header">
 					<label class="">Summary</label>
 					<div class="pull-right">
-						<button class="btn btn-xs btn-default" ng-click="initCashier()"> <span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
-					<button class="btn btn-xs btn-default" ng-click="displaySettings()"> <span class="glyphicon glyphicon-cog" aria-hidden="true"></span></button>
-				
+					<button class="btn btn-xs btn-success" uib-popover-template="'accountInfoBox.html'" popover-append-to-body="true" popover-placement="bottom" ng-disabled="!ActiveStudent.id"> <span class="glyphicon glyphicon-user" aria-hidden="true"></span></button>
+					<button class="btn btn-xs btn-info" ng-click="displaySettings()"> <span class="glyphicon glyphicon-cog" aria-hidden="true"></span></button>
+					<button class="btn btn-xs btn-danger" ng-click="initCashier()"> <span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
 					</div>
 				</div>
 				<div class="list-group-canvas">
 					<div class="list-group-item" ng-show="hasStudentInfo">
 						<div class="row">
-							<div class="col-md-4">
+							<div class="col-md-7">
 								<dl>
+									<dt>Account</dt>
+									<dd>{{ActiveStudent.id}} | {{ActiveStudent.name}}</dd>
 									<dt>Date</dt>
 									<dd>November 20, 2015</dd>
-								</dl>
-							</div>
-							<div class="col-md-4">
-								<dl>
 									<dt>Series</dt>
 									<dd>1800</dd>
 								</dl>
 							</div>
-							<div class="col-md-4">
-								<dt>Account</dt>
-								<dd>{{ActiveStudent.id}} | {{ActiveStudent.name}}</dd>
+							<div class="col-md-5 amount amount-total">
+								<label>Total</label>
+								<h3><div class="amount total peso">{{TotalDue | currency}}</div></h3>
+								<h5><label>Received</label><div class="amount">1,180.88</div></h5>
+								<h5><label>Change</label><div class="amount">(1,180.88)</div></h5>
 							</div>
 						</div>
-						<div class="row">
-							<div class="col-md-4">
-								<dl>
-									<dt>Total</dt>
-									<dd class="amount"><h4>{{TotalDue | currency: 'P'}}</h4></dd>
-								</dl>
 							</div>
-							<div class="col-md-4">
-								<dl>
-									<dt>Amount Received</dt>
-									<dd class="amount">P1,800.00</dd>
-								</dl>
-							</div>
-							<div class="col-md-4">
-								<dt>Change</dt>
-								<dd class="amount">P1,800.00</dd>
-							</div>
-						</div>
-					</div>
 					<div class="list-group-item list-group-header" ng-show="hasTransactionInfo">
 						<h5>Details</h5>
 					</div>
@@ -125,14 +107,23 @@
 						</table>
 					</div>
 					<div class="list-group-item" ng-show="!hasInfo">
-						<div class="well">
-							<span>No Information</span>
+						<div class="empty-state">
+							<div class="well">
+								<div class="empty-state-icon">
+									&#x20b1;
+								</div>
+								<h4>No transaction yet!</h4>
+								<p class="empty-state-message">Choose a student and transact.</p>
+							</div>
+							<div class="empty-state-help alert alert-info"> 
+								<span class="empty-state-action-icon glyphicon glyphicon-chevron-right"></span> Click to proceed, after completing each step.
+							</div>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-		<div class="col-md-6 col-md-pull-6">
+		<div class="col-md-6">
 			<button class="btn btn-primary btn-fab top right" ng-click="nextStep()">
 			<span class="glyphicon " ng-class="{'glyphicon-chevron-right':ActiveStep!=4,'glyphicon-ok': ActiveStep===4}" aria-hidden="true"></span>
 			</button>
@@ -158,7 +149,7 @@
 				<div class="list-group-item list-group-search-box">
 					<div class="input-group"> 
 						<div class="input-group-btn"><button class="btn btn-default"><span class="glyphicon glyphicon-search"></span></button></div>
-						<input type="text" class="form-control" placeholder="Search" ng-model="searchStudent"/>
+						<input type="text" class="form-control" placeholder="Search" focus="ActiveStep==1&&!__SIDEBAR_OPEN" ng-model="searchStudent"/>
 						<div class="input-group-btn"><button class="btn btn-default" ng-click="clearSearchStudent()"><span class="glyphicon glyphicon-remove"></span></button></div>
 					</div>
 				</div>
@@ -178,7 +169,7 @@
 							<div class="col-md-8">
 								<div class="checkbox checkbox-lg">
 									<label >
-									<input type="checkbox" ng-checked="SelectedTransactions[transaction_type.id] && && isEmpty(SelectedTransactions)">
+									<input type="checkbox" ng-checked="SelectedTransactions[transaction_type.id]  && isEmpty(SelectedTransactions)">
 										<span class="cr" ng-click="toggleSelectTransaction(transaction_type.id)"><i class="cr-icon glyphicon glyphicon-ok"></i></span>
 									</label>
 									<div class="description">
@@ -251,7 +242,20 @@
 					<label for="">Confirmation</label>
 				</div>
 				<div class="list-group-canvas">
-					
+					<div class="list-group-item">
+						<div class="empty-state">
+							<div class="well">
+								<div class="empty-state-icon">
+									<i class="glyphicon glyphicon-thumbs-up"></i>
+								</div>
+								<h4>Almost there!</h4>
+								<p class="empty-state-message">Review your transaction summary.</p>
+							</div>
+							<div class="empty-state-help alert alert-info"> 
+								<span class="empty-state-action-icon glyphicon glyphicon-ok"></span> Click to confirm.
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -304,5 +308,13 @@
 				<button class="btn btn-default pull-left" type="button" ng-click="cancelBooklet()">Cancel</button>
 				<button class="btn btn-primary" type="button" ng-click="confirmBooklet()">Confirm</button>
 			</div>
+		</script>
+		<script type="text/ng-template" id="accountInfoBox.html">
+			<dl>
+				<dt>Account</dt>
+				<dd>{{ActiveStudent.name}}</dd>
+				<dt>Balance</dt>
+				<dd><span class="amount total peso">1,234.56</span></dd>
+			</dl>
 		</script>
 </div>

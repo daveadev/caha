@@ -2,7 +2,7 @@
 define(['app','api'], function (app) {
     app.register.controller('LedgerController',['$scope','$rootScope','$uibModal','api', function ($scope,$rootScope,$uibModal,api) {
 		$scope.list=function(){
-			$rootScope.__MODULE_NAME = 'Ledgers';
+			$rootScope.__MODULE_NAME = 'Student Ledgers';
 			//Initialize ledger and get ledgers.js
 			function getLedgers(data){
 				$scope.DataLoading = true;
@@ -74,9 +74,12 @@ define(['app','api'], function (app) {
 					templateUrl: 'myModalContent.html',
 					controller: 'ModalInstanceController',
 				});
+				$rootScope.__MODAL_OPEN=true;
 				modalInstance.result.then(function (selectedItem) {
 				  $scope.selected = selectedItem;
+				  $rootScope.__MODAL_OPEN=false;
 				}, function (source) {
+					$rootScope.__MODAL_OPEN=false;
 					//Re initialize ledger when confirmed
 					if(source==='confirm')
 						$scope.initLedgers();

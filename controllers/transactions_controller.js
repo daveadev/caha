@@ -2,7 +2,7 @@
 define(['app','api'], function (app) {
     app.register.controller('TransactionController',['$scope','$rootScope','api', function ($scope,$rootScope,api) {
 		$scope.list=function(){
-			$rootScope.__MODULE_NAME = 'Transaction';
+			$rootScope.__MODULE_NAME = 'Transactions';
 			//Get transactions.js
 			function getTransactions(data){
 				$scope.DataLoading = true;	

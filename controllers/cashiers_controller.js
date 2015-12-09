@@ -203,17 +203,20 @@ define(['app','api'], function (app) {
 					templateUrl: 'myModalContent.html',
 					controller: 'ModalInstanceController',
 				});
+				modalInstance.opened.then(function(){$rootScope.__MODAL_OPEN=true;});
 				
 			};
 		};
     }]);
-	app.register.controller('ModalInstanceController',['$scope','$uibModalInstance','api', function ($scope, $uibModalInstance, api){
+	app.register.controller('ModalInstanceController',['$scope','$rootScope','$uibModalInstance','api', function ($scope, $rootScope, $uibModalInstance, api){
 		//Get the data entered and push it to booklets.js
 		$scope.confirmBooklet = function(){
+			$rootScope.__MODAL_OPEN=false;
 			 $uibModalInstance.dismiss('confirm');
 		};
 		//Close modal
 		$scope.cancelBooklet = function(){
+			$rootScope.__MODAL_OPEN=false;
 			$uibModalInstance.dismiss('cancel');
 		};
 	}]);
