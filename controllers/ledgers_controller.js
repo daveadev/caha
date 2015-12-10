@@ -89,6 +89,7 @@ define(['app','api'], function (app) {
     }]);
 	app.register.controller('ModalInstanceController',['$scope','$uibModalInstance','api', function ($scope, $uibModalInstance, api){
 		//Gets the data entered in modal and push it to ledgers.js
+		$scope.type = 'credit';
 		$scope.confirmLedger = function(){
 			 $scope.Ledgers={
 						  account: {
