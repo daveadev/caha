@@ -39,14 +39,26 @@
 									<dd>1800</dd>
 								</dl>
 							</div>
-							<div class="col-md-5 amount amount-total">
-								<label>Total</label>
-								<h3><div class="amount total peso">{{TotalDue | currency}}</div></h3>
-								<h5><label>Received</label><div class="amount">1,180.88</div></h5>
-								<h5><label>Change</label><div class="amount">(1,180.88)</div></h5>
+							<div class="col-md-5">
+								<div class="row">
+									<div class="col-md-12 amount amount-total">
+										<label>Total</label>
+										<h3><div class="amount total peso">{{TotalDue | currency}}</div></h3>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-6 amount amount-total">
+										<label>Received</label>
+										<h5><div class="amount total peso">{{TotalPaid | currency}}</div></h5>
+									</div>
+									<div class="col-md-6 amount amount-total">
+										<label>Change</label>
+										<h5><div class="amount total peso"><span class="flag">{{TotalChange<0?'-':''}}</span>{{TotalChange | currency}}</div></h5>
+									</div>
+								</div>
 							</div>
 						</div>
-							</div>
+					</div>
 					<div class="list-group-item list-group-header" ng-show="hasTransactionInfo">
 						<h5>Details</h5>
 					</div>
@@ -64,13 +76,13 @@
 								</tr>
 								<tr ng-if="ActiveTransactions.length" ng-repeat="transaction in TransactionTypes | filter:filterIncludedTransactions">
 									<td>{{transaction.name}}</td>
-									<td class="text-right">{{transaction.amount | currency: 'P'}}</td>
+									<td><div class="amount" ng-class="{peso:$first}">{{transaction.amount | currency}}</div></td>
 								</tr>
 							</tbody>
 							<tfoot>
 								<tr>
-									<th><b>Total</b></th>
-									<th class="text-right"><b>{{TotalDue | currency: 'P'}}</b></th>
+									<td><b>Total</b></td>
+									<td><div class="amount peso"><b>{{TotalDue | currency}}</b></div></td>
 								</tr>
 							</tfoot>
 						</table>
@@ -94,14 +106,14 @@
 								<tr ng-repeat="payment in Payments | filter:filterIncludedPayments">
 									<td>{{payment.name}}</td>
 									<td>BDO</td>
-									<td class="text-right">{{payment.amount | currency: 'P'}}</td>
+									<td><div class="amount" ng-class="{peso:$first}">{{payment.amount | currency}}</div></td>
 								</tr>
 							</tbody>
 							<tfoot>
 								<tr>
-									<th><b>Total</b></th>
+									<td><b>Total</b></td>
 									<th>&nbsp</td>
-									<th class="text-right"><b>{{TotalPaid | currency: 'P'}}</b></th>
+									<td><div class="amount peso"><b>{{TotalPaid | currency}}</b></div></td>
 								</tr>
 							</tfoot>
 						</table>
