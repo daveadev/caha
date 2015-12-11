@@ -41,7 +41,7 @@
 								<span>{{booklet.status}}</span> | <span>{{booklet.cashier}}</span></p>
 							</div>
 							<div class="col-md-4" ng-if="booklet.status==='inactive'">
-								<h4><span class="label label-danger">Inactive</span></h4>
+								<h4 class="pull-right"><span class="label label-danger">Inactive</span></h4>
 							</div>
 						</div>
 					</div>
@@ -69,10 +69,10 @@
 								<span class="glyphicon glyphicon-chevron-down"></span>
 							  </button>
 							  <ul class="dropdown-menu pull-right" aria-labelledby="dropdownMenu1">
-								<li><a ng-click="deactivateBooklet(Booklet.id)">Deactivate</a></li>
-								<li><a ng-click="activateBooklet(Booklet.id)">Activate</a></li>
 								<li><a>Edit</a></li>
 								<li><a>Print</a></li>
+								<li><a ng-click="activateBooklet(Booklet.id)">Activate</a></li>
+								<li><a ng-click="deactivateBooklet(Booklet.id)">Deactivate</a></li>
 							  </ul>
 						</div>
 						<button class="btn btn-xs btn-danger" ng-click="removeBookletInfo()"> <span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
