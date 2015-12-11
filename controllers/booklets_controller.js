@@ -69,6 +69,20 @@ define(['app','api'], function (app) {
 					getBooklets({page:$scope.ActivePage});
 				});
 			};
+			$scope.deactivateBooklet=function(id){
+				var data = {id:id,status:'inactive'};
+				api.POST('booklets',data,function success(response){
+					$scope.removeBookletInfo();
+					getBooklets({page:$scope.ActivePage});
+				});
+			};
+			$scope.activateBooklet=function(id){
+				var data = {id:id,status:'active'};
+				api.POST('booklets',data,function success(response){
+					$scope.removeBookletInfo();
+					getBooklets({page:$scope.ActivePage});
+				});
+			};
 			//Opening the modal
 			$scope.openModal=function(){
 				var modalInstance = $uibModal.open({
