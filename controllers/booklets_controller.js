@@ -100,7 +100,7 @@ define(['app','api'], function (app) {
 			};
 		};
     }]);
-	app.register.controller('ModalInstanceController',['$scope','$uibModalInstance','api', function ($scope, $uibModalInstance, api){
+	app.register.controller('ModalInstanceController',['$scope','$rootScope','$uibModalInstance','api', function ($scope,$rootScope, $uibModalInstance, api){
 		//Get the data entered and push it to booklets.js
 		$scope.confirmBooklet = function(){
 			 $scope.Booklets={
