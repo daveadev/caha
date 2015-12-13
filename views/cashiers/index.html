@@ -329,4 +329,14 @@
 				<dd><span class="amount total peso">1,234.56</span></dd>
 			</dl>
 		</script>
+		<script type="text/ng-template" id="successModal.html">
+			<div class="modal-body text-center">
+				<button class="btn btn-success btn-fab btn-fab-drop" ng-class="{show:ShowButton}"><span class="glyphicon glyphicon-ok"></span></button>
+				<h1>Success</h1>
+				<p>Student can now proceed to the casheir.</p>
+			</div>
+			<div class="modal-footer">
+				<button class="btn btn-success btn-block" type="button" ng-click="dismissModal()">OK</button>
+			</div>
+		</script>
 </div>
