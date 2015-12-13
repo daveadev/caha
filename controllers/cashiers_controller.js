@@ -26,6 +26,7 @@ define(['app','api'], function (app) {
 				$scope.hasStudentInfo = false;
 				$scope.hasTransactionInfo = false;
 				$scope.hasPaymentInfo = false;
+				$scope.CashierSaving=false;
 				$scope.$watch('hasStudentInfo',updateHasInfo);
 				$scope.$watch('hasTransactionInfo',updateHasInfo);
 				$scope.$watch('hasPaymentInfo',updateHasInfo);
@@ -107,9 +108,9 @@ define(['app','api'], function (app) {
 									transactions:$scope.ActiveTransactions,
 									payments:$scope.ActivePayments,
 								   };
+					$scope.CashierSaving=true;		   
 					api.POST('payments',$scope.Payment,function success(response){
-						console.log(response.data);
-						$scope.initCashier();
+						$scope.openModal();
 					});
 					
 				};
@@ -200,15 +201,28 @@ define(['app','api'], function (app) {
 			$scope.displaySettings=function(){
 				var modalInstance = $uibModal.open({
 					animation: true,
-					templateUrl: 'myModalContent.html',
-					controller: 'ModalInstanceController',
+					templateUrl: 'bookletModal.html',
+					controller: 'BookletModalController',
 				});
 				modalInstance.opened.then(function(){$rootScope.__MODAL_OPEN=true;});
 				
 			};
+			$scope.openModal=function(){
+				var modalInstance = $uibModal.open({
+						animation: true,
+						size:'sm',
+						templateUrl: 'successModal.html',
+						controller: 'SuccessModalController',
+					});
+					modalInstance.result.then(function () {
+					  
+					}, function (source) {
+						$scope.initCashier();
+					});
+			}
 		};
     }]);
-	app.register.controller('ModalInstanceController',['$scope','$rootScope','$uibModalInstance','api', function ($scope, $rootScope, $uibModalInstance, api){
+	app.register.controller('BookletModalController',['$scope','$rootScope','$uibModalInstance','api', function ($scope, $rootScope, $uibModalInstance, api){
 		//Get the data entered and push it to booklets.js
 		$scope.confirmBooklet = function(){
 			$rootScope.__MODAL_OPEN=false;
@@ -220,7 +234,17 @@ define(['app','api'], function (app) {
 			$uibModalInstance.dismiss('cancel');
 		};
 	}]);
-	
+	app.register.controller('SuccessModalController',['$scope','$rootScope','$timeout','$uibModalInstance','api', function ($scope,$rootScope,$timeout, $uibModalInstance, api){
+		$rootScope.__MODAL_OPEN = true;
+		$timeout(function(){
+			$scope.ShowButton = true;
+		},333);
+		//Dismiss modal
+		$scope.dismissModal = function(){
+			$rootScope.__MODAL_OPEN = false;
+			$uibModalInstance.dismiss('ok');
+		};
+	}]);
 });
 
 
