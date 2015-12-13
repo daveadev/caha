@@ -34,9 +34,16 @@
 						</p>
 					</div>
 					<div class="list-group-item ng-class:{active: booklet.series_counter === Booklet.series_counter}" ng-hide="DataLoading" ng-repeat="booklet in Booklets | filter:filterBooklet" ng-click="openBooklet(booklet)">
-						<h4 class="list-group-item-heading" >{{booklet.series_start}} - {{booklet.series_end}}</h4>
-						<p class="list-group-item-text">
-						<span>{{booklet.status}}</span> | <span>{{booklet.cashier}}</span></p>
+						<div class="row">
+							<div class="col-md-8">
+								<h4 class="list-group-item-heading" >{{booklet.series_start}} - {{booklet.series_end}}</h4>
+								<p class="list-group-item-text">
+								<span>{{booklet.status}}</span> | <span>{{booklet.cashier}}</span></p>
+							</div>
+							<div class="col-md-4" ng-if="booklet.status==='inactive'">
+								<h4 class="pull-right"><span class="label label-danger">Inactive</span></h4>
+							</div>
+						</div>
 					</div>
 					<div class="list-group-item text-center" ng-if="!Booklets.length || DataLoading">
 						Loading...
@@ -62,7 +69,10 @@
 								<span class="glyphicon glyphicon-chevron-down"></span>
 							  </button>
 							  <ul class="dropdown-menu pull-right" aria-labelledby="dropdownMenu1">
-								<li><a ng-click="deleteBooklet(Booklet.id)">Delete</a></li>
+								<li><a>Edit</a></li>
+								<li><a>Print</a></li>
+								<li><a ng-click="activateBooklet(Booklet.id)">Activate</a></li>
+								<li><a ng-click="deactivateBooklet(Booklet.id)">Deactivate</a></li>
 							  </ul>
 						</div>
 						<button class="btn btn-xs btn-danger" ng-click="removeBookletInfo()"> <span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>

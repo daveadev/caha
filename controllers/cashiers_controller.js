@@ -21,6 +21,7 @@ define(['app','api'], function (app) {
 				$scope.SelectedPayments={};
 				$scope.TotalDue=0;
 				$scope.TotalPaid=0;
+				$scope.TotalChange=0;
 				$scope.hasInfo = false;
 				$scope.hasStudentInfo = false;
 				$scope.hasTransactionInfo = false;
@@ -81,7 +82,6 @@ define(['app','api'], function (app) {
 							console.log($scope.ActiveTransactions);
 							};
 					};
-
 				}
 				if($scope.ActiveStep===3){
 					//Pass value of payment information
@@ -98,7 +98,7 @@ define(['app','api'], function (app) {
 							$scope.ActivePayments.push(payment);
 							};
 					};
-					
+					$scope.TotalChange=$scope.TotalPaid-$scope.TotalDue;
 				};
 				if($scope.ActiveStep===4){
 					//Push the gathered info to payments.js

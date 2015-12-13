@@ -21,7 +21,7 @@
 				<div class="list-group-item list-group-header">
 					<label class="">Summary</label>
 					<div class="pull-right">
-					<button class="btn btn-xs btn-success" uib-popover-template="dynamicPopover.templateUrl" popover-append-to-body="true" popover-placement="bottom" ng-disabled="!ActiveStudent.id"> <span class="glyphicon glyphicon-user" aria-hidden="true"></span></button>
+					<button class="btn btn-xs btn-success" uib-popover-template="'accountInfoBox.html'" popover-append-to-body="true" popover-placement="bottom" ng-disabled="!ActiveStudent.id"> <span class="glyphicon glyphicon-user" aria-hidden="true"></span></button>
 					<button class="btn btn-xs btn-info" ng-click="displaySettings()"> <span class="glyphicon glyphicon-cog" aria-hidden="true"></span></button>
 					<button class="btn btn-xs btn-danger" ng-click="initCashier()"> <span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
 					</div>
@@ -29,7 +29,7 @@
 				<div class="list-group-canvas">
 					<div class="list-group-item" ng-show="hasStudentInfo">
 						<div class="row">
-							<div class="col-md-7">
+							<div class="col-md-6">
 								<dl>
 									<dt>Account</dt>
 									<dd>{{ActiveStudent.id}} | {{ActiveStudent.name}}</dd>
@@ -39,14 +39,26 @@
 									<dd>1800</dd>
 								</dl>
 							</div>
-							<div class="col-md-5 amount amount-total">
-								<label>Total</label>
-								<h3><div class="amount total peso">{{TotalDue | currency}}</div></h3>
-								<h5><label>Received</label><div class="amount">1,180.88</div></h5>
-								<h5><label>Change</label><div class="amount">(1,180.88)</div></h5>
+							<div class="col-md-6">
+								<div class="row">
+									<div class="col-md-12 amount amount-total">
+										<label>Total</label>
+										<h3><div class="amount total peso">{{TotalDue | currency}}</div></h3>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-6 amount amount-total">
+										<label>Received</label>
+										<h3><div class="amount">{{TotalPaid | currency}}</div></h3>
+									</div>
+									<div class="col-md-6 amount amount-total">
+										<label>Change</label>
+										<h3><div class="amount" ng-class="{credit:TotalChange>0,debit:TotalChange<0}">{{TotalChange | currency}}</div></h3>
+									</div>
+								</div>
 							</div>
 						</div>
-							</div>
+					</div>
 					<div class="list-group-item list-group-header" ng-show="hasTransactionInfo">
 						<h5>Details</h5>
 					</div>
@@ -64,13 +76,13 @@
 								</tr>
 								<tr ng-if="ActiveTransactions.length" ng-repeat="transaction in TransactionTypes | filter:filterIncludedTransactions">
 									<td>{{transaction.name}}</td>
-									<td class="text-right">{{transaction.amount | currency: 'P'}}</td>
+									<td><div class="amount" ng-class="{peso:$first}">{{transaction.amount | currency}}</div></td>
 								</tr>
 							</tbody>
 							<tfoot>
 								<tr>
-									<th><b>Total</b></th>
-									<th class="text-right"><b>{{TotalDue | currency: 'P'}}</b></th>
+									<td><b>Total</b></td>
+									<td><div class="amount peso"><b>{{TotalDue | currency}}</b></div></td>
 								</tr>
 							</tfoot>
 						</table>
@@ -94,14 +106,14 @@
 								<tr ng-repeat="payment in Payments | filter:filterIncludedPayments">
 									<td>{{payment.name}}</td>
 									<td>BDO</td>
-									<td class="text-right">{{payment.amount | currency: 'P'}}</td>
+									<td><div class="amount" ng-class="{peso:$first}">{{payment.amount | currency}}</div></td>
 								</tr>
 							</tbody>
 							<tfoot>
 								<tr>
-									<th><b>Total</b></th>
+									<td><b>Total</b></td>
 									<th>&nbsp</td>
-									<th class="text-right"><b>{{TotalPaid | currency: 'P'}}</b></th>
+									<td><div class="amount peso"><b>{{TotalPaid | currency}}</b></div></td>
 								</tr>
 							</tfoot>
 						</table>
@@ -249,7 +261,7 @@
 									<i class="glyphicon glyphicon-thumbs-up"></i>
 								</div>
 								<h4>Almost there!</h4>
-								<p class="empty-state-message">Review your assessment summary.</p>
+								<p class="empty-state-message">Review your transaction summary.</p>
 							</div>
 							<div class="empty-state-help alert alert-info"> 
 								<span class="empty-state-action-icon glyphicon glyphicon-ok"></span> Click to confirm.

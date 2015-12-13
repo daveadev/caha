@@ -1,6 +1,6 @@
 "use strict";
 define(['app','api'], function (app) {
-    app.register.controller('AccountController',['$scope','$rootScope','api', function ($scope,$rootScope,api) {
+    app.register.controller('AccountController',['$scope','$rootScope','$uibModal','api', function ($scope,$rootScope,$uibModal,api) {
 		$scope.list=function(){
 			$rootScope.__MODULE_NAME = 'Accounts';
 			//Get accounts.js
@@ -67,8 +67,28 @@ define(['app','api'], function (app) {
 					getAccounts({page:$scope.ActivePage});
 				});
 			};
+			$scope.openModal=function(){
+				var modalInstance = $uibModal.open({
+					animation: true,
+					templateUrl: 'myModalContent.html',
+					controller: 'ModalInstanceController',
+				});
+				$rootScope.__MODAL_OPEN=true;
+				modalInstance.result.then(function (selectedItem) {
+				  $scope.selected = selectedItem;
+				  $rootScope.__MODAL_OPEN=false;
+				}, function (source) {
+					$rootScope.__MODAL_OPEN=false;
+				});
+			};
 		};
     }]);
+	app.register.controller('ModalInstanceController',['$scope','$uibModalInstance','api', function ($scope, $uibModalInstance, api){
+		//Close modal
+		$scope.cancelChangeScheme = function(){
+			$uibModalInstance.dismiss('cancel');
+		};
+	}]);
 });
 
 
