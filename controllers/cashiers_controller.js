@@ -12,13 +12,15 @@ define(['app','api'], function (app) {
 			];
 			//Initialize components
 			$scope.initCashier = function(){
-				$scope.ActiveStep=1;
+				$scope.ActiveStep=3;
 				$scope.ActiveStudent={};
 				$scope.SelectedStudent={};
 				$scope.ActiveTransactions=[];
 				$scope.SelectedTransactions={};
 				$scope.ActivePayments=[];
 				$scope.SelectedPayments={};
+				$scope.SelectedPaymentDetails={};
+				$scope.PopoverDetails={};
 				$scope.TotalDue=0;
 				$scope.TotalPaid=0;
 				$scope.TotalChange=0;
@@ -26,6 +28,7 @@ define(['app','api'], function (app) {
 				$scope.hasStudentInfo = false;
 				$scope.hasTransactionInfo = false;
 				$scope.hasPaymentInfo = false;
+				$scope.CashierSaving=false;
 				$scope.$watch('hasStudentInfo',updateHasInfo);
 				$scope.$watch('hasTransactionInfo',updateHasInfo);
 				$scope.$watch('hasPaymentInfo',updateHasInfo);
@@ -45,17 +48,14 @@ define(['app','api'], function (app) {
 			$scope.initCashier();
 			//Get students.js
 			api.GET('students',function success(response){
-				console.log(response.data);
 				$scope.Students=response.data;	
 			});
 			//Get transaction_types.js
 			api.GET('transaction_types',function success(response){
-				console.log(response.data);
 				$scope.TransactionTypes=response.data;	
 			});
 			//Get payment_methods.js
 			api.GET('payment_methods',function success(response){
-				console.log(response.data);
 				$scope.Payments=response.data;	
 			});
 			//Change the step for navigation
@@ -107,9 +107,9 @@ define(['app','api'], function (app) {
 									transactions:$scope.ActiveTransactions,
 									payments:$scope.ActivePayments,
 								   };
+					$scope.CashierSaving=true;		   
 					api.POST('payments',$scope.Payment,function success(response){
-						console.log(response.data);
-						$scope.initCashier();
+						$scope.openModal();
 					});
 					
 				};
@@ -143,6 +143,9 @@ define(['app','api'], function (app) {
 			//Take the value if it is true or false
 			$scope.toggleSelectPayment=function(id){
 				$scope.SelectedPayments[id] = !$scope.SelectedPayments[id]; 
+				if($scope.SelectedPayments[id]){
+					$scope.SelectedPaymentDetails[id]={};
+				}
 			}
 			//Reset the value of student
 			$scope.resetStudent = function(){
@@ -200,15 +203,44 @@ define(['app','api'], function (app) {
 			$scope.displaySettings=function(){
 				var modalInstance = $uibModal.open({
 					animation: true,
-					templateUrl: 'myModalContent.html',
-					controller: 'ModalInstanceController',
+					templateUrl: 'bookletModal.html',
+					controller: 'BookletModalController',
 				});
 				modalInstance.opened.then(function(){$rootScope.__MODAL_OPEN=true;});
 				
 			};
+			$scope.openModal=function(){
+				var modalInstance = $uibModal.open({
+						animation: true,
+						size:'sm',
+						templateUrl: 'successModal.html',
+						controller: 'SuccessModalController',
+					});
+					modalInstance.result.then(function () {
+					  
+					}, function (source) {
+						$scope.initCashier();
+					});
+			}
+			$scope.setActivePopover = function(payment){
+				$scope.ActivePaymentMethod=angular.copy(payment);
+			}
+			$scope.$watch('ActivePaymentMethod',function(avp){
+				$scope.shouldOpen = {};
+				if(avp.id) $scope.shouldOpen[avp.id] = true;
+			});
+			$scope.shouldOpen =function(payment_id){
+				return $scope.PopoverDetails.is_open && $scope.ActivePaymentMethod.id==payment_id;
+			}
+			$scope.savePopoverDetails =function(payment_id){
+				$scope.SelectedPaymentDetails[payment_id] = angular.copy($scope.PopoverDetails);
+				$scope.PopoverDetails={};
+				$scope.PopoverDetails.is_open =false;
+				$scope.ActivePaymentMethod={};
+			}
 		};
     }]);
-	app.register.controller('ModalInstanceController',['$scope','$rootScope','$uibModalInstance','api', function ($scope, $rootScope, $uibModalInstance, api){
+	app.register.controller('BookletModalController',['$scope','$rootScope','$uibModalInstance','api', function ($scope, $rootScope, $uibModalInstance, api){
 		//Get the data entered and push it to booklets.js
 		$scope.confirmBooklet = function(){
 			$rootScope.__MODAL_OPEN=false;
@@ -220,7 +252,17 @@ define(['app','api'], function (app) {
 			$uibModalInstance.dismiss('cancel');
 		};
 	}]);
-	
+	app.register.controller('SuccessModalController',['$scope','$rootScope','$timeout','$uibModalInstance','api', function ($scope,$rootScope,$timeout, $uibModalInstance, api){
+		$rootScope.__MODAL_OPEN = true;
+		$timeout(function(){
+			$scope.ShowButton = true;
+		},333);
+		//Dismiss modal
+		$scope.dismissModal = function(){
+			$rootScope.__MODAL_OPEN = false;
+			$uibModalInstance.dismiss('ok');
+		};
+	}]);
 });
 
 
