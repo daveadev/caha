@@ -95,7 +95,7 @@
 						</dl>
 					</div>
 					<div class="list-group-item list-group-header" ng-show="hasInfo">
-						<h5>Transaction Details</h5>
+						<h5>Transactions</h5>
 					</div>
 					<div class="list-group-item" ng-show="hasInfo">
 						<table class="table table-condensed table-bordered">
@@ -107,11 +107,15 @@
 								</tr>
 							</thead>
 							<tbody>
-								<tr ng-repeat="booklet in Booklet.transactions">
-									<td>{{booklet.series}}</td>
-									<td>IP and more</td>
-									<td class="text-right">{{booklet.amount | currency: 'P'}}</td>
-								</tr>
+								<tr ng-repeat="transaction in Booklet.transactions">
+									<td>{{transaction.series}}</td>
+									<td>
+									<span ng-if="transaction.transactions.length">{{transaction.transactions[0].id}} 
+									<span ng-if="transaction.transactions.length > 1">and {{transaction.transactions.length - 1}} more</span>
+									</span>
+									</td>
+									<td><div class="amount peso total">{{transaction.amount | currency}}</div></td>
+								</tr> 
 							</tbody>
 						</table>
 					</div>

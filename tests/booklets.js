@@ -17,9 +17,10 @@ define(['model'],function($model){
 						{
 						  "series": 1880,
 						  "transactions": [
-											{id:1,name:"Juan Dela Cruz",amount:3500}
+											{id:"IP",name:"Initial Payment",amount:3500},
+											{id:"PEU",name:"PE Uniform",amount:3500},
 										  ],
-						  "amount": 3500
+						  "amount": 7000
 						}
 					  ]
 					},
@@ -34,7 +35,7 @@ define(['model'],function($model){
 						{
 						  "series": 1880,
 						  "transactions": [
-											{id:2,name:"Ted Philip Lat",amount:4500}
+											{id:"IP",name:"Initial Payment",amount:4500}
 										  ],
 						  "amount": 4500
 						}
@@ -51,7 +52,7 @@ define(['model'],function($model){
 						{
 						  "series": 1880,
 						  "transactions": [
-											{id:3,name:"Juan Dela Cruz 1",amount:5500}
+											{id:"IP",name:"Initial Payment",amount:5500}
 										  ],
 						  "amount": 5500
 						}
@@ -68,7 +69,7 @@ define(['model'],function($model){
 						{
 						  "series": 1880,
 						  "transactions": [
-											{id:4,name:"Juan Dela Cruz 2",amount:6500}
+											{id:"IP",name:"Initial Payment",amount:6500}
 										  ],
 						  "amount": 6500
 						}
@@ -85,7 +86,7 @@ define(['model'],function($model){
 						{
 						  "series": 1880,
 						  "transactions": [
-											{id:5,name:"Juan Dela Cruz 3",amount:7500}
+											{id:"IP",name:"Initial Payment",amount:7500}
 										  ],
 						  "amount": 7500
 						}
