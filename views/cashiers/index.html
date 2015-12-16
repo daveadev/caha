@@ -136,7 +136,7 @@
 			</div>
 		</div>
 		<div class="col-md-6">
-			<button class="btn btn-primary btn-fab top right" ng-click="nextStep()">
+			<button class="btn btn-primary btn-fab top right" ng-click="nextStep()" ng-disabled="CashierSaving">
 			<span class="glyphicon " ng-class="{'glyphicon-chevron-right':ActiveStep!=4,'glyphicon-ok': ActiveStep===4}" aria-hidden="true"></span>
 			</button>
 			<div class="list-group" ng-show="ActiveStep===1">
@@ -150,7 +150,8 @@
 						<h5>Select Student</h5>
 					</div>
 					<div class="list-group-item text-center" ng-if="!Students.length">
-						Loading...
+						<div class="preloader-message">Loading...</div>
+						<div class="loader"></div>
 					</div>
 					<div class="list-group-item ng-class:{active:student.id===SelectedStudent.id}" ng-repeat="student in Students | filter:filterStudent" ng-click="setSelecetedStudent(student)">
 						<h4 class="list-group-item-heading">{{student.first_name}} {{student.last_name}} {{student.middle_name}} {{student.suffix_name}}</h4>
@@ -192,7 +193,7 @@
 							</div>
 							<div class="col-md-4" ng-show="SelectedTransactions[transaction_type.id]">
 								<div class="input-group input-amount">
-								<span class="input-group-addon">P</span>
+								<span class="input-group-addon">₱</span>
 								<input type="number" class="form-control" ng-model="transaction_type.amount"/>
 								</div>
 							</div>
@@ -219,8 +220,7 @@
 					</div>
 					<div class="list-group-item" ng-repeat="payment in Payments">
 						<div class="row">
-							<div class="col-md-8">
-							
+							<div class="col-md-7">
 								<div class="checkbox checkbox-lg">
 									<label >
 									<input type="checkbox" ng-checked="SelectedPayments[payment.id] && isEmpty(SelectedPayments)">
@@ -228,20 +228,31 @@
 									</label>
 									<div class="description">
 										<h4 class="list-group-item-heading">{{payment.name}}</h4>
-										<p class="list-group-item-text">Description Here</p>
+										<p class="list-group-item-text">
+											<div>{{!payment.description?'&nbsp;':payment.description}}</div>
+										</p>
 									</div>
 								</div>
 							</div>
-							<div class="col-md-4" ng-show="SelectedPayments[payment.id]">
-								<div class="input-group input-amount">
-									<span class="input-group-addon">P</span>
+							<div class="col-md-5" ng-show="SelectedPayments[payment.id]">
+								<div class="input-group input-amount col-md-10 col-md-push-1">
+									<span class="input-group-addon">₱</span>
 									<input type="number" class="form-control" ng-model="payment.amount"/>
-									<div class="input-group-btn">
-										<button class="btn btn-default">
+									<div class="input-group-btn" ng-if="payment.id!='CASH'">
+										<button class="btn btn-default" pop-title="{{payment.name+' details'}}" uib-popover-template="'paymentDetailsBox.html'" popover-append-to-body="true" pop-placement="top"  popover-is-open="shouldOpen[payment.id]" ng-click="setActivePopover(payment)">
 											<span class="glyphicon glyphicon-{{payment.icon}}"></span>
 										</button>
 									</div>
 								</div>
+								<div class="help-text" ng-if="payment.id=='CASH' && SelectedPayments[payment.id]">
+									Change: 1,2500.00
+								</div>
+								<div class="help-text" ng-if="payment.id!='CASH' && isEmpty(SelectedPaymentDetails[payment.id])">
+								  <button class="btn btn-xs btn-default" disabled><span class="glyphicon glyphicon-{{payment.icon}}"></span></button> Click for {{payment.name}} details.
+								 </div>
+								 <div class="help-text" ng-if="payment.id!='CASH' && !isEmpty(SelectedPaymentDetails[payment.id])">
+								  Details: {{SelectedPaymentDetails[payment.id].bank}} {{SelectedPaymentDetails[payment.id].ref_no}}
+								 </div>
 							</div>
 						</div>
 					</div>
@@ -255,7 +266,7 @@
 				</div>
 				<div class="list-group-canvas">
 					<div class="list-group-item">
-						<div class="empty-state">
+						<div class="empty-state"  ng-hide="CashierSaving">
 							<div class="well">
 								<div class="empty-state-icon">
 									<i class="glyphicon glyphicon-thumbs-up"></i>
@@ -267,12 +278,22 @@
 								<span class="empty-state-action-icon glyphicon glyphicon-ok"></span> Click to confirm.
 							</div>
 						</div>
+						<div class="empty-state" ng-show="CashierSaving">
+							<div class="well">
+								<div class="empty-state-icon">
+									<i class="glyphicon glyphicon-floppy-disk"></i>
+								</div>
+								<h4>Saving...</h4>
+								<p class="empty-state-message">Please wait for awhile.</p>
+							</div>
+							<div class="loader fade in" ng-hide="__MODAL_OPEN"></div>
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-	<script type="text/ng-template" id="myModalContent.html">
+	<script type="text/ng-template" id="bookletModal.html">
 			<div class="modal-header">
 				<h3 class="modal-title">Cashier Config</h3>
 			</div>
@@ -328,5 +349,28 @@
 				<dt>Balance</dt>
 				<dd><span class="amount total peso">1,234.56</span></dd>
 			</dl>
+		</script>
+		<script type="text/ng-template" id="paymentDetailsBox.html">
+			<button class="btn btn-xs btn-danger btn-dismiss"><span class="glyphicon glyphicon-remove"></span></button>
+			<dl>
+				<dt ng-if="ActivePaymentMethod.id!='CHRG'">Bank</dt>
+				<dd ng-if="ActivePaymentMethod.id!='CHRG'" ><input ng-model="PopoverDetails.bank" type="text" class="form-control input-sm" placeholder="Issuing Bank"/></dd>
+				<dt>Ref No</dt>
+				<dd><input ng-model="PopoverDetails.ref_no" type="text" class="form-control input-sm" placeholder="{{ActivePaymentMethod.name}}  number"/></dd>
+				<dt>{{ActivePaymentMethod.name}} Date</dt>
+				<dd ng-if="ActivePaymentMethod.id=='CARD'"><input ng-model="PopoverDetails.date" type="text" class="form-control input-sm" placeholder="{{ActivePaymentMethod.name}} expiry" /></dd>
+				<dd ng-if="ActivePaymentMethod.id!='CARD'"><input ng-model="PopoverDetails.date" type="date" class="form-control input-sm" placeholder="{{ActivePaymentMethod.name}} date" /></dd>
+			</dl>
+			<button class="btn btn-sm btn-block btn-primary" ng-click="savePopoverDetails(ActivePaymentMethod.id)">Confirm</button>
+		</script>
+		<script type="text/ng-template" id="successModal.html">
+			<div class="modal-body text-center">
+				<button class="btn btn-success btn-fab btn-fab-drop" ng-class="{show:ShowButton}"><span class="glyphicon glyphicon-ok"></span></button>
+				<h1>Success</h1>
+				<p>Payment accepted.</p>
+			</div>
+			<div class="modal-footer">
+				<button class="btn btn-success btn-block" type="button" ng-click="dismissModal()">OK</button>
+			</div>
 		</script>
 </div>
