@@ -94,6 +94,31 @@
 								<dd>{{Booklet.series_counter}}</dd>
 						</dl>
 					</div>
+					<div class="list-group-item list-group-header" ng-show="hasInfo">
+						<h5>Transactions</h5>
+					</div>
+					<div class="list-group-item" ng-show="hasInfo">
+						<table class="table table-condensed table-bordered">
+							<thead>
+								<tr>
+									<th class="text-center">Series</th>
+									<th class="text-center">Details</th>
+									<th class="text-center">Amount</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ng-repeat="transaction in Booklet.transactions">
+									<td>{{transaction.series}}</td>
+									<td>
+									<span ng-if="transaction.transactions.length">{{transaction.transactions[0].id}} 
+									<span ng-if="transaction.transactions.length > 1">and {{transaction.transactions.length - 1}} more</span>
+									</span>
+									</td>
+									<td><div class="amount peso total">{{transaction.amount | currency}}</div></td>
+								</tr> 
+							</tbody>
+						</table>
+					</div>
 					<div class="list-group-item" ng-show="hasNoInfo">
 						<div class="well">
 							<span>No Information</span>
