@@ -9,7 +9,7 @@ define(['model'],function($model){
 					  {
 						"id": "CASH",
 						"name": "Cash",
-						"description":null,
+						"description":"Payments thru cash.",
 						"amount": 5000,
 						"icon": null
 					  },
