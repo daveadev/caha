@@ -245,7 +245,7 @@
 									</div>
 								</div>
 								<div class="help-text" ng-if="payment.id=='CASH' && SelectedPayments[payment.id]">
-									Change: 1,2500.00
+									Change: {{CurrentChange}}
 								</div>
 								<div class="help-text" ng-if="payment.id!='CASH' && isEmpty(SelectedPaymentDetails[payment.id])">
 								  <button class="btn btn-xs btn-default" disabled><span class="glyphicon glyphicon-{{payment.icon}}"></span></button> Click for {{payment.name}} details.
