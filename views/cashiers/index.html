@@ -237,7 +237,7 @@
 							<div class="col-md-5" ng-show="SelectedPayments[payment.id]">
 								<div class="input-group input-amount col-md-10 col-md-push-1">
 									<span class="input-group-addon">₱</span>
-									<input type="number" class="form-control" ng-model="payment.amount"/>
+									<input type="number" class="form-control" ng-model="payment.amount" ng-change="updateCurrentChange()"/>
 									<div class="input-group-btn" ng-if="payment.id!='CASH'">
 										<button class="btn btn-default" pop-title="{{payment.name+' details'}}" uib-popover-template="'paymentDetailsBox.html'" popover-append-to-body="true" pop-placement="top"  popover-is-open="shouldOpen[payment.id]" ng-click="setActivePopover(payment)">
 											<span class="glyphicon glyphicon-{{payment.icon}}"></span>
@@ -245,7 +245,7 @@
 									</div>
 								</div>
 								<div class="help-text" ng-if="payment.id=='CASH' && SelectedPayments[payment.id]">
-									Change: {{CurrentChange}}
+									Change: {{CurrentChange | currency }}
 								</div>
 								<div class="help-text" ng-if="payment.id!='CASH' && isEmpty(SelectedPaymentDetails[payment.id])">
 								  <button class="btn btn-xs btn-default" disabled><span class="glyphicon glyphicon-{{payment.icon}}"></span></button> Click for {{payment.name}} details.
