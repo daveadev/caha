@@ -1,6 +1,6 @@
 "use strict";
 define(['app','api'], function (app) {
-    app.register.controller('CashierController',['$scope','$rootScope','$uibModal','api', function ($scope,$rootScope,$uibModal,api) {
+    app.register.controller('CashierController',['$log','$scope','$rootScope','$uibModal','api', function ($log,$scope,$rootScope,$uibModal,api) {
 		$scope.index=function(){
 			$rootScope.__MODULE_NAME = 'Cashiers';
 			//Steps in Nav-pills
@@ -12,7 +12,7 @@ define(['app','api'], function (app) {
 			];
 			//Initialize components
 			$scope.initCashier = function(){
-				$scope.ActiveStep=3;
+				$scope.ActiveStep=1;
 				$scope.ActiveStudent={};
 				$scope.SelectedStudent={};
 				$scope.ActiveTransactions=[];
@@ -24,11 +24,14 @@ define(['app','api'], function (app) {
 				$scope.TotalDue=0;
 				$scope.TotalPaid=0;
 				$scope.TotalChange=0;
+				$scope.CurrentChange=0;
 				$scope.hasInfo = false;
 				$scope.hasStudentInfo = false;
 				$scope.hasTransactionInfo = false;
 				$scope.hasPaymentInfo = false;
 				$scope.CashierSaving=false;
+				$scope.FocusPayment = {};
+				$scope.FocusTransaction = {};
 				$scope.$watch('hasStudentInfo',updateHasInfo);
 				$scope.$watch('hasTransactionInfo',updateHasInfo);
 				$scope.$watch('hasPaymentInfo',updateHasInfo);
@@ -63,7 +66,7 @@ define(['app','api'], function (app) {
 				if($scope.ActiveStep===1){
 					//Pass value of student information
 					$scope.ActiveStudent = $scope.SelectedStudent;
-					console.log($scope.ActiveStudent);
+					$log.debug($scope.ActiveStudent);
 									
 				}
 				if($scope.ActiveStep===2){
@@ -79,7 +82,7 @@ define(['app','api'], function (app) {
 						if($scope.SelectedTransactions[transactionType.id]){
 							$scope.TotalDue= $scope.TotalDue + transaction.amount;
 							$scope.ActiveTransactions.push(transaction);
-							console.log($scope.ActiveTransactions);
+							$log.debug($scope.ActiveTransactions);
 							};
 					};
 				}
@@ -131,6 +134,9 @@ define(['app','api'], function (app) {
 			//Take the value if it is true or false
 			$scope.toggleSelectTransaction=function(id){
 				$scope.SelectedTransactions[id] = !$scope.SelectedTransactions[id]; 
+				if($scope.SelectedTransactions[id]){
+					$scope.FocusTransaction[id] = true;
+				}
 			}
 			//Set the selected student 
 			$scope.setSelecetedStudent=function(student){
@@ -145,6 +151,7 @@ define(['app','api'], function (app) {
 				$scope.SelectedPayments[id] = !$scope.SelectedPayments[id]; 
 				if($scope.SelectedPayments[id]){
 					$scope.SelectedPaymentDetails[id]={};
+					$scope.FocusPayment[id] = true;
 				}
 			}
 			//Reset the value of student
@@ -227,7 +234,8 @@ define(['app','api'], function (app) {
 			}
 			$scope.$watch('ActivePaymentMethod',function(avp){
 				$scope.shouldOpen = {};
-				if(avp.id) $scope.shouldOpen[avp.id] = true;
+				if(typeof avp == "object")
+					if(avp.id) $scope.shouldOpen[avp.id] = true;
 			});
 			$scope.shouldOpen =function(payment_id){
 				return $scope.PopoverDetails.is_open && $scope.ActivePaymentMethod.id==payment_id;
@@ -237,6 +245,16 @@ define(['app','api'], function (app) {
 				$scope.PopoverDetails={};
 				$scope.PopoverDetails.is_open =false;
 				$scope.ActivePaymentMethod={};
+			}
+			$scope.updateCurrentChange = function(){
+				var cash = 0;
+				var noncash = 0;
+				for(var index in $scope.Payments){
+					var payment = $scope.Payments[index];
+					if(payment.id=='CASH'){ cash	+=payment.amount;}
+					if(payment.id!='CASH'){ noncash	+=payment.amount;}
+				}
+				$scope.CurrentChange =  $scope.TotalDue - ( cash + noncash );
 			}
 		};
     }]);
