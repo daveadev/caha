@@ -105,7 +105,7 @@
 								</tr ng-if="ActivePayments.length">
 								<tr ng-repeat="payment in Payments | filter:filterIncludedPayments">
 									<td colspan="{{payment.id=='CASH'? 2: 1}}">{{payment.name}}</td>
-									<td ng-if="payment.id!='CASH'">{{SelectedPaymentDetails[payment.id].bank}} {{SelectedPaymentDetails[payment.id].ref_no}} {{SelectedPaymentDetails[payment.id].date | date:'mediumDate'}}</td>
+									<td ng-if="payment.id!='CASH'">{{SelectedPaymentDetails[payment.id].bank}}|{{SelectedPaymentDetails[payment.id].ref_no}}|{{SelectedPaymentDetails[payment.id].date | date:'mediumDate'}}</td>
 									<td><div class="amount" ng-class="{peso:$first}">{{payment.amount | currency}}</div></td>
 								</tr>
 							</tbody>
