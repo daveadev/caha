@@ -30,6 +30,8 @@ define(['app','api'], function (app) {
 				$scope.hasTransactionInfo = false;
 				$scope.hasPaymentInfo = false;
 				$scope.CashierSaving=false;
+				$scope.FocusPayment = {};
+				$scope.FocusTransaction = {};
 				$scope.$watch('hasStudentInfo',updateHasInfo);
 				$scope.$watch('hasTransactionInfo',updateHasInfo);
 				$scope.$watch('hasPaymentInfo',updateHasInfo);
@@ -132,6 +134,9 @@ define(['app','api'], function (app) {
 			//Take the value if it is true or false
 			$scope.toggleSelectTransaction=function(id){
 				$scope.SelectedTransactions[id] = !$scope.SelectedTransactions[id]; 
+				if($scope.SelectedTransactions[id]){
+					$scope.FocusTransaction[id] = true;
+				}
 			}
 			//Set the selected student 
 			$scope.setSelecetedStudent=function(student){
@@ -146,6 +151,7 @@ define(['app','api'], function (app) {
 				$scope.SelectedPayments[id] = !$scope.SelectedPayments[id]; 
 				if($scope.SelectedPayments[id]){
 					$scope.SelectedPaymentDetails[id]={};
+					$scope.FocusPayment[id] = true;
 				}
 			}
 			//Reset the value of student
