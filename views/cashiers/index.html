@@ -104,8 +104,8 @@
 									<td class="text-center" colspan="3">No Transaction</td>
 								</tr ng-if="ActivePayments.length">
 								<tr ng-repeat="payment in Payments | filter:filterIncludedPayments">
-									<td>{{payment.name}}</td>
-									<td>BDO</td>
+									<td colspan="{{payment.id=='CASH'? 2: 1}}">{{payment.name}}</td>
+									<td ng-if="payment.id!='CASH'">{{SelectedPaymentDetails[payment.id].bank}} {{SelectedPaymentDetails[payment.id].ref_no}} {{SelectedPaymentDetails[payment.id].date | date:'mediumDate'}}</td>
 									<td><div class="amount" ng-class="{peso:$first}">{{payment.amount | currency}}</div></td>
 								</tr>
 							</tbody>
@@ -251,7 +251,7 @@
 								  <button class="btn btn-xs btn-default" disabled><span class="glyphicon glyphicon-{{payment.icon}}"></span></button> Click for {{payment.name}} details.
 								 </div>
 								 <div class="help-text" ng-if="payment.id!='CASH' && !isEmpty(SelectedPaymentDetails[payment.id])">
-								  Details: {{SelectedPaymentDetails[payment.id].bank}} {{SelectedPaymentDetails[payment.id].ref_no}}
+								  Details: {{SelectedPaymentDetails[payment.id].bank}} {{SelectedPaymentDetails[payment.id].ref_no}} {{SelectedPaymentDetails[payment.id].date | date:'mediumDate'}}
 								 </div>
 							</div>
 						</div>
