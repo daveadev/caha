@@ -10,28 +10,28 @@ define(['model'],function($model){
 						"id": "CASH",
 						"name": "Cash",
 						"description":"Payments thru cash.",
-						"amount": 5000,
+						"amount": 0,
 						"icon": null
 					  },
 					  {
 						"id": "CHCK",
 						"name": "Check",
 						"description":"Payments thru checks.",
-						"amount": 4000,
+						"amount": 0,
 						"icon": "ok"
 					  },
 					  {
 						"id": "CARD",
 						"name": "Card",
 						"description":"Accepts debit/credit card.",
-						"amount": 3000,
+						"amount": 0,
 						"icon": "credit-card"
 					  },
 					  {
 						"id": "CHRG",
 						"name": "Charge",
 						"description":"Credits to your account.",
-						"amount": 2000,
+						"amount": 0,
 						"icon": "flash"
 					  }
 					]
