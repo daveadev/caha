@@ -1,0 +1,4 @@
+api/webroot/index.php
+api/config/core.php
+api/tmp/
+api/config/database.php
