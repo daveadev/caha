@@ -3,10 +3,11 @@
 	<fieldset>
 		<legend><?php __('Edit Payment Method'); ?></legend>
 	<?php
-		echo $this->Form->input('id');
+		echo $this->Form->input('id',array('type'=>'text'));
 		echo $this->Form->input('name');
 		echo $this->Form->input('description');
 		echo $this->Form->input('icon');
+		echo $this->Form->input('order');
 	?>
 	</fieldset>
 <?php echo $this->Form->end(__('Submit', true));?>

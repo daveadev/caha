@@ -6,6 +6,7 @@
 			<th><?php echo $this->Paginator->sort('name');?></th>
 			<th><?php echo $this->Paginator->sort('description');?></th>
 			<th><?php echo $this->Paginator->sort('icon');?></th>
+			<th><?php echo $this->Paginator->sort('order');?></th>
 			<th class="actions"><?php __('Actions');?></th>
 	</tr>
 	<?php
@@ -21,6 +22,7 @@
 		<td><?php echo $paymentMethod['PaymentMethod']['name']; ?>&nbsp;</td>
 		<td><?php echo $paymentMethod['PaymentMethod']['description']; ?>&nbsp;</td>
 		<td><?php echo $paymentMethod['PaymentMethod']['icon']; ?>&nbsp;</td>
+		<td><?php echo $paymentMethod['PaymentMethod']['order']; ?>&nbsp;</td>
 		<td class="actions">
 			<?php echo $this->Html->link(__('View', true), array('action' => 'view', $paymentMethod['PaymentMethod']['id'])); ?>
 			<?php echo $this->Html->link(__('Edit', true), array('action' => 'edit', $paymentMethod['PaymentMethod']['id'])); ?>

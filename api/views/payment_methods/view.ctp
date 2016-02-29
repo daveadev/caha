@@ -21,6 +21,11 @@
 			<?php echo $paymentMethod['PaymentMethod']['icon']; ?>
 			&nbsp;
 		</dd>
+		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Order'); ?></dt>
+		<dd<?php if ($i++ % 2 == 0) echo $class;?>>
+			<?php echo $paymentMethod['PaymentMethod']['order']; ?>
+			&nbsp;
+		</dd>
 	</dl>
 </div>
 <div class="actions">
