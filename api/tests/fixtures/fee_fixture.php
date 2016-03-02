@@ -1,5 +1,5 @@
 <?php
-/* Fee Fixture generated on: 2016-02-29 08:23:36 : 1456730616 */
+/* Fee Fixture generated on: 2016-02-29 10:28:36 : 1456738116 */
 class FeeFixture extends CakeTestFixture {
 	var $name = 'Fee';
 
@@ -18,8 +18,8 @@ class FeeFixture extends CakeTestFixture {
 			'id' => 'L',
 			'name' => 'Lorem ipsum dolor sit amet',
 			'order' => 1,
-			'created' => '2016-02-29 08:23:36',
-			'modified' => '2016-02-29 08:23:36'
+			'created' => '2016-02-29 10:28:36',
+			'modified' => '2016-02-29 10:28:36'
 		),
 	);
 }

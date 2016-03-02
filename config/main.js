@@ -6,6 +6,7 @@ require.config({
     paths: {     
         'settings': '../config/settings',
         'app': 'config/app',
+		'demo': 'config/demo',
         'model': 'config/model',
         'angular': 'bower_components/angular/angular.min',
         'angularAMD': 'bower_components/angularAMD/angularAMD.min',

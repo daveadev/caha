@@ -1,5 +1,5 @@
 <?php
-/* TransactionTypes Test cases generated on: 2016-02-29 08:23:49 : 1456730629*/
+/* TransactionTypes Test cases generated on: 2016-02-29 10:29:22 : 1456738162*/
 App::import('Controller', 'TransactionTypes');
 
 class TestTransactionTypesController extends TransactionTypesController {
