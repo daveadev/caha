@@ -1,5 +1,5 @@
 <?php
-/* TransactionType Fixture generated on: 2016-02-29 08:23:40 : 1456730620 */
+/* TransactionType Fixture generated on: 2016-03-09 07:13:58 : 1457504038 */
 class TransactionTypeFixture extends CakeTestFixture {
 	var $name = 'TransactionType';
 
@@ -18,8 +18,8 @@ class TransactionTypeFixture extends CakeTestFixture {
 			'id' => 'L',
 			'name' => 'Lorem ipsum dolor sit amet',
 			'default_amount' => 1,
-			'created' => '2016-02-29 08:23:40',
-			'modified' => '2016-02-29 08:23:40'
+			'created' => '2016-03-09 07:13:58',
+			'modified' => '2016-03-09 07:13:58'
 		),
 	);
 }
