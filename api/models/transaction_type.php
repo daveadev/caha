@@ -1,8 +1,9 @@
 <?php
 class TransactionType extends AppModel {
 	var $name = 'TransactionType';
+	var $consumableFields = array('id','name','amount','token');
 	var $virtualFields = array(
-				'transaction_key'=>'AES_ENCRYPT(AccountTransaction.id, SHA2("My secret passphrase",512))',
+				'token'=>'MD5(CONCAT(AccountTransaction.id,TransactionType.id))',
 				'amount'=>'CASE WHEN AccountTransaction.amount THEN  AccountTransaction.amount ELSE TransactionType.default_amount END'
 				);
 	var $useDbConfig = 'sfm';
@@ -64,13 +65,15 @@ class TransactionType extends AppModel {
 							)
 						)
 					);
-		if(is_array($queryData['conditions'])){
-			$conditions= array('OR'=>array(
-								array('TransactionType.type'=>'active'),
-								array('TransactionType.type'=>'reactive','TransactionType.amount >'=>0)
-								)
-			);
-			array_push($queryData['conditions'],$conditions);
+		if(isset($queryData['conditions'])){
+			if(is_array($queryData['conditions'])){
+				$conditions= array('OR'=>array(
+									array('TransactionType.type'=>'active'),
+									array('TransactionType.type'=>'reactive','TransactionType.amount >'=>0)
+									)
+				);
+				array_push($queryData['conditions'],$conditions);
+			}
 		}
 		return $queryData;
 	}
