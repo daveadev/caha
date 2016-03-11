@@ -37,6 +37,7 @@ class ApiComponent extends Object {
 		$limit = $conf['limit'] = isset($_GET['limit'])?$_GET['limit']:10;
 		$recursive = isset($Endpoint->recursive)?$Endpoint->recursive:-1;
 		$contain = isset($Endpoint->contain)?$Endpoint->contain:null;
+		$consumableFields = isset($Endpoint->consumableFields)?$Endpoint->consumableFields:null;
 		$offset = $conf['offset'] = $page?($page-1)*$limit:null;
 		//Sorting
 		$sort = isset($_GET['sort'])?$_GET['sort']:null;
@@ -103,6 +104,7 @@ class ApiComponent extends Object {
 				$paginate['cache'] = 'default';
 				if($recursive) $paginate['recursive']=$recursive;
 				if($contain) $paginate['contain']=$contain;
+				if($consumableFields) $paginate['fields']=$consumableFields;
 				if($conditions) $paginate['conditions']=$conditions;
 				if($sort&&$direction) $paginate['order']=array($__Class.'.'.$sort=>$direction);
 				$paginate['limit']=$limit?$limit:$count;
