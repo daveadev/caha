@@ -67,6 +67,11 @@ define(['app','api'], function (app) {
 					//Pass value of student information
 					$scope.ActiveStudent = $scope.SelectedStudent;
 					$log.debug($scope.ActiveStudent);
+					var data = {};
+						data.account_id = $scope.ActiveStudent.account_id;
+					api.GET('transaction_types',data,function success(response){
+						$scope.TransactionTypes=response.data;	
+					});
 									
 				}
 				if($scope.ActiveStep===2){
@@ -143,7 +148,8 @@ define(['app','api'], function (app) {
 				$scope.SelectedStudent = {
 										 id:student.id,
 										 name:student.first_name+" "+student.middle_name+" "+student.last_name+" "+student.suffix_name,
-										 yearlevel:student.year_level_id
+										 yearlevel:student.year_level_id,
+										 account_id:student.account_id
 				                         };
 			};
 			//Take the value if it is true or false
