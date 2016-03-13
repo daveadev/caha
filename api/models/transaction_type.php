@@ -1,10 +1,12 @@
 <?php
 class TransactionType extends AppModel {
 	var $name = 'TransactionType';
-	var $consumableFields = array('id','name','amount','token');
+	var $consumableFields = array('id','name','amount','token','fees','amounts');
 	var $virtualFields = array(
 				'token'=>'MD5(CONCAT(AccountTransaction.id,TransactionType.id))',
-				'amount'=>'CASE WHEN AccountTransaction.amount THEN  AccountTransaction.amount ELSE TransactionType.default_amount END'
+				'amount'=>'CASE WHEN AccountTransaction.total_amount THEN  AccountTransaction.total_amount ELSE TransactionType.default_amount END',
+				'fees'=>'AccountTransaction.breakdown_codes',
+				'amounts'=>'AccountTransaction.breakdown_amounts',
 				);
 	var $useDbConfig = 'sfm';
 	var $actsAs = array('Containable');
@@ -69,7 +71,8 @@ class TransactionType extends AppModel {
 			if(is_array($queryData['conditions'])){
 				$conditions= array('OR'=>array(
 									array('TransactionType.type'=>'active'),
-									array('TransactionType.type'=>'reactive','TransactionType.amount >'=>0)
+									array('TransactionType.type'=>'reactive','TransactionType.amount >'=>0),
+									array('TransactionType.type'=>'passive','AccountTransaction.id'=>null)
 									)
 				);
 				array_push($queryData['conditions'],$conditions);
