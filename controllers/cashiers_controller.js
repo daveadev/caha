@@ -12,7 +12,7 @@ define(['app','api'], function (app) {
 			];
 			//Initialize components
 			$scope.initCashier = function(){
-				$scope.ActiveStep=3;
+				$scope.ActiveStep=1;
 				$scope.ActiveStudent={};
 				$scope.SelectedStudent={};
 				$scope.ActiveTransactions=[];
