@@ -7,7 +7,7 @@ define(['model'],function($model){
 				},
 				data:[
 					{
-					  "id": 1,
+					  "id": 0,
 					  "account": {
 						"account_no": 12345,
 						"account_name": "Juan Dela Cruz",
@@ -18,6 +18,19 @@ define(['model'],function($model){
 					  "ref_no": 12345,
 					  "details": "Tuition Fee",
 					  "amount": 7000,
+					},
+					{
+					  "id": 1,
+					  "account": {
+						"account_no": 12345,
+						"account_name": "Juan Dela Cruz 2",
+						"account_type": "student"
+					  },
+					  "type": "debit",
+					  "date": "June 5, 2015",
+					  "ref_no": 12346,
+					  "details": "Initial Payment",
+					  "amount": 2500,
 					},
 					{
 					  "id": 2,
@@ -151,19 +164,6 @@ define(['model'],function($model){
 					},
 					{
 					  "id": 12,
-					  "account": {
-						"account_no": 12345,
-						"account_name": "Juan Dela Cruz 2",
-						"account_type": "student"
-					  },
-					  "type": "debit",
-					  "date": "June 5, 2015",
-					  "ref_no": 12346,
-					  "details": "Initial Payment",
-					  "amount": 2500,
-					},
-					{
-					  "id": 13,
 					  "account": {
 						"account_no": 12345,
 						"account_name": "Juan Dela Cruz 2",
