@@ -3,7 +3,7 @@
 	<fieldset>
 		<legend><?php __('Edit Account'); ?></legend>
 	<?php
-		echo $this->Form->input('id');
+		echo $this->Form->input('id',array('type'=>'text'));
 		echo $this->Form->input('account_type');
 		echo $this->Form->input('account_details');
 		echo $this->Form->input('outstanding_balance');

@@ -4,7 +4,8 @@ class TransactionTypesController extends AppController {
 	var $name = 'TransactionTypes';
 
 	function index() {
-		$this->TransactionType->recursive = 0;
+		$this->TransactionType->recursive = 1;
+		$this->paginate = $this->TransactionType->preparePagination($this->paginate);
 		$this->set('transactionTypes', $this->paginate());
 	}
 
