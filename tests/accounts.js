@@ -10,6 +10,7 @@ define(['model'],function($model){
 					  "account_no": 12345,
 					  "account_type": "student",
 					  "account_name": "Juan Dela Cruz",
+					  "name": "Juan Dela Cruz",
 					  "payment_scheme": "installment",
 					  "outstanding_balance": 6000,
 					  "payment_breakdown": [
