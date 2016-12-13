@@ -1,5 +1,5 @@
 "use strict";
-define(['app','api'], function (app) {
+define(['app','api','simple-sheet'], function (app) {
     app.register.controller('LedgerController',['$scope','$rootScope','$uibModal','api', function ($scope,$rootScope,$uibModal,api) {
 		$scope.list=function(){
 			$rootScope.__MODULE_NAME = 'Student Ledgers';
@@ -67,6 +67,8 @@ define(['app','api'], function (app) {
 					getLedgers({page:$scope.ActivePage});
 				});
 			};
+			
+			
 			//Open modal
 			$scope.openModal=function(){
 				var modalInstance = $uibModal.open({
@@ -87,6 +89,7 @@ define(['app','api'], function (app) {
 			};
 		};
     }]);
+
 	app.register.controller('ModalInstanceController',['$scope','$uibModalInstance','api', function ($scope, $uibModalInstance, api){
 		//Gets the data entered in modal and push it to ledgers.js
 		$scope.type = 'credit';
@@ -107,6 +110,12 @@ define(['app','api'], function (app) {
 				$uibModalInstance.dismiss('confirm');
 			});
 		};
+		
+		 $scope.selected = undefined;
+		//$scope.accountNames = ['Jayson Lunar','Dave Arroyo'];
+		
+		
+
 		//Close modal
 		$scope.cancelLedger = function(){
 			$uibModalInstance.dismiss('cancel');

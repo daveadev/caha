@@ -3,6 +3,7 @@
 	<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
 	</button>
 	<div class="row">
+	
 		<div class="col-md-6">
 			<div class="list-group">
 				<div class="list-group-item list-group-header">
@@ -116,6 +117,7 @@
 				<h3 class="modal-title">Ledger Information</h3>
 			</div>
 			<div class="modal-body">
+			
 				<div class="row">
 					<div class="col-md-12">
 						<div class="form-group">
@@ -127,7 +129,11 @@
 				<div class="row">
 					<div class="col-md-12">
 						<div class="form-group">
-							<input type="text" placeholder="Account Name" class="form-control" ng-model="accountName"/>
+						
+						{{Account}}
+	<simple-typeahead model="Account" endpoint="students"
+											placeholder="['Student','Search subject...']" fields="['first_name']"></simple-typeahead>
+							<input type="text" placeholder="Account Name" class="form-control" ng-model="accountName" uib-typeahead="accountName for accountName in accountNames | filter:$viewValue | limitTo:8" class="form-control"/>
 						</div>
 					</div>
 				</div>
