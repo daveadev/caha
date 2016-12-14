@@ -39,8 +39,8 @@
 							<div class="col-md-6">
 								<h4 class="list-group-item-heading" >{{ledger.details}}</h4>
 								<p class="list-group-item-text">
-								<span ng-if="!ledger.account.name.length">No Details</span>
-								<span>{{ledger.date | date }}</span> | <span>{{ledger.account.name}}</span></p>
+								<span ng-if="!ledger.account.account_name.length">No Details</span>
+								<span>{{ledger.date | date }}</span> | <span>{{ledger.account.account_name}}</span></p>
 							</div>
 							<div class="col-md-6">
 								<h3 class="amount {{ledger.type}}"><span class="flag">{{ledger.type=='debit'?'-':'+'}}</span>{{ledger.amount | currency: 'P'}}</h3>
@@ -86,7 +86,7 @@
 								<dt>Account No.</dt>
 								<dd>{{Ledger.account.account_no}}</dd>
 								<dt>Account Name</dt>
-								<dd>{{Ledger.account.name}}</dd>
+								<dd>{{Ledger.account.account_name}}</dd>
 						</dl>
 					</div>
 					<div class="list-group-item list-group-header" ng-show="hasInfo">
