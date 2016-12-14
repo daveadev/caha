@@ -98,7 +98,8 @@ define(['app','api','simple-sheet'], function (app) {
 						  account: {
 									//account_no:$scope.Account.id,
 									account_no:$scope.Account.account_no,
-									name:$scope.Account.name,
+									//name:$scope.Account.name,
+									account_name:$scope.Account.account_name,
 									account_type:"student"
 									},
 						  type: $scope.type,
