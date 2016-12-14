@@ -96,8 +96,9 @@ define(['app','api','simple-sheet'], function (app) {
 		$scope.confirmLedger = function(){
 			 $scope.Ledgers={
 						  account: {
-									account_no:34567,
-									account_name:$scope.accountName,
+									//account_no:$scope.Account.id,
+									account_no:$scope.Account.account_no,
+									name:$scope.Account.name,
 									account_type:"student"
 									},
 						  type: $scope.type,
@@ -111,9 +112,7 @@ define(['app','api','simple-sheet'], function (app) {
 			});
 		};
 		
-		 $scope.selected = undefined;
-		//$scope.accountNames = ['Jayson Lunar','Dave Arroyo'];
-		
+				
 		
 
 		//Close modal

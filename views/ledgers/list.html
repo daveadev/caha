@@ -39,8 +39,8 @@
 							<div class="col-md-6">
 								<h4 class="list-group-item-heading" >{{ledger.details}}</h4>
 								<p class="list-group-item-text">
-								<span ng-if="!ledger.account.account_name.length">No Details</span>
-								<span>{{ledger.date}}</span> | <span>{{ledger.account.account_name}}</span></p>
+								<span ng-if="!ledger.account.name.length">No Details</span>
+								<span>{{ledger.date | date }}</span> | <span>{{ledger.account.name}}</span></p>
 							</div>
 							<div class="col-md-6">
 								<h3 class="amount {{ledger.type}}"><span class="flag">{{ledger.type=='debit'?'-':'+'}}</span>{{ledger.amount | currency: 'P'}}</h3>
@@ -86,7 +86,7 @@
 								<dt>Account No.</dt>
 								<dd>{{Ledger.account.account_no}}</dd>
 								<dt>Account Name</dt>
-								<dd>{{Ledger.account.account_name}}</dd>
+								<dd>{{Ledger.account.name}}</dd>
 						</dl>
 					</div>
 					<div class="list-group-item list-group-header" ng-show="hasInfo">
@@ -95,12 +95,12 @@
 					<div class="list-group-item" ng-show="hasInfo">
 						<dl class="dl-horizontal">
 								<dt>Date</dt>
-								<dd>{{Ledger.date}}</dd>
+								<dd>{{Ledger.date | date }}</dd>
 								<dt>Ref No.</dt>
 								<dd>{{Ledger.ref_no}}</dd>
 								<dt>Transaction</dt>
 								<dd>{{Ledger.details}}</dd>
-								<dt>Ref No.</dt>
+								<dt>Amount</dt>
 								<dd>{{Ledger.amount}}</dd>
 						</dl>
 					</div>
@@ -130,10 +130,13 @@
 					<div class="col-md-12">
 						<div class="form-group">
 						
-						{{Account}}
-	<simple-typeahead model="Account" endpoint="students"
-											placeholder="['Student','Search subject...']" fields="['first_name']"></simple-typeahead>
-							<input type="text" placeholder="Account Name" class="form-control" ng-model="accountName" uib-typeahead="accountName for accountName in accountNames | filter:$viewValue | limitTo:8" class="form-control"/>
+						
+						
+								<simple-typeahead model="Account" endpoint="accounts"
+											placeholder="['Account Name','Search Account...']" fields="['name']"></simple-typeahead>
+								<!--		
+							<input type="text" placeholder="Account Name" class="form-control" ng-model="account" typeahead="account for account in accounts | filter:$viewValue | limitTo:8" class="form-control"/>
+							-->	
 						</div>
 					</div>
 				</div>
@@ -157,7 +160,8 @@
 				<div class="row">
 					<div class="col-md-4">
 						<div class="form-group">
-							<input type="text" placeholder="Date" class="form-control" ng-model="date"/>
+						
+							<input type="date" placeholder="yyyy-mm-dd" class="form-control" ng-model="date"/>
 						</div>
 					</div>
 					<div class="col-md-4">

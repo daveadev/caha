@@ -10,6 +10,7 @@ define(['model'],function($model){
 					  "id": 0,
 					  "account": {
 						"account_no": 12345,
+						"name": "Juan Dela Cruz",
 						"account_name": "Juan Dela Cruz",
 						"account_type": "student"
 					  },
