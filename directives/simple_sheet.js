@@ -44,6 +44,8 @@ define(['app','api'], function (app) {
 						var source = response.data.map(function(item){
 							var id =  item.id;
 							var name = [];
+							var account_name = item.account_name;
+							var account_no = item.account_no;
 							if(tokens.length){
 								for(var i in tokens){
 									var token = tokens[i];
@@ -57,7 +59,9 @@ define(['app','api'], function (app) {
 							}
 							var obj = {
 								name:name,
-								id:id
+								id:id,
+								account_no:account_no,
+								account_name:account_name
 							}
 							return obj;
 						  });

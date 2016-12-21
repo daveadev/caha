@@ -9,6 +9,7 @@ define(['model'],function($model){
 					{
 					  "account_no": 12345,
 					  "account_type": "student",
+					  "name": "Juan Dela Cruz",
 					  "account_name": "Juan Dela Cruz",
 					  "name": "Juan Dela Cruz",
 					  "payment_scheme": "installment",
@@ -68,6 +69,7 @@ define(['model'],function($model){
 					{
 					  "account_no": 12346,
 					  "account_type": "student",
+					  "name": "Ted Philip Lat",
 					  "account_name": "Ted Philip Lat",
 					  "payment_scheme": "installment",
 					  "outstanding_balance": 5000,
@@ -126,6 +128,7 @@ define(['model'],function($model){
 					{
 					  "account_no": 12346,
 					  "account_type": "student",
+					  "name": "Ted Philip Lat 2",
 					  "account_name": "Ted Philip Lat 2",
 					  "payment_scheme": "installment",
 					  "outstanding_balance": 5000,
@@ -184,6 +187,7 @@ define(['model'],function($model){
 					{
 					  "account_no": 12346,
 					  "account_type": "student",
+					  "name": "Ted Philip Lat 3",
 					  "account_name": "Ted Philip Lat 3",
 					  "payment_scheme": "installment",
 					  "outstanding_balance": 5000,
@@ -242,6 +246,7 @@ define(['model'],function($model){
 					{
 					  "account_no": 12346,
 					  "account_type": "student",
+					  "name": "Ted Philip Lat 4",
 					  "account_name": "Ted Philip Lat 4",
 					  "payment_scheme": "installment",
 					  "outstanding_balance": 5000,
@@ -300,6 +305,7 @@ define(['model'],function($model){
 					{
 					  "account_no": 12346,
 					  "account_type": "student",
+					  "name": "Ted Philip Lat 5",
 					  "account_name": "Ted Philip Lat 5",
 					  "payment_scheme": "installment",
 					  "outstanding_balance": 5000,
@@ -358,6 +364,7 @@ define(['model'],function($model){
 					{
 					  "account_no": 12346,
 					  "account_type": "student",
+					  "name": "Ted Philip Lat 6",
 					  "account_name": "Ted Philip Lat 6",
 					  "payment_scheme": "installment",
 					  "outstanding_balance": 5000,
@@ -416,6 +423,7 @@ define(['model'],function($model){
 					{
 					  "account_no": 12346,
 					  "account_type": "student",
+					  "name": "Ted Philip Lat 7",
 					  "account_name": "Ted Philip Lat 7",
 					  "payment_scheme": "installment",
 					  "outstanding_balance": 5000,
@@ -474,6 +482,7 @@ define(['model'],function($model){
 					{
 					  "account_no": 12346,
 					  "account_type": "student",
+					  "name": "Ted Philip Lat 8",
 					  "account_name": "Ted Philip Lat 8",
 					  "payment_scheme": "installment",
 					  "outstanding_balance": 5000,
@@ -532,6 +541,7 @@ define(['model'],function($model){
 					{
 					  "account_no": 12346,
 					  "account_type": "student",
+					  "name": "Ted Philip Lat 9",
 					  "account_name": "Ted Philip Lat 9",
 					  "payment_scheme": "installment",
 					  "outstanding_balance": 5000,
@@ -590,6 +600,7 @@ define(['model'],function($model){
 					{
 					  "account_no": 12346,
 					  "account_type": "student",
+					  "name": "Ted Philip Lat 10",
 					  "account_name": "Ted Philip Lat 10",
 					  "payment_scheme": "installment",
 					  "outstanding_balance": 5000,
