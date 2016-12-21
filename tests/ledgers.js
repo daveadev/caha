@@ -177,7 +177,8 @@ define(['model'],function($model){
 					  "amount": 2500,
 					}
 				]
-			}
+			},
+			{ name : "Ledger"}
 		);
 		//test.setMeta({title:'Test'});
 		//test.setData([{title:'Sample','description':'dasd'}]);
