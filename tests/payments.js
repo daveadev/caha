@@ -1,5 +1,5 @@
 "use strict";
-define(['model'],function($model){
+define(['model','../tests/ledgers','../tests/booklets'],function($model){
 
 		var data = {
 				meta:{
@@ -9,7 +9,7 @@ define(['model'],function($model){
 					  
 					]
 			};
-		var registry = { name : "Payment", uses: ["ledgers"]};
+		var registry = { name : "Payment", uses: ["ledgers","booklets"]};
 		var Payment = new $model(data,registry);
 		Payment.POST = function(data) {
 			console.log(data);
@@ -21,10 +21,12 @@ define(['model'],function($model){
             var day = tDate.getDate();
             var year = tDate.getFullYear();
             var nDate = month + ' ' + day + ', ' + year;	
+			var booklet = DEMO_REGISTRY.Booklet[0];
+			console.log(booklet);
 			var ledger = {
                 account: {
                     id: data.student.id,
-                    acount_name: data.student.name,
+                    account_name: data.student.name,
                     account_type: "student"
                 },
                 type: "debit",
@@ -37,12 +39,13 @@ define(['model'],function($model){
 				var ledgers = DEMO_REGISTRY.Ledger;
 				console.log(DEMO_REGISTRY);
 				ledger.id = ledgers.length;
-				ledger.refno = "xx";
+				ledger.ref_no = booklet.series_counter;
 				ledger.details = trnx.id;
 				ledger.amount = trnx.amount;
 				DEMO_REGISTRY.Ledger.push(ledger);	
 			}
-			
+			booklet.series_counter++;
+			DEMO_REGISTRY.Booklet[0] =  booklet;
 			return {success:Payment.save(data)};
 			
 		}

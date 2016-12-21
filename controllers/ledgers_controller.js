@@ -108,7 +108,7 @@ define(['app', 'api', 'simple-sheet'], function(app) {
             var ledger = {
                 account: {
                     id: $scope.Account.id,
-                    name: $scope.Account.name,
+                    account_name: $scope.Account.name,
                     account_type: "student"
                 },
                 type: $scope.type,

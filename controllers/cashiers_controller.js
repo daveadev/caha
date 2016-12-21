@@ -49,6 +49,12 @@ define(['app','api'], function (app) {
 				};
 			};
 			$scope.initCashier();
+			//Get BookletID
+			var data = {id :1}
+			api.GET('booklets',function success(response){
+				$scope.ActiveBooklet = response.data;	
+			});
+			
 			//Get students.js
 			api.GET('students',function success(response){
 				$scope.Students=response.data;	
@@ -111,9 +117,11 @@ define(['app','api'], function (app) {
 				if($scope.ActiveStep===4){
 					//Push the gathered info to payments.js
 					$scope.Payment={
+									booklets:$scope.ActiveBooklet.series_counter,
 									student:$scope.ActiveStudent,
 									transactions:$scope.ActiveTransactions,
 									payments:$scope.ActivePayments,
+									
 									
 								   };
 					$scope.CashierSaving=true;		   
