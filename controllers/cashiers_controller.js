@@ -114,6 +114,7 @@ define(['app','api'], function (app) {
 									student:$scope.ActiveStudent,
 									transactions:$scope.ActiveTransactions,
 									payments:$scope.ActivePayments,
+									
 								   };
 					$scope.CashierSaving=true;		   
 					api.POST('payments',$scope.Payment,function success(response){
