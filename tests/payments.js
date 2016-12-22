@@ -44,12 +44,7 @@ define(['model', '../tests/ledgers', '../tests/booklets', '../tests/transactions
                 account_name: data.student.name,
                 account_type: "student"
             },
-            transaction_details: [{
 
-            }],
-            transaction_payments: [{
-
-            }]
         };
         console.log(transaction);
         var account = {
@@ -76,6 +71,7 @@ define(['model', '../tests/ledgers', '../tests/booklets', '../tests/transactions
 
             var transactions = DEMO_REGISTRY.Transaction;
             console.log(DEMO_REGISTRY);
+            transaction.details = trnx.id;
             transaction.amount = trnx.amount;
             DEMO_REGISTRY.Transaction.push(transaction);
 
@@ -84,6 +80,7 @@ define(['model', '../tests/ledgers', '../tests/booklets', '../tests/transactions
             DEMO_REGISTRY.Account.push(account);
 
         }
+
         booklet.series_counter++;
         DEMO_REGISTRY.Booklet[0] = booklet;
         return { success: Payment.save(data) };
