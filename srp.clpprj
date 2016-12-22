@@ -1,17 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project name="D:\wamp\www\projects\srp\srp.clpprj">
 	<settings><PM_URL><![CDATA[http://localhost:8085/projects/srp/]]></PM_URL><PM_HOME_URL><![CDATA[http://localhost:8085/projects/srp/]]></PM_HOME_URL><PM_LIBS><![CDATA[]]></PM_LIBS><PM_FTP_CONNECTION><![CDATA[]]></PM_FTP_CONNECTION><PM_FTP_DIR><![CDATA[]]></PM_FTP_DIR><PM_FTP_UPLOAD_ON_SAVE><![CDATA[INT:0]]></PM_FTP_UPLOAD_ON_SAVE></settings><removed value=";"/><added value=""/><lastopfiles>
-		<file name="D:\wamp\www\projects\srp\controllers\ledgers_controller.js"/>
+		<file name="D:\wamp\www\projects\srp\tests\payments.js"/>
+		<file name="D:\wamp\www\projects\srp\controllers\cashiers_controller.js"/>
 		<file name="D:\wamp\www\projects\srp\tests\ledgers.js"/>
-		<file name="D:\wamp\www\projects\srp\views\ledgers\list.html"/>
-		<file name="D:\wamp\www\projects\srp\tests\accounts.js"/>
+		<file name="D:\wamp\www\projects\srp\tests\transactions.js"/>
+		<file name="D:\wamp\www\projects\srp\controllers\transactions_controller.js"/>
 	</lastopfiles>
 	<errors version="5.11">
+		<errfile name="D:\wamp\www\projects\srp\views\transactions\list.html">
+			<error val="88;10;108;10;2002;1;"/>
+			<error val="51;5;64;5;2002;1;"/>
+			<error val="70;66;91;66;2002;1;"/>
+			<error val="41;65;54;65;2002;1;"/>
+		</errfile>
 		<errfile name="D:\wamp\www\projects\srp\views\ledgers\list.html">
-			<error val="88;13;108;13;2002;1;"/>
-			<error val="51;8;64;8;2002;1;"/>
-			<error val="69;68;90;68;2002;1;"/>
-			<error val="41;67;54;67;2002;1;"/>
+			<error val="104;14;124;14;2002;1;"/>
+			<error val="66;9;79;9;2002;1;"/>
+			<error val="89;68;109;68;2002;1;"/>
+			<error val="60;67;73;67;2002;1;"/>
 		</errfile>
 	</errors>
 	<cakedata>
@@ -26,37 +33,42 @@
 	</todoblock>
 	<filescache>
 		<file name="D:\wamp\www\projects\srp\views\transactions\list.html" crc="1481340795"/>
+		<file name="D:\wamp\www\projects\srp\views\templates\simple_typeahead.html" crc="1482284043"/>
+		<file name="D:\wamp\www\projects\srp\views\templates\simple_sheet.html" crc="1482284043"/>
+		<file name="D:\wamp\www\projects\srp\views\templates\simple_modal.html" crc="1482284043"/>
+		<file name="D:\wamp\www\projects\srp\views\templates\simple_button.html" crc="1482284043"/>
 		<file name="D:\wamp\www\projects\srp\views\pages\sample.html" crc="1481340795"/>
 		<file name="D:\wamp\www\projects\srp\views\pages\home.html" crc="1481340795"/>
-		<file name="D:\wamp\www\projects\srp\views\ledgers\list.html" crc="1481549529"/>
+		<file name="D:\wamp\www\projects\srp\views\ledgers\list.html" crc="1482291588"/>
 		<file name="D:\wamp\www\projects\srp\views\errors\json\default.ctp" crc="1481340795"/>
 		<file name="D:\wamp\www\projects\srp\views\cashiers\index.html" crc="1481349893"/>
 		<file name="D:\wamp\www\projects\srp\views\booklets\list.html" crc="1481340795"/>
 		<file name="D:\wamp\www\projects\srp\views\accounts\list.html" crc="1481340795"/>
 		<file name="D:\wamp\www\projects\srp\tests\year_levels.js" crc="1481340795"/>
-		<file name="D:\wamp\www\projects\srp\tests\transactions.js" crc="1481340795"/>
+		<file name="D:\wamp\www\projects\srp\tests\transactions.js" crc="1482319922"/>
 		<file name="D:\wamp\www\projects\srp\tests\transaction_types.js" crc="1481340795"/>
 		<file name="D:\wamp\www\projects\srp\tests\test.js" crc="1481340795"/>
 		<file name="D:\wamp\www\projects\srp\tests\system_defaults.js" crc="1481340795"/>
-		<file name="D:\wamp\www\projects\srp\tests\students.js" crc="1481340795"/>
+		<file name="D:\wamp\www\projects\srp\tests\students.js" crc="1482284042"/>
 		<file name="D:\wamp\www\projects\srp\tests\provinces.js" crc="1481340795"/>
-		<file name="D:\wamp\www\projects\srp\tests\payments.js" crc="1481340795"/>
+		<file name="D:\wamp\www\projects\srp\tests\payments.js" crc="1482320942"/>
 		<file name="D:\wamp\www\projects\srp\tests\payment_methods.js" crc="1481340795"/>
-		<file name="D:\wamp\www\projects\srp\tests\ledgers.js" crc="1481350022"/>
+		<file name="D:\wamp\www\projects\srp\tests\ledgers.js" crc="1482291588"/>
 		<file name="D:\wamp\www\projects\srp\tests\educ_levels.js" crc="1481340795"/>
 		<file name="D:\wamp\www\projects\srp\tests\countries.js" crc="1481340795"/>
 		<file name="D:\wamp\www\projects\srp\tests\cities.js" crc="1481340795"/>
-		<file name="D:\wamp\www\projects\srp\tests\booklets.js" crc="1481349869"/>
-		<file name="D:\wamp\www\projects\srp\tests\accounts.js" crc="1481340795"/>
+		<file name="D:\wamp\www\projects\srp\tests\booklets.js" crc="1482291588"/>
+		<file name="D:\wamp\www\projects\srp\tests\accounts.js" crc="1482320434"/>
+		<file name="D:\wamp\www\projects\srp\directives\simple_sheet.js" crc="1482284041"/>
 		<file name="D:\wamp\www\projects\srp\controllers\transactions_controller.js" crc="1481340795"/>
 		<file name="D:\wamp\www\projects\srp\controllers\page_controller.js" crc="1481340795"/>
-		<file name="D:\wamp\www\projects\srp\controllers\ledgers_controller.js" crc="1481626753"/>
-		<file name="D:\wamp\www\projects\srp\controllers\cashiers_controller.js" crc="1481349081"/>
+		<file name="D:\wamp\www\projects\srp\controllers\ledgers_controller.js" crc="1482291588"/>
+		<file name="D:\wamp\www\projects\srp\controllers\cashiers_controller.js" crc="1482320387"/>
 		<file name="D:\wamp\www\projects\srp\controllers\booklets_controller.js" crc="1481349855"/>
 		<file name="D:\wamp\www\projects\srp\controllers\accounts_controller.js" crc="1481340794"/>
-		<file name="D:\wamp\www\projects\srp\config\settings.js" crc="1481340794"/>
+		<file name="D:\wamp\www\projects\srp\config\settings.js" crc="1482291588"/>
 		<file name="D:\wamp\www\projects\srp\config\routes.js" crc="1481340794"/>
-		<file name="D:\wamp\www\projects\srp\config\main.js" crc="1481349081"/>
+		<file name="D:\wamp\www\projects\srp\config\main.js" crc="1482284041"/>
 		<file name="D:\wamp\www\projects\srp\config\app.js" crc="1481349081"/>
 		<file name="D:\wamp\www\projects\srp\app\views\pages\sample.html" crc="1481349146"/>
 		<file name="D:\wamp\www\projects\srp\app\views\pages\home.html" crc="1481340821"/>
@@ -897,7 +909,7 @@
 		<file name="D:\wamp\www\projects\srp\app\controllers\root_controller.js" crc="1481349089"/>
 		<file name="D:\wamp\www\projects\srp\app\controllers\page_controller.js" crc="1481349089"/>
 		<file name="D:\wamp\www\projects\srp\app\controllers\api_controller.js" crc="1481349089"/>
-		<file name="D:\wamp\www\projects\srp\app\console\build.php" crc="1481349089"/>
+		<file name="D:\wamp\www\projects\srp\app\console\build.php" crc="1482284052"/>
 		<file name="D:\wamp\www\projects\srp\app\config\settings.js" crc="1481349088"/>
 		<file name="D:\wamp\www\projects\srp\app\config\routes.js" crc="1481340820"/>
 		<file name="D:\wamp\www\projects\srp\app\config\model.js" crc="1481349088"/>
@@ -1119,6 +1131,6 @@
 		<file name="D:\wamp\www\projects\srp\api\app_error.php" crc="1481340788"/>
 		<file name="D:\wamp\www\projects\srp\api\app_controller.php" crc="1481340788"/>
 		<file name="D:\wamp\www\projects\srp\api\.htaccess" crc="1481340788"/>
-		<file name="D:\wamp\www\projects\srp\index.html" crc="1481349081"/>
+		<file name="D:\wamp\www\projects\srp\index.html" crc="1482284041"/>
 	</filescache>
 </project>

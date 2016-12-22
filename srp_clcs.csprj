@@ -8,7 +8,7 @@
 </treenode>
 <treenode node="CORE_PATH;PHP:PHP Word;D:\wamp\www\projects\srp\api\webroot\test.php;f10;69;19;69;;;;vpos;;v;;rnull;;d-1,-1;;b0,0;;m">
 </treenode>
-<treenode node="DS;PHP:PHP Word;D:\wamp\www\projects\srp\app\console\build.php;f9;1;11;1;;D:\wamp\www\projects\srp\api\webroot\test.php;f10;25;12;25;;;;vpos;;v;;rDIRECTORY_SEPARATOR;;d-1,-1;;b0,0;;m">
+<treenode node="DS;PHP:PHP Word;D:\wamp\www\projects\srp\api\webroot\test.php;f10;25;12;25;;D:\wamp\www\projects\srp\app\console\build.php;f9;1;11;1;;;;vpos;;v;;rDIRECTORY_SEPARATOR;;d-1,-1;;b0,0;;m">
 </treenode>
 <treenode node="ROOT;PHP:PHP Word;D:\wamp\www\projects\srp\api\webroot\test.php;f10;38;14;38;;;;vpos;;v;;r Description      The full path to the directory which holds &quot;app&quot;, WITHOUT a trailing DS.;;d-1,-1;;b0,0;;m">
 </treenode>

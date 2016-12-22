@@ -361,7 +361,8 @@ define(['model'],function($model){
 					  ]
 					}
 				]
-			}
+			},
+			{ name : "Transaction"}
 		);
 		//test.setMeta({title:'Test'});
 		//test.setData([{title:'Sample','description':'dasd'}]);
