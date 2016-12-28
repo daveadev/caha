@@ -1,0 +1,144 @@
+
+<div class="list-group-item sheet-header">
+	<div class="transluscent padding"></div>
+	<table class="table table-bordered table-condensed">
+		<thead>
+		<tr ng-if="!Table">
+			<th colspan="2">
+				<span>
+					<h3>Students</h3>
+					<h5>Loading...</h5>
+				</span>
+			</th>
+			<th></th>
+		</tr>
+		<tr ng-repeat="(level, row) in Table.thead track by $index">
+			<th  ng-if="!col.leaf" ng-repeat="col in row track by $index" 
+			class="text-center align-middle component"
+			rowspan="{{col.rowspan}}"
+			colspan="{{col.colspan}}">	
+				<span ng-if="level==0&&$index==0">
+					<h3>{{col.label}}</h3>
+					<h5>{{Boys.length}} BOYS |  {{Girls.length}} GIRLS</h5>
+				</span>
+				
+				<span ng-if="!(level==0&&$index==0)">{{col.label}}</span>
+			</th>
+			<th  ng-if="col.leaf && level ==0 " ng-repeat="col in row track by $index" 
+			class="text-center align-middle sheet-column"
+			rowspan="{{col.rowspan}}"
+			colspan="{{col.colspan}}">	
+				{{col.label}}
+			</th>
+			<td  ng-if="col.leaf && level !=0 " ng-repeat="col in row track by $index" 
+			class="text-center align-middle sheet-column"
+			rowspan="{{col.rowspan}}"
+			colspan="{{col.colspan}}">	
+				{{col.label}}
+			</td>
+			<td ng-if="level ==  0" class="sheet-column" ng-repeat="col in Table.buffer track by $index"
+				rowspan="{{Table.thead.length}}"
+			>
+			</td>
+			<td ng-if="level ==  0" class="sheet-column" rowspan="{{Table.thead[0].rowspan}}">
+				<simple-button text="SEND" type="primary" icon="send" animate="true" on-click="onSimpleSheetSend" />
+			</td>
+			<td ng-if="level ==1 " class="sheet-column" rowspan="{{Table.thead.length - Table.thead[0].rowspan-1}}">
+				<simple-button text="PRINT" type="default" icon="print" animate="false" on-click="onSimpleSheetPrint" />
+				<div class="btn-group hide">
+					<button class="btn btn-default btn-xs"><span class="glyphicon glyphicon-print"></span></button>
+					<button class="btn btn-default btn-xs"><span class="glyphicon glyphicon-export"></span></button>
+				</div>
+			</td>
+		</tr>
+		<tr ng-if="Table">
+			<td class="transluscent">
+				<b class="pull-left">Boys</b>
+				<div class="pull-right">
+					<div class="btn-group">
+					<button class="btn btn-xs btn-default disabled"><span class="glyphicon glyphicon-map-marker"></span> {{ActiveRow}},{{ActiveCol}}</button>
+					<button class="btn btn-xs btn-default" ng-click="marginTop= marginTop - step"><span class="glyphicon glyphicon-chevron-up"></span></button>
+					<button class="btn btn-xs btn-default" ng-click="marginTop= marginTop + step"><span class="glyphicon glyphicon-chevron-down"></span></button>
+					</div>
+				</div>
+				<div class="clear-fix"></div>
+			</td>
+			<td colspan="{{Table.tbody.length + Table.buffer.length }}" class="transluscent">
+				<div class="input-group input-group-sm col-sm-12 " ng-show="ActiveFormula">
+					<span class="input-group-addon"><span class="glyphicon glyphicon-console"></span></span>
+					<input type="text" ng-value="ActiveFormula"class="form-control code" />
+				</div>
+			</td>
+			<td class="sheet-column text-center">
+			<button class="btn btn-default btn-xs">
+				&nbsp;	<i class="glyphicon glyphicon-download-alt"></i> &nbsp;
+				</button>
+			<div class="btn-group btn-group-xs pull-right hide" uib-dropdown>
+				<button class="btn btn-default">
+					<i class="glyphicon glyphicon-download-alt"></i>
+				</button>
+				
+				  <button class="btn btn-default dropdown-toggle" type="button" uib-dropdown-toggle>
+					<i class="glyphicon glyphicon-option-vertical"></i>
+				  </button>
+				  <ul class="dropdown-menu">
+					<li>
+						<a href="#/">
+							<span class="glyphicon glyphicon-download-alt"></span> Export  Excel
+						</a>
+					</li>
+					<li>
+						<a href="#/">
+							<span class="glyphicon glyphicon-pencil"></span> Modify items
+						</a>
+					</li>
+					<li>
+						<a href="#/">
+							<span class="glyphicon glyphicon-trash"></span> Clear sheet
+						</a>
+					</li>
+					<li role="separator" class="divider"></li>
+					<li><a href="#/"><span class="glyphicon glyphicon-cog"></span> Customize Settings</a></li>
+					
+				  </ul>
+			</div>
+			</td>
+		</tr>
+		</thead>
+	</table>
+</div>
+<div class="list-group-item sheet-entry">
+	<table class="table table-bordered table-condensed"  id="{{SheetId}}">
+	<tbody>
+		<tr ng-repeat="(row, student) in Boys">
+			<td>{{student.name}}</td>
+			<td class="sheet-cell" ng-repeat="(col,cell) in Table.tbody track by $index">
+				<input type="text" class="form-control text-right" id="{{Cells[row][col]}}"  ng-model="Data[Cells[row][col]].value" ng-disabled="Data[Cells[row][col]].enable===false"  validations="cell.validations" simple-cell />
+			</td>
+			<td  class="sheet-column" ng-repeat="col in Table.buffer track by $index">
+			</td>
+			<td class="sheet-column"></td>
+		</tr>
+		<tr ng-if="Table">
+			<td class="transluscent">
+				<b class="pull-left">Girls</b>
+				<div class="clear-fix"></div>
+			</td>
+			<td colspan="{{Table.tbody.length + Table.buffer.length}}" class="transluscent">
+			</td>
+			<td class="sheet-column"></td>
+		</tr>
+		<tr ng-repeat="(row,student) in Girls">
+			<td>{{student.name}}</td>
+			<td class="sheet-cell" ng-repeat="(col,cell) in Table.tbody track by $index">
+			
+				<input type="text" class="form-control text-right" id="{{Cells[row+_blen][col]}}"  ng-model="Data[Cells[row+_blen][col]].value" ng-disabled="Data[Cells[row+_blen][col]].enable===false"  validations="cell.validations" simple-cell  />
+			</td>
+			<td  class="sheet-column" ng-repeat="col in Table.buffer track by $index">
+			</td>
+			<td class="sheet-column"></td>
+		</tr>
+	 </tbody>
+	 </table>
+	</div>
+<simple-modal type="primary"  icon="send" messages="modalMessages" animation-class="float shadow"  ></simple-modal>	 

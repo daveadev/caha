@@ -1,0 +1,16 @@
+<script type="text/ng-template" id="simpleModal.html">
+	<div class="modal-body text-center">
+		<button class="btn btn-{{ButtonType}} btn-fab btn-fab-drop" ng-class="{show:ShowButton}">
+			<div class="clouds">
+				<span class="glyphicon glyphicon-cloud cloud slide slow big "></span>
+				<span class="glyphicon glyphicon-cloud cloud slide fast"></span>
+			</div>
+			<span class="glyphicon glyphicon-{{ButtonIcon}} {{IconAnimationClass}}"></span>
+		</button>
+		<h1>{{Message.heading}}</h1>
+		<p>{{Message.body}}</p>
+	</div>
+	<div class="modal-footer" ng-if="ShowFooter">
+		<button class="btn btn-{{ButtonType}} btn-block" type="button" ng-click="dismissModal()">OK</button>
+	</div>
+</script>

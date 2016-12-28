@@ -10,6 +10,8 @@ define(function() {
 	TEST_DELAY: 0,
 	TEST_DIRECTORY:'../tests',
 	TEST_SUCCESS:true,
-	TEST_ERROR:true,
+	TEST_ERROR:false,
+	API_URL:'api/',
+	API_EXT:'json',
   };
  });

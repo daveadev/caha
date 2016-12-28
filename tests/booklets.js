@@ -141,7 +141,9 @@ define(['model'],function($model){
 					  "cashier": "Cashier C"
 					}
 				]
-			}
+			},
+			{ name : "Booklet"}
+			
 		);
 		//test.setMeta({title:'Test'});
 		//test.setData([{title:'Sample','description':'dasd'}]);

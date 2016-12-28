@@ -11,6 +11,11 @@ define(['model'],function($model){
 						"name": "Initial Payment",
 						"amount": 5000
 					  },
+					   {
+						"id": "OLD",
+						"name": "Old Account",
+						"amount": 5000
+					  },
 					  {
 						"id": "SP",
 						"name": "Subsequent Payment",

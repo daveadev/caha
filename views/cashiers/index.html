@@ -104,8 +104,8 @@
 									<td class="text-center" colspan="3">No Transaction</td>
 								</tr ng-if="ActivePayments.length">
 								<tr ng-repeat="payment in Payments | filter:filterIncludedPayments">
-									<td>{{payment.name}}</td>
-									<td>BDO</td>
+									<td colspan="{{payment.id=='CASH'? 2: 1}}">{{payment.name}}</td>
+									<td ng-if="payment.id!='CASH'">{{SelectedPaymentDetails[payment.id].bank}}|{{SelectedPaymentDetails[payment.id].ref_no}}|{{SelectedPaymentDetails[payment.id].date | date:'mediumDate'}}</td>
 									<td><div class="amount" ng-class="{peso:$first}">{{payment.amount | currency}}</div></td>
 								</tr>
 							</tbody>
@@ -194,7 +194,7 @@
 							<div class="col-md-4" ng-show="SelectedTransactions[transaction_type.id]">
 								<div class="input-group input-amount">
 								<span class="input-group-addon">₱</span>
-								<input type="number" class="form-control" ng-model="transaction_type.amount"/>
+								<input type="number" class="form-control" ng-model="transaction_type.amount" autoselect focus="FocusTransaction[transaction_type.id]"/>
 								</div>
 							</div>
 						</div>
@@ -237,7 +237,7 @@
 							<div class="col-md-5" ng-show="SelectedPayments[payment.id]">
 								<div class="input-group input-amount col-md-10 col-md-push-1">
 									<span class="input-group-addon">₱</span>
-									<input type="number" class="form-control" ng-model="payment.amount"/>
+									<input type="number" class="form-control" ng-model="payment.amount" ng-change="updateCurrentChange()" autoselect focus="FocusPayment[payment.id]"/>
 									<div class="input-group-btn" ng-if="payment.id!='CASH'">
 										<button class="btn btn-default" pop-title="{{payment.name+' details'}}" uib-popover-template="'paymentDetailsBox.html'" popover-append-to-body="true" pop-placement="top"  popover-is-open="shouldOpen[payment.id]" ng-click="setActivePopover(payment)">
 											<span class="glyphicon glyphicon-{{payment.icon}}"></span>
@@ -245,13 +245,13 @@
 									</div>
 								</div>
 								<div class="help-text" ng-if="payment.id=='CASH' && SelectedPayments[payment.id]">
-									Change: 1,2500.00
+									Change: {{CurrentChange | currency }}
 								</div>
 								<div class="help-text" ng-if="payment.id!='CASH' && isEmpty(SelectedPaymentDetails[payment.id])">
 								  <button class="btn btn-xs btn-default" disabled><span class="glyphicon glyphicon-{{payment.icon}}"></span></button> Click for {{payment.name}} details.
 								 </div>
 								 <div class="help-text" ng-if="payment.id!='CASH' && !isEmpty(SelectedPaymentDetails[payment.id])">
-								  Details: {{SelectedPaymentDetails[payment.id].bank}} {{SelectedPaymentDetails[payment.id].ref_no}}
+								  Details: {{SelectedPaymentDetails[payment.id].bank}} {{SelectedPaymentDetails[payment.id].ref_no}} {{SelectedPaymentDetails[payment.id].date | date:'mediumDate'}}
 								 </div>
 							</div>
 						</div>
