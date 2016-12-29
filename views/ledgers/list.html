@@ -128,8 +128,8 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="form-group">
-                            
-                            <simple-typeahead model="Account" endpoint="accounts" placeholder="['Account Name','Search Account...']" fields="['name']"></simple-typeahead>
+                            {{Account}}
+                            <simple-typeahead model="Account" primary-key="account_no" display="account_no name" endpoint="accounts" placeholder="['Account Name','Search Account...']" fields="['name']"></simple-typeahead>
                             <!--
                             {{account}}
                             <input type="text" placeholder="Account Name" class="form-control" ng-model="account" uib-typeahead="account for account.account_no in accounts | filter:$viewValue | limitTo:8" class="form-control" />

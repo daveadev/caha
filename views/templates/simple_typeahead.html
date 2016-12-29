@@ -1,5 +1,5 @@
 <div class="input-group simple-typeahead">
-<input  class="form-control" type="text" placeholder="{{!ShowBtn?Placeholder[0]:Placeholder[1]}}" ng-model="Model" uib-typeahead="student as student.name for student in  getResults($viewValue,Filter)" typeahead-loading="loadingRecords" typeahead-editable="false" typeahead-no-results="noStudents" typeahead-wait-ms="150" ng-focus="ShowBtn=true" ng-blur="ShowBtn=Model.id?true:false" ng-disabled="Model.id"/>
+<input  class="form-control" type="text" placeholder="{{!ShowBtn?Placeholder[0]:Placeholder[1]}}" ng-model="Model" uib-typeahead="student as student.name for student in  getResults($viewValue,Filter)" typeahead-loading="loadingRecords" typeahead-editable="false" typeahead-no-results="noStudents" typeahead-wait-ms="150" ng-focus="ShowBtn=true" ng-disabled="Model.id"/>
 <div class="input-group-btn">
 	<button class="btn btn-default"  ng-if="ShowBtn"   ng-disabled="!Model.id" ng-click="clearSearch()">
 		<span class="glyphicon" ng-class="{'glyphicon-search':!Model.id, 'glyphicon-remove':Model.id,'glyphicon-refresh':loadingRecords}"></span>

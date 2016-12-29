@@ -10,10 +10,14 @@ define(['app','api'], function (app) {
 				Display:'@display',
 				Model:'=model',
 				Endpoint:'@endpoint',
-				Placeholder:'=placeholder'
+				Placeholder:'=placeholder',
+				PrimaryKey:'@primaryKey',
 			},
-			templateUrl:'views/templates/simple_typeahead.html',
+			templateUrl:'views/templates/simple_typeahead.html?'+Math.random(),
 			link:function($scope, elem){
+				console.log($scope.PrimaryKey);
+				$scope.PrimaryKey = $scope.PrimaryKey||'id';
+				$scope.ShowBtn=true;
 				div = angular.element(elem[0]).find('div')[0];
 				input = angular.element(elem[0]).find('input')[0];
 			},
@@ -23,11 +27,12 @@ define(['app','api'], function (app) {
 						if(!$scope.Model.id){
 							$scope.ShowBtn=false;
 						}
+						$scope.ShowBtn=true;
 					}
 				});
 				$scope.clearSearch  = function(){
 					$scope.Model = {id:null,name:null};
-					$scope.ShowBtn=false;
+					//$scope.ShowBtn=false;
 				}
 				$scope.getResults = function(value,filter){
 					filter = filter || {}
@@ -40,12 +45,11 @@ define(['app','api'], function (app) {
 					}).then(function(response){
 						input.nextSibling.style.width = div.offsetWidth+'px';
 						var display = $scope.Display||{};
+						var primaryKey = $scope.PrimaryKey||'id';
 						var tokens = display.length?display.split(' '):display;
 						var source = response.data.map(function(item){
-							var id =  item.id;
+							var pk =  item[primaryKey];
 							var name = [];
-							var account_name = item.account_name;
-							var account_no = item.account_no;
 							if(tokens.length){
 								for(var i in tokens){
 									var token = tokens[i];
@@ -58,11 +62,10 @@ define(['app','api'], function (app) {
 								name =  item.name;
 							}
 							var obj = {
+								id:pk,
 								name:name,
-								id:id,
-								account_no:account_no,
-								account_name:account_name
-							}
+							};
+								
 							return obj;
 						  });
 						return source;
