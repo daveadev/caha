@@ -1,5 +1,5 @@
 "use strict";
-define(['model','util','../tests/ledgers', '../tests/transactions'], function($model,util) {
+define(['model','util','../tests/accounts',,'../tests/ledgers', '../tests/transactions'], function($model,util) {
 
     var data = {
         meta: {
@@ -9,7 +9,7 @@ define(['model','util','../tests/ledgers', '../tests/transactions'], function($m
 
         ]
     };
-    var registry = { name: "Payment", uses: ["ledgers", "transactions"] };
+    var registry = { name: "Payment", uses: ["accounts","ledgers", "transactions"] };
     var Payment = new $model(data, registry);
     Payment.POST = function(data) {
         console.log(data);
@@ -18,7 +18,22 @@ define(['model','util','../tests/ledgers', '../tests/transactions'], function($m
       
         var booklet = DEMO_REGISTRY.Booklet[0];
         //console.log(booklet);
-        var ledger = {
+       
+	    var accounts = DEMO_REGISTRY.Account;
+		 var account_index = {};
+		 var account = {};
+		 for (var i in accounts) {
+			console.log(accounts[i]);
+			 if(data.student.id == accounts[i].account_no)
+			 {
+				 account = accounts[i];
+				 account_index = i;
+			 }
+			 
+			 
+		 }
+		
+	   var ledger = {
             account: {
                 id: data.student.id,
                 account_name: data.student.name,
@@ -29,7 +44,8 @@ define(['model','util','../tests/ledgers', '../tests/transactions'], function($m
             
         };
 
-        
+       
+		
        var transaction = {
             type: "payment",
             status: "fulfilled",
@@ -69,6 +85,9 @@ define(['model','util','../tests/ledgers', '../tests/transactions'], function($m
 				
 			};
 			transaction.transaction_details.push(detail);
+			var hist = detail;
+				hist.date=nDate;
+			account.payment_history.push(hist);
 			
 			var details ="CASH";
 				if(pymt.id!='CASH'){
@@ -89,6 +108,9 @@ define(['model','util','../tests/ledgers', '../tests/transactions'], function($m
         }
        
 	     DEMO_REGISTRY.Transaction.push(transaction); 
+	     DEMO_REGISTRY.Account[account_index]=account; 
+		 
+		
 
         booklet.series_counter++;
         DEMO_REGISTRY.Booklet[0] = booklet;
