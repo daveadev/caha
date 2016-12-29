@@ -104,9 +104,13 @@ define(['app', 'api'], function(app) {
                     $scope.TotalPaid = 0;
                     for (var index in $scope.Payments) {
                         var paymentMethod = $scope.Payments[index];
+						var pid = paymentMethod.id;
+						var amount = paymentMethod.amount;
+						var details = $scope.SelectedPaymentDetails[pid];
                         var payment = {
-                            id: paymentMethod.id,
-                            amount: paymentMethod.amount
+                            id: pid,
+                            amount: amount,
+                            details: details
                         };
                         if ($scope.SelectedPayments[paymentMethod.id]) {
                             $scope.TotalPaid = $scope.TotalPaid + payment.amount;
@@ -118,11 +122,12 @@ define(['app', 'api'], function(app) {
                 if ($scope.ActiveStep === 4) {
                     //Push the gathered info to payments.js
                     $scope.Payment = {
-                        booklets: $scope.ActiveBooklet.series_counter,
+						amount : $scope.TotalDue,
                         student: $scope.ActiveStudent,
                         transactions: $scope.ActiveTransactions,
                         payments: $scope.ActivePayments,
-                        accounts: $scope.Accounts
+                       
+                       
 
                     };
                     $scope.CashierSaving = true;

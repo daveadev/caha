@@ -35,6 +35,6 @@ define(['model'],function($model){
 						"icon": "flash"
 					  }
 					]
-			}
-		);
+			},
+		{ name: "PaymentMethod" });
 });

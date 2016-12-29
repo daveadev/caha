@@ -5,10 +5,10 @@ define(['model'], function($model) {
             title: 'Accounts',
         },
         data: [{
-                "account_no": 12345,
+                "account_no": "S201512345",
                 "account_type": "student",
-                "name": "Juan Dela Cruz",
-                "account_name": "Juan Dela Cruz",
+                "name": "Juan Dela Cruz Masipag Jr",
+                "account_name": "Juan Dela Cruz Masipag Jr",
                 "payment_scheme": "installment",
                 "outstanding_balance": 6000,
                 "payment_breakdown": [{

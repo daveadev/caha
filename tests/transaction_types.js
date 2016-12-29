@@ -32,6 +32,6 @@ define(['model'],function($model){
 						"amount": 6000
 					  }
 					]
-			}
-		);
+			},
+		{ name: "TransactionType" });
 });
