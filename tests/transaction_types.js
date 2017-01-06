@@ -44,21 +44,38 @@ define(['model','../tests/ledgers'],function($model){
 			// Find matching transac code
 			// Update trnx_type.data[i].amount
 			// trnx_type.data;
+			//convert transac_type_data to transac_type_obj
+			//Loop Ledger compare to transac_type_obj
+			//copy amount from transac_type_obj to transac_type_data
+			
+			var tto = {};
+			for (var i in trnx_type.data) {
+				var obj = trnx_type.data[i];
+				tto[obj.id] = obj;
+				
+			}
 
-			 var ledgers = DEMO_REGISTRY.Ledger;
-			 for (var i in ledgers) {		 	
-			 	console.log(trnx_type.data[i].name);
-			 	console.log(ledgers[i].details);
+			var ledgers = DEMO_REGISTRY.Ledger;
+			 for (var i in ledgers) {
+				 var ttid = ledgers[i].transaction_type_id;
+				 var flag = ledgers[i].type=='debit'?-1:1;
+				 var account_no = ledgers[i].account.account_no;
+				
+				if(tto[ttid]&&data.account_no==account_no){
+					tto[ttid].amount += ledgers[i].amount*flag;
+				}
+					
+				 console.log(data,ttid,tto[ttid]);
 
-			 	if(trnx_type.data[i].name == "Initial Payment")
-			 	{
-			 		trnx_type.data[i].amount = ledgers[i].amount;
-			 	}
-			 	else if(trnx_type.data[i].name == "Old Account")
-			 	{
-			 		trnx_type.data[i].amount = ledgers[i].amount;
-			 	}
-			 }	 
+			 }
+			 
+			 for (var i in trnx_type.data){
+				var id = trnx_type.data[i].id;
+				
+				trnx_type.data[i].amount = tto[id].amount;
+				
+			 }
+
 			return {success:trnx_type.list()};
 		}
 		
