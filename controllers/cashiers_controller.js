@@ -73,7 +73,6 @@ define(['app', 'api'], function(app) {
                 if ($scope.ActiveStep === 1) {
                     //Pass value of student information
                     $scope.ActiveStudent = $scope.SelectedStudent;
-                    $log.debug($scope.ActiveStudent);
                     var data = {};
                     data.account_id = $scope.ActiveStudent.account_id;
                     api.GET('transaction_types', data, function success(response) {
@@ -94,7 +93,6 @@ define(['app', 'api'], function(app) {
                         if ($scope.SelectedTransactions[transactionType.id]) {
                             $scope.TotalDue = $scope.TotalDue + transaction.amount;
                             $scope.ActiveTransactions.push(transaction);
-                            $log.debug($scope.ActiveTransactions);
                         };
                     };
                 }
