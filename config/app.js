@@ -3,25 +3,7 @@ define(['root','directives','settings','angularAMD','angular-route', 'angular-co
 function (root,directives,settings,angularAMD) {
     var app = angular.module("mainModule", 
         ['ngRoute', 'ngCookies', 'chart.js','ui.bootstrap','ui.tree']);
-    app.config(['$routeProvider', function ($routeProvider) {
-   
-    $routeProvider
-
-    .when("/", angularAMD.route({
-        templateUrl: function (rp) {
-			return settings.VIEWS_DIRECTORY+'/pages/home.'+settings.VIEW_EXTENSION;
-		},
-		controllerUrl: settings.CTRLS_DIRECTORY+"/page_controller"            
-    }))
-	
-	.when("/pages/:page",angularAMD.route({
-		templateUrl: function (rp) {
-			return settings.VIEWS_DIRECTORY+'/pages/'+rp.page+'.'+settings.VIEW_EXTENSION;
-		},
-		controllerUrl:  settings.CTRLS_DIRECTORY+"/page_controller"      
-	}))
-	
-	.when("/:controller/:action", angularAMD.route({
+	var mainRouter = angularAMD.route({
         templateUrl: function (rp) { 
 			if(!rp.action)  rp.action ='index';
 			return settings.VIEWS_DIRECTORY+'/' + rp.controller + '/' + rp.action +'.'+settings.VIEW_EXTENSION;
@@ -43,8 +25,39 @@ function (root,directives,settings,angularAMD) {
             return deferred.promise;
             }]
             }
-        }))
-        .otherwise({ redirectTo: '/' }) 
+        });
+    app.config(['$routeProvider', function ($routeProvider) {
+   
+    $routeProvider
+
+    .when("/", angularAMD.route({
+        templateUrl: function (rp) {
+			return settings.VIEWS_DIRECTORY+'/pages/home.'+settings.VIEW_EXTENSION;
+		},
+		controllerUrl: settings.CTRLS_DIRECTORY+"/page_controller"            
+    }))
+	.when("/login", angularAMD.route({
+        templateUrl: function (rp) {
+			return "app/views/auth/login."+settings.VIEW_EXTENSION;
+		},
+		controllerUrl: "controllers/auth_controller"            
+    }))
+	.when("/logout", angularAMD.route({
+        templateUrl: function (rp) {
+			return "app/views/auth/login."+settings.VIEW_EXTENSION;
+		},
+		controllerUrl: "controllers/auth_controller"            
+    }))
+	.when("/pages/:page",angularAMD.route({
+		templateUrl: function (rp) {
+			return settings.VIEWS_DIRECTORY+'/pages/'+rp.page+'.'+settings.VIEW_EXTENSION;
+		},
+		controllerUrl:  settings.CTRLS_DIRECTORY+"/page_controller"      
+	}))
+	
+	.when("/:controller", mainRouter)
+	.when("/:controller/:action", mainRouter)
+	    .otherwise({ redirectTo: '/' }) 
     }]);                
 	app.config(['$uibModalProvider', function($uibModalProvider) {
 		$uibModalProvider.options = {
