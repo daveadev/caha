@@ -67,15 +67,20 @@ define(['app','api'], function (app) {
 					getAccounts({page:$scope.ActivePage});
 				});
 			};
-			$scope.openModal=function(){
+			$scope.openModal=function(back_log){
 				var modalInstance = $uibModal.open({
 					animation: true,
 					templateUrl: 'myModalContent.html',
 					controller: 'ModalInstanceController',
+					resolve:{
+						back_log:function(){
+							return back_log;
+						}
+					}
 				});
 				$rootScope.__MODAL_OPEN=true;
-				modalInstance.result.then(function (selectedItem) {
-				  $scope.selected = selectedItem;
+				modalInstance.result.then(function (back_log) {
+				  $scope.Account.back_log = back_log;
 				  $rootScope.__MODAL_OPEN=false;
 				}, function (source) {
 					$rootScope.__MODAL_OPEN=false;
@@ -83,11 +88,15 @@ define(['app','api'], function (app) {
 			};
 		};
     }]);
-	app.register.controller('ModalInstanceController',['$scope','$uibModalInstance','api', function ($scope, $uibModalInstance, api){
+	app.register.controller('ModalInstanceController',['$scope','$uibModalInstance','api','back_log', function ($scope, $uibModalInstance, api,back_log){
 		//Close modal
+		$scope.BackLog = back_log;
 		$scope.cancelChangeScheme = function(){
 			$uibModalInstance.dismiss('cancel');
 		};
+		$scope.confirmAction = function(){
+			$uibModalInstance.close($scope.BackLog);
+		}
 	}]);
 });
 

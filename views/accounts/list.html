@@ -58,7 +58,7 @@
 							<span class="glyphicon glyphicon-chevron-down"></span>
 						  </button>
 						  <ul class="dropdown-menu pull-right" aria-labelledby="dropdownMenu1">
-							<li><a ng-click="openModal()">Change Payment Scheme</a></li>
+							<li><a ng-click="openModal(Account.back_log)">Change Payment Scheme</a></li>
 							<li><a ng-click="deleteAccounts(Account.id)">Close Account</a></li>
 						  </ul>
 						</div>
@@ -82,8 +82,11 @@
 								<dd>{{Account.payment_scheme}}</dd>
 								<dt>Outsanding Balance</dt>
 								<dd>{{Account.outstanding_balance}}</dd>
+								<dt>Back Log</dt>
+								<dd>{{Account.back_log}}</dd>
 						</dl>
 					</div>
+					
 					<div class="list-group-item list-group-header" ng-show="hasInfo">
 						<h5>Payment Breakdown</h5>
 					</div>
@@ -165,9 +168,10 @@
 			</div>
 			<div class="modal-body">
 				<p>MODAL BODY</p>
+				<input type="text" ng-model="BackLog" />
 			</div>
 			<div class="modal-footer">
-				<button class="btn btn-primary" type="button">Confirm</button>
+				<button class="btn btn-primary" type="button" ng-click="confirmAction()">Confirm</button>
 				<button class="btn btn-default pull-left" type="button" ng-click="cancelChangeScheme()">Cancel</button>
 			</div>
 		</script>
