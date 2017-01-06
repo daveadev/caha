@@ -1,6 +1,7 @@
 "use strict";
 define(['model'],function($model){
-	return new $model(
+	
+	var Ledger = new $model(
 			{
 				meta:{
 					title: 'Ledgers',
@@ -16,8 +17,9 @@ define(['model'],function($model){
 					  "type": "credit",
 					  "date": "June 5, 2015",
 					  "ref_no": 12345,
-					  "details": "Tuition Fee",
-					  "amount": 7000,
+					  "transaction_type_id": "IP",
+					  "details": "Initial Payment",
+					  "amount": 2500,
 					},
 					{
 					  "id": 1,
@@ -29,12 +31,13 @@ define(['model'],function($model){
 					  "type": "debit",
 					  "date": "June 5, 2015",
 					  "ref_no": 12346,
+					  "transaction_type_id": "IP",
 					  "details": "Initial Payment",
 					  "amount": 2500,
 					}
 				]
 			},
-			{ name : "Ledger"}
+			{ name : "Ledger",uses:['transaction_types']}
 		);
 		//test.setMeta({title:'Test'});
 		//test.setData([{title:'Sample','description':'dasd'}]);
@@ -46,4 +49,18 @@ define(['model'],function($model){
 			return {success:test.save(data)};
 		}
 		*/
+		Ledger.POST = function(data){
+			var tt = DEMO_REGISTRY.TransactionType;
+			for (var i in tt)
+			{
+				console.log(data.transaction_type_id,tt[i]);
+				if(data.transaction_type_id==tt[i].id)
+					data.details=tt[i].name;
+				
+			}
+			
+			return {success:Ledger.save(data)};
+			
+		}
+		return Ledger;
 });

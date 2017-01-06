@@ -114,7 +114,7 @@ define(['app', 'api', 'simple-sheet'], function(app) {
                 type: $scope.type,
                 date: nDate,
                 ref_no: $scope.refNo,
-                details: $scope.details.name,
+                transaction_type_id: $scope.details.id,
                 amount: $scope.amount
             };
             api.POST('ledgers', ledger, function success(response) {
