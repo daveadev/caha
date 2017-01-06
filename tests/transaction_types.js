@@ -9,26 +9,43 @@ define(['model','../tests/ledgers'],function($model){
 					  {
 						"id": "IP",
 						"name": "Initial Payment",
+						"charge": false,
+						"pay": true,
 						"amount": 5000
 					  },
 					   {
 						"id": "OLD",
 						"name": "Old Account",
+						"charge": true,
+						"pay": true,
 						"amount": 5000
 					  },
 					  {
 						"id": "SP",
 						"name": "Subsequent Payment",
+						"charge": false,
+						"pay": true,
 						"amount": 3000
 					  },
 					  {
 						"id": "PEU",
 						"name": "P.E. Uniform",
+						"charge": true,
+						"pay": true,
 						"amount": 4000
 					  },
 					  {
 						"id": "BK",
 						"name": "Books",
+						"charge": true,
+						"pay": false,
+						"amount": 6000
+					  },
+					  {
+						"id": "TF",
+						"name": "Tuition",
+						"charge": true,
+						"pay": false,
 						"amount": 6000
 					  }
 					]
@@ -75,8 +92,8 @@ define(['model','../tests/ledgers'],function($model){
 				trnx_type.data[i].amount = tto[id].amount;
 				
 			 }
-
-			return {success:trnx_type.list()};
+			delete data.account_no;
+			return {success:trnx_type.list(data)};
 		}
 		
 		return trnx_type;

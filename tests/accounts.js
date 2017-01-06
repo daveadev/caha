@@ -11,6 +11,7 @@ define(['model'], function($model) {
                 "account_name": "Juan Dela Cruz Masipag Jr",
                 "payment_scheme": "installment",
                 "outstanding_balance": 6000,
+				"back_log":"Hello",
                 "payment_breakdown": [{
                         "fee": "Tuition Fee",
                         "amount": 5000,
@@ -58,7 +59,11 @@ define(['model'], function($model) {
                         "details": "Subsequent Payment",
                         "amount": 3000
                     }
-                ]
+                ],
+				"back_logs" : [
+				
+				
+				]
             },
             {
                 "account_no": 12346,

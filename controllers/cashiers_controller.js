@@ -74,6 +74,7 @@ define(['app', 'api'], function(app) {
                     //Pass value of student information
                     $scope.ActiveStudent = $scope.SelectedStudent;
                     var data = {};
+                    data.pay = true;
                     data.account_no = $scope.ActiveStudent.id;
                     api.GET('transaction_types', data, function success(response) {
                         $scope.TransactionTypes = response.data;
