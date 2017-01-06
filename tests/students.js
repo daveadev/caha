@@ -93,6 +93,7 @@ define(['model'],function($model){
 					  ]
 					}
 				]
-			}
+			},
+			{ name : "Student"}
 		);
 });

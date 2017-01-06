@@ -1,6 +1,6 @@
 "use strict";
-define(['model'],function($model){
-	return new $model(
+define(['model','../tests/ledgers'],function($model){
+	var trnx_type =  new $model(
 			{
 				meta:{
 					title: 'Transactions Type',
@@ -33,5 +33,34 @@ define(['model'],function($model){
 					  }
 					]
 			},
-		{ name: "TransactionType" });
+		{ name: "TransactionType", uses:['ledgers'] });
+		
+
+
+		trnx_type.GET =  function(data){
+			                    
+			
+			//Get DEMO_REGISTRY.LEdger
+			// Find matching transac code
+			// Update trnx_type.data[i].amount
+			// trnx_type.data;
+
+			 var ledgers = DEMO_REGISTRY.Ledger;
+			 for (var i in ledgers) {		 	
+			 	console.log(trnx_type.data[i].name);
+			 	console.log(ledgers[i].details);
+
+			 	if(trnx_type.data[i].name == "Initial Payment")
+			 	{
+			 		trnx_type.data[i].amount = ledgers[i].amount;
+			 	}
+			 	else if(trnx_type.data[i].name == "Old Account")
+			 	{
+			 		trnx_type.data[i].amount = ledgers[i].amount;
+			 	}
+			 }	 
+			return {success:trnx_type.list()};
+		}
+		
+		return trnx_type;
 });

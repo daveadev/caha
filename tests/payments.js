@@ -35,7 +35,7 @@ define(['model','util','../tests/accounts',,'../tests/ledgers', '../tests/transa
 		
 	   var ledger = {
             account: {
-                id: data.student.id,
+                account_no : data.student.id,
                 account_name: data.student.name,
                 account_type: "student"
             },

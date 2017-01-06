@@ -95,7 +95,7 @@ define(['app', 'api', 'simple-sheet'], function(app) {
         $scope.type = 'credit';
         $scope.confirmLedger = function() {
             var tDate = $scope.date;
-            console.log(tDate.getFullYear());
+            //console.log(tDate.getFullYear());
 
             var monthNames = ["January", "February", "March", "April", "May", "June",
                 "July", "August", "September", "October", "November", "December"
@@ -107,23 +107,20 @@ define(['app', 'api', 'simple-sheet'], function(app) {
 
             var ledger = {
                 account: {
-                    id: $scope.Account.id,
+                    account_no : $scope.Account.id,
                     account_name: $scope.Account.name,
                     account_type: "student"
                 },
                 type: $scope.type,
                 date: nDate,
                 ref_no: $scope.refNo,
-                details: $scope.details,
+                details: $scope.details.name,
                 amount: $scope.amount
             };
             api.POST('ledgers', ledger, function success(response) {
                 $uibModalInstance.dismiss('confirm');
             });
         };
-
-
-
 
         //Close modal
         $scope.cancelLedger = function() {
