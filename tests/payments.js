@@ -23,7 +23,6 @@ define(['model','util','../tests/accounts',,'../tests/ledgers', '../tests/transa
 		 var account_index = {};
 		 var account = {};
 		 for (var i in accounts) {
-			console.log(accounts[i]);
 			 if(data.student.id == accounts[i].account_no)
 			 {
 				 account = accounts[i];
@@ -60,24 +59,20 @@ define(['model','util','../tests/accounts',,'../tests/ledgers', '../tests/transa
             transaction_payments: [] 
             };
 
-           console.log(transaction);
  
 		var transactions = DEMO_REGISTRY.Transaction;
 			transaction.id = transactions.length;
-			
+		//Process transaction details for Ledger entry and Account Payment History
         for (var i in data.transactions) {
             var trnx = data.transactions[i];
-            var pymt = data.payments[i];
-
             var ledgers = DEMO_REGISTRY.Ledger;
-            console.log(DEMO_REGISTRY);
-            ledger.id = ledgers.length;
+			//Create ledger entry base on transaction
+			ledger.id = ledgers.length;
             ledger.ref_no = booklet.series_counter;
             ledger.details = trnx.id;
             ledger.amount = trnx.amount;
             DEMO_REGISTRY.Ledger.push(ledger);  
-
-			
+			//Build transaction detail
 			var detail = {
 				"ref_no": booklet.series_counter,
                     "details": trnx.id,
@@ -85,10 +80,14 @@ define(['model','util','../tests/accounts',,'../tests/ledgers', '../tests/transa
 				
 			};
 			transaction.transaction_details.push(detail);
+			//Build history for Account payment history
 			var hist = detail;
 				hist.date=nDate;
 			account.payment_history.push(hist);
-			
+		}
+		//Process payments for transaction_payments
+		for (var i in data.payments) {
+			var pymt = data.payments[i];
 			var details ="CASH";
 				if(pymt.id!='CASH'){
 					details=[];	
