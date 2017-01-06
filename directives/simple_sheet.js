@@ -65,6 +65,13 @@ define(['app','api'], function (app) {
 								id:pk,
 								name:name,
 							};
+							for(var field in item){
+								if(field!='name'&&field!='id'){
+									var value =  item[field];
+									obj[field] = value;
+								}
+							}
+							
 								
 							return obj;
 						  });
