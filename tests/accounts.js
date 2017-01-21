@@ -11,7 +11,7 @@ define(['model'], function($model) {
                 "account_name": "Juan Dela Cruz Masipag Jr",
                 "payment_scheme": "installment",
                 "outstanding_balance": 6000,
-				"back_log":"Hello",
+				//"back_log":"Hello",
                 "payment_breakdown": [{
                         "fee": "Tuition Fee",
                         "amount": 5000,
@@ -60,7 +60,16 @@ define(['model'], function($model) {
                         "amount": 3000
                     }
                 ],
-				"back_logs" : [
+				"back_log" : [{
+                        "transaction_no": 123456,
+                        "ref_no": "OR-12345",
+                        "amount": 3000
+                    },
+                    {
+                        "transaction_no": 123456,
+                        "ref_no": "OR-12346",
+                        "amount": 3000
+                    }
 				
 				
 				]
