@@ -31,8 +31,13 @@
  * @subpackage    cake.app
  */
 class AppController extends Controller {
-	var $components = array('RequestHandler','Session','Api');
+	var $components = array('RequestHandler','Auth','Session','Api');
 	var $helpers = array('Html','Form','Session');
+	
+	function beforeFilter() {
+		parent::beforeFilter();
+		$this->Auth->allow('display');
+	}
 	function redirect($config){
 		if($this->RequestHandler->isAjax()){
 			$message = $this->Session->read('Message.flash.message');
@@ -62,14 +67,17 @@ class AppController extends Controller {
 		$meta = $this->Session->read('meta');
 		$meta['code'] = '200';
 		$response = array('meta'=>$meta);
-		if($this->params['action']=='index'||$this->params['action']=='view'){
+		if(in_array($this->params['action'],array('index','view','register','login','logout'))){
 			$endpoint = $this->params['controller'];
-			if($this->params['action']=='view'){
+			if($this->params['action']!='index'){
 				$endpoint =  Inflector::singularize($endpoint);
 			}
 			$dataField = Inflector::variable($endpoint);
 			if(isset($this->viewVars[$dataField])){
 				$response['data'] = $this->viewVars[$dataField];
+			}else if($this->params['action']=='logout'){
+				$response['data']['User'] = '0';
+				$response['meta']['message'] = 'Logout';
 			}else{
 				return $this->cakeError('dataNotSet');
 			}
@@ -103,6 +111,8 @@ class AppController extends Controller {
 			if(isset($response['meta']['keyword'])){
 				$keyword = $response['meta']['keyword'];
 				return $this->cakeError('noResults',compact('keyword'));  
+			}else if($this->params['action']=='login'){
+				return $this->cakeError('invalidLogin');  
 			}
 			else 
 				return $this->cakeError('emptyRecord');  

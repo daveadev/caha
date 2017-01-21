@@ -34,6 +34,18 @@
  */
 	Router::connect('/pages/*', array('controller' => 'pages', 'action' => 'display'));
 	Router::connect(
+			"/login",
+			array("controller"=>'users',"action" => "login")
+		);
+	Router::connect(
+			"/register",
+			array("controller"=>'users',"action" => "add")
+		);
+	Router::connect(
+			"/logout",
+			array("controller"=>'users',"action" => "logout")
+		);
+	Router::connect(
 			"/:controller/add",
 			array("action" => "add")
 		);

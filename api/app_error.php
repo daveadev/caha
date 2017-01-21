@@ -2,10 +2,16 @@
 class AppError extends ErrorHandler {
 	var $CODES = array(
 			202=>'No results found for %s',
+			401=>'Invalid Login',
 			403=>'Invalid Endpoint',
 			402=>'Data not set',
 			404=>'Empty Record',
 	);
+	function invalidLogin($params){
+		$code = 401;
+		$message = $this->CODES[$code];
+		$this->fetchError($code,$message);
+	}
 	function invalidEndpoint($params){
 		$code = 403;
 		$message = $this->CODES[$code];
