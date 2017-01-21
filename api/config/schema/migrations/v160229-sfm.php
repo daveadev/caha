@@ -154,7 +154,8 @@ class ApiSchema extends CakeSchema {
 		'payment_frequency' => array('type' => 'integer', 'null' => true, 'default' => NULL, 'length' => 2),
 		'order' => array('type' => 'integer', 'null' => true, 'default' => NULL, 'length' => 4),
 		'created' => array('type' => 'datetime', 'null' => true, 'default' => NULL),
-		'modified' => array('type' => 'datetime', 'null' => true, 'default' => NULL),
+		'50
+		' => array('type' => 'datetime', 'null' => true, 'default' => NULL),
 		'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => 1)),
 		'tableParameters' => array('charset' => 'latin1', 'collate' => 'latin1_swedish_ci', 'engine' => 'InnoDB')
 	);

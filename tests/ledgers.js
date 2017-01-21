@@ -1,6 +1,7 @@
 "use strict";
 define(['model'],function($model){
-	return new $model(
+	
+	var Ledger = new $model(
 			{
 				meta:{
 					title: 'Ledgers',
@@ -9,174 +10,34 @@ define(['model'],function($model){
 					{
 					  "id": 0,
 					  "account": {
-						"account_no": 12345,
-						"account_name": "Juan Dela Cruz",
+						"account_no": "S201512345",
+						"account_name": "Juan Dela Cruz Masipag Jr",
 						"account_type": "student"
 					  },
 					  "type": "credit",
 					  "date": "June 5, 2015",
 					  "ref_no": 12345,
-					  "details": "Tuition Fee",
-					  "amount": 7000,
+					  "transaction_type_id": "IP",
+					  "details": "Initial Payment",
+					  "amount": 2500,
 					},
 					{
 					  "id": 1,
 					  "account": {
-						"account_no": 12345,
-						"account_name": "Juan Dela Cruz 2",
+						"account_no": "S201512346",
+						"account_name": "Ted Masipag Dela Cruz Jr",
 						"account_type": "student"
 					  },
 					  "type": "debit",
 					  "date": "June 5, 2015",
 					  "ref_no": 12346,
-					  "details": "Initial Payment",
-					  "amount": 2500,
-					},
-					{
-					  "id": 2,
-					  "account": {
-						"account_no": 12345,
-						"account_name": "Juan Dela Cruz 2",
-						"account_type": "student"
-					  },
-					  "type": "debit",
-					  "date": "June 5, 2015",
-					  "ref_no": 12346,
-					  "details": "Initial Payment",
-					  "amount": 2500,
-					},
-					{
-					  "id": 3,
-					  "account": {
-						"account_no": 12345,
-						"account_name": "Juan Dela Cruz 2",
-						"account_type": "student"
-					  },
-					  "type": "debit",
-					  "date": "June 5, 2015",
-					  "ref_no": 12346,
-					  "details": "Initial Payment",
-					  "amount": 2500,
-					},
-					{
-					  "id": 4,
-					  "account": {
-						"account_no": 12345,
-						"account_name": "Juan Dela Cruz 2",
-						"account_type": "student"
-					  },
-					  "type": "debit",
-					  "date": "June 5, 2015",
-					  "ref_no": 12346,
-					  "details": "Initial Payment",
-					  "amount": 2500,
-					},
-					{
-					  "id": 5,
-					  "account": {
-						"account_no": 12345,
-						"account_name": "Juan Dela Cruz 2",
-						"account_type": "student"
-					  },
-					  "type": "debit",
-					  "date": "June 5, 2015",
-					  "ref_no": 12346,
-					  "details": "Initial Payment",
-					  "amount": 2500,
-					},
-					{
-					  "id": 6,
-					  "account": {
-						"account_no": 12345,
-						"account_name": "Juan Dela Cruz 2",
-						"account_type": "student"
-					  },
-					  "type": "debit",
-					  "date": "June 5, 2015",
-					  "ref_no": 12346,
-					  "details": "Initial Payment",
-					  "amount": 2500,
-					},
-					{
-					  "id": 7,
-					  "account": {
-						"account_no": 12345,
-						"account_name": "Juan Dela Cruz 2",
-						"account_type": "student"
-					  },
-					  "type": "debit",
-					  "date": "June 5, 2015",
-					  "ref_no": 12346,
-					  "details": "Initial Payment",
-					  "amount": 2500,
-					},
-					{
-					  "id": 8,
-					  "account": {
-						"account_no": 12345,
-						"account_name": "Juan Dela Cruz 2",
-						"account_type": "student"
-					  },
-					  "type": "debit",
-					  "date": "June 5, 2015",
-					  "ref_no": 12346,
-					  "details": "Initial Payment",
-					  "amount": 2500,
-					},
-					{
-					  "id": 9,
-					  "account": {
-						"account_no": 12345,
-						"account_name": "Juan Dela Cruz 2",
-						"account_type": "student"
-					  },
-					  "type": "debit",
-					  "date": "June 5, 2015",
-					  "ref_no": 12346,
-					  "details": "Initial Payment",
-					  "amount": 2500,
-					},
-					{
-					  "id": 10,
-					  "account": {
-						"account_no": 12345,
-						"account_name": "Juan Dela Cruz 2",
-						"account_type": "student"
-					  },
-					  "type": "debit",
-					  "date": "June 5, 2015",
-					  "ref_no": 12346,
-					  "details": "Initial Payment",
-					  "amount": 2500,
-					},
-					{
-					  "id": 11,
-					  "account": {
-						"account_no": 12345,
-						"account_name": "Juan Dela Cruz 2",
-						"account_type": "student"
-					  },
-					  "type": "debit",
-					  "date": "June 5, 2015",
-					  "ref_no": 12346,
-					  "details": "Initial Payment",
-					  "amount": 2500,
-					},
-					{
-					  "id": 12,
-					  "account": {
-						"account_no": 12345,
-						"account_name": "Juan Dela Cruz 2",
-						"account_type": "student"
-					  },
-					  "type": "debit",
-					  "date": "June 5, 2015",
-					  "ref_no": 12346,
+					  "transaction_type_id": "IP",
 					  "details": "Initial Payment",
 					  "amount": 2500,
 					}
 				]
-			}
+			},
+			{ name : "Ledger",uses:['transaction_types']}
 		);
 		//test.setMeta({title:'Test'});
 		//test.setData([{title:'Sample','description':'dasd'}]);
@@ -188,4 +49,18 @@ define(['model'],function($model){
 			return {success:test.save(data)};
 		}
 		*/
+		Ledger.POST = function(data){
+			var tt = DEMO_REGISTRY.TransactionType;
+			for (var i in tt)
+			{
+				console.log(data.transaction_type_id,tt[i]);
+				if(data.transaction_type_id==tt[i].id)
+					data.details=tt[i].name;
+				
+			}
+			
+			return {success:Ledger.save(data)};
+			
+		}
+		return Ledger;
 });

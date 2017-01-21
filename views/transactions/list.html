@@ -16,7 +16,7 @@
 							<li><a href="#/">Filter</a></li>
 							<li><a href="#/">Go to Page</a></li>
 							<li role="separator" class="divider"></li>
-							<li><a href="#/">Some other link</a></li>
+							<li style="t"><a href="#/">Some other link</a></li>
 							
 						  </ul>
 					</div>
@@ -30,7 +30,7 @@
 							Click the <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> to cancel.
 						</p>
 					</div>
-					<div class="list-group-item" ng-hide="DataLoading" ng-class="{active: transaction.account.account_name===Transaction.account.account_name}" ng-repeat="transaction in Transactions | filter: filterTransaction" ng-if="Transactions.length" ng-click="openTransactionInfo(transaction)">
+					<div class="list-group-item" ng-hide="DataLoading" ng-class="{active: transaction.id===Transaction.id}" ng-repeat="transaction in Transactions | filter: filterTransaction" ng-if="Transactions.length" ng-click="openTransactionInfo(transaction)">
 						<div class="row">
 							<div class="col-md-8">
 								<h4 class="list-group-item-heading">{{transaction.account.account_name}}</h4>

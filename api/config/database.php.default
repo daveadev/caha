@@ -79,7 +79,7 @@ class DATABASE_CONFIG {
 		'host' => 'localhost',
 		'login' => 'root',
 		'password' => '',
-		'database' => 'tssi_srp_160229',
+		'database' => 'srp',
 	);
 	var $sfm = array(
 		'driver' => 'mysql',
@@ -87,7 +87,7 @@ class DATABASE_CONFIG {
 		'host' => 'localhost',
 		'login' => 'root',
 		'password' => '',
-		'database' => 'tssi_sfm_160229',
+		'database' => 'sfm',
 		'prefix' => '',
 		'encoding' => 'utf8',
 	);

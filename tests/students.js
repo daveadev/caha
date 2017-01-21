@@ -10,6 +10,7 @@ define(['model'],function($model){
 					  "id":"S201512345",
 					  "educ_level_id": "GS",
 					  "year_level_id": "G1",
+					  "name":"Juan Dela Cruz",
 					  "first_name": "Juan",
 					  "middle_name": "Masipag",
 					  "last_name": "Dela Cruz",
@@ -52,6 +53,7 @@ define(['model'],function($model){
 					  "id":"S201512346",
 					  "educ_level_id": "GS",
 					  "year_level_id": "G1",
+					  "name":"Ted Masipag Dela Cruz",
 					  "first_name": "ted",
 					  "middle_name": "Masipag",
 					  "last_name": "Dela Cruz",
@@ -91,6 +93,7 @@ define(['model'],function($model){
 					  ]
 					}
 				]
-			}
+			},
+			{ name : "Student"}
 		);
 });

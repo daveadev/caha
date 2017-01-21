@@ -23,7 +23,7 @@
         <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
-	<script data-main="config/main.js" src="app/bower_components/requirejs/require.js"> </script>
+	<script data-main="config/main.js?a" src="app/bower_components/requirejs/require.js"> </script>
 </head>
 
 <body ng-controller="RootController">
@@ -49,7 +49,10 @@
 				<li class="separator">
                 </li>
                 <li>
-                    <a href="/app">Home</a>
+                    <a href="#/">Home</a>
+                </li>
+				<li>
+                    <a href="#/logout">Logout</a>
                 </li>
 				<li>
 					<a href="#/cashiers/index">Cashiers</a>
@@ -73,7 +76,7 @@
 
         <!-- Page Content -->
 		<div class="navbar navbar-default navbar-fixed-top" id="navbar-toggle" ng-class="{'blur': __MODAL_OPEN}">
-				<button type="button" class=" navbar-toggle c-hamburger c-hamburger--htx fade out"  ng-class="{'in':__APP_READY}" id="menu-toggle-1"  ng-click="__toggleSideBar()">
+				<button type="button" class=" navbar-toggle c-hamburger c-hamburger--htx fade out"  ng-show="__LOGGEDIN" ng-class="{'in':__APP_READY}" id="menu-toggle-1"  ng-click="__toggleSideBar()">
 				   <span>Toggle Menu</span>
 				</button>
 				<a class="navbar-brand fade out"  ng-class="{'in':__FAB_READY}">{{__MODULE_NAME}}</a>
