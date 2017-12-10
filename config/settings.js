@@ -1,6 +1,6 @@
 define(function() {
   return {
-	DEMO_MODE: false,
+	DEMO_MODE: true,
 	CTRLS_DIRECTORY: '../controllers',
 	VIEWS_DIRECTORY: 'views',
 	VIEW_EXTENSION: 'html?'+ Math.random(),
