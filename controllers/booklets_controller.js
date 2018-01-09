@@ -7,6 +7,7 @@ define(['app','api'], function (app) {
 			//Initialize components
 			function getBooklets(data){
 				$scope.DataLoading=true;
+				//Data contains the filter and pagination
 				api.GET('booklets',data,function success(response){
 					console.log(response.data);
 					$scope.Booklets=response.data;
@@ -56,7 +57,7 @@ define(['app','api'], function (app) {
 				return !searchBox || test;
 			};
 			$scope.confirmSearch = function(){
-				getBooklets({page:$scope.ActivePage,keyword:$scope.searchBooklet,fields:['series_end']});
+				getBooklets({page:$scope.ActivePage,keyword:$scope.searchBooklet,fields:['series_start','series_end']});
 			}
 			//Filter search box
 			$scope.clearSearch = function(){
