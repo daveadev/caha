@@ -21,7 +21,7 @@
 				<div class="list-group-item list-group-header">
 					<label class="">Summary</label>
 					<div class="pull-right">
-					<button class="btn btn-xs btn-success" uib-popover-template="'accountInfoBox.html'" popover-append-to-body="true" popover-placement="bottom" ng-disabled="!ActiveStudent.id"> <span class="glyphicon glyphicon-user" aria-hidden="true"></span></button>
+					<button class="btn btn-xs btn-success" uib-popover-template="'accountInfoBox.html'" popover-append-to-body="true" popover-placement="bottom" ng-disabled="!ActiveStudent.id"> <span class="glyphicon glyphicon-user" aria-hidden="true"></span> Student Account</button>
 					<button class="btn btn-xs btn-info" ng-click="displaySettings()"> <span class="glyphicon glyphicon-cog" aria-hidden="true"></span></button>
 					<button class="btn btn-xs btn-danger" ng-click="initCashier()"> <span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
 					</div>
@@ -31,12 +31,12 @@
 						<div class="row">
 							<div class="col-md-6">
 								<dl>
-									<dt>Account</dt>
-									<dd>{{ActiveStudent.id}} | {{ActiveStudent.name}}</dd>
+									<label>Series No.</label>
+									<dd><h3 class="amount pull-left" style="width:100%; text-align: left; margin-top:0">12345</h3></dd>
 									<dt>Date</dt>
 									<dd>November 20, 2015</dd>
-									<dt>Series</dt>
-									<dd>1800</dd>
+									<dt>Account</dt>
+									<dd>{{ActiveStudent.id}} | {{ActiveStudent.name}}</dd>
 								</dl>
 							</div>
 							<div class="col-md-6">
@@ -136,7 +136,7 @@
 			</div>
 		</div>
 		<div class="col-md-6">
-			<button class="btn btn-primary btn-fab top right" ng-click="nextStep()" ng-disabled="CashierSaving">
+			<button class="btn btn-primary btn-fab top right" ng-click="nextStep()" ng-disabled="CashierSaving||!SelectedStudent||Disabled">
 			<span class="glyphicon " ng-class="{'glyphicon-chevron-right':ActiveStep!=4,'glyphicon-ok': ActiveStep===4}" aria-hidden="true"></span>
 			</button>
 			<div class="list-group" ng-show="ActiveStep===1">
@@ -177,13 +177,14 @@
 					<div class="list-group-item list-group-header">
 						<h5>Select Transactions</h5>
 					</div>
-					<div class="list-group-item" ng-repeat="transaction_type in TransactionTypes | filter:filterTransaction">
+					<div class="list-group-item" 
+						ng-repeat="transaction_type in TransactionTypes | filter:filterTransaction">
 						<div class="row">
-							<div class="col-md-8">
+							<div class="col-md-8" ng-click="toggleSelectTransaction(transaction_type.id,$index)" >
 								<div class="checkbox checkbox-lg">
 									<label >
-									<input type="checkbox" ng-checked="SelectedTransactions[transaction_type.id]  && isEmpty(SelectedTransactions)">
-										<span class="cr" ng-click="toggleSelectTransaction(transaction_type.id)"><i class="cr-icon glyphicon glyphicon-ok"></i></span>
+									<input type="checkbox" ng-model="SelectedTransactions[transaction_type.id]">
+										<span class="cr"><i class="cr-icon glyphicon glyphicon-ok"></i></span>
 									</label>
 									<div class="description">
 										<h4 class="list-group-item-heading">{{transaction_type.name}}</h4>
@@ -220,11 +221,11 @@
 					</div>
 					<div class="list-group-item" ng-repeat="payment in Payments">
 						<div class="row">
-							<div class="col-md-7">
+							<div class="col-md-7"  ng-click="toggleSelectPayment(payment.id)">
 								<div class="checkbox checkbox-lg">
 									<label >
-									<input type="checkbox" ng-checked="SelectedPayments[payment.id] && isEmpty(SelectedPayments)">
-										<span class="cr" ng-click="toggleSelectPayment(payment.id)"><i class="cr-icon glyphicon glyphicon-ok"></i></span>
+									<input type="checkbox" ng-model="SelectedPayments[payment.id]">
+										<span class="cr" ><i class="cr-icon glyphicon glyphicon-ok"></i></span>
 									</label>
 									<div class="description">
 										<h4 class="list-group-item-heading">{{payment.name}}</h4>
@@ -245,7 +246,7 @@
 									</div>
 								</div>
 								<div class="help-text" ng-if="payment.id=='CASH' && SelectedPayments[payment.id]">
-									Change: {{CurrentChange | currency }}
+									Change: {{CurrentChange | currency}}
 								</div>
 								<div class="help-text" ng-if="payment.id!='CASH' && isEmpty(SelectedPaymentDetails[payment.id])">
 								  <button class="btn btn-xs btn-default" disabled><span class="glyphicon glyphicon-{{payment.icon}}"></span></button> Click for {{payment.name}} details.
@@ -349,13 +350,15 @@
 				<dt>Balance</dt>
 				<dd><span class="amount total peso">1,234.56</span></dd>
 			</dl>
+			<button class="btn btn-primary btn-sm form-control" style="margin-bottom:5px">View SOA</button><br />
+			<button class="btn btn-primary btn-sm form-control">View Pay Sched</button>
 		</script>
 		<script type="text/ng-template" id="paymentDetailsBox.html">
-			<button class="btn btn-xs btn-danger btn-dismiss"><span class="glyphicon glyphicon-remove"></span></button>
+			<button class="btn btn-xs btn-danger btn-dismiss" ng-click="closePop($event)"><span class="glyphicon glyphicon-remove"></span></button>
 			<dl>
 				<dt ng-if="ActivePaymentMethod.id!='CHRG'">Bank</dt>
 				<dd ng-if="ActivePaymentMethod.id!='CHRG'" ><input ng-model="PopoverDetails.bank" type="text" class="form-control input-sm" placeholder="Issuing Bank"/></dd>
-				<dt>Ref No</dt>
+				<dt>Check No</dt>
 				<dd><input ng-model="PopoverDetails.ref_no" type="text" class="form-control input-sm" placeholder="{{ActivePaymentMethod.name}}  number"/></dd>
 				<dt>{{ActivePaymentMethod.name}} Date</dt>
 				<dd ng-if="ActivePaymentMethod.id=='CARD'"><input ng-model="PopoverDetails.date" type="text" class="form-control input-sm" placeholder="{{ActivePaymentMethod.name}} expiry" /></dd>

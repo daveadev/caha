@@ -14,7 +14,6 @@ define(['app', 'api'], function(app) {
             $scope.initCashier = function() {
                 $scope.ActiveStep = 1;
                 $scope.ActiveStudent = {};
-                $scope.SelectedStudent = {};
                 $scope.ActiveTransactions = [];
                 $scope.SelectedTransactions = {};
                 $scope.ActivePayments = [];
@@ -72,6 +71,7 @@ define(['app', 'api'], function(app) {
             $scope.nextStep = function() {
                 if ($scope.ActiveStep === 1) {
                     //Pass value of student information
+					$scope.Disabled = 1;
                     $scope.ActiveStudent = $scope.SelectedStudent;
                     var data = {};
                     data.pay = true;
@@ -82,6 +82,10 @@ define(['app', 'api'], function(app) {
 
                 }
                 if ($scope.ActiveStep === 2) {
+					if($scope.TotalPaid>$scope.TotalDue)
+						$scope.Disabled = 0;
+					else
+						$scope.Disabled = 1;
                     //Pass value of transaction information
                     $scope.ActiveTransactions = [];
                     $scope.TotalDue = 0;
@@ -98,9 +102,19 @@ define(['app', 'api'], function(app) {
                     };
                 }
                 if ($scope.ActiveStep === 3) {
+					$scope.Disabled = 1;
                     //Pass value of payment information
                     $scope.ActivePayments = [];
                     $scope.TotalPaid = 0;
+					if('CHCK' in $scope.SelectedPayments){
+						if($scope.SelectedPayments['CHCK']){
+							var yes = confirm("Check payment option chosen. Change will be credited to your account. Proceed payment?");
+							if(yes)
+								$scope.TotalChange = 0;
+							else
+								return false;
+						}
+					}
                     for (var index in $scope.Payments) {
                         var paymentMethod = $scope.Payments[index];
 						var pid = paymentMethod.id;
@@ -116,7 +130,14 @@ define(['app', 'api'], function(app) {
                             $scope.ActivePayments.push(payment);
                         };
                     };
+					
                     $scope.TotalChange = $scope.TotalPaid - $scope.TotalDue;
+					if('CHCK' in $scope.SelectedPayments){
+						if($scope.SelectedPayments['CHCK']){
+							$scope.TotalChange = 0;
+						}
+					}
+					
                 };
                 if ($scope.ActiveStep === 4) {
                     //Push the gathered info to payments.js
@@ -125,9 +146,6 @@ define(['app', 'api'], function(app) {
                         student: $scope.ActiveStudent,
                         transactions: $scope.ActiveTransactions,
                         payments: $scope.ActivePayments,
-                       
-                       
-
                     };
                     $scope.CashierSaving = true;
                     api.POST('payments', $scope.Payment, function success(response) {
@@ -151,12 +169,18 @@ define(['app', 'api'], function(app) {
                 $scope.ActiveStep = step.id;
             };
             //Take the value if it is true or false
-            $scope.toggleSelectTransaction = function(id) {
-                    $scope.SelectedTransactions[id] = !$scope.SelectedTransactions[id];
-                    if ($scope.SelectedTransactions[id]) {
-                        $scope.FocusTransaction[id] = true;
-                    }
-                }
+            $scope.toggleSelectTransaction = function(id,index) {
+				$scope.SelectedTransactions[id] = !$scope.SelectedTransactions[id];
+				if(!$scope.SelectedTransactions[id])
+					$scope.Disabled = 1;
+				angular.forEach($scope.SelectedTransactions, function(trans){
+					if(trans==true)
+						$scope.Disabled = 0;
+				})
+				if ($scope.SelectedTransactions[id]) {
+					$scope.FocusTransaction[id] = true;
+				}
+			}
                 //Set the selected student 
             $scope.setSelecetedStudent = function(student) {
                 $scope.SelectedStudent = {
@@ -169,6 +193,14 @@ define(['app', 'api'], function(app) {
             //Take the value if it is true or false
             $scope.toggleSelectPayment = function(id) {
                     $scope.SelectedPayments[id] = !$scope.SelectedPayments[id];
+					if(!$scope.SelectedPayments[id]){
+						angular.forEach($scope.Payments, function(pay){
+							if(pay.id==id)
+								pay.amount = 0;
+						});
+						$scope.CurrentChange = 0;
+						$scope.Disabled = 1;
+					}
                     if ($scope.SelectedPayments[id]) {
                         $scope.SelectedPaymentDetails[id] = {};
                         $scope.FocusPayment[id] = true;
@@ -252,6 +284,9 @@ define(['app', 'api'], function(app) {
             $scope.setActivePopover = function(payment) {
                 $scope.ActivePaymentMethod = angular.copy(payment);
             }
+			$scope.closePop = function(e){
+				angular.element(e.target).parent().parent().parent().parent().scope().$parent.isOpen = false;
+			}
             $scope.$watch('ActivePaymentMethod', function(avp) {
                 $scope.shouldOpen = {};
                 if (typeof avp == "object")
@@ -271,10 +306,16 @@ define(['app', 'api'], function(app) {
                 var noncash = 0;
                 for (var index in $scope.Payments) {
                     var payment = $scope.Payments[index];
-                    if (payment.id == 'CASH') { cash += payment.amount; }
+                    if (payment.id == 'CASH')
+						cash += payment.amount; 
                     if (payment.id != 'CASH') { noncash += payment.amount; }
                 }
-                $scope.CurrentChange = $scope.TotalDue - (cash + noncash);
+				
+                $scope.CurrentChange = (cash + noncash) - $scope.TotalDue;
+				if((cash+noncash)>=$scope.TotalDue)
+					$scope.Disabled = 0;
+				else
+					$scope.Disabled = 1;
             }
         };
     }]);

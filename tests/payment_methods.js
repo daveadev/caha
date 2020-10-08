@@ -20,7 +20,7 @@ define(['model'],function($model){
 						"amount": 0,
 						"icon": "ok"
 					  },
-					  {
+					  /* {
 						"id": "CARD",
 						"name": "Card",
 						"description":"Accepts debit/credit card.",
@@ -33,7 +33,7 @@ define(['model'],function($model){
 						"description":"Credits to your account.",
 						"amount": 0,
 						"icon": "flash"
-					  }
+					  } */
 					]
 			},
 		{ name: "PaymentMethod" });
