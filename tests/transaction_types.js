@@ -11,42 +11,42 @@ define(['model','../tests/ledgers'],function($model){
 						"name": "Initial Payment",
 						"charge": false,
 						"pay": true,
-						"amount": 5000
+						"amount": 5000.00
 					  },
 					   {
 						"id": "OLD",
 						"name": "Old Account",
 						"charge": true,
 						"pay": true,
-						"amount": 5000
+						"amount": 5000.00
 					  },
 					  {
 						"id": "SP",
 						"name": "Subsequent Payment",
 						"charge": false,
 						"pay": true,
-						"amount": 3000
+						"amount": 3000.00
 					  },
 					  {
 						"id": "PEU",
 						"name": "P.E. Uniform",
 						"charge": true,
 						"pay": true,
-						"amount": 4000
+						"amount": 4000.00
 					  },
 					  {
 						"id": "BK",
 						"name": "Books",
 						"charge": true,
 						"pay": false,
-						"amount": 6000
+						"amount": 6000.00
 					  },
 					  {
 						"id": "TF",
 						"name": "Tuition",
 						"charge": true,
 						"pay": false,
-						"amount": 6000
+						"amount": 6000.00
 					  }
 					]
 			},
