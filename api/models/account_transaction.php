@@ -1,7 +1,7 @@
 <?php
 class AccountTransaction extends AppModel {
 	var $name = 'AccountTransaction';
-	var $useDbConfig = 'sfm';
+	//var $useDbConfig = 'sfm';
 	//The Associations below have been created with all possible keys, those that are not needed can be removed
 	var $belongsTo = array(
 		'Account' => array(

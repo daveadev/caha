@@ -1,7 +1,7 @@
 <?php
 class EducLevel extends AppModel {
 	var $name = 'EducLevel';
-	var $useDbConfig = 'sas';
+	//var $useDbConfig = 'sas';
 	//The Associations below have been created with all possible keys, those that are not needed can be removed
 	var $order = 'order';
 	var $hasMany = array(
