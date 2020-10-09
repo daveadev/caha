@@ -22,8 +22,8 @@
 					<label class="">Summary</label>
 					<div class="pull-right">
 					<button class="btn btn-xs btn-success" uib-popover-template="'accountInfoBox.html'" popover-append-to-body="true" popover-placement="bottom" ng-disabled="!ActiveStudent.id"> <span class="glyphicon glyphicon-user" aria-hidden="true"></span> Student Account</button>
+					<button class="btn btn-xs btn-danger" ng-click="initCashier()" ng-disabled="ActiveStep==1"> Clear</button>
 					<button class="btn btn-xs btn-info" ng-click="displaySettings()"> <span class="glyphicon glyphicon-cog" aria-hidden="true"></span></button>
-					<button class="btn btn-xs btn-danger" ng-click="initCashier()"> <span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
 					</div>
 				</div>
 				<div class="list-group-canvas">
@@ -136,13 +136,11 @@
 			</div>
 		</div>
 		<div class="col-md-6">
-			<button class="btn btn-primary btn-fab top right" ng-click="nextStep()" ng-disabled="CashierSaving||!SelectedStudent||Disabled">
+			<button class="btn btn-primary btn-fab top right" ng-click="nextStep()" ng-disabled="CashierSaving||Disabled">
 			<span class="glyphicon " ng-class="{'glyphicon-chevron-right':ActiveStep!=4,'glyphicon-ok': ActiveStep===4}" aria-hidden="true"></span>
 			</button>
 			<div class="list-group" ng-show="ActiveStep===1">
 				<div class="list-group-item list-group-header">
-					<button class="btn btn-xs btn-danger" ng-click="resetStudent()"> <span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
-					<button class="btn btn-xs btn-warning" ng-click="prevStep()"> <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span></button>
 					<label>Student</label>
 				</div>
 				<div class="list-group-canvas list-group-search-results">
@@ -169,7 +167,6 @@
 			</div>
 			<div class="list-group" ng-show="ActiveStep===2">
 				<div class="list-group-item list-group-header">
-					<button class="btn btn-xs btn-danger" ng-click="resetTransactions()"> <span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
 					<button class="btn btn-xs btn-warning" ng-click="prevStep()"> <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span></button>
 					<label for="">Transaction</label>
 				</div>
@@ -195,7 +192,7 @@
 							<div class="col-md-4" ng-show="SelectedTransactions[transaction_type.id]">
 								<div class="input-group input-amount">
 								<span class="input-group-addon">₱</span>
-								<input type="number" class="form-control" ng-model="transaction_type.amount" autoselect focus="FocusTransaction[transaction_type.id]"/>
+								<input type="number" class="form-control" ng-model="transaction_type.amount" autoselect focus="FocusTransaction[transaction_type.id]" />
 								</div>
 							</div>
 						</div>
@@ -211,7 +208,6 @@
 			</div>			
 			<div class="list-group" ng-show="ActiveStep===3">
 				<div class="list-group-item list-group-header">
-					<button class="btn btn-xs btn-danger" ng-click="resetPayments()"> <span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
 					<button class="btn btn-xs btn-warning" ng-click="prevStep()"> <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span></button>
 					<label for="">Payment</label>
 				</div>
@@ -261,7 +257,6 @@
 			</div>
 			<div class="list-group" ng-show="ActiveStep===4">
 				<div class="list-group-item list-group-header">
-					<button class="btn btn-xs btn-danger"> <span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
 					<button class="btn btn-xs btn-warning" ng-click="prevStep()"> <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span></button>
 					<label for="">Confirmation</label>
 				</div>
@@ -351,7 +346,7 @@
 				<dd><span class="amount total peso">1,234.56</span></dd>
 			</dl>
 			<button class="btn btn-primary btn-sm form-control" style="margin-bottom:5px">View SOA</button><br />
-			<button class="btn btn-primary btn-sm form-control">View Pay Sched</button>
+			<button class="btn btn-default btn-sm form-control">View Pay Sched</button>
 		</script>
 		<script type="text/ng-template" id="paymentDetailsBox.html">
 			<button class="btn btn-xs btn-danger btn-dismiss" ng-click="closePop($event)"><span class="glyphicon glyphicon-remove"></span></button>
@@ -364,7 +359,7 @@
 				<dd ng-if="ActivePaymentMethod.id=='CARD'"><input ng-model="PopoverDetails.date" type="text" class="form-control input-sm" placeholder="{{ActivePaymentMethod.name}} expiry" /></dd>
 				<dd ng-if="ActivePaymentMethod.id!='CARD'"><input ng-model="PopoverDetails.date" type="date" class="form-control input-sm" placeholder="{{ActivePaymentMethod.name}} date" /></dd>
 			</dl>
-			<button class="btn btn-sm btn-block btn-primary" ng-click="savePopoverDetails(ActivePaymentMethod.id)">Confirm</button>
+			<button class="btn btn-sm btn-block btn-primary" ng-click="savePopoverDetails(ActivePaymentMethod.id)" ng-disabled="!PopoverDetails.date||!PopoverDetails.bank||!PopoverDetails.ref_no" >Confirm</button>
 		</script>
 		<script type="text/ng-template" id="successModal.html">
 			<div class="modal-body text-center">
