@@ -1,23 +1,22 @@
 <?php
-class AccountFee extends AppModel {
-	var $name = 'AccountFee';
-	//var $useDbConfig = 'sfm';
+class UserGrant extends AppModel {
+	var $name = 'UserGrant';
 	//The Associations below have been created with all possible keys, those that are not needed can be removed
 
 	var $belongsTo = array(
-		'Account' => array(
-			'className' => 'Account',
-			'foreignKey' => 'account_id',
+		'UserType' => array(
+			'className' => 'UserType',
+			'foreignKey' => 'user_type_id',
 			'conditions' => '',
 			'fields' => '',
 			'order' => ''
 		),
-		'Fee' => array(
-			'className' => 'Fee',
-			'foreignKey' => 'fee_id',
+		/*'MasterModule' => array(
+			'className' => 'MasterModule',
+			'foreignKey' => 'master_module_id',
 			'conditions' => '',
 			'fields' => '',
 			'order' => ''
-		)
+		)*/
 	);
 }

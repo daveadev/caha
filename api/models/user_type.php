@@ -1,13 +1,12 @@
 <?php
-class EducLevel extends AppModel {
-	var $name = 'EducLevel';
-	//var $useDbConfig = 'sas';
+class UserType extends AppModel {
+	var $name = 'UserType';
 	//The Associations below have been created with all possible keys, those that are not needed can be removed
-	var $order = 'order';
+
 	var $hasMany = array(
-		'Student' => array(
-			'className' => 'Student',
-			'foreignKey' => 'educ_level_id',
+		'UserGrant' => array(
+			'className' => 'UserGrant',
+			'foreignKey' => 'user_type_id',
 			'dependent' => false,
 			'conditions' => '',
 			'fields' => '',
@@ -18,9 +17,9 @@ class EducLevel extends AppModel {
 			'finderQuery' => '',
 			'counterQuery' => ''
 		),
-		'YearLevel' => array(
-			'className' => 'YearLevel',
-			'foreignKey' => 'educ_level_id',
+		'User' => array(
+			'className' => 'User',
+			'foreignKey' => 'user_type_id',
 			'dependent' => false,
 			'conditions' => '',
 			'fields' => '',

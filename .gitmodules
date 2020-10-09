@@ -1,3 +1,6 @@
 [submodule "app"]
 	path = app
 	url = https://github.com/tssi/app.git
+[submodule "api/plugins/api"]
+	path = api/plugins/api
+	url = https://github.com/tssi/api.git

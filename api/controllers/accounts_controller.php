@@ -5,7 +5,9 @@ class AccountsController extends AppController {
 
 	function index() {
 		$this->Account->recursive = 0;
-		$this->set('accounts', $this->paginate());
+		$accounts =  $this->paginate();
+		//TODOS: Adjust data based on tests/accounts.js
+		$this->set('accounts',$accounts);
 	}
 
 	function view($id = null) {

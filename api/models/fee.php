@@ -1,7 +1,7 @@
 <?php
 class Fee extends AppModel {
 	var $name = 'Fee';
-	var $useDbConfig = 'sfm';
+	//var $useDbConfig = 'sfm';
 	var $displayField = 'name';
 	//The Associations below have been created with all possible keys, those that are not needed can be removed
 

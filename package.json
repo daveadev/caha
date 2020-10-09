@@ -1,0 +1,12 @@
+{
+  "name": "SRP",
+  "description": "Simplified Solution",
+  "version": "0.1.0",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "devDependencies": {
+    "electron": "^10.1.3"
+  }
+}

@@ -33,38 +33,8 @@
  * ...and connect the rest of 'Pages' controller's urls.
  */
 	Router::connect('/pages/*', array('controller' => 'pages', 'action' => 'display'));
-	Router::connect(
-			"/login",
-			array("controller"=>'users',"action" => "login")
-		);
-	Router::connect(
-			"/register",
-			array("controller"=>'users',"action" => "add")
-		);
-	Router::connect(
-			"/logout",
-			array("controller"=>'users',"action" => "logout")
-		);
-	Router::connect(
-			"/:controller/add",
-			array("action" => "add")
-		);
-	Router::connect(
-			"/:controller",
-			array("action" => "index", "[method]" => "GET")
-		);
-	Router::connect(
-			"/:controller/:id",
-			array("action" => "view", "[method]" => "GET"),
-			array("pass"=>array("id"))
-		);
-	Router::connect(
-			"/:controller",
-			array("action" => "add", "[method]" => "POST")
-		);
-	App::import('Lib', 'routes/SlugRoute');
-	Router::connect(
-			"/:controller",
-			array("action"=>"delete", "[method]" => array("DELETE","PUT")),array('routeClass' => 'SlugRoute')
-		);
-	Router::parseExtensions('json');
+	
+	App::import('Lib', 'Api.SlugRoute');
+	//Custom API Routing
+	Configure::write('Api.MASTER_ROUTES','educ_levels|system_defaults|modules');
+	App::import('Vendor', 'Api.routes');
