@@ -4,7 +4,7 @@ class TransactionType extends AppModel {
 	var $consumableFields = array('id','name','amount','token','fees','amounts');
 	var $virtualFields = array(
 				'token'=>'MD5(CONCAT(AccountTransaction.id,TransactionType.id))',
-				'amount'=>'CASE WHEN AccountTransaction.total_amount THEN  AccountTransaction.total_amount ELSE TransactionType.default_amount END',
+				'amount'=>'CASE WHEN AccountTransaction.amount THEN  AccountTransaction.amount ELSE TransactionType.default_amount END',
 				'fees'=>'AccountTransaction.breakdown_codes',
 				'amounts'=>'AccountTransaction.breakdown_amounts',
 				);
@@ -53,17 +53,21 @@ class TransactionType extends AppModel {
 		if(isset($queryData['conditions'][0])){
 			foreach($queryData['conditions'] as $i=>$condition){
 				foreach($condition as $cond=>$value){
-					if(preg_match('/account_id/',$cond)){
+					if(preg_match('/account_no/',$cond)){
 						unset($queryData['conditions'][$i][$cond]);
 						$delimiter = $value;
 					}
 				}
 			}
 		}
+		//Look up for the Account by Student ID
+		$this->AccountTransaction->Account->recursive=-1;
+		$AccountInfo = $this->AccountTransaction->Account->findByStudentId($delimiter);
+		
 		$queryData['contain']=array(
 						'AccountTransaction' => array(
 							'conditions' => array(
-								'AccountTransaction.account_id' => $delimiter
+								'AccountTransaction.account_id' => $AccountInfo['Account']['id']
 							)
 						)
 					);
