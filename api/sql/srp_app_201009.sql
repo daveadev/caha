@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Oct 09, 2020 at 04:51 AM
+-- Generation Time: Oct 09, 2020 at 05:40 AM
 -- Server version: 10.1.36-MariaDB
 -- PHP Version: 5.6.38
 
@@ -33,10 +33,11 @@ CREATE TABLE `accounts` (
   `account_type` char(10) DEFAULT NULL,
   `student_id` char(8) NOT NULL,
   `account_details` text,
-  `payment_scheme` char(4) DEFAULT NULL COMMENT 'CASH,INSTL',
+  `payment_scheme` char(5) DEFAULT NULL COMMENT 'CASH,INSTL',
   `assessment_total` decimal(10,2) DEFAULT NULL,
-  `outstanding_balance` decimal(10,2) DEFAULT NULL,
   `discount_amount` decimal(10,2) DEFAULT NULL,
+  `payment_total` decimal(10,2) NOT NULL,
+  `outstanding_balance` decimal(10,2) DEFAULT NULL,
   `rounding_off` decimal(6,5) DEFAULT NULL,
   `created` datetime DEFAULT NULL,
   `modified` datetime DEFAULT NULL
@@ -46,8 +47,8 @@ CREATE TABLE `accounts` (
 -- Dumping data for table `accounts`
 --
 
-INSERT INTO `accounts` (`id`, `account_type`, `student_id`, `account_details`, `payment_scheme`, `assessment_total`, `outstanding_balance`, `discount_amount`, `rounding_off`, `created`, `modified`) VALUES
-('AF2000001', 'student', 'LSJ10231', NULL, 'INST', '15000.00', '7000.00', '500.00', '0.00000', NULL, NULL);
+INSERT INTO `accounts` (`id`, `account_type`, `student_id`, `account_details`, `payment_scheme`, `assessment_total`, `discount_amount`, `payment_total`, `outstanding_balance`, `rounding_off`, `created`, `modified`) VALUES
+('AF2000001', 'student', 'LSJ43711', NULL, 'INSTL', '16030.00', '9000.00', '625.00', '6405.00', '0.00000', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -123,8 +124,7 @@ CREATE TABLE `account_histories` (
 --
 
 INSERT INTO `account_histories` (`id`, `account_id`, `transac_date`, `transac_time`, `ref_no`, `details`, `flag`, `amount`, `created`, `modified`) VALUES
-(1, 'AF2000001', '2020-10-09', '01:23:45', 'AF2000001', 'ESCDSC', '-', '500.00', NULL, NULL),
-(2, 'AF2000001', '2020-10-09', '01:23:45', 'OR12345', 'INIPY', '-', '7500.00', NULL, NULL);
+(1, 'AF200001', '2020-02-20', '01:23:45', 'OR 117558', 'SUBQPY', '-', '625.00', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -138,8 +138,8 @@ CREATE TABLE `account_schedules` (
   `bill_month` char(8) DEFAULT NULL,
   `due_amount` decimal(10,2) DEFAULT NULL,
   `paid_amount` decimal(10,2) DEFAULT NULL,
-  `due_date` datetime DEFAULT NULL,
-  `paid_date` datetime DEFAULT NULL,
+  `due_date` date DEFAULT NULL,
+  `paid_date` date DEFAULT NULL,
   `status` char(4) DEFAULT NULL COMMENT 'PAID,OVER,LATE',
   `order` int(11) DEFAULT NULL,
   `created` datetime DEFAULT NULL,
@@ -151,9 +151,15 @@ CREATE TABLE `account_schedules` (
 --
 
 INSERT INTO `account_schedules` (`id`, `account_id`, `bill_month`, `due_amount`, `paid_amount`, `due_date`, `paid_date`, `status`, `order`, `created`, `modified`) VALUES
-(1, 'AF2000001', 'UPONNROL', '7500.00', '7500.00', '2020-10-10 00:00:00', '2020-10-09 00:00:00', 'PAID', 1, NULL, NULL),
-(2, 'AF2000001', 'NOV2020', '3500.00', NULL, '2020-11-10 00:00:00', NULL, 'OPEN', 2, NULL, NULL),
-(3, 'AF2000001', 'DEC2020', '3500.00', NULL, '2020-12-10 00:00:00', NULL, 'OPEN', 3, NULL, NULL);
+(1, 'AF2000001', 'UPONNROL', '2030.00', '0.00', '2020-09-01', NULL, 'NONE', 1, NULL, NULL),
+(2, 'AF2000001', 'SEP2020', '625.00', '625.00', '2020-09-15', '2020-02-20', 'PAID', 2, NULL, NULL),
+(3, 'AF2000001', 'OCT2020', '625.00', NULL, '2020-10-15', NULL, 'OPEN', 3, NULL, NULL),
+(4, 'AF2000001', 'NOV2020', '625.00', NULL, '2020-11-15', NULL, 'OPEN', 4, NULL, NULL),
+(5, 'AF2000001', 'DEC2020', '625.00', NULL, '2020-12-15', NULL, 'OPEN', 5, NULL, NULL),
+(6, 'AF2000001', 'JAN2021', '625.00', NULL, '2021-01-15', NULL, 'OPEN', 6, NULL, NULL),
+(7, 'AF2000001', 'FEB2021', '625.00', NULL, '2021-02-15', NULL, 'OPEN', 7, NULL, NULL),
+(8, 'AF2000001', 'MAR2021', '625.00', NULL, '2021-03-15', NULL, 'OPEN', 8, NULL, NULL),
+(9, 'AF2000001', 'APR2021', '625.00', NULL, '2021-04-15', NULL, 'OPEN', 9, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -179,7 +185,7 @@ CREATE TABLE `account_transactions` (
 --
 
 INSERT INTO `account_transactions` (`id`, `account_id`, `transaction_type_id`, `ref_no`, `breakdown_codes`, `breakdown_amounts`, `amount`, `source`, `created`, `modified`) VALUES
-(1, 'AF2000001', 'INIPY', 'OR12345', 'TUI', '7500', '7500.00', 'cashier', NULL, NULL);
+(1, 'AF2000001', 'SBQPY', 'TR10000', 'TUI', '625', '625.00', 'cashier', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -272,9 +278,9 @@ CREATE TABLE `ledgers` (
 --
 
 INSERT INTO `ledgers` (`id`, `account_id`, `type`, `esp`, `transac_date`, `transac_time`, `ref_no`, `details`, `amount`, `created`) VALUES
-(1, 'AF2000001', '+', '2020.00', '2020-10-09', '01:23:45', 'AF2000001', 'Tuition Fee', '15000.00', NULL),
-(2, 'AF2000001', '-', '2020.00', '2020-10-09', '01:23:45', 'AF2000001', 'ESC Discount', '500.00', NULL),
-(3, 'AF2000001', '-', '2020.00', '2020-10-10', '01:23:45', 'OR12345', 'Initial Payment', '7500.00', NULL),
+(1, 'AF2000001', '+', '2020.00', '2020-02-20', '01:23:45', 'AF2000001', 'Tuition Fee', '16030.00', NULL),
+(2, 'AF2000001', '-', '2020.00', '2020-02-20', '01:23:45', 'AF2000001', 'ESC Discount', '9000.00', NULL),
+(3, 'AF2000001', '-', '2020.00', '2020-02-20', '01:23:45', 'OR12345', 'Subsequent Payment', '625.00', NULL),
 (4, 'AF2000001', '+', '2020.00', '2020-10-10', '01:23:45', 'AJ10001', 'Test Credit', '10.00', NULL),
 (5, 'AF2000001', '-', '2020.00', '2020-10-10', '01:23:56', 'AJ10002', 'Test Debit', '10.00', NULL);
 
@@ -352,7 +358,7 @@ CREATE TABLE `transactions` (
 --
 
 INSERT INTO `transactions` (`id`, `type`, `status`, `ref_no`, `transac_date`, `transac_time`, `account_id`, `created`, `modified`) VALUES
-(10000, 'payment', 'fulfilled', 'OR12345', '2020-10-09', '01:23:45', 'AF2000001', NULL, NULL);
+(10000, 'payment', 'fulfilled', 'OR 117558', '2020-02-20', '01:23:45', 'AF2000001', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -373,7 +379,7 @@ CREATE TABLE `transaction_details` (
 --
 
 INSERT INTO `transaction_details` (`id`, `transaction_id`, `transaction_type_id`, `details`, `amount`) VALUES
-(1, 10000, 'INIPY', NULL, '7500.00');
+(1, 10000, 'SBQPY', NULL, '625.00');
 
 -- --------------------------------------------------------
 
@@ -395,8 +401,7 @@ CREATE TABLE `transaction_payments` (
 --
 
 INSERT INTO `transaction_payments` (`id`, `transaction_id`, `payment_method_id`, `details`, `valid_on`, `amount`) VALUES
-(1, 10000, 'CASH', 'cash', NULL, '500.00'),
-(2, 10000, 'CHCK', 'BDO-12345X', '2020-10-09', '7000.00');
+(1, 10000, 'CASH', 'cash', NULL, '625.00');
 
 -- --------------------------------------------------------
 
@@ -611,13 +616,13 @@ ALTER TABLE `account_fees`
 -- AUTO_INCREMENT for table `account_histories`
 --
 ALTER TABLE `account_histories`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `account_schedules`
 --
 ALTER TABLE `account_schedules`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `account_transactions`
