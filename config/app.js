@@ -1,8 +1,8 @@
 "use strict";
-define(['root','directives','settings','angularAMD','angular-route', 'angular-cookies','angular-chart', 'ui-bootstrap','ui.tree'], 
+define(['root','directives','settings','angularAMD','angular-route', 'angular-cookies','angular-local-storage','angular-chart','custom-window', 'ui-bootstrap','ui.tree'], 
 function (root,directives,settings,angularAMD) {
     var app = angular.module("mainModule", 
-        ['ngRoute', 'ngCookies', 'chart.js','ui.bootstrap','ui.tree']);
+        ['ngRoute', 'ngCookies', 'LocalStorageModule','chart.js','ui.bootstrap','ui.tree']);
 	var mainRouter = angularAMD.route({
         templateUrl: function (rp) { 
 			if(!rp.action)  rp.action ='index';
@@ -38,16 +38,17 @@ function (root,directives,settings,angularAMD) {
     }))
 	.when("/login", angularAMD.route({
         templateUrl: function (rp) {
-			return "app/views/auth/login."+settings.VIEW_EXTENSION;
+			return "views/auth/login."+settings.VIEW_EXTENSION;
 		},
 		controllerUrl: "controllers/auth_controller"            
     }))
 	.when("/logout", angularAMD.route({
         templateUrl: function (rp) {
-			return "app/views/auth/login."+settings.VIEW_EXTENSION;
+			return "views/auth/login."+settings.VIEW_EXTENSION;
 		},
 		controllerUrl: "controllers/auth_controller"            
     }))
+	
 	.when("/pages/:page",angularAMD.route({
 		templateUrl: function (rp) {
 			return settings.VIEWS_DIRECTORY+'/pages/'+rp.page+'.'+settings.VIEW_EXTENSION;
@@ -57,7 +58,7 @@ function (root,directives,settings,angularAMD) {
 	
 	.when("/:controller", mainRouter)
 	.when("/:controller/:action", mainRouter)
-	    .otherwise({ redirectTo: '/' }) 
+        .otherwise({ redirectTo: '/' }) 
     }]);                
 	app.config(['$uibModalProvider', function($uibModalProvider) {
 		$uibModalProvider.options = {
