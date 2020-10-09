@@ -107,6 +107,7 @@ CREATE TABLE `account_transactions` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `account_id` char(15) DEFAULT NULL,
   `transaction_type_id` char(5) DEFAULT NULL COMMENT 'INIPY,SBQPY',
+  `breakdown_codes` char(30) DEFAULT NULL,
   `ref_no` char(10) DEFAULT NULL,
   `amount` decimal(10,2) DEFAULT NULL,
   `source` varchar(20) DEFAULT NULL,
@@ -117,7 +118,7 @@ CREATE TABLE `account_transactions` (
 
 /*Data for the table `account_transactions` */
 
-insert  into `account_transactions`(`id`,`account_id`,`transaction_type_id`,`ref_no`,`amount`,`source`,`created`,`modified`) values (1,'AF2000001','INIPY','OR12345','7500.00','cashier',NULL,NULL);
+insert  into `account_transactions`(`id`,`account_id`,`transaction_type_id`,`breakdown_codes`,`ref_no`,`amount`,`source`,`created`,`modified`) values (1,'AF2000001','INIPY','TUI','OR12345','7500.00','cashier',NULL,NULL);
 
 /*Table structure for table `accounts` */
 
@@ -126,6 +127,7 @@ DROP TABLE IF EXISTS `accounts`;
 CREATE TABLE `accounts` (
   `id` char(15) NOT NULL,
   `account_type` char(10) DEFAULT NULL,
+  `student_id` char(8) DEFAULT NULL,
   `account_details` text,
   `payment_scheme` char(4) DEFAULT NULL COMMENT 'CASH,INSTL',
   `assessment_total` decimal(10,2) DEFAULT NULL,
@@ -139,7 +141,7 @@ CREATE TABLE `accounts` (
 
 /*Data for the table `accounts` */
 
-insert  into `accounts`(`id`,`account_type`,`account_details`,`payment_scheme`,`assessment_total`,`outstanding_balance`,`discount_amount`,`rounding_off`,`created`,`modified`) values ('AF2000001','student',NULL,'INST','15000.00','7000.00','500.00','0.00000',NULL,NULL);
+insert  into `accounts`(`id`,`account_type`,`student_id`,`account_details`,`payment_scheme`,`assessment_total`,`outstanding_balance`,`discount_amount`,`rounding_off`,`created`,`modified`) values ('AF2000001','student','LSJ10231',NULL,'INST','15000.00','7000.00','500.00','0.00000',NULL,NULL);
 
 /*Table structure for table `booklets` */
 
@@ -247,7 +249,7 @@ CREATE TABLE `paymen_methods` (
 
 /*Data for the table `paymen_methods` */
 
-insert  into `paymen_methods`(`id`,`name`,`description`,`icon`) values ('CASH','Cash','Payment thru cash',NULL),('CHCK','Check','Payment thru check','ok');
+insert  into `payment_methods`(`id`,`name`,`description`,`icon`) values ('CASH','Cash','Payment thru cash',NULL),('CHCK','Check','Payment thru check','ok');
 
 /*Table structure for table `transaction_details` */
 
