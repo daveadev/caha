@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Oct 09, 2020 at 05:40 AM
+-- Generation Time: Oct 09, 2020 at 11:31 AM
 -- Server version: 10.1.36-MariaDB
 -- PHP Version: 5.6.38
 
@@ -29,9 +29,9 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `accounts` (
-  `id` char(15) NOT NULL,
+  `id` char(8) NOT NULL,
   `account_type` char(10) DEFAULT NULL,
-  `student_id` char(8) NOT NULL,
+  `ref_no` char(15) NOT NULL,
   `account_details` text,
   `payment_scheme` char(5) DEFAULT NULL COMMENT 'CASH,INSTL',
   `assessment_total` decimal(10,2) DEFAULT NULL,
@@ -47,8 +47,8 @@ CREATE TABLE `accounts` (
 -- Dumping data for table `accounts`
 --
 
-INSERT INTO `accounts` (`id`, `account_type`, `student_id`, `account_details`, `payment_scheme`, `assessment_total`, `discount_amount`, `payment_total`, `outstanding_balance`, `rounding_off`, `created`, `modified`) VALUES
-('AF2000001', 'student', 'LSJ43711', NULL, 'INSTL', '16030.00', '9000.00', '625.00', '6405.00', '0.00000', NULL, NULL);
+INSERT INTO `accounts` (`id`, `account_type`, `ref_no`, `account_details`, `payment_scheme`, `assessment_total`, `discount_amount`, `payment_total`, `outstanding_balance`, `rounding_off`, `created`, `modified`) VALUES
+('LSJ43711', 'student', 'AF2000001', NULL, 'INSTL', '16030.00', '9000.00', '625.00', '6405.00', '0.00000', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -58,7 +58,7 @@ INSERT INTO `accounts` (`id`, `account_type`, `student_id`, `account_details`, `
 
 CREATE TABLE `account_adjustments` (
   `id` int(11) NOT NULL,
-  `account_id` char(15) DEFAULT NULL,
+  `account_id` char(8) DEFAULT NULL,
   `item_code` char(4) DEFAULT NULL,
   `details` varchar(50) DEFAULT NULL,
   `adjust_date` date DEFAULT NULL,
@@ -73,8 +73,8 @@ CREATE TABLE `account_adjustments` (
 --
 
 INSERT INTO `account_adjustments` (`id`, `account_id`, `item_code`, `details`, `adjust_date`, `flag`, `amount`, `created`, `modified`) VALUES
-(10001, 'AF2000001', 'AJCR', 'Test Credit', '2020-10-09', '+', '10.00', NULL, NULL),
-(10002, 'AF2000001', 'AJDB', 'Test Debit', '2020-10-09', '-', '10.00', NULL, NULL);
+(10001, 'LSJ43711', 'AJCR', 'Test Credit', '2020-10-09', '+', '10.00', NULL, NULL),
+(10002, 'LSJ43711', 'AJDB', 'Test Debit', '2020-10-09', '-', '10.00', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -84,7 +84,7 @@ INSERT INTO `account_adjustments` (`id`, `account_id`, `item_code`, `details`, `
 
 CREATE TABLE `account_fees` (
   `id` int(11) NOT NULL,
-  `account_id` char(15) DEFAULT NULL,
+  `account_id` char(8) DEFAULT NULL,
   `fee_id` char(3) DEFAULT NULL,
   `due_amount` decimal(10,2) DEFAULT NULL,
   `paid_amount` decimal(10,2) DEFAULT NULL,
@@ -98,7 +98,7 @@ CREATE TABLE `account_fees` (
 --
 
 INSERT INTO `account_fees` (`id`, `account_id`, `fee_id`, `due_amount`, `paid_amount`, `adjust_amount`, `created`, `modified`) VALUES
-(1, 'AF2000001', 'TUI', '15000.00', '8000.00', '0.00', NULL, NULL);
+(1, 'LSJ43711', 'TUI', '15000.00', '8000.00', '0.00', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -108,7 +108,7 @@ INSERT INTO `account_fees` (`id`, `account_id`, `fee_id`, `due_amount`, `paid_am
 
 CREATE TABLE `account_histories` (
   `id` int(11) NOT NULL,
-  `account_id` char(15) DEFAULT NULL,
+  `account_id` char(8) DEFAULT NULL,
   `transac_date` date DEFAULT NULL,
   `transac_time` time DEFAULT NULL,
   `ref_no` char(10) DEFAULT NULL,
@@ -124,7 +124,7 @@ CREATE TABLE `account_histories` (
 --
 
 INSERT INTO `account_histories` (`id`, `account_id`, `transac_date`, `transac_time`, `ref_no`, `details`, `flag`, `amount`, `created`, `modified`) VALUES
-(1, 'AF200001', '2020-02-20', '01:23:45', 'OR 117558', 'SUBQPY', '-', '625.00', NULL, NULL);
+(1, 'LSJ43711', '2020-02-20', '01:23:45', 'OR 117558', 'SUBQPY', '-', '625.00', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -134,7 +134,7 @@ INSERT INTO `account_histories` (`id`, `account_id`, `transac_date`, `transac_ti
 
 CREATE TABLE `account_schedules` (
   `id` int(11) NOT NULL,
-  `account_id` char(15) DEFAULT NULL,
+  `account_id` char(8) DEFAULT NULL,
   `bill_month` char(8) DEFAULT NULL,
   `due_amount` decimal(10,2) DEFAULT NULL,
   `paid_amount` decimal(10,2) DEFAULT NULL,
@@ -151,15 +151,15 @@ CREATE TABLE `account_schedules` (
 --
 
 INSERT INTO `account_schedules` (`id`, `account_id`, `bill_month`, `due_amount`, `paid_amount`, `due_date`, `paid_date`, `status`, `order`, `created`, `modified`) VALUES
-(1, 'AF2000001', 'UPONNROL', '2030.00', '0.00', '2020-09-01', NULL, 'NONE', 1, NULL, NULL),
-(2, 'AF2000001', 'SEP2020', '625.00', '625.00', '2020-09-15', '2020-02-20', 'PAID', 2, NULL, NULL),
-(3, 'AF2000001', 'OCT2020', '625.00', NULL, '2020-10-15', NULL, 'OPEN', 3, NULL, NULL),
-(4, 'AF2000001', 'NOV2020', '625.00', NULL, '2020-11-15', NULL, 'OPEN', 4, NULL, NULL),
-(5, 'AF2000001', 'DEC2020', '625.00', NULL, '2020-12-15', NULL, 'OPEN', 5, NULL, NULL),
-(6, 'AF2000001', 'JAN2021', '625.00', NULL, '2021-01-15', NULL, 'OPEN', 6, NULL, NULL),
-(7, 'AF2000001', 'FEB2021', '625.00', NULL, '2021-02-15', NULL, 'OPEN', 7, NULL, NULL),
-(8, 'AF2000001', 'MAR2021', '625.00', NULL, '2021-03-15', NULL, 'OPEN', 8, NULL, NULL),
-(9, 'AF2000001', 'APR2021', '625.00', NULL, '2021-04-15', NULL, 'OPEN', 9, NULL, NULL);
+(1, 'LSJ43711', 'UPONNROL', '2030.00', '0.00', '2020-09-01', NULL, 'NONE', 1, NULL, NULL),
+(2, 'LSJ43711', 'SEP2020', '625.00', '625.00', '2020-09-15', '2020-02-20', 'PAID', 2, NULL, NULL),
+(3, 'LSJ43711', 'OCT2020', '625.00', NULL, '2020-10-15', NULL, 'OPEN', 3, NULL, NULL),
+(4, 'LSJ43711', 'NOV2020', '625.00', NULL, '2020-11-15', NULL, 'OPEN', 4, NULL, NULL),
+(5, 'LSJ43711', 'DEC2020', '625.00', NULL, '2020-12-15', NULL, 'OPEN', 5, NULL, NULL),
+(6, 'LSJ43711', 'JAN2021', '625.00', NULL, '2021-01-15', NULL, 'OPEN', 6, NULL, NULL),
+(7, 'LSJ43711', 'FEB2021', '625.00', NULL, '2021-02-15', NULL, 'OPEN', 7, NULL, NULL),
+(8, 'LSJ43711', 'MAR2021', '625.00', NULL, '2021-03-15', NULL, 'OPEN', 8, NULL, NULL),
+(9, 'LSJ43711', 'APR2021', '625.00', NULL, '2021-04-01', NULL, 'OPEN', 9, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -169,9 +169,9 @@ INSERT INTO `account_schedules` (`id`, `account_id`, `bill_month`, `due_amount`,
 
 CREATE TABLE `account_transactions` (
   `id` int(11) NOT NULL,
-  `account_id` char(15) DEFAULT NULL,
+  `account_id` char(8) DEFAULT NULL,
   `transaction_type_id` char(5) DEFAULT NULL COMMENT 'INIPY,SBQPY',
-  `ref_no` char(10) DEFAULT NULL,
+  `ref_no` char(15) DEFAULT NULL,
   `breakdown_codes` varchar(30) NOT NULL,
   `breakdown_amounts` text NOT NULL,
   `amount` decimal(10,2) DEFAULT NULL,
@@ -185,7 +185,7 @@ CREATE TABLE `account_transactions` (
 --
 
 INSERT INTO `account_transactions` (`id`, `account_id`, `transaction_type_id`, `ref_no`, `breakdown_codes`, `breakdown_amounts`, `amount`, `source`, `created`, `modified`) VALUES
-(1, 'AF2000001', 'SBQPY', 'TR10000', 'TUI', '625', '625.00', 'cashier', NULL, NULL);
+(1, 'LSJ43711', 'SBQPY', 'TR10001', 'TUI', '625', '625.00', 'cashier', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -262,7 +262,7 @@ INSERT INTO `fees` (`id`, `name`, `order`, `created`, `modified`) VALUES
 
 CREATE TABLE `ledgers` (
   `id` int(11) NOT NULL,
-  `account_id` char(15) DEFAULT NULL,
+  `account_id` char(8) DEFAULT NULL,
   `type` char(1) DEFAULT NULL,
   `esp` decimal(6,2) DEFAULT NULL,
   `transac_date` date DEFAULT NULL,
@@ -278,11 +278,11 @@ CREATE TABLE `ledgers` (
 --
 
 INSERT INTO `ledgers` (`id`, `account_id`, `type`, `esp`, `transac_date`, `transac_time`, `ref_no`, `details`, `amount`, `created`) VALUES
-(1, 'AF2000001', '+', '2020.00', '2020-02-20', '01:23:45', 'AF2000001', 'Tuition Fee', '16030.00', NULL),
-(2, 'AF2000001', '-', '2020.00', '2020-02-20', '01:23:45', 'AF2000001', 'ESC Discount', '9000.00', NULL),
-(3, 'AF2000001', '-', '2020.00', '2020-02-20', '01:23:45', 'OR12345', 'Subsequent Payment', '625.00', NULL),
-(4, 'AF2000001', '+', '2020.00', '2020-10-10', '01:23:45', 'AJ10001', 'Test Credit', '10.00', NULL),
-(5, 'AF2000001', '-', '2020.00', '2020-10-10', '01:23:56', 'AJ10002', 'Test Debit', '10.00', NULL);
+(1, 'LSJ43711', '+', '2020.00', '2020-02-20', '01:23:45', 'AF2000001', 'Tuition Fee', '16030.00', NULL),
+(2, 'LSJ43711', '-', '2020.00', '2020-02-20', '01:23:45', 'AF2000001', 'ESC Discount', '9000.00', NULL),
+(3, 'LSJ43711', '-', '2020.00', '2020-02-20', '01:23:45', 'OR12345', 'Subsequent Payment', '625.00', NULL),
+(4, 'LSJ43711', '+', '2020.00', '2020-10-10', '01:23:45', 'AJ10001', 'Test Credit', '10.00', NULL),
+(5, 'LSJ43711', '-', '2020.00', '2020-10-10', '01:23:56', 'AJ10002', 'Test Debit', '10.00', NULL);
 
 -- --------------------------------------------------------
 
@@ -348,7 +348,7 @@ CREATE TABLE `transactions` (
   `ref_no` char(10) DEFAULT NULL,
   `transac_date` date DEFAULT NULL,
   `transac_time` time DEFAULT NULL,
-  `account_id` char(15) DEFAULT NULL,
+  `account_id` char(8) DEFAULT NULL,
   `created` datetime DEFAULT NULL,
   `modified` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -358,7 +358,7 @@ CREATE TABLE `transactions` (
 --
 
 INSERT INTO `transactions` (`id`, `type`, `status`, `ref_no`, `transac_date`, `transac_time`, `account_id`, `created`, `modified`) VALUES
-(10000, 'payment', 'fulfilled', 'OR 117558', '2020-02-20', '01:23:45', 'AF2000001', NULL, NULL);
+(10000, 'payment', 'fulfilled', 'OR 117558', '2020-02-20', '01:23:45', 'LSJ43711', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -459,7 +459,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `user_type_id`, `username`, `password`, `status`, `login_failed`, `ip_failed`, `login_success`, `ip_success`, `password_changed`, `created`, `modified`) VALUES
-(1, 'cshr', 'admin', '846385b5749d96060e2a6da69fa592c3f77c5fe0', 'ACTIV', NULL, NULL, 3, '::1', NULL, NULL, '2020-10-09 10:22:46');
+(1, 'cshr', 'admin', '846385b5749d96060e2a6da69fa592c3f77c5fe0', 'ACTIV', NULL, NULL, 4, '::1', NULL, NULL, '2020-10-09 10:22:46');
 
 -- --------------------------------------------------------
 
