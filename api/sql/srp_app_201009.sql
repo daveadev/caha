@@ -2,7 +2,8 @@
 SQLyog Ultimate v9.10 
 MySQL - 5.5.5-10.1.31-MariaDB : Database - srp_app_201009
 *********************************************************************
-*/
+*/
+
 
 /*!40101 SET NAMES utf8 */;
 
@@ -380,7 +381,7 @@ CREATE TABLE `users` (
 
 /*Data for the table `users` */
 
-insert  into `users`(`id`,`user_type_id`,`username`,`password`,`status`,`login_failed`,`ip_failed`,`login_success`,`ip_success`,`password_changed`,`created`,`modified`) values (1,'cashi','dave','hashmypassword','ACTIV',NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+insert  into `users`(`id`,`user_type_id`,`username`,`password`,`status`,`login_failed`,`ip_failed`,`login_success`,`ip_success`,`password_changed`,`created`,`modified`) values (1,'cshr','admin','846385b5749d96060e2a6da69fa592c3f77c5fe0','ACTIV',NULL,NULL,NULL,NULL,NULL,NULL,NULL);
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
