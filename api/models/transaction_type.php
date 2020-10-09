@@ -61,13 +61,13 @@ class TransactionType extends AppModel {
 			}
 		}
 		//Look up for the Account by Student ID
-		$this->AccountTransaction->Account->recursive=-1;
-		$AccountInfo = $this->AccountTransaction->Account->findByStudentId($delimiter);
+		//$this->AccountTransaction->Account->recursive=-1;
+		//$AccountInfo = $this->AccountTransaction->Account->findByStudentId($delimiter);
 		
 		$queryData['contain']=array(
 						'AccountTransaction' => array(
 							'conditions' => array(
-								'AccountTransaction.account_id' => $AccountInfo['Account']['id']
+								'AccountTransaction.account_id' => $delimiter
 							)
 						)
 					);
