@@ -33,4 +33,10 @@
 
 App::import('Controller','Api.ApiAppController');
 class AppController extends ApiAppController {
+	function beforeFilter(){
+		parent::beforeFilter();
+		if($this->isAPIRequest()){
+			$this->Auth->allow('*');
+		}
+	}
 }
