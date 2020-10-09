@@ -2,11 +2,14 @@
   "name": "SRP",
   "description": "Simplified Solution",
   "version": "0.1.0",
-  "main": "main.js",
+  "main": "electron/main.js",
   "scripts": {
     "start": "electron ."
   },
   "devDependencies": {
     "electron": "^10.1.3"
+  },
+  "dependencies": {
+    "express": "^4.17.1"
   }
 }
