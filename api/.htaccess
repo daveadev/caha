@@ -3,6 +3,8 @@
     RewriteRule    ^$    webroot/    [L]
     RewriteRule    (.*) webroot/$1    [L]
  </IfModule>
-Header add Access-Control-Allow-Origin "http://localhost:3333"
-Header add Access-Control-Allow-Methods: "*"
-Header add Access-Control-Allow-Headers: "*"
+ <IfModule mod_headers.c>
+	Header add Access-Control-Allow-Origin "http://localhost:3333"
+	Header add Access-Control-Allow-Methods: "*"
+	Header add Access-Control-Allow-Headers: "*"
+ </IfModule>
