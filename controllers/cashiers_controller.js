@@ -103,12 +103,11 @@ define(['app', 'api'], function(app) {
                             $scope.ActiveTransactions.push(transaction);
                         };
                     };
+					console.log($scope.TotalDue);
                 }
                 if ($scope.ActiveStep === 3) {
 					console.log($scope.ActiveTransactions);
                     //Pass value of payment information
-                    $scope.ActivePayments = [];
-                    $scope.TotalPaid = 0;
 					if('CHCK' in $scope.SelectedPayments){
 						if($scope.SelectedPayments['CHCK']){
 							var yes = confirm("Check payment option chosen. Change will be credited to your account. Proceed payment?");
@@ -306,12 +305,17 @@ define(['app', 'api'], function(app) {
                 var noncash = 0;
                 for (var index in $scope.Payments) {
                     var payment = $scope.Payments[index];
-                    if (payment.id == 'CASH')
-						cash += payment.amount; 
-                    if (payment.id != 'CASH') { noncash += payment.amount; }
+					console.log(payment);
+                    if (payment.id == 'CASH'){
+						if(payment.amount)
+							cash += payment.amount; 
+					}
+                    if (payment.id != 'CASH') { 
+						if(payment.amount)
+							noncash += payment.amount; 
+					}
                 }
                 $scope.CurrentChange = (cash + noncash) - $scope.TotalDue;
-				console.log($scope.SelectedPayments);
 				if($scope.SelectedPayments['CHCK']){
 					if((cash+noncash)>=$scope.TotalDue&&$scope.Popdone)
 						$scope.Disabled=0;
