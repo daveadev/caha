@@ -13,6 +13,6 @@ define(function() {
 	TEST_ERROR:false,
 	API_URL:'api/',
 	API_EXT:'json',
-	API_HOST:'http://localhost:8080/srp/',
+	API_HOST:window.location.origin+window.location.pathname,
   };
  });
