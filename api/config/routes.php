@@ -34,6 +34,14 @@
  */
 	Router::connect('/pages/*', array('controller' => 'pages', 'action' => 'display'));
 	
+	
+	Router::connect(
+			"/soa",
+			array("controller"=>"reports","action"=>"soa", "[method]" => "GET")
+	);
+	
+	
+	
 	App::import('Lib', 'Api.SlugRoute');
 	//Custom API Routing
 	Configure::write('Api.MASTER_ROUTES','educ_levels|system_defaults|modules');
