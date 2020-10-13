@@ -83,6 +83,10 @@ define(['app', 'api'], function(app) {
                     api.GET('transaction_types', data, function success(response) {
                         $scope.TransactionTypes = response.data;
                     });
+					var stud = {id:$scope.ActiveStudent.id}
+					api.GET('accounts',stud,function success(response){
+						$scope.ActiveAccount = response.data[0];
+					})
 
                 }
                 if ($scope.ActiveStep === 2) {
@@ -188,7 +192,7 @@ define(['app', 'api'], function(app) {
 				$scope.Disabled = 0;
                 $scope.SelectedStudent = {
                     id: student.id,
-                    name: student.first_name + " " + student.middle_name + " " + student.last_name + " " + student.suffix_name,
+                    name: student.first_name + " " + student.middle_name + " " + student.last_name + " " + student.suffix,
                     yearlevel: student.year_level_id,
                     account_id: student.account_id
                 };
