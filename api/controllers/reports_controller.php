@@ -23,4 +23,20 @@ class ReportsController extends AppController{
 			die('No data available.Contact your system administrator.');
 		}
 	}
+	function or(){
+		$or_detail = array(
+			'ref_no'=>'OR 12234',
+			'transac_date'=>'12 OCT 2020',
+			'student'=>'Juan Dela Cruz',
+			'year_level'=>'Gr. 7',
+			'sy'=>'20-21',
+			'transac_details'=> array(
+				array('item'=>'Intial Payment', 'amount'=>'1,000'),
+				array('item'=>'P.E Uniform', 'amount'=>'2,000','is_others'=>true),
+			),
+			'total_paid'=>'3,000.00',
+			'cashier'=>'cashier1',
+			'verify_sign'=>'1A2khsfdso1sa'
+		);
+	}
 }
