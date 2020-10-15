@@ -31,8 +31,8 @@ class ReportsController extends AppController{
 			'year_level'=>'Gr. 7',
 			'sy'=>'20-21',
 			'transac_details'=> array(
-				array('item'=>'Intial Payment', 'amount'=>'1,000'),
-				array('item'=>'P.E Uniform', 'amount'=>'2,000','is_others'=>true),
+				array('item'=>'IP', 'amount'=>'1,000'),
+				array('item'=>'PE', 'amount'=>'2,000'),
 			),
 			'total_paid'=>'3,000.00',
 			'cashier'=>'cashier1',
