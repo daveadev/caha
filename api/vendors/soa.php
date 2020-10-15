@@ -14,7 +14,7 @@ class SOA extends Formsheet{
 		$this->createSheet();
 	}
 	
-	function ledger($stud,$data){
+	function ledger($stud,$data,$total_page,$page){
 		$this->showLines = !true;
 		$metrics = array(
 			'base_x'=> 0.5,
@@ -25,37 +25,43 @@ class SOA extends Formsheet{
 			'rows'=> 62,	
 		);
 		$this->section($metrics);
-		//$this->DrawImage(0.5,0.5,0.8,0.8,__DIR__ ."/deped.png");
+		$this->DrawImage(9,-1,0.8,0.8,__DIR__ ."/logo.png");
 	
 		$y=1;
 		$this->GRID['font_size']=9;
-		$this->centerText(0,$y++,'Lake Shore Educational Institution',$metrics['cols'],'');
-		$this->centerText(0,$y++,'Student Account',$metrics['cols'],'');
+		$this->centerText(0,$y++,'Lake Shore Educational Institution',$metrics['cols'],'b');
+		$this->centerText(0,$y++,'Student Account',$metrics['cols'],'b');
 		
 		$y++;
 		$fullname  = $stud['Student']['last_name'].', '.$stud['Student']['first_name'].' '.$stud['Student']['middle_name'];
-		$this->leftText(0,$y,'Student No.:     '.$stud['Student']['sno'],'','');
-		$this->leftText(28,$y++,'Date:     '.date("F d,Y"),'','');
-		$this->leftText(0,$y,'Student Name:     '.$fullname,'','');
+		$this->leftText(0,$y,'Student No.:','','');
+		$this->leftText(5,$y,$stud['Student']['sno'],'','');
+		$this->leftText(28,$y++,'Date:     '.date("d M Y"),'','');
+		$this->leftText(0,$y,'Student Name:','','');
+		$this->leftText(5,$y,$fullname,'','');
 		$this->leftText(28,$y++,'Time:     '.date("h:i:s a"),'','');
 		
 		$y++;
 		$this->leftText(0,$y++,'SY: 2020 - 2021','','');
 
 		$y++;
-		$this->centerText(1,$y,'Date',5,'');
-		$this->centerText(6,$y,'Ref No.',5,'');
-		$this->centerText(11,$y,'Descriptions',12,'');
-		$this->rightText(28,$y,'Charges','','');
-		$this->rightText(33,$y,'Payments','','');
-		$this->rightText(38,$y,'Balance','','');
+		$this->centerText(0,$y,'Date',5,'b');
+		$this->leftText(6.1,$y,'Ref No.','','b');
+		$this->leftText(11.1,$y,'Descriptions','','b');
+		$this->rightText(28,$y,'Charges','','b');
+		$this->rightText(33,$y,'Payments','','b');
+		$this->rightText(38,$y,'Balance','','b');
 
 		$y++;
 		$balance = 0;
 		foreach($data as $d){
-			$this->centerText(1,$y,$d['Ledger']['transac_date'],5,'');
-			$this->centerText(6,$y,$d['Ledger']['ref_no'],5,'');
-			$this->centerText(11,$y,$d['Ledger']['details'],12,'');
+			$time = strtotime($d['Ledger']['transac_date']);
+
+			$newformat = date('d M Y',$time);
+
+			$this->centerText(0,$y,$newformat,5,'');
+			$this->leftText(6.1,$y,$d['Ledger']['ref_no'],'','');
+			$this->leftText(11,$y,$d['Ledger']['details'],'','');
 			
 			if($d['Ledger']['type'] == '+'){
 				$this->rightText(28,$y,number_format($d['Ledger']['amount'],2),'','');
@@ -67,6 +73,9 @@ class SOA extends Formsheet{
 			$this->rightText(38,$y,number_format($balance,2),'','');
 			$y++;
 		}
+		
+		$this->GRID['font_size']=8;
+		$this->centerText(0,61,'Page '.$page.' of '.$total_page,38,'');
 		
 	}
 	
