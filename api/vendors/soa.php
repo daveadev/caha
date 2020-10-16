@@ -7,7 +7,7 @@ class SOA extends Formsheet{
 	protected static $_orient = 'P';	
 	protected static $curr_page = 1;
 	protected static $page_count;
-	
+	//negative ()
 	function SOA(){
 		$this->showLines = !true;
 		$this->FPDF(SOA::$_orient, SOA::$_unit,array(SOA::$_width,SOA::$_height));
@@ -25,24 +25,35 @@ class SOA extends Formsheet{
 			'rows'=> 62,	
 		);
 		$this->section($metrics);
-		$this->DrawImage(9,-1,0.8,0.8,__DIR__ ."/logo.png");
+		//$this->DrawImage(9,-1,0.8,0.8,__DIR__ ."/logo.png");
 	
 		$y=1;
 		$this->GRID['font_size']=9;
 		$this->centerText(0,$y++,'Lake Shore Educational Institution',$metrics['cols'],'b');
 		$this->centerText(0,$y++,'Student Account',$metrics['cols'],'b');
 		
-		$y++;
-		$fullname  = $stud['Student']['last_name'].', '.$stud['Student']['first_name'].' '.$stud['Student']['middle_name'];
+		$y=4;
+		//SNO
 		$this->leftText(0,$y,'Student No.:','','');
-		$this->leftText(5,$y,$stud['Student']['sno'],'','');
-		$this->leftText(28,$y++,'Date:     '.date("d M Y"),'','');
+		$this->leftText(5,$y++,$stud['Student']['sno'],'','');
+		//STUDENT NAME
+		$fullname  = $stud['Student']['last_name'].', '.$stud['Student']['first_name'].' '.$stud['Student']['middle_name'];
 		$this->leftText(0,$y,'Student Name:','','');
-		$this->leftText(5,$y,$fullname,'','');
-		$this->leftText(28,$y++,'Time:     '.date("h:i:s a"),'','');
+		$this->leftText(5,$y++,$fullname,'','');
+		//YEAR/SECTION
+		$this->leftText(0,$y,'Year/Section:','','');
+		$this->leftText(5,$y++,$stud['YearLevel']['description'].' / '.$stud['Section']['description'],'','');
 		
-		$y++;
-		$this->leftText(0,$y++,'SY: 2020 - 2021','','');
+		$y=4;
+		//DATE
+		$this->leftText(28,$y,'Date:','','');
+		$this->leftText(30,$y++,date("d M Y"),'','');
+		//TIME
+		$this->leftText(28,$y,'Time:','','');
+		$this->leftText(30,$y++,date("h:i:s a"),'','');
+		//SY
+		$this->leftText(28,$y,'SY:','','');
+		$this->leftText(30,$y++,'2020 - 2021','','');
 
 		$y++;
 		$this->centerText(0,$y,'Date',5,'b');
@@ -67,10 +78,16 @@ class SOA extends Formsheet{
 				$this->rightText(28,$y,number_format($d['Ledger']['amount'],2),'','');
 				$balance+=$d['Ledger']['amount'];
 			}else{
-				$this->rightText(33,$y,number_format($d['Ledger']['amount'],2),'','');
+				$this->rightText(33,$y,'('.number_format(abs($d['Ledger']['amount']),2).')','','');
+				//$this->rightText(33,$y,number_format($d['Ledger']['amount'],2),'','');
 				$balance-=$d['Ledger']['amount'];
 			}
-			$this->rightText(38,$y,number_format($balance,2),'','');
+			if ($balance < 0){
+				$this->rightText(38,$y,'('.number_format(abs($balance),2).')','','');
+			}else{
+				$this->rightText(38,$y,number_format($balance,2),'','');
+			}
+			
 			$y++;
 		}
 		
