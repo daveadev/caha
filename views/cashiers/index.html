@@ -32,9 +32,8 @@
 							<div class="col-md-6">
 								<dl>
 									<label>Series No.</label>
-									<dd><h3 class="amount pull-left" style="width:100%; text-align: left; margin-top:0">12345</h3></dd>
-									<dt>Date</dt>
-									<dd>November 20, 2015</dd>
+									<dd><h3 class="amount pull-left" style="width:100%; text-align: left; margin-top:0">{{ActiveBooklet.series_counter}}</h3></dd>
+									<dt>Date</dt>{{Today | date:'MM-dd-yyyy'}}
 									<dt>Account</dt>
 									<dd>{{ActiveStudent.id}} | {{ActiveStudent.name}}</dd>
 								</dl>
@@ -152,7 +151,7 @@
 						<div class="loader"></div>
 					</div>
 					<div class="list-group-item ng-class:{active:student.id===SelectedStudent.id}" ng-repeat="student in Students | filter:filterStudent" ng-click="setSelecetedStudent(student)">
-						<h4 class="list-group-item-heading">{{student.first_name}} {{student.last_name}} {{student.middle_name}} {{student.suffix_name}}</h4>
+						<h4 class="list-group-item-heading">{{student.name}}</h4>
 						<p class="list-group-item-text">
 						<span>{{student.id}}</span> | <span>{{student.year_level_id}}</span></p>
 					</div>
@@ -343,7 +342,7 @@
 				<dt>Account</dt>
 				<dd>{{ActiveStudent.name}}</dd>
 				<dt>Balance</dt>
-				<dd><span class="amount total peso">{{ActiveAccount.outstanding_balance}}</span></dd>
+				<dd><span class="amount total peso">{{ActiveStudent.outstanding_balance}}</span></dd>
 			</dl>
 			<button class="btn btn-primary btn-sm form-control" style="margin-bottom:5px">View SOA</button><br />
 			<button class="btn btn-default btn-sm form-control">View Pay Sched</button>
