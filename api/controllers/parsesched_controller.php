@@ -36,7 +36,7 @@ class ParseschedController extends AppController {
 					$total_payments +=$a['Ledger']['amount'];
 			}
 			
-			//pr($discount);
+			//pr($transacs);
 			//exit();
 			$ESC_HS = array(
 				array('UPONNROL',2030, '2020-09-01'),
@@ -82,15 +82,18 @@ class ParseschedController extends AppController {
 			
 			if($dept=='HS'&&$discount=='ESC')
 				$sched=$ESC_HS;
-			if($dept=='HS'&&$discount=='')
+			if($dept=='HS'&&!$discount)
 				$sched=$REG_HS;
 			if($dept=='SH'&&($discount=='ESC'||$discount=='QVR'))
 				$sched=$ESC_SH;
-			if($dept=='SH'&&$discount=='')
-				$sched=$REG_HS;
-			if($dept=='SH'&&$discount=='PUB')
+			if($dept=='SH'&&!$discount)
+				$sched=$REG_SH;
+			if($dept=='SH'&&$discount=='PUBLIC')
 				$sched=$PUB_SH;
-			
+			//pr($discount);
+			//pr($dept);
+			//pr($sched);
+			//exit();
 			$schedule = array();
 			foreach($sched as $i=>$sc){
 				$order = $i+1;
