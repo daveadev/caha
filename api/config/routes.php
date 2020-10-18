@@ -39,6 +39,10 @@
 			"/soa",
 			array("controller"=>"reports","action"=>"soa", "[method]" => "GET")
 	);
+	Router::connect(
+			"/receipt",
+			array("controller"=>"reports","action"=>"receipt", "[method]" => "GET")
+	);
 	
 	
 	
