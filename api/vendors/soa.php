@@ -78,8 +78,8 @@ class SOA extends Formsheet{
 				$this->rightText(28,$y,number_format($d['Ledger']['amount'],2),'','');
 				$balance+=$d['Ledger']['amount'];
 			}else{
-				$this->rightText(33,$y,'('.number_format(abs($d['Ledger']['amount']),2).')','','');
-				//$this->rightText(33,$y,number_format($d['Ledger']['amount'],2),'','');
+				//$this->rightText(33,$y,'('.number_format(abs($d['Ledger']['amount']),2).')','','');
+				$this->rightText(33,$y,number_format($d['Ledger']['amount'],2),'','');
 				$balance-=$d['Ledger']['amount'];
 			}
 			if ($balance < 0){
