@@ -12,6 +12,8 @@ define(['app', 'api'], function(app) {
             ];
             //Initialize components
             $scope.initCashier = function() {
+				$scope.Today = new Date();
+				console.log(new Date());
 				$scope.Disabled = 1;
                 $scope.ActiveStep = 1;
                 $scope.ActiveStudent = {};
@@ -50,26 +52,29 @@ define(['app', 'api'], function(app) {
                 function updateHasInfo() {
                     $scope.hasInfo = $scope.hasStudentInfo || $scope.hasTransactionInfo || $scope.hasPaymentInfo;
                 };
+				getAll();
             };
             $scope.initCashier();
             //Get BookletID
-            var data = { id: 1 }
-            api.GET('booklets', function success(response) {
-                $scope.ActiveBooklet = response.data;
-            });
+			function getAll(){
+				api.GET('booklets', function success(response) {
+					$scope.ActiveBooklet = response.data[0];
+				}); 
 
-            //Get students.js
-            api.GET('students', function success(response) {
-                $scope.Students = response.data;
-            });
-            //Get transaction_types.js
-            api.GET('transaction_types', function success(response) {
-                $scope.TransactionTypes = response.data;
-            });
-            //Get payment_methods.js
-            api.GET('payment_methods', function success(response) {
-                $scope.Payments = response.data;
-            });
+				//Get students.js
+				var data = {account_type:'student'}
+				api.GET('accounts', function success(response) {
+					$scope.Students = response.data;
+				});
+				//Get transaction_types.js
+				api.GET('transaction_types', function success(response) {
+					$scope.TransactionTypes = response.data;
+				});
+				//Get payment_methods.js
+				api.GET('payment_methods', function success(response) {
+					$scope.Payments = response.data;
+				});
+			}
             //Change the step for navigation
             $scope.nextStep = function() {
                 if ($scope.ActiveStep === 1) {
@@ -83,7 +88,7 @@ define(['app', 'api'], function(app) {
                     api.GET('transaction_types', data, function success(response) {
                         $scope.TransactionTypes = response.data;
                     });
-
+					
                 }
                 if ($scope.ActiveStep === 2) {
 					if($scope.TotalPaid>$scope.TotalDue)
@@ -96,7 +101,8 @@ define(['app', 'api'], function(app) {
                         var transactionType = $scope.TransactionTypes[index];
                         var transaction = {
                             id: transactionType.id,
-                            amount: transactionType.amount
+                            amount: transactionType.amount,
+							name: transactionType.name
                         };
                         if ($scope.SelectedTransactions[transactionType.id]) {
                             $scope.TotalDue = $scope.TotalDue + transaction.amount;
@@ -106,7 +112,7 @@ define(['app', 'api'], function(app) {
 					console.log($scope.TotalDue);
                 }
                 if ($scope.ActiveStep === 3) {
-					console.log($scope.ActiveTransactions);
+					
                     //Pass value of payment information
 					if('CHCK' in $scope.SelectedPayments){
 						if($scope.SelectedPayments['CHCK']){
@@ -121,17 +127,18 @@ define(['app', 'api'], function(app) {
                         var paymentMethod = $scope.Payments[index];
 						var pid = paymentMethod.id;
 						var amount = paymentMethod.amount;
-						var details = $scope.SelectedPaymentDetails[pid];
                         var payment = {
                             id: pid,
                             amount: amount,
-                            details: details
                         };
+						if(payment.id=='CHCK')
+							payment.date = $scope.PopoverDetails.date;
                         if ($scope.SelectedPayments[paymentMethod.id]) {
                             $scope.TotalPaid = $scope.TotalPaid + payment.amount;
                             $scope.ActivePayments.push(payment);
                         };
                     };
+					
 					
                     $scope.TotalChange = $scope.TotalPaid - $scope.TotalDue;
 					if('CHCK' in $scope.SelectedPayments){
@@ -143,11 +150,17 @@ define(['app', 'api'], function(app) {
                 };
                 if ($scope.ActiveStep === 4) {
                     //Push the gathered info to payments.js
+					if($scope.TotalPaid>$scope.TotalDue){
+						angular.forEach($scope.ActivePayments,function(pay){
+							if(pay.id=='CASH')
+								pay.amount = pay.amount-$scope.TotalChange;
+						});
+					}
                     $scope.Payment = {
-						amount : $scope.TotalDue,
-                        student: $scope.ActiveStudent,
-                        transactions: $scope.ActiveTransactions,
+						student: $scope.ActiveStudent,
+						booklet: $scope.ActiveBooklet,
                         payments: $scope.ActivePayments,
+						transactions:$scope.ActiveTransactions,
                     };
                     $scope.CashierSaving = true;
                     api.POST('payments', $scope.Payment, function success(response) {
@@ -175,6 +188,7 @@ define(['app', 'api'], function(app) {
 				$scope.SelectedTransactions[id] = !$scope.SelectedTransactions[id];
 				if(!$scope.SelectedTransactions[id])
 					$scope.Disabled = 1;
+				console.log($scope.TransactionTypes);
 				angular.forEach($scope.SelectedTransactions, function(trans){
 					if(trans==true)
 						$scope.Disabled = 0;
@@ -186,12 +200,7 @@ define(['app', 'api'], function(app) {
                 //Set the selected student 
             $scope.setSelecetedStudent = function(student) {
 				$scope.Disabled = 0;
-                $scope.SelectedStudent = {
-                    id: student.id,
-                    name: student.first_name + " " + student.middle_name + " " + student.last_name + " " + student.suffix_name,
-                    yearlevel: student.year_level_id,
-                    account_id: student.account_id
-                };
+                $scope.SelectedStudent = student;
             };
             //Take the value if it is true or false
             $scope.toggleSelectPayment = function(id) {
@@ -228,7 +237,7 @@ define(['app', 'api'], function(app) {
             $scope.filterStudent = function(student) {
                 var searchBox = $scope.searchStudent;
                 var keyword = new RegExp(searchBox, 'i');
-                var test = keyword.test(student.first_name) || keyword.test(student.middle_name) || keyword.test(student.last_name) || keyword.test(student.suffix_name) || keyword.test(student.id);
+                var test = keyword.test(student.name) || keyword.test(student.id);
                 return !searchBox || test;
             };
             //Filter transaction

@@ -6,7 +6,7 @@ class Account extends AppModel {
 	var $belongsTo = array(
 		'Student' => array(
 			'className' => 'Student',
-			'foreignKey' => 'student_id',
+			'foreignKey' => 'id',
 			'dependent' => false,
 			'conditions' => '',
 			'fields' => '',

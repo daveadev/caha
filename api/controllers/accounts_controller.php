@@ -6,6 +6,17 @@ class AccountsController extends AppController {
 	function index() {
 		$this->Account->recursive = 0;
 		$accounts =  $this->paginate();
+		
+		if($this->isAPIRequest()){
+			foreach($accounts as $i =>$acc){
+				//pr($acc);
+				$stud =  $acc['Student'];
+				$acc['Account']['name'] =$stud['first_name'].' '.$stud['middle_name'].' '.$stud['last_name'];
+				//$acc['department_id'] = $stud['department_id'];
+				$accounts[$i]=$acc;
+			}
+		}
+		//exit();
 		//TODOS: Adjust data based on tests/accounts.js
 		$this->set('accounts',$accounts);
 	}
