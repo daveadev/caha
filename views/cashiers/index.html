@@ -58,10 +58,10 @@
 							</div>
 						</div>
 					</div>
-					<div class="list-group-item list-group-header" ng-show="hasTransactionInfo">
+					<div class="list-group-item list-group-header" ng-show="ActiveStep>2">
 						<h5>Details</h5>
 					</div>
-					<div class="list-group-item" ng-show="hasTransactionInfo">
+					<div class="list-group-item" ng-show="ActiveStep>2">
 						<table class="table table-condensed table-bordered">
 							<thead>
 								<tr>
@@ -70,10 +70,10 @@
 								</tr>
 							</thead>
 							<tbody>
-								<tr ng-if="!ActiveTransactions.length">
+								<tr ng-show="!ActiveTransactions.length">
 									<td class="text-center" colspan="2">No Transaction</td>
 								</tr>
-								<tr ng-if="ActiveTransactions.length" ng-repeat="transaction in TransactionTypes | filter:filterIncludedTransactions">
+								<tr ng-show="ActiveTransactions.length" ng-repeat="transaction in ActiveTransactions">
 									<td>{{transaction.name}}</td>
 									<td><div class="amount" ng-class="{peso:$first}">{{transaction.amount | currency}}</div></td>
 								</tr>
@@ -86,10 +86,10 @@
 							</tfoot>
 						</table>
 					</div>
-					<div class="list-group-item list-group-header" ng-show="hasPaymentInfo">
+					<div class="list-group-item list-group-header" ng-show="ActiveStep>3">
 						<h5>Payment</h5>
 					</div>
-					<div class="list-group-item" ng-show="hasPaymentInfo">
+					<div class="list-group-item" ng-show="ActiveStep>3">
 						<table class="table table-condensed table-bordered">
 							<thead>
 								<tr>
