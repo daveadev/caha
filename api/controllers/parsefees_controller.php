@@ -55,7 +55,7 @@ class ParsefeesController extends AppController {
 					$discount = $detail;
 				
 				array_push($transacs,$a['Ledger']['details']);
-				if($detail=='Initial Payment'||$detail=='Subsequesnt Payment'||$detail=='ESC'||$detail=='QVR'||$detail=='PUBLIC')
+				if($detail=='Initial Payment'||$detail=='Subsequent Payment'||$detail=='ESC'||$detail=='QVR'||$detail=='PUBLIC')
 					$total_payments +=$a['Ledger']['amount'];
 			}
 			

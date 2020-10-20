@@ -32,7 +32,7 @@ class ParseschedController extends AppController {
 					$discount = $detail;
 				
 				array_push($transacs,$a['Ledger']['details']);
-				if($detail=='Initial Payment'||$detail=='Subsequesnt Payment')
+				if($detail=='Initial Payment'||$detail=='Subsequent Payment')
 					$total_payments +=$a['Ledger']['amount'];
 			}
 			

@@ -44,8 +44,12 @@ class PaymentsController extends AppController {
 		// to get the total payment of all payments and save transac payments
 		foreach($payments as $i=>$pay){
 			$tp = array('transaction_id'=>$transac_id,'payment_method_id'=>$pay['id'],'amount'=>$pay['amount']);
-			if($pay['id']=='CHCK')
+			if($pay['id']=='CHCK'){
 				$tp['valid_on']=$pay['date'];
+				$tp['details']=$pay['bank'];
+			}
+			else
+				$tp['details']='Cash';
 			array_push($payment_modes,$pay['id']);
 			array_push($transac_payments,$tp);
 			$total_payment += $pay['amount'];
