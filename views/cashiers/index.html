@@ -342,10 +342,15 @@
 				<dt>Account</dt>
 				<dd>{{ActiveStudent.name}}</dd>
 				<dt>Balance</dt>
-				<dd><span class="amount total peso">{{ActiveStudent.outstanding_balance}}</span></dd>
+				<dd><span class="amount total peso">{{ActiveStudent.outstanding_balance | currency}}</span></dd>
 			</dl>
-			<button class="btn btn-primary btn-sm form-control" style="margin-bottom:5px">View SOA</button><br />
-			<button class="btn btn-default btn-sm form-control">View Pay Sched</button>
+			<button class="btn btn-primary btn-sm form-control" style="margin-bottom:5px" ng-click="PrintSoa()" >
+				View SOA
+			</button><br />
+			<form action="api/soa?account_id=" method="POST" target="_blank" id="PrintSoa">
+				
+			</form>
+			<!-- <button class="btn btn-default btn-sm form-control">View Pay Sched</button> -->
 		</script>
 		<script type="text/ng-template" id="paymentDetailsBox.html">
 			<button class="btn btn-xs btn-danger btn-dismiss" ng-click="closePop($event)"><span class="glyphicon glyphicon-remove"></span></button>
