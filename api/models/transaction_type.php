@@ -10,11 +10,11 @@ class TransactionType extends AppModel {
 						IF(
 						AccountSchedule.transaction_type_id='INIPY'
 						AND AccountSchedule.order =1,
-						AccountSchedule.due_amount,
+						AccountSchedule.due_amount-AccountSchedule.paid_amount,
 							IF (
 								AccountSchedule.transaction_type_id='SBQPY'
 								AND AccountSchedule.order >1,
-								AccountSchedule.due_amount,0
+								AccountSchedule.due_amount-AccountSchedule.paid_amount,0
 							)
 						)
 				)"
