@@ -11,6 +11,13 @@ class AccountSchedule extends AppModel {
 			'conditions' => '',
 			'fields' => '',
 			'order' => ''
+		),
+		'TransactionType' => array(
+			'className' => 'TransactionType',
+			'foreignKey' => 'transaction_type_id',
+			'conditions' => '',
+			'fields' => '',
+			'order' => ''
 		)
 	);
 }
