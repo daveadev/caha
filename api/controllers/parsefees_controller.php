@@ -44,8 +44,8 @@ class ParsefeesController extends AppController {
 		
 		for($row=2;$row<=792;$row++){
 			$total_payments = 0;
-			$id = $ledgers[$row]['B'];
-			$dept = $ledgers[$row]['C'];
+			$id = $ledgers[$row]['A'];
+			$dept = $ledgers[$row]['D'];
 			$discount = '';
 			$leds = $this->Ledger->find('all',array('recursive'=>0,'conditions'=>array('Ledger.account_id'=>$id)));
 			$transacs = array();

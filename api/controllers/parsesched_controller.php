@@ -21,10 +21,11 @@ class ParseschedController extends AppController {
 		
 		for($row=2;$row<=792;$row++){
 			$total_payments = 0;
-			$id = $ledgers[$row]['B'];
-			$dept = $ledgers[$row]['C'];
+			$id = $ledgers[$row]['A'];
+			$dept = $ledgers[$row]['D'];
 			$discount = '';
 			$leds = $this->Ledger->find('all',array('recursive'=>0,'conditions'=>array('Ledger.account_id'=>$id)));
+			
 			$transacs = array();
 			foreach($leds as $i=>$a){
 				$detail = $a['Ledger']['details'];
@@ -36,8 +37,10 @@ class ParseschedController extends AppController {
 					$total_payments +=$a['Ledger']['amount'];
 			}
 			
-			//pr($transacs);
-			//exit();
+			/* pr($leds);
+			pr($discount);
+			pr($dept);
+			exit(); */
 			$ESC_HS = array(
 				array('UPONNROL',2030, '2020-09-01'),
 				array('SEP2020',625, '2020-09-15'),
@@ -95,6 +98,7 @@ class ParseschedController extends AppController {
 			//pr($sched);
 			//exit();
 			$schedule = array();
+			//pr($sched); exit();
 			foreach($sched as $i=>$sc){
 				$order = $i+1;
 				if($total_payments>=$sc[1]){
@@ -109,6 +113,7 @@ class ParseschedController extends AppController {
 				$data['account_id'] = $id;
 				$data['bill_month'] = $sc[0];
 				$data['due_amount'] = $sc[1];
+				$data['due_date'] = $sc[2];
 				$data['paid_amount'] = $payment;
 				$data['status'] = $status;
 				$data['order'] = $order;

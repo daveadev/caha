@@ -166,6 +166,7 @@ class PaymentsController extends AppController {
 		}
 		
 		if(($total_feePaid+$total_payment)>$total_misc){
+			$Account['rounding_off'] = 0;
 			foreach($fees as $i=>$fee){
 				$fee = $fee['AccountFee'];
 				if($fee['fee_id']=='TUI'&&$fee['paid_amount']>0){

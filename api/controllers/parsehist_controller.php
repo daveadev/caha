@@ -21,7 +21,7 @@ class ParsehistController extends AppController {
 		
 		for($row=2;$row<=792;$row++){
 			$students = array();
-			$id = $ledgers[$row]['B'];
+			$id = $ledgers[$row]['A'];
 			array_push($students,$id);
 			
 			$leds = $this->Ledger->find('all',array('recursive'=>0,'conditions'=>array('Ledger.account_id'=>$id)));
