@@ -55,6 +55,13 @@ define(['app', 'api'], function(app) {
 				getAll();
             };
             $scope.initCashier();
+			
+			$scope.PrintSoa = function(){
+				var acct_id = $scope.ActiveStudent.id;
+				document.getElementById('PrintSoa').value;
+				var newURL = 'api/soa?account_id='+acct_id;
+				window.open(newURL);
+			}
             //Get BookletID
 			function getAll(){
 				api.GET('booklets', function success(response) {
@@ -131,8 +138,10 @@ define(['app', 'api'], function(app) {
                             id: pid,
                             amount: amount,
                         };
-						if(payment.id=='CHCK')
+						if(payment.id=='CHCK'){
 							payment.date = $scope.PopoverDetails.date;
+							payment.bank = $scope.PopoverDetails.bank+' - '+$scope.PopoverDetails.ref_no;
+						}
                         if ($scope.SelectedPayments[paymentMethod.id]) {
                             $scope.TotalPaid = $scope.TotalPaid + payment.amount;
                             $scope.ActivePayments.push(payment);
