@@ -10,8 +10,10 @@ class PaymentsController extends AppController {
 		$transactions = $this->data['Transaction'];
 		$booklet = $this->data['Booklet'];
 		$account_id = $student['id'];
-		$schedule = $this->AccountSchedule->find('all',array('recursive'=>0,'conditions'=>array('account_id'=>$account_id)));
+		$schedules = $this->AccountSchedule->find('all',array('recursive'=>-1,'conditions'=>array('AccountSchedule.account_id'=>$account_id)));
 		$fees = $this->AccountFee->find('all',array('recursive'=>0,'conditions'=>array('account_id'=>$account_id)));
+		//pr($schedules); exit();
+		//pr($fees); exit();
 		$acc = $this->Account->find('first',array('recursive'=>0,'conditions'=>array('id'=>$account_id)));
 		$Account = $acc['Account'];
 		$payment_to_date = $Account['payment_total']+$Account['discount_amount'];
@@ -98,6 +100,7 @@ class PaymentsController extends AppController {
 			if($trnx['id']!=='OLDAC'){
 				$history['total_due']=$Account['assessment_total'];
 				$history['total_paid']=$payment_to_date;
+				$history['balance']=$Account['outstanding_balance']-$payment;
 				$Account['outstanding_balance'] = $Account['assessment_total']-$payment_to_date;
 				$Account['payment_total'] = $payment_to_date;
 			}
@@ -126,16 +129,15 @@ class PaymentsController extends AppController {
 		
 		// for account payment schedule
 		$sched_payment = $total_payment;
+		//pr($sched_payment); exit();
 		$account_schedules = array();
-		foreach($schedule as $i=>$sched){
+		foreach($schedules as $i=>$sched){
 			$sched = $sched['AccountSchedule'];
-			if($sched['due_amount']==$sched['paid_amount'])
-				continue;
 			if($sched['paid_amount']<$sched['due_amount']){
 				$payment_required = $sched['due_amount']-$sched['paid_amount'];
 				if($payment_required<$sched_payment){
 					$sched_payment-=$payment_required;
-					$sched['paid_amount'] = $sched['due_amount'];
+					$sched['paid_amount'] = $payment_required;
 				}else{
 					$sched['paid_amount'] = $sched_payment;
 					$sched_payment = 0;
@@ -143,6 +145,7 @@ class PaymentsController extends AppController {
 				$sched['paid_date'] = $today;
 				$sched['status'] = 'PAID';
 				array_push($account_schedules,$sched);
+				//pr($sched);
 			}
 			if($sched_payment==0)
 				break;
@@ -176,20 +179,23 @@ class PaymentsController extends AppController {
 				}else{
 					$fee['paid_amount'] = $fee['due_amount'];
 					if($fee['fee_id']=='TUI')
-						$fee['paid_amount'] = round(($total_feePaid+$total_payment)-$total_misc,0);
+						$fee['paid_amount'] = ($total_feePaid+$total_payment)-$total_misc;
 					
 				}
 				
 				array_push($account_fees,$fee);
 			}
 		}else{
+			$round_off = 0;
 			foreach($fees as $i=>$fee){
 				$fee = $fee['AccountFee'];
 				if($fee['fee_id']=='TUI')
 					continue;
 				$fee['paid_amount'] = ($total_feePaid+$total_payment) * $fee['percentage'];
+				$round_off += $fee['paid_amount'];
 				array_push($account_fees,$fee);
 			}
+			$Account['rounding_off'] = $Account['total_payment']-$round_off;
 		}
 		
 		
@@ -210,8 +216,10 @@ class PaymentsController extends AppController {
 			'Booklet'=>$booklet
 		);
 		foreach($DataCollection as $i=>$collection){
-			if($this->$i->saveAll($collection))
+			if($this->$i->saveAll($collection)){
 				$this->Session->setFlash(__('The '. $i .' has been saved', true));
+				$this->set('payments',$DataCollection);
+			}
 			else{
 				$this->Session->setFlash(__('Error saving '.$i, true));
 				break;
