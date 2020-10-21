@@ -13,7 +13,6 @@ define(['app', 'api'], function(app) {
             //Initialize components
             $scope.initCashier = function() {
 				$scope.Today = new Date();
-				console.log(new Date());
 				$scope.Disabled = 1;
                 $scope.ActiveStep = 1;
                 $scope.ActiveStudent = {};
@@ -55,6 +54,32 @@ define(['app', 'api'], function(app) {
 				getAll();
             };
             $scope.initCashier();
+			
+			$scope.SearchStudent = function(){
+				$scope.Search = 1;
+				$scope.Students = '';
+				var data = {
+					keyword:$scope.SearchWord,
+					fields:['first_name','middle_name','last_name','id'],
+					limit:'less'
+				}
+				var success = function(response){
+					$scope.Students = response.data;
+				}
+				var error = function(response){
+					
+				}
+				api.GET('accounts',data,success,error);
+			}
+			
+			$scope.ClearSearch = function(){
+				$scope.Search = 0;
+				$scope.SearchWord = '';
+				$scope.Students = '';
+				api.GET('accounts', function success(response) {
+					$scope.Students = response.data;
+				});
+			}
 			
 			$scope.PrintSoa = function(){
 				var acct_id = $scope.ActiveStudent.id;
@@ -242,13 +267,7 @@ define(['app', 'api'], function(app) {
             $scope.filterIncludedPayments = function(payment) {
                 return $scope.SelectedPayments[payment.id] && $scope.ActivePayments.length;
             };
-            //Filter student
-            $scope.filterStudent = function(student) {
-                var searchBox = $scope.searchStudent;
-                var keyword = new RegExp(searchBox, 'i');
-                var test = keyword.test(student.name) || keyword.test(student.id);
-                return !searchBox || test;
-            };
+            
             //Filter transaction
             $scope.filterTransaction = function(transaction) {
                 var searchBox = $scope.searchTransaction;
@@ -257,9 +276,7 @@ define(['app', 'api'], function(app) {
                 return !searchBox || test;
             };
             //Clear search student
-            $scope.clearSearchStudent = function() {
-                $scope.searchStudent = null;
-            };
+            
             //Clear search transaction
             $scope.clearSearchTransaction = function() {
                 $scope.searchTransaction = null;

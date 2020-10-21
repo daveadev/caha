@@ -11,7 +11,7 @@ class AccountsController extends AppController {
 			foreach($accounts as $i =>$acc){
 				//pr($acc);
 				$stud =  $acc['Student'];
-				$acc['Account']['name'] =$stud['first_name'].' '.$stud['middle_name'].' '.$stud['last_name'];
+				$acc['Account']['name'] =$stud['full_name'];
 				//$acc['department_id'] = $stud['department_id'];
 				$accounts[$i]=$acc;
 			}
