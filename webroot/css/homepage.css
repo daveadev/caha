@@ -1,0 +1,98 @@
+#Features {
+   position: fixed;
+   left: 0;
+   bottom: 0;
+   width: 100%;
+   background-image: url("../img/ridges.png");
+   background-repeat: no-repeat;
+   background-color: #2c79d5;
+   height: 200px;
+   color:white;
+   padding: 10px 15px 15px 35px;
+}
+#Features h1{
+	font-size:12px;
+	color:#ffffff;
+	padding-left: 20px;
+	margin-top: 5px;
+    margin-bottom: 10px;
+}
+#Features h5{
+	font-family:'Open Sans'
+}
+
+#Footer {
+   position: fixed;
+   left: 0;
+   bottom: 0;
+   width: 100%;
+   background-color: #145baf;
+   height:50px;
+   color:white;
+   padding: 15px 15px 15px 15px;
+}
+#Footer a{
+	color:white !important;
+	text-decoration: none;
+}
+#Footer a:hover{
+	color:#efbb11 !important;
+}
+#Footer .divider {
+	border-left: 1px solid white;
+	padding-left: 5px;
+}
+@media only screen and (min-width: 768px) {
+	#Recordbook {
+		position: absolute;
+		bottom: -5px;
+		right: 10px;
+		z-index:88;
+		animation-name: recordbook;
+		animation-duration: 2s;
+	}
+	@keyframes recordbook {
+	  from {bottom: -200px;}
+	  to {bottom: -5px;}
+	}
+}
+@media only screen and (max-width: 767px) {
+	#Recordbook {
+		display: none;
+	}
+	#Body{
+		padding-bottom: 230px;
+	}
+	#Features{
+	   height: 230px;
+	   padding: 10px 15px 15px 15px;
+	}
+}
+
+#Body{
+	padding-left:30px;
+	padding-right:30px;
+}
+#Body a{
+	transition: transform 0.5s; 
+}
+#Body a:hover{
+	transform: scale(1.2);
+	text-decoration: none;
+	z-index:889;
+}
+#Body h1{
+	font-weight:400;
+	font-size:23px;
+	margin-top: 15px;
+    margin-bottom: 15px;
+}
+#Body .badge{
+	margin-bottom:5px;
+	padding: 8px;
+	font-size:14px;
+	font-weight:400;
+}
+#Body .panel-heading{
+	background-color: #ffffff;
+}

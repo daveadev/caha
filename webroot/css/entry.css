@@ -1,0 +1,62 @@
+.btn-group-sem,.btn-group-period{
+	margin:0px 0px;
+}
+.section-selector>.btn-default:first-child{
+	width: 240px;
+	text-align:left;
+}
+
+.schoolyear-selector>.btn-default:first-child{
+	width: 250px;
+	text-align:center;
+}
+.section-selector>ul.dropdown-menu{
+	width:100%;
+}
+.btn-simple .btn-group>button.btn{
+	 border-radius: 4px !important;
+}
+
+
+.schoolyear-selector button.mobile{
+		display: none;
+}
+.teacher-selector{
+	inline-block;
+	width:120px;
+}
+@media only screen and (max-width : 768px) {
+	.list-group-canvas{
+		height: 100vh;
+	}
+	.schoolyear-selector-wrapper {
+		float:none !important;
+		margin-bottom: 10px;
+	}
+	.schoolyear-selector,.section-selector{
+		width:100%;
+	}
+	
+	.schoolyear-selector>button,.schoolyear-selector>button.dropdown-toggle{
+		display: block;
+	}
+
+	.schoolyear-selector>button:not(.dropdown-toggle){
+		border-top-left-radius: 5px !important;
+		border-bottom-left-radius: 5px !important;
+	}
+	.schoolyear-selector>button:not(.dropdown-toggle),.section-selector>button:not(.dropdown-toggle){
+		width:calc(100% - 25px) !important;
+	}
+	.teacher-selector{
+		display: block;
+		width:100%;
+	}
+	.teaching-load-wrapper{
+		text-align: center;
+	    white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		width: 100%;
+	}
+}
