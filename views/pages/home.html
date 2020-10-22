@@ -1,5 +1,61 @@
-<div class="row" ng-controller="PageController" ng-init="init()">
-	<div class="col-md-12">
-		<p>WELCOME!!</p>
+<link href="webroot/css/homepage.css" rel="stylesheet">
+<link href="webroot/css/font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+<img id="Recordbook" src="webroot/img/pop.png" class="img-responsive"/>
+<div id="Body" ng-controller="PageController" ng-init="init(' ')">
+	<div class="row">
+		<div class="col-md-6 col-xs-4">
+			
+		</div>
+		<div class="col-md-6 col-xs-8 text-right">
+			<h4><strong>Welcome, {{__USER.user.username | uppercase}}!</strong></h4>
+		</div>
 	</div>
+	<div class="row" >
+		<a href="#/cashiers/index" class="col-md-3">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h1>
+						<i class="glyphicon glyphicon-usd"></i>  
+						Cashier
+					</h1>
+					Process transactions.
+				</div>
+			</div>
+		</a>
+		<a href="#/booklets/list" class="col-md-3">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h1>
+						<i class="fa fa-book"></i>
+						Booklets
+					</h1>
+					View booklets.
+				</div>
+			</div>
+		</a>
+		<a href="#/accounts/list" class="col-md-3">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h1>
+						<i class="fa fa-user"></i> 
+						Accounts
+					</h1>
+					View Accounts.
+				</div>
+			</div>
+		</a>
+		<a href="#/soa" class="col-md-3">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h1>
+						<i class="fa fa-exchange"></i>
+						Student Ledger
+					</h1>
+					View student ledger/SOA.
+				</div>
+			</div>
+		</a>
+	</div>
+
 </div>

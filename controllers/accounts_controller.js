@@ -21,6 +21,23 @@ define(['app', 'api', 'simple-sheet'], function(app) {
                     $scope.DataLoading = false;
                 });
             }
+			function getFees(id){
+				var data = {account_id:id};
+				api.GET('account_fees',data, function success(response){
+					$scope.Fees = response.data;
+				});
+			}
+			function getSched(id){
+				var data = {account_id:id};
+				api.GET('account_schedules',data, function success(response){
+					$scope.Scheds = response.data;
+				});
+			}function getHist(id){
+				var data = {account_id:id};
+				api.GET('account_histories',data, function success(response){
+					$scope.Histories = response.data;
+				});
+			}
             $scope.initAccounts = function() {
                 $scope.hasInfo = false;
                 $scope.hasNoInfo = true;
@@ -40,6 +57,9 @@ define(['app', 'api', 'simple-sheet'], function(app) {
                 $scope.Account = account;
                 $scope.hasInfo = true;
                 $scope.hasNoInfo = false;
+				getFees(account.id);
+				getSched(account.id);
+				getHist(account.id);
             };
             //Remove account information
             $scope.removeAccountInfo = function() {
