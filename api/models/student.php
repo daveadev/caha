@@ -2,6 +2,8 @@
 class Student extends AppModel {
 	var $name = 'Student';
 	var $useDbConfig = 'ser';
+	var $consumableFields = array('id','status','sno','lrn','classroom_user_id','year_level_id','section_id','program_id','full_name', 'short_name','first_name','middle_name','last_name','prefix','suffix','gender','birthday','age','nationality','religion','mother_tongue','ethnic_group','weight','height','height_m2','bmi','bmi_category','height_fa');
+	var $recursive = 2;
 	var $virtualFields = array(
 		'name'=>"CONCAT(Student.sno,' - ',Student.first_name,' ',Student.last_name)",
 		'short_name'=>"CONCAT(LEFT(Student.first_name,1),'.',Student.last_name)",
@@ -9,7 +11,7 @@ class Student extends AppModel {
 		'class_name'=>"UPPER(CONCAT(Student.last_name,', ',Student.prefix, Student.first_name,' ',LEFT(Student.middle_name,1),'. ',Student.suffix))",
 		'print_name'=>"(CONCAT(Student.last_name,', ',Student.prefix, Student.first_name,' ',LEFT(Student.middle_name,1),'. ',Student.suffix))",
 	);
-	
+	var $displayField = 'name';
 	//The Associations below have been created with all possible keys, those that are not needed can be removed
 
 	var $belongsTo = array(
