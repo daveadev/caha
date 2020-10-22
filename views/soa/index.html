@@ -1,0 +1,33 @@
+<div ng-controller="SoaController as SOA" ng-init="SOA.init()">
+	<a-module>
+		<a-container>
+			<a-header>
+				<a-row>
+					<a-col size="11">
+						<m-search-student ng-model="SOA.Student">
+						</m-search-student>
+					</a-col>
+					<a-col size="1">
+						<button class="btn btn-primary pull-right" ng-click="SOA.printSoa()" >Load SOA</button>
+					</a-col>
+				</a-row>
+			</a-header>
+		
+			<a-canvas>
+				<a-content>
+					<a-row>
+						<a-col>
+							<div class="list-group-item" style="height:100%;" ng-show="SOA.Printed">
+								<form action="api/soa/" method="GET" target="ReportCardFrameSingle" id="PrintSoa">
+									<input type="hidden" name="Type" value="'account_id:LSJ10231'"/>
+								</form>
+								<iframe name="ReportCardFrameSingle"  id="ReportCardFrameSingle" frameborder="0" style="width:100%;height:100%;display:block;"></iframe>
+							</div>
+							
+						</a-col>
+					</a-row>
+				</a-content>
+			</a-canvas>
+		</a-container>
+	</a-module>
+</div>
