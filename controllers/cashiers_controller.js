@@ -197,14 +197,21 @@ define(['app', 'api'], function(app) {
 								pay.amount = pay.amount-$scope.TotalChange;
 						});
 					}
+                    var cashierObj = {
+                        esp:$scope.ActiveSY,
+                        total_due:$scope.TotalDue,
+                    }
                     $scope.Payment = {
 						student: $scope.ActiveStudent,
 						booklet: $scope.ActiveBooklet,
                         payments: $scope.ActivePayments,
 						transactions:$scope.ActiveTransactions,
+                        cashier:cashierObj,
                     };
+                    $scope.TransactionId = null;
                     $scope.CashierSaving = true;
                     api.POST('payments', $scope.Payment, function success(response) {
+                        $scope.TransactionId  = response.data.transaction_id;
                         $scope.openModal();
                     });
 
@@ -311,6 +318,11 @@ define(['app', 'api'], function(app) {
                     size: 'sm',
                     templateUrl: 'successModal.html',
                     controller: 'SuccessModalController',
+                    resolve:{
+                        TransactionId:function(){
+                            return $scope.TransactionId
+                        }
+                    }
                 });
                 modalInstance.result.then(function() {
 
@@ -383,15 +395,18 @@ define(['app', 'api'], function(app) {
             $uibModalInstance.dismiss('cancel');
         };
     }]);
-    app.register.controller('SuccessModalController', ['$scope', '$rootScope', '$timeout', '$uibModalInstance', 'api', function($scope, $rootScope, $timeout, $uibModalInstance, api) {
+    app.register.controller('SuccessModalController', ['$scope', '$rootScope', '$timeout', '$uibModalInstance', 'api', 'TransactionId',function($scope, $rootScope, $timeout, $uibModalInstance, api,TransactionId) {
         $rootScope.__MODAL_OPEN = true;
         $timeout(function() {
             $scope.ShowButton = true;
         }, 333);
+        $scope.TransactionId = TransactionId;
         //Dismiss modal
         $scope.dismissModal = function() {
             $rootScope.__MODAL_OPEN = false;
+            document.getElementById('PrintReceipt').submit();
             $uibModalInstance.dismiss('ok');
+
         };
     }]);
 });
