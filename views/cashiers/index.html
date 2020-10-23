@@ -33,9 +33,9 @@
 								<dl>
 									<label>Series No.</label>
 									<dd><h3 class="amount pull-left" style="width:100%; text-align: left; margin-top:0">{{ActiveBooklet.series_counter}}</h3></dd>
-									<dt>Date</dt>{{Today | date:'MM-dd-yyyy'}}
+									<dt>Date</dt>{{Today | date:'dd MMM yyyy'}}
 									<dt>Account</dt>
-									<dd>{{ActiveStudent.id}} | {{ActiveStudent.name}}</dd>
+									<dd>{{ActiveStudent.sno}} | {{ActiveStudent.name}}</dd>
 								</dl>
 							</div>
 							<div class="col-md-6">
@@ -153,7 +153,7 @@
 					<div class="list-group-item ng-class:{active:student.id===SelectedStudent.id}" ng-repeat="student in Students | filter:{name:SearchWord}" ng-click="setSelecetedStudent(student)">
 						<h4 class="list-group-item-heading">{{student.name}}</h4>
 						<p class="list-group-item-text">
-						<span>{{student.id}}</span> | <span>{{student.year_level_id}}</span></p>
+						<span>{{student.sno}}</span> | <span>{{student.year_level}}</span></p>
 					</div>
 				</div>
 				<div class="list-group-item list-group-search-box">
@@ -263,15 +263,58 @@
 					<div class="list-group-item">
 						<div class="empty-state"  ng-hide="CashierSaving">
 							<div class="well">
-								<div class="empty-state-icon">
-									<i class="glyphicon glyphicon-thumbs-up"></i>
-								</div>
-								<h4>Almost there!</h4>
-								<p class="empty-state-message">Review your transaction summary.</p>
+								<h4> <i class="glyphicon glyphicon-print"></i> Receipt Preview</h4>
+								<p class="empty-state-message">
+									<span class="glyphicon glyphicon-ok"></span> Click to confirm.
+								</p>
+								<table class="table table-bordered table-condensed">
+								<thead>
+									<tr>
+										<td></td>
+										<th  class="text-left">OR {{ActiveBooklet.series_counter}}</th>
+									</tr>
+									<tr>
+										<td  class="text-left">SNO : {{ActiveStudent.sno}}</td>
+										<td  class="text-left">Date : {{Today | date:'dd MMM yyyy'}}</td>
+									</tr>
+									<tr>
+										<td colspan="2"  class="text-left">Student: {{ActiveStudent.name}}</td>
+									</tr>
+									<tr>
+										<td  class="text-left">Payment for:  {{ActiveSYShort}} -  {{ActiveSYShort+1}}</td>
+										<td  class="text-left">Year/Section: {{ActiveStudent.year_level}}  {{ActiveStudent.section}}</td>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td colspan="2" class="text-left">Details</td>
+									</tr>
+									<tr ng-show="ActiveTransactions.length" ng-repeat="transaction in ActiveTransactions">
+										<td class="text-left">{{transaction.name}}</td>
+										<td><div class="amount" ng-class="{peso:$first}">{{transaction.amount | currency}}</div></td>
+									</tr>
+								</tbody>
+								<tfoot>
+									<tfoot>
+										<tr>
+											<td><b>Total</b></td>
+											<td><div class="amount peso"><b>{{TotalDue | currency}}</b></div></td>
+										</tr>
+									</tfoot>
+									<tr>
+										<td></td>
+										<td>Cashier</td>
+									</tr>
+								</tfoot>
+								
+							</table>
 							</div>
+							<!--
 							<div class="empty-state-help alert alert-info"> 
 								<span class="empty-state-action-icon glyphicon glyphicon-ok"></span> Click to confirm.
 							</div>
+							-->
+							
 						</div>
 						<div class="empty-state" ng-show="CashierSaving">
 							<div class="well">
@@ -374,5 +417,8 @@
 			<div class="modal-footer">
 				<button class="btn btn-success btn-block" type="button" ng-click="dismissModal()">OK</button>
 			</div>
+			<form action="api/receipt" method="POST" target="_blank" id="PrintReceipt">
+				<input type="hidden" name="TransactionId" value="{{TransactionId}}"/>
+			</form>
 		</script>
 </div>

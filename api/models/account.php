@@ -16,6 +16,8 @@ class Account extends AppModel {
 				'Student.full_name',
 				'Student.class_name',
 				'Student.status',
+				'Student.year_level_id',
+				'Student.section_id',
 			),
 			'order' => '',
 			'limit' => '',

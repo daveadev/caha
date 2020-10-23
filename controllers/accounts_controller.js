@@ -156,8 +156,8 @@ define(['app', 'api', 'simple-sheet'], function(app) {
 		
 		 $scope.deleteEntry = function(id) {
                 var data = { id: id };
-                api.DELETE('accounts', data, function(response) {        
-            });
+                //api.DELETE('accounts', data, function(response) {        
+           // });
         };
 		
         $scope.confirmAction = function() {

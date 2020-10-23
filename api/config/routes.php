@@ -41,7 +41,7 @@
 	);
 	Router::connect(
 			"/receipt",
-			array("controller"=>"reports","action"=>"receipt", "[method]" => "GET")
+			array("controller"=>"reports","action"=>"receipt")
 	);
 	
 	

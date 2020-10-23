@@ -10,6 +10,9 @@ class PaymentsController extends AppController {
 		$transactions = $this->data['Transaction'];
 		$booklet = $this->data['Booklet'];
 		$account_id = $student['id'];
+		$ESP =  $this->data['Cashier']['esp'];
+		$TOTAL_DUE =  $this->data['Cashier']['total_due'];
+		$USERNAME =  $this->Auth->user()['User']['username'];
 		$schedules = $this->AccountSchedule->find('all',array('recursive'=>-1,'conditions'=>array('AccountSchedule.account_id'=>$account_id)));
 		$fees = $this->AccountFee->find('all',array('recursive'=>0,'conditions'=>array('account_id'=>$account_id)));
 		//pr($schedules); exit();
@@ -17,7 +20,7 @@ class PaymentsController extends AppController {
 		$acc = $this->Account->find('first',array('recursive'=>0,'conditions'=>array('id'=>$account_id)));
 		$Account = $acc['Account'];
 		$payment_to_date = $Account['payment_total']+$Account['discount_amount'];
-		$curr_book = 'OR '.$booklet['series_counter'];
+		$curr_refNo = 'OR '.$booklet['series_counter'];
 		$total_payment = 0;
 		$today = date("Y-m-d");
 		$time = date("h:i:s");
@@ -37,10 +40,19 @@ class PaymentsController extends AppController {
 		
 		
 		// For transactions table
-		$transac_data = array('type'=>'payment','status'=>'fulfilled','ref_no'=>$curr_book,'transac_date'=>$today,'transac_time'=>$time,'account_id'=>$account_id);
+		$transac_data = array(
+							'type'=>'payment',
+							'status'=>'fulfilled',
+							'ref_no'=>$curr_refNo,
+							'esp' => $ESP,
+							'amount'=> $TOTAL_DUE,
+							'transac_date'=>$today,
+							'transac_time'=>$time,
+							'cashier'=>$USERNAME,
+							'account_id'=>$account_id);
 		$this->Transaction->saveAll($transac_data);
-		$last = $this->Transaction->findById($this->Transaction->id);
-		$transac_id = $last['Transaction']['id'];
+		
+		$transac_id = $this->Transaction->id;
 		
 		
 		// to get the total payment of all payments and save transac payments
@@ -78,10 +90,11 @@ class PaymentsController extends AppController {
 			$ledgerItem =  array(
 				'account_id'=>$account_id,
 				'type'=>'-',
-				'esp'=>2020,
+				'transaction_type_id'=>$trnx['id'],
+				'esp'=>$ESP,
 				'transac_date'=>$today,
 				'transac_time'=>$time,
-				'ref_no'=>$curr_book,
+				'ref_no'=>$curr_refNo,
 				'details'=>$detail,
 				'amount'=>$payment
 			);
@@ -92,7 +105,7 @@ class PaymentsController extends AppController {
 				'account_id'=>$account_id,
 				'transac_date'=>$today,
 				'transac_time'=>$time,
-				'ref_no'=>$curr_book,
+				'ref_no'=>$curr_refNo,
 				'details'=>$detail,
 				'flag'=>'-',
 				'amount'=>$payment
@@ -105,7 +118,7 @@ class PaymentsController extends AppController {
 				$Account['payment_total'] = $payment_to_date;
 			}
 			// save to account transactions
-			$acct_transac =  array('account_id'=>$account_id,'transaction_type_id'=>$trnx['id'],'ref_no'=>$curr_book,'amount'=>$payment);
+			$acct_transac =  array('account_id'=>$account_id,'transaction_type_id'=>$trnx['id'],'ref_no'=>$curr_refNo,'amount'=>$payment);
 			
 			// save to transaction details
 			$td = array(
@@ -216,19 +229,20 @@ class PaymentsController extends AppController {
 			'Account'=>$Account,
 			'Booklet'=>$booklet
 		);
-		foreach($DataCollection as $i=>$collection){
-			if($this->$i->saveAll($collection)){
+		$DataCollection['Account']['transaction_id']  = $transac_id;
+		foreach($DataCollection as $model=>$collection){
+			if($this->$model->saveAll($collection)){
 				$this->Session->setFlash(__('The '. $i .' has been saved', true));
-				$this->set('payments',$DataCollection);
 			}
 			else{
 				$this->Session->setFlash(__('Error saving '.$i, true));
 				break;
 			}
 		}
-		//pr($DataCollection);
-		exit();
-		
+		$this->data['Payment'] = array('transaction_id'=>$transac_id);
+		$this->set(compact('payments'));
+		//exit();
+		/*
 		$this->Booklet->saveAll('');
 		
 		$trnx =  array('payment', 'fulfilled',$series_no,date,time ,account_id);
@@ -240,7 +254,7 @@ class PaymentsController extends AppController {
 
 		//Update account balances and payment
 		$account = $this->Account->findById();
-
+	*/
 		// Update account_schedule
 		// Loop on applicable payment schedule and udpates status, date_paid
 		// Update account_fees

@@ -3,6 +3,11 @@ define(['app', 'api'], function(app) {
     app.register.controller('CashierController', ['$log', '$scope', '$rootScope', '$uibModal', 'api', function($log, $scope, $rootScope, $uibModal, api) {
         $scope.index = function() {
             $rootScope.__MODULE_NAME = 'Cashiers';
+
+            $rootScope.$watch('_APP',function(app){
+                if(app)
+                    $scope.initCashier();
+            });
             //Steps in Nav-pills
             $scope.Steps = [
                 { id: 1, title: "Student", description: "Select Student" },
@@ -13,6 +18,8 @@ define(['app', 'api'], function(app) {
             //Initialize components
             $scope.initCashier = function() {
 				$scope.Today = new Date();
+                $scope.ActiveSY  = $rootScope._APP.ACTIVE_SY;
+                $scope.ActiveSYShort = parseInt($scope.ActiveSY.toString().substr(2,2));
 				$scope.Disabled = 1;
                 $scope.ActiveStep = 1;
                 $scope.ActiveStudent = {};
@@ -53,7 +60,7 @@ define(['app', 'api'], function(app) {
                 };
 				getAll();
             };
-            $scope.initCashier();
+            
 			
 			$scope.SearchStudent = function(){
 				$scope.Search = 1;
@@ -190,14 +197,21 @@ define(['app', 'api'], function(app) {
 								pay.amount = pay.amount-$scope.TotalChange;
 						});
 					}
+                    var cashierObj = {
+                        esp:$scope.ActiveSY,
+                        total_due:$scope.TotalDue,
+                    }
                     $scope.Payment = {
 						student: $scope.ActiveStudent,
 						booklet: $scope.ActiveBooklet,
                         payments: $scope.ActivePayments,
 						transactions:$scope.ActiveTransactions,
+                        cashier:cashierObj,
                     };
+                    $scope.TransactionId = null;
                     $scope.CashierSaving = true;
                     api.POST('payments', $scope.Payment, function success(response) {
+                        $scope.TransactionId  = response.data.transaction_id;
                         $scope.openModal();
                     });
 
@@ -304,6 +318,11 @@ define(['app', 'api'], function(app) {
                     size: 'sm',
                     templateUrl: 'successModal.html',
                     controller: 'SuccessModalController',
+                    resolve:{
+                        TransactionId:function(){
+                            return $scope.TransactionId
+                        }
+                    }
                 });
                 modalInstance.result.then(function() {
 
@@ -376,15 +395,18 @@ define(['app', 'api'], function(app) {
             $uibModalInstance.dismiss('cancel');
         };
     }]);
-    app.register.controller('SuccessModalController', ['$scope', '$rootScope', '$timeout', '$uibModalInstance', 'api', function($scope, $rootScope, $timeout, $uibModalInstance, api) {
+    app.register.controller('SuccessModalController', ['$scope', '$rootScope', '$timeout', '$uibModalInstance', 'api', 'TransactionId',function($scope, $rootScope, $timeout, $uibModalInstance, api,TransactionId) {
         $rootScope.__MODAL_OPEN = true;
         $timeout(function() {
             $scope.ShowButton = true;
         }, 333);
+        $scope.TransactionId = TransactionId;
         //Dismiss modal
         $scope.dismissModal = function() {
             $rootScope.__MODAL_OPEN = false;
+            document.getElementById('PrintReceipt').submit();
             $uibModalInstance.dismiss('ok');
+
         };
     }]);
 });
