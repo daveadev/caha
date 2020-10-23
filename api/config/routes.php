@@ -44,6 +44,11 @@
 			array("controller"=>"reports","action"=>"receipt")
 	);
 	
+	Router::connect(
+			"/daily_collections",
+			array("controller"=>"reports","action"=>"daily_collections")
+	);
+	
 	
 	
 	App::import('Lib', 'Api.SlugRoute');

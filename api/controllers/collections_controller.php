@@ -82,7 +82,7 @@ class CollectionsController extends AppController {
 			'total_subsidies'=>$total_subs,
 			'collection_forwarded'=>$total_collections,
 			'net_receivables'=>$total_rcvbl-($total_subs+$total_collections),
-			'collections'=>$monthly_collections
+			'monthly_collections'=>$monthly_collections
 		);
 		//exit();
 		$annual_collections = array(array('Collection'=>$annual_collections));

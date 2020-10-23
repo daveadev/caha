@@ -77,5 +77,8 @@ class ReportsController extends AppController{
 		
 		$this->set(compact('data'));
 	}
-	
+	function daily_collections(){
+		$contents = file_get_contents(APP."json/daily_collection.json");
+		pr($contents);exit;
+	}
 }
