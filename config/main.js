@@ -25,7 +25,8 @@ require.config({
 		'simple-sheet':'../directives/simple_sheet',
         'custom-window':'vendors/custom_window',
         'atomic':'vendors/atomic_design',
-		'util':'../config/util'
+		'util':'../config/util',
+		'report':'../controllers/report',
     },
     // Add angular modules that does not support AMD out of the box, put it in a shim
     shim: {
