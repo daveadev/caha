@@ -417,5 +417,8 @@
 			<div class="modal-footer">
 				<button class="btn btn-success btn-block" type="button" ng-click="dismissModal()">OK</button>
 			</div>
+			<form action="api/receipt" method="POST" target="_blank" id="PrintReceipt">
+				<input type="hidden" name="TransactionId" value="{{TransactionId}}"/>
+			</form>
 		</script>
 </div>
