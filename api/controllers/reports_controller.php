@@ -1,7 +1,7 @@
 <?php
 class ReportsController extends AppController{
 	var $name = 'Reports';
-	var $uses = array('Ledger','Account', 'Student','Section');
+	var $uses = array('Ledger','Account', 'Student','Section','Transaction','TransactionType');
 
 	// GET srp/test_soa?account_id=LSJXXXXX
 	function soa(){
@@ -25,22 +25,56 @@ class ReportsController extends AppController{
 		}
 	}
 	function receipt(){
+		$trnxId = $_POST['TransactionId'];
+		$trnx = $this->Transaction->findById($trnxId);
+		$refNo = $trnx['Transaction']['ref_no'];
+		$totalPaid = $trnx['Transaction']['amount'];
+		$totalPaid =  number_format($totalPaid,2,'.',',');
+
+		$esp = $trnx['Transaction']['esp'];
+		$syShort = (int)substr($esp, 2,2);
+		$syFor = $syShort.'-'.($syShort+1);
+		
+		$trnDate = $trnx['Transaction']['transac_date'];
+		$trnDate =  date('d M Y',strtotime($trnDate));
+		
+		$acctId =  $trnx['Account']['id'];
+		$this->Account->recursive =0;
+		$account = $this->Account->findById($acctId);
+		$student =  $account['Student']['class_name'];
+		$sno =  $account['Student']['sno'];
+		$sectionId  =  $account['Student']['section_id'];
+		$sectObj = $this->Section->findById($sectionId);
+		$yearLevel = $sectObj['YearLevel']['name'];
+		$section = $sectObj['Section']['name'];
+
+		$trnxTypes = $this->TransactionType->find('list');
+		
+		$trnxDtls = array();
+
+		foreach($trnx['TransactionDetail'] as $dtl){
+			$item = $trnxTypes[$dtl['transaction_type_id']];
+			$amount= number_format($dtl['amount'],2,'.',',');
+			$dtlObj = array('item'=>$item,'amount'=>$amount);
+			array_push($trnxDtls,$dtlObj);
+		}
+		$cashier = $trnx['Transaction']['cashier'];
+
 		$data = array(
-			'ref_no'=>'12234',
-			'transac_date'=>'12 OCT 2020',
-			'student'=>'Juan Dela Cruz',
-			'sno'=>'S082420',
-			'year_level'=>'Gr. 7',
-			'section'=>'Mt. Makiling',
-			'sy'=>'20-21',
-			'transac_details'=> array(
-				array('item'=>'Initial Payment', 'amount'=>'1000'),
-				array('item'=>'Subsequent Payment', 'amount'=>'2000'),
-			),
-			'total_paid'=>'3,000.00',
-			'cashier'=>'Cashier Sophia',
+			'ref_no'=>$refNo,
+			'transac_date'=>$trnDate,
+			'student'=>$student,
+			'sno'=>$sno,
+			'year_level'=>$yearLevel,
+			'section'=>$section,
+			'sy'=>$syFor,
+			'transac_details'=> $trnxDtls,
+			'total_paid'=>$totalPaid,
+			'cashier'=>$cashier,
 			'verify_sign'=>'1A2khsfdso1sa'
 		);
+		$data['verify_sign'] = md5(json_encode($data));
+		
 		$this->set(compact('data'));
 	}
 	
