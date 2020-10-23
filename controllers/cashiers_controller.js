@@ -3,6 +3,11 @@ define(['app', 'api'], function(app) {
     app.register.controller('CashierController', ['$log', '$scope', '$rootScope', '$uibModal', 'api', function($log, $scope, $rootScope, $uibModal, api) {
         $scope.index = function() {
             $rootScope.__MODULE_NAME = 'Cashiers';
+
+            $rootScope.$watch('_APP',function(app){
+                if(app)
+                    $scope.initCashier();
+            });
             //Steps in Nav-pills
             $scope.Steps = [
                 { id: 1, title: "Student", description: "Select Student" },
@@ -13,6 +18,8 @@ define(['app', 'api'], function(app) {
             //Initialize components
             $scope.initCashier = function() {
 				$scope.Today = new Date();
+                $scope.ActiveSY  = $rootScope._APP.ACTIVE_SY;
+                $scope.ActiveSYShort = parseInt($scope.ActiveSY.toString().substr(2,2));
 				$scope.Disabled = 1;
                 $scope.ActiveStep = 1;
                 $scope.ActiveStudent = {};
@@ -53,7 +60,7 @@ define(['app', 'api'], function(app) {
                 };
 				getAll();
             };
-            $scope.initCashier();
+            
 			
 			$scope.SearchStudent = function(){
 				$scope.Search = 1;
