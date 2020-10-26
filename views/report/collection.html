@@ -29,7 +29,7 @@
 			</a-header>
 			<a-header style="z-index:0">
 				<a-row>
-					<a-col size="6">
+					<a-col size="5">
 						<ul class="nav nav-pills">
 							<li ng-repeat="opt in CC.Options" 
 							ng-click="CC.setActOption(opt)" 
@@ -38,13 +38,26 @@
 							</li>
 						</ul>
 					</a-col>
-					<a-col size="6">
-						<button class="btn btn-primary pull-right">Print</button>
+					<a-col size="3">
+						<div class="input-group">
+							<span class="input-group-addon">From: </span>
+							<input type="date" class="input-md form-control" ng-change="CC.ChangeDate()" ng-model="CC.date_from" min="{{cc.date_from | date:'yyyy-MM-dd'}}" />
+						</div>
+					</a-col>
+					<a-col size="2">
+						<div class="input-group">
+							<span class="input-group-addon">To: </span>
+							<input type="date" class="input-md form-control" ng-change="CC.ChangeDate()" ng-model="CC.date_to" />
+						</div>
+					</a-col>
+					<a-col size="2">
+						<button class="btn btn-primary pull-right" ng-click="CC.LoadReport()" ng-disabled="!CC.date_from||!CC.date_to" ng-show="!CC.Loaded">Load</button>
+						<button class="btn btn-primary pull-right" ng-disabled="!CC.date_from||!CC.date_to" ng-show="CC.Loaded">Print</button>
 					</a-col>
 				</a-row>
 			</a-header>
 			<a-canvas>
-				<a-content>
+				<a-content ng-show="CC.Collections">
 					<a-row>
 						<a-col size="6">
 							<img src="webroot/img/pie.svg" alt="" style="margin: 0.5rem 6rem;width: 21rem;margin-bottom: 1.5rem;">
@@ -62,6 +75,12 @@
 									<div class="amount total peso">{{CC.Collections.total_subsidies | currency}}</div>
 								</h3>
 							</div>
+							<div class="amount amount-total">
+								<label for="">Net Receivables</label>
+								<h3>
+									<div class="amount total peso">{{CC.Collections.total_receivables-CC.Collections.total_subsidies | currency}}</div>
+								</h3>
+							</div>
 						</a-col>
 						<a-col size="3">
 							<div class="amount amount-total">
@@ -71,13 +90,14 @@
 								</h3>
 							</div>
 							<div class="amount amount-total">
-								<label for="">Net Receivables</label>
+								<label for="">Beginning Balance</label>
 								<h3>
 									<div class="amount total peso">{{CC.Collections.net_receivables | currency}}</div>
 								</h3>
 							</div>
 						</a-col>
 					</a-row>
+					
 					<a-row>
 						<a-col>
 							<!-- <a-table headers="CC.Headers" props="CC.Props" data="CC.Collections.monthly_collections" ></a-table> -->
@@ -98,13 +118,13 @@
 									</tr>
 								</thead>
 								<tbody>
-									<tr ng-show="CC.ActiveOpt.id=='month'" ng-repeat="col in CC.Collections.monthly_collections">
+									<tr ng-show="CC.ActiveOpt.id=='month'" ng-repeat="col in CC.Collections.collections">
 										<td>{{col.month}}</td>
 										<td>{{col.details}}</td>
 										<td class="amount total peso">{{col.collection | currency}}</td>
 										<td class="amount total peso">{{col.balance | currency}}</td>
 									</tr>
-									<tr ng-show="CC.ActiveOpt.id=='daily'" ng-repeat="col in CC.Collections.monthly_collections">
+									<tr ng-show="CC.ActiveOpt.id=='daily'" ng-repeat="col in CC.Collections.collections">
 										<td>{{col.date}}</td>
 										<td>{{col.day}}</td>
 										<td>{{col.description}}</td>
@@ -115,6 +135,27 @@
 							</table>
 						</a-col>
 					</a-row>
+				</a-content>
+				<a-content ng-show="!CC.Collections&&!CC.Loading" style="height: 100%">
+					<div class="empty-state">
+						<div class="well">
+							<div class="empty-state-icon text-center">
+								<i class="glyphicon glyphicon-calendar"></i>
+							</div>
+							<h4>Select date range then load.</h4>
+						</div>
+					</div>
+				</a-content>
+				<a-content ng-show="CC.Loading" style="height: 100%">
+					<div class="empty-state">
+						<div class="well text-center">
+							<div class="empty-state-icon text-center">
+								<i class="glyphicon glyphicon-refresh spin"></i>
+							</div>
+							<h4>Loading collection reports...</h4>
+						</div>
+					</div>
+				</a-content>
 				</a-content>
 			</a-canvas>
 		</a-container>

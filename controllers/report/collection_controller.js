@@ -1,7 +1,7 @@
 "use strict";
 define(['app','api','atomic/bomb'],function(app){
-	app.register.controller('CollectionController',['$scope','$rootScope','api',
-	function($scope,$rootScope,api){
+	app.register.controller('CollectionController',['$scope','$rootScope','api','$filter',
+	function($scope,$rootScope,api,$filter){
 		const $selfScope =  $scope;
 		$scope = this;
 		$scope.init = function(){
@@ -28,7 +28,6 @@ define(['app','api','atomic/bomb'],function(app){
 			];
 			$scope.ActiveMonth = {id:9,'month':'Sep'};
 			$scope.index = 0;
-			getCollections();
 		}
 		$selfScope.$watch("CC.Active",function(active){
 			if(!active) return false;
@@ -38,7 +37,8 @@ define(['app','api','atomic/bomb'],function(app){
 		});
 		$scope.setActOption = function(opt){
 			$scope.ActiveOpt = opt;
-			getCollections();
+			if($scope.Collections)
+				getCollections();
 		}
 		$scope.SetActiveMonth = function(mo){
 			$scope.ActiveMonth = mo;
@@ -52,20 +52,35 @@ define(['app','api','atomic/bomb'],function(app){
 			$scope.ActiveMonth = $scope.Months[$scope.index];
 		}
 		
+		$scope.LoadReport = function(){
+			getCollections();
+		}
+		
+		$scope.ChangeDate = function(){
+			$scope.Loaded = 0;
+		}
+		
+		function formatDate(date){
+			var d = new Date(date)
+		}
+		
 		function getCollections(){
+			$scope.Loading = 1;
+			$scope.Collections = '';
 			
 			var data = {
 				type:$scope.ActiveOpt.id,
 				esp:2020,
-				from:'2020-09-01',
-				to:'2021-04-30'
+				from:$scope.date_from,
+				to:$scope.date_to
 			};
-			if(data.type=='daily'){
-				data.from = 2020+'-'+$scope.ActiveMonth.id+'-01'
-				data.to = 2020+'-'+$scope.ActiveMonth.id+'-31'
-			}
+			data.from = $filter('date')(new Date(data.from),'yyyy-MM-dd');
+			data.to = $filter('date')(new Date(data.to),'yyyy-MM-dd');
 			api.GET('collections',data, function success(response){
+				$scope.Loaded = 1;
 				$scope.Collections = response.data[0];
+				
+				$scope.Loading = 0;
 			});
 		}
 		
