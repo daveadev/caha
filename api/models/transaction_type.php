@@ -1,11 +1,11 @@
 <?php
 class TransactionType extends AppModel {
 	var $name = 'TransactionType';
-	var $consumableFields = array('id','name','token','amount','amounts');
+	var $consumableFields = array('id','name','token','amount','amounts','description');
 	var $virtualFields = array(
 				'token'=>"MD5(GROUP_CONCAT(AccountSchedule.due_date,'/P',AccountSchedule.due_amount))",
 				'amounts'=>"GROUP_CONCAT(AccountSchedule.due_date,'/P',AccountSchedule.due_amount-AccountSchedule.paid_amount)",
-				
+				'description'=>"GROUP_CONCAT(AccountSchedule.bill_month)",
 				'amount'=> "SUM(
 						IF(
 						AccountSchedule.transaction_type_id='INIPY'
@@ -75,6 +75,7 @@ class TransactionType extends AppModel {
 					));
 
 			array_push($queryData['conditions'],$conditions);
+			$queryData['order']=array('AccountSchedule.id'=>'desc','AccountSchedule.order'=>'asc');
 		else:
 			$this->virtualFields['token'] ='null';
 			$this->virtualFields['amount'] =0;
