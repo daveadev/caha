@@ -15,7 +15,7 @@ class ReportsController extends AppController{
 			//Student's SOA
 			$data = $this->Ledger->find('all',array(
 				'conditions'=>array('Ledger.account_id'=>$account_id),
-				'order'=>array('Ledger.ref_no','Ledger.transac_date','Ledger.id')
+				'order'=>array('Ledger.transac_date','Ledger.id')
 			));
 			//pr($student);exit;
 			
@@ -77,5 +77,8 @@ class ReportsController extends AppController{
 		
 		$this->set(compact('data'));
 	}
-	
+	function daily_collections(){
+		$contents = file_get_contents(APP."json/daily_collection.json");
+		pr($contents);exit;
+	}
 }

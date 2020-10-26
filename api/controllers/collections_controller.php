@@ -128,6 +128,7 @@ class CollectionsController extends AppController {
 			'collection_forwarded'=>$collection_forwarded,
 			'net_receivables'=>$net_receivables,
 			'collections'=>$collection_range
+
 		);
 		//exit();
 		$annual_collections = array(array('Collection'=>$annual_collections));
