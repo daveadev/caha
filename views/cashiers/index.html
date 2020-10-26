@@ -184,7 +184,8 @@
 									</label>
 									<div class="description">
 										<h4 class="list-group-item-heading">{{transaction_type.name}}</h4>
-										<p class="list-group-item-text">Description Here</p>
+										<p ng-if="transaction_type.description" class="list-group-item-text">Payment for {{transaction_type.description}}</p>
+										<p ng-if="!transaction_type.description"  class="list-group-item-text"> &nbsp;</p>
 									</div>
 								</div>
 							</div>
