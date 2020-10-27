@@ -8,6 +8,7 @@
 		</div>
 		<div class="col-md-6 col-xs-8 text-right">
 			<h4><strong>Welcome, {{__USER.user.username | uppercase}}!</strong></h4>
+
 		</div>
 	</div>
 	<div class="row" >
@@ -55,6 +56,8 @@
 				</div>
 			</div>
 		</a>
+	</div>
+	<div class="row" >
 		<a href="#/report/collection" class="col-md-3" ng-show="__isAllowed('collections')">
 			<div class="panel panel-default">
 				<div class="panel-heading">
