@@ -7,7 +7,7 @@
 						<h4>Collection Report</h4>
 					</a-col>
 					<a-col size="6">
-						<o-dropdown-filter ng-model="CC.Active" show-section="false" show-sem="false" class="pull-right" >
+						<o-dropdown-filter ng-model="CC.Active" show-section="false" show-sem="false" show-period="false" class="pull-right" >
 							<li class="dropdown-header" ng-show="CC.ActiveOpt.id=='daily'">MONTHS</li>
 							<li class="dropdown-input" ng-show="CC.ActiveOpt.id=='daily'">
 								<div class="btn-group">
@@ -29,7 +29,7 @@
 			</a-header>
 			<a-header style="z-index:0">
 				<a-row>
-					<a-col size="5">
+					<a-col size="4">
 						<ul class="nav nav-pills">
 							<li ng-repeat="opt in CC.Options" 
 							ng-click="CC.setActOption(opt)" 
@@ -38,21 +38,29 @@
 							</li>
 						</ul>
 					</a-col>
-					<a-col size="3">
-						<div class="input-group">
-							<span class="input-group-addon">From: </span>
-							<input type="date" class="input-md form-control" ng-change="CC.ChangeDate()" ng-model="CC.date_from" min="{{cc.date_from | date:'yyyy-MM-dd'}}" />
-						</div>
+					<a-col size="6">
+						<a-row style="margin-right: -70px;margin-left: 100px;">
+							<a-col size="6">
+							<div class="input-group">
+								<span class="input-group-addon">From: </span>
+								<input type="date" class="input-md form-control" ng-change="CC.ChangeDate()" ng-model="CC.date_from" min="{{cc.date_from | date:'yyyy-MM-dd'}}" />
+							</div>
+							</a-col>
+							<a-col size="6" align="right">
+								<div class="input-group">
+									<span class="input-group-addon">To: </span>
+									<input type="date" class="input-md form-control" ng-change="CC.ChangeDate()" ng-model="CC.date_to" />
+								</div>
+							</a-col>
+						</a-row>
 					</a-col>
-					<a-col size="2">
-						<div class="input-group">
-							<span class="input-group-addon">To: </span>
-							<input type="date" class="input-md form-control" ng-change="CC.ChangeDate()" ng-model="CC.date_to" />
-						</div>
-					</a-col>
-					<a-col size="2">
-						<button class="btn btn-primary pull-right" ng-click="CC.LoadReport()" ng-disabled="!CC.date_from||!CC.date_to" ng-show="!CC.Loaded">Load</button>
-						<button class="btn btn-primary pull-right" ng-disabled="!CC.date_from||!CC.date_to" ng-show="CC.Loaded">Print</button>
+					<a-col size="2" align="right">
+
+								<button class="btn btn-default" >Clear</button>
+							
+								<button class="btn btn-primary" ng-click="CC.LoadReport()" ng-disabled="!CC.date_from||!CC.date_to" ng-if="!CC.Loaded">Load</button>
+								<button class="btn btn-primary btn-block" ng-disabled="!CC.date_from||!CC.date_to" ng-if="CC.Loaded">Print</button>
+							
 					</a-col>
 				</a-row>
 			</a-header>
@@ -61,6 +69,20 @@
 					<a-row>
 						<a-col size="6">
 							<img src="webroot/img/pie.svg" alt="" style="margin: 0.5rem 6rem;width: 21rem;margin-bottom: 1.5rem;">
+						</a-col>
+						<a-col size="3">
+							<div class="amount amount-total">
+								<label for="">Collection Forwarded</label>
+								<h3>
+									<div class="amount total peso">{{CC.Collections.collection_forwarded | currency}}</div>
+								</h3>
+							</div>
+							<div class="amount amount-total">
+								<label for="">Beginning Balance</label>
+								<h3>
+									<div class="amount total peso">{{CC.Collections.net_receivables | currency}}</div>
+								</h3>
+							</div>
 						</a-col>
 						<a-col size="3">
 							<div class="amount amount-total">
@@ -79,20 +101,6 @@
 								<label for="">Net Receivables</label>
 								<h3>
 									<div class="amount total peso">{{CC.Collections.total_receivables-CC.Collections.total_subsidies | currency}}</div>
-								</h3>
-							</div>
-						</a-col>
-						<a-col size="3">
-							<div class="amount amount-total">
-								<label for="">Collection Forwarded</label>
-								<h3>
-									<div class="amount total peso">{{CC.Collections.collection_forwarded | currency}}</div>
-								</h3>
-							</div>
-							<div class="amount amount-total">
-								<label for="">Beginning Balance</label>
-								<h3>
-									<div class="amount total peso">{{CC.Collections.net_receivables | currency}}</div>
 								</h3>
 							</div>
 						</a-col>
