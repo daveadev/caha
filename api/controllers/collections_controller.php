@@ -116,7 +116,7 @@ class CollectionsController extends AppController {
 			if($type=='month')
 				$coll = array('month'=>$i,'details'=>'cash','collection'=>$data,'balance'=>$running_balance);
 			else
-				$coll = array('date'=>$i,'day'=>date('D', strtotime($i)),'description'=>'cash','collection'=>$data,'balance'=>$running_balance);
+				$coll = array('date'=>$i,'day'=>date('D', strtotime($i)),'description'=>'Cash','collection'=>$data,'balance'=>$running_balance);
 			array_push($collection_range,$coll);
 			
 		}

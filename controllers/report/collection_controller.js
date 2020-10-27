@@ -37,22 +37,18 @@ define(['app','api','atomic/bomb'],function(app){
 		});
 		$scope.setActOption = function(opt){
 			$scope.ActiveOpt = opt;
+			if(opt.id=='month')
+				getLedgerMonths();
 			if($scope.Collections)
 				getCollections();
 		}
 		$scope.SetActiveMonth = function(mo){
 			$scope.ActiveMonth = mo;
 		}
-		$scope.navigateMonth = function(dest){
-			if(dest=='next'){
-				$scope.index = $scope.index +1;
-			}else{
-				$scope.index = $scope.index -1;
-			}
-			$scope.ActiveMonth = $scope.Months[$scope.index];
-		}
+		
 		
 		$scope.LoadReport = function(){
+			$scope.Loading = 1;
 			getCollections();
 		}
 		
@@ -64,8 +60,29 @@ define(['app','api','atomic/bomb'],function(app){
 			var d = new Date(date)
 		}
 		
+		function getLedgerMonths(){
+			var trnx = ['INIPY','SBQPY'];
+			var data = {
+				esp:2020,
+				type:'-',
+				transaction_type_id:trnx,
+				limit:'less'
+			}
+			api.GET('Ledgers',data,function success(response){
+				var Months = [];
+				angular.forEach(response.data, function(led){
+					var date = new Date(led.transac_date);
+					var month = date.getMonth();
+					var year = date.getYear();
+					var selection = month+'-'+year;
+					if(Months.indexOf(selection)===-1)
+						Months.push(selection);
+				});
+				console.log(Months);
+			});
+		}
+		
 		function getCollections(){
-			$scope.Loading = 1;
 			$scope.Collections = '';
 			
 			var data = {
@@ -77,9 +94,12 @@ define(['app','api','atomic/bomb'],function(app){
 			data.from = $filter('date')(new Date(data.from),'yyyy-MM-dd');
 			data.to = $filter('date')(new Date(data.to),'yyyy-MM-dd');
 			api.GET('collections',data, function success(response){
+				var collection = response.data[0];
+				var total_recvbl = collection.total_receivables-collection.total_subsidies;	
+				collection['cfp'] = (collection.collection_forwarded/total_recvbl)*100;
+				collection['bbp'] = (collection.net_receivables/total_recvbl)*100;
 				$scope.Loaded = 1;
-				$scope.Collections = response.data[0];
-				
+				$scope.Collections = collection;
 				$scope.Loading = 0;
 			});
 		}
