@@ -9,6 +9,20 @@ define(['app','api'], function (app) {
 				$scope.ActiveListItem = $scope.List[$index];
 			}
 	   }
+
+	   $rootScope.__isAllowed = function(module){
+	   		const RIGHTS ={
+	   				'admin':'all',
+	   				'cashr':['cashier'],
+	   				'money':['collections']
+	   		}
+	   		const USER = $rootScope.__USER.user;
+	   		var allowedMods = RIGHTS[USER.user_type]|| false;
+	   		if(allowedMods=='all') return true;
+	   		if(typeof allowedMods == 'object')
+	   			return allowedMods.indexOf(module)!== -1
+	   }
+	   
     }]);
 });
 

@@ -11,7 +11,7 @@
 		</div>
 	</div>
 	<div class="row" >
-		<a href="#/cashiers/index" class="col-md-3">
+		<a href="#/cashiers/index" class="col-md-3" ng-show="__isAllowed('cashier')">
 			<div class="panel panel-default">
 				<div class="panel-heading">
 					<h1>
@@ -22,7 +22,7 @@
 				</div>
 			</div>
 		</a>
-		<a href="#/booklets/list" class="col-md-3">
+		<a href="#/booklets/list" class="col-md-3" ng-show="__isAllowed('booklet')">
 			<div class="panel panel-default">
 				<div class="panel-heading">
 					<h1>
@@ -33,7 +33,7 @@
 				</div>
 			</div>
 		</a>
-		<a href="#/accounts/list" class="col-md-3">
+		<a href="#/accounts/list" class="col-md-3" ng-show="__isAllowed('accounts')">
 			<div class="panel panel-default">
 				<div class="panel-heading">
 					<h1>
@@ -44,7 +44,7 @@
 				</div>
 			</div>
 		</a>
-		<a href="#/soa" class="col-md-3">
+		<a href="#/soa" class="col-md-3" ng-show="__isAllowed('ledgers')">
 			<div class="panel panel-default">
 				<div class="panel-heading">
 					<h1>
@@ -55,9 +55,7 @@
 				</div>
 			</div>
 		</a>
-	</div>
-	<div class="row" >
-		<a href="#/report/collection" class="col-md-3">
+		<a href="#/report/collection" class="col-md-3" ng-show="__isAllowed('collections')">
 			<div class="panel panel-default">
 				<div class="panel-heading">
 					<h1>
