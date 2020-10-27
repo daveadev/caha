@@ -48,6 +48,7 @@ define(['app','api','atomic/bomb'],function(app){
 		
 		
 		$scope.LoadReport = function(){
+			$scope.Loading = 1;
 			getCollections();
 		}
 		
@@ -70,17 +71,18 @@ define(['app','api','atomic/bomb'],function(app){
 			api.GET('Ledgers',data,function success(response){
 				var Months = [];
 				angular.forEach(response.data, function(led){
-					var month = new Date(led.transac_date);
-					month = month.getMonth();
-					if(Months.indexOf(month)===-1)
-						Months.push(month);
+					var date = new Date(led.transac_date);
+					var month = date.getMonth();
+					var year = date.getYear();
+					var selection = month+'-'+year;
+					if(Months.indexOf(selection)===-1)
+						Months.push(selection);
 				});
 				console.log(Months);
 			});
 		}
 		
 		function getCollections(){
-			$scope.Loading = 1;
 			$scope.Collections = '';
 			
 			var data = {

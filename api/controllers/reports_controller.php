@@ -24,6 +24,7 @@ class ReportsController extends AppController{
 			die('No data available.Contact your system administrator.');
 		}
 	}
+	
 	function receipt(){
 		$trnxId = $_POST['TransactionId'];
 		$trnx = $this->Transaction->findById($trnxId);
@@ -77,8 +78,11 @@ class ReportsController extends AppController{
 		
 		$this->set(compact('data'));
 	}
+	
 	function daily_collections(){
-		$contents = file_get_contents(APP."json/daily_collection.json");
-		pr($contents);exit;
+		$data = file_get_contents(APP."json/daily_collection.json");
+		$data = json_decode($data,true);
+		
+		$this->set(compact('data'));
 	}
 }

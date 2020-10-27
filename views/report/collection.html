@@ -7,8 +7,10 @@
 						<h4>Collection Report</h4>
 					</a-col>
 					<a-col size="6">
+
 						<o-dropdown-filter ng-model="CC.Active" show-section="false" show-sem="false" class="pull-right" >
 							
+
 						</o-dropdown-filter>
 					</a-col>
 				</a-row>
@@ -65,11 +67,12 @@
 							</div>
 							<div class="amount amount-total">
 								<label for=""> {{CC.Collections.bbp | number:2}} % Beginning Balance</label>
+
 								<h3>
 									<div class="amount total peso">{{CC.Collections.net_receivables | currency}}</div>
 								</h3>
 							</div>
-							
+
 						</a-col>
 						<a-col size="3">
 							<div class="amount amount-total">
@@ -131,7 +134,7 @@
 						</a-col>
 					</a-row>
 				</a-content>
-				<a-content ng-show="!CC.Collections&&!CC.Loading" style="height: 100%">
+				<a-content ng-show="!CC.Collections" style="height: 100%">
 					<div class="empty-state">
 						<div class="well">
 							<div class="empty-state-icon text-center">
