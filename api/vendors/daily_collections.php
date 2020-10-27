@@ -15,7 +15,7 @@ class DailyCollections extends Formsheet{
 		$this->createSheet();
 	}
 	
-	function hdr($data){
+	function hdr($hdr){
 		$this->showLines = !true;
 		$metrics = array(
 			'base_x'=> 0.5,
@@ -25,34 +25,16 @@ class DailyCollections extends Formsheet{
 			'cols'=> 38,
 			'rows'=> 4,	
 		);
-		
-		
 		$this->section($metrics);
 		$this->GRID['font_size']=9;
 		$y=1;
 		$this->leftText(0,$y++,'Lake Shore Educational Institution','','');
 		$this->leftText(0,$y++,'Daily Collection Summary Report','','');
 		$this->leftText(0,$y++,'School Year: 2020 - 2021','','');
-		$this->leftText(0,$y++,'Month of: August 2020','','');
-		
-		$y=1;
-		$this->rightText(33,$y,'Total Receivables:','','');
-		$this->rightText(38,$y++,number_format($data['total_receivables'],2),'','');
-		
-		$this->rightText(33,$y,'Total Subsidies:','','');
-		$this->rightText(38,$y++,number_format($data['total_subsidies'],2),'','');
-		
-		$this->rightText(33,$y,'Collection Forwarded:','','');
-		$this->rightText(38,$y++,number_format($data['collection_forwarded'],2),'','');
-		
-		$this->rightText(33,$y,'Beginning Balance:','','');
-		$this->rightText(38,$y++,number_format($data['beginning_balance'],2),'','');
-	
-	
-	
+		$this->leftText(0,$y++,'Month of: '.date('F Y',strtotime($hdr['collections'][0]['date'])) ,'','');
 	}
 	
-	function data($data,$total_page,$page){
+	function data($hdr,$data,$total_page,$page){
 		$this->showLines = !true;
 		$metrics = array(
 			'base_x'=> 0.5,
@@ -63,13 +45,9 @@ class DailyCollections extends Formsheet{
 			'rows'=> 47,	
 		);
 		$this->section($metrics);
-		
 		$y=0;
 		$this->drawLine($y++,'h');
 		$this->drawLine($y++,'h');
-	
-	
-	
 		$y=0.8;
 		$this->GRID['font_size']=9;
 		$this->centerText(0,$y,'Date',2,'b');
@@ -77,12 +55,32 @@ class DailyCollections extends Formsheet{
 		$this->leftText(4.2,$y,'Description','','b');
 		$this->centerText(11,$y,'Collection',2,'b');
 		$this->centerText(13,$y++,'Balance',2,'b');
-		
 		$totalcollectionperpage = 0;
 		$dvr = '---------------------------------------------';
-		//;
-		
-		//pr($data[0]['date']);
+		if($page == 1){
+			//TOTAL RECEIVABLES
+			$this->leftText(4.2,$y,'Total Receivable','','');
+			$this->rightText(14.9,$y,number_format($hdr['total_receivables'],2),'','');
+			$this->leftText(0,$y+0.4,$dvr.$dvr.$dvr.$dvr,'','');
+			$y++;
+			//LESS SUBSIDIES & DISCOUNT
+			$this->leftText(4.2,$y,'Less Subsidies & Discount','','');
+			$this->rightText(15,$y,'('.number_format($hdr['total_subsidies'],2).')','','');
+			$this->leftText(0,$y+0.4,$dvr.$dvr.$dvr.$dvr,'','');
+			$y++;
+			//NET RECEIVABLES
+			$netrecievable = $hdr['total_receivables']-$hdr['total_subsidies'];
+			$this->leftText(4.2,$y,'Net Receivable','','');
+			$this->rightText(14.9,$y,number_format($netrecievable,2),'','');
+			$this->leftText(0,$y+0.4,$dvr.$dvr.$dvr.$dvr,'','');
+			$y++;
+			//COLLECTION FORWARDED
+			$this->leftText(4.2,$y,'Forwarded Collection','','');
+			$this->rightText(12.9,$y,number_format($hdr['collection_forwarded'],2),'','');
+			$this->rightText(14.9,$y,number_format($hdr['beginning_balance'],2),'','');
+			$this->leftText(0,$y+0.4,$dvr.$dvr.$dvr.$dvr,'','');
+			$y++;
+		}
 		$newpage=true;
 		foreach($data as $d){
 			$totalcollectionperpage+= $d['collection'];
@@ -92,9 +90,7 @@ class DailyCollections extends Formsheet{
 			$this->rightText(12.9,$y,number_format($d['collection'],2),'','');
 			$this->rightText(14.9,$y,number_format($d['balance'],2),'','');
 			$this->leftText(0,$y+0.4,$dvr.$dvr.$dvr.$dvr,'','');
-			
 			DailyCollections::$grand_total+=$d['collection'];
-		
 			if($newpage){
 				$newpage=false;
 				$fromdate = date('M d',strtotime($d['date']));
@@ -108,16 +104,12 @@ class DailyCollections extends Formsheet{
 			$this->rightText(11,$y,'Grand Total','','b');
 			$this->rightText(12.9,$y,number_format(DailyCollections::$grand_total,2),'','b');
 		}
-		
-		
-		
+		//FOOTER DETAILS
 		$this->GRID['font_size']=8;
 		$this->leftText(0,48,'Printed by: '.'Cashier 1','','');
 		$this->centerText(0,48,'Date & Time Printed: '. date("M d, Y h:i:s A"),15,'');
 		$this->rightText(14.9,48,'Page '.$page.' of '.$total_page,'','');
-	
 	}
-	
 }
 ?>
 	

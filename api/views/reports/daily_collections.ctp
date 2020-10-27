@@ -10,7 +10,7 @@ $pr= new DailyCollections();
 
 foreach($chunk_data as $dt){
 	$pr->hdr($data['data'][0]);
-	$pr->data($dt,$total_page,$i);
+	$pr->data($data['data'][0],$dt,$total_page,$i);
 	if(count($chunk_data) != ($i++)){
 		$pr->createSheet();
 	}
