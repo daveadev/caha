@@ -8,7 +8,7 @@
 					</a-col>
 					<a-col size="6">
 
-						<o-dropdown-filter ng-model="CC.Active" show-section="false" show-sem="false" class="pull-right" >
+						<o-dropdown-filter ng-model="CC.Active" show-section="false" show-sem="false" show-period="false" class="pull-right" >
 							
 
 						</o-dropdown-filter>
@@ -17,7 +17,7 @@
 			</a-header>
 			<a-header style="z-index:0">
 				<a-row>
-					<a-col size="5">
+					<a-col size="4">
 						<ul class="nav nav-pills">
 							<li ng-repeat="opt in CC.Options" 
 							ng-click="CC.setActOption(opt)" 
@@ -33,7 +33,11 @@
 						</div>
 						<div class="input-group" ng-show="CC.ActiveOpt.id=='month'">
 							<span class="input-group-addon">From: </span>
-							<select name="" id="" class="form-control"></select>
+							<select name="" id="" class="form-control" ng-change="CC.setFrom(CC.date_from)"
+								ng-options="month as month.label for month in CC.MonthsFilter"
+								ng-model="CC.date_from" >
+									<option value="">Select month</option>
+							</select>
 						</div>
 					</a-col>
 					<a-col size="3">
@@ -43,12 +47,17 @@
 						</div>
 						<div class="input-group" ng-show="CC.ActiveOpt.id=='month'">
 							<span class="input-group-addon">To: </span>
-							<select name="" id="" class="form-control"></select>
+							<select name="" id="" class="form-control" ng-disabled="!CC.date_from"
+								ng-options="month as month.label for month in CC.FilteredMonths"
+								ng-model="CC.date_to">
+									<option value="">Select month</option>
+							</select>
 						</div>
 					</a-col>
-					<a-col size="1">
-						<button class="btn btn-primary pull-right" ng-click="CC.LoadReport()" ng-disabled="!CC.date_from||!CC.date_to" ng-show="!CC.Loaded">Load</button>
-						<button class="btn btn-primary pull-right" ng-disabled="!CC.date_from||!CC.date_to" ng-show="CC.Loaded">Print</button>
+					<a-col size="2">
+						<button class="btn btn-default" ng-click="CC.Clear()">Clear</button>
+						<button class="btn btn-primary pull-right" ng-click="CC.LoadReport()" ng-disabled="!CC.date_from||!CC.date_to" ng-show="!CC.Collections.collections.length">Load</button>
+						<button class="btn btn-primary pull-right" ng-disabled="!CC.date_from||!CC.date_to" ng-show="CC.Collections.collections.length">Print</button>
 					</a-col>
 				</a-row>
 			</a-header>
@@ -95,7 +104,25 @@
 							</div>
 						</a-col>
 					</a-row>
-					
+					<a-row ng-show="CC.ActiveOpt.id=='daily'" style="margin-bottom:20px;">
+						<a-col size="6">
+							<label for="">Collections from {{CC.date_from | date:'dd MMM'}} - {{CC.date_to | date:'dd MMM yyyy'}}</label>
+						</a-col>
+						<a-col size="6">
+							<div class="btn-group btn-group-sm pull-right" ng-class="{open:MoreLess}">
+								<button class="btn btn-default" >
+									Page {{CC.ActivePage}} of {{CC.Modified.length}}
+								</button>
+								<button class="btn btn-default" ng-disabled="CC.ActivePage==1" ng-click="CC.NavPage('prev')">
+									<span class="glyphicon glyphicon-chevron-left"></span>
+								</button>
+								<button class="btn btn-default" ng-disabled="CC.ActivePage==CC.Modified.length" ng-click="CC.NavPage('next')">
+									<span class="glyphicon glyphicon-chevron-right"></span>
+								</button>
+								
+							</div>
+						</a-col>
+					</a-row>
 					<a-row>
 						<a-col>
 							<!-- <a-table headers="CC.Headers" props="CC.Props" data="CC.Collections.monthly_collections" ></a-table> -->
@@ -118,12 +145,12 @@
 								<tbody>
 									<tr ng-show="CC.ActiveOpt.id=='month'" ng-repeat="col in CC.Collections.collections">
 										<td>{{col.month}}</td>
-										<td>{{col.details}}</td>
+										<td>{{col.details}} <span ng-show="$index==CC.Collections.collections.length-1&&CC.Today"> till {{CC.Today}}</span></td>
 										<td class="amount total">{{col.collection | currency}}</td>
 										<td class="amount total">{{col.balance | currency}}</td>
 									</tr>
-									<tr ng-show="CC.ActiveOpt.id=='daily'" ng-repeat="col in CC.Collections.collections">
-										<td>{{col.date | date:'dd-MMM-yyyy'}}</td>
+									<tr ng-show="CC.ActiveOpt.id=='daily'" ng-repeat="col in CC.Modified[CC.ActivePage-1]">
+										<td>{{col.date | date:'dd MMM yyyy'}}</td>
 										<td>{{col.day}}</td>
 										<td>{{col.description}}</td>
 										<td class="amount total">{{col.collection | currency}}</td>
