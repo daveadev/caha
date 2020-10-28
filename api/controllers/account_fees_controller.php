@@ -4,9 +4,9 @@ class AccountFeesController extends AppController {
 	var $name = 'AccountFees';
 
 	function index() {
-		
+		//$this->paginate['AccountFee']['contain']=array('Fee','Account');
+		$this->paginate['AccountFee']['contain']=array('Fee');
 		$fees = $this->paginate();
-		
 		if($this->isAPIRequest()){
 			foreach($fees as $i=>$fee){
 				pr($fee);
