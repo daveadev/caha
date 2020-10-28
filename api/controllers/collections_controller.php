@@ -46,7 +46,7 @@ class CollectionsController extends AppController {
 			$collection_forwarded += $amount;
 			
 		}
-		$net_receivables = $total_rcvbl-($collection_forwarded+$total_subs);
+		$beginning_balance = $total_rcvbl-($collection_forwarded+$total_subs);
 		if($type=='daily'){
 			$date = explode('-',$from);
 			$day = $date[2];
@@ -110,7 +110,7 @@ class CollectionsController extends AppController {
 		
 		
 		$collection_range = array();
-		$running_balance = $net_receivables;
+		$running_balance = $beginning_balance;
 		foreach($collection_data as $i=>$data){
 			$running_balance -= $data;
 			if($type=='month')
@@ -126,7 +126,7 @@ class CollectionsController extends AppController {
 			'total_receivables'=>$total_rcvbl,
 			'total_subsidies'=>$total_subs,
 			'collection_forwarded'=>$collection_forwarded,
-			'net_receivables'=>$net_receivables,
+			'beginning_balance'=>$beginning_balance,
 			'collections'=>$collection_range
 
 		);
