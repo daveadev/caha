@@ -28,6 +28,7 @@ define(['app','api','atomic/bomb'],function(app){
 			];
 			$scope.ActiveMonth = {id:9,'month':'Sep'};
 			$scope.index = 0;
+			$scope.Chart = {labels:['No data'],data:[0],colors:['#dddddd'],options:{}}; 
 		}
 		$selfScope.$watch("CC.Active",function(active){
 			if(!active) return false;
@@ -62,7 +63,6 @@ define(['app','api','atomic/bomb'],function(app){
 			$scope.date_from='';
 			$scope.date_to='';
 			$scope.Collections = '';
-			$scope.Chart = {labels:['No Data'],data:[100]};
 		}
 		
 		$scope.setFrom = function(index){
@@ -170,8 +170,9 @@ define(['app','api','atomic/bomb'],function(app){
 					$REM = $filter('number')($REM, 2);
 
 				$scope.Loaded = 1;
-
-				$scope.Chart = {labels:['Collection Forwarded','Collected','Remaining Balance'],data:[$CFP,$COL,$REM]};
+				$scope.Chart.colors=['#337ab7','#4e99d8','#dddddd'];
+				$scope.Chart.labels=['Collection Forwarded','Collected','Remaining Balance'];
+				$scope.Chart.data =[$CFP,$COL,$REM];
 				if($scope.ActiveOpt.id=='daily'){
 					var i = 0;
 					var ctr = 0;
