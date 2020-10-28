@@ -127,6 +127,7 @@ class CollectionsController extends AppController {
 			'total_subsidies'=>$total_subs,
 			'collection_forwarded'=>$collection_forwarded,
 			'beginning_balance'=>$beginning_balance,
+			'ending_balance'=>$running_balance,
 			'collections'=>$collection_range
 
 		);
