@@ -62,6 +62,7 @@ define(['app','api','atomic/bomb'],function(app){
 			$scope.date_from='';
 			$scope.date_to='';
 			$scope.Collections = '';
+			$scope.Chart = {labels:['No Data'],data:[100]};
 		}
 		
 		$scope.setFrom = function(index){
@@ -155,9 +156,22 @@ define(['app','api','atomic/bomb'],function(app){
 				var collection = response.data[0];
 				var total_recvbl = collection.total_receivables-collection.total_subsidies;	
 				collection['cfp'] = (collection.collection_forwarded/total_recvbl)*100;
-				collection['bbp'] = (collection.net_receivables/total_recvbl)*100;
-				$scope.Loaded = 1;
+				collection['bbp'] = (collection.beginning_balance/total_recvbl)*100;
+				collection['ebp'] = (collection.ending_balance/total_recvbl)*100;
 				
+				var $CFP = collection['cfp'];
+				var $BBP = collection['bbp'];
+				var $EBP = collection['ebp'];
+				var $COL = $BBP - $EBP;
+				var $REM = $BBP -  $COL;
+
+					$CFP = $filter('number')($CFP, 2);
+					$COL = $filter('number')($COL, 2);
+					$REM = $filter('number')($REM, 2);
+
+				$scope.Loaded = 1;
+
+				$scope.Chart = {labels:['Collection Forwarded','Collected','Remaining Balance'],data:[$CFP,$COL,$REM]};
 				if($scope.ActiveOpt.id=='daily'){
 					var i = 0;
 					var ctr = 0;

@@ -1,7 +1,7 @@
 <div ng-controller="CollectionController as CC" ng-init="CC.init()">
 	<a-module>
 		<a-container>
-			<a-header>
+			<a-header is-main="true">
 				<a-row>
 					<a-col size="6">
 						<h4>Collection Report</h4>
@@ -9,13 +9,11 @@
 					<a-col size="6">
 
 						<o-dropdown-filter ng-model="CC.Active" show-section="false" show-sem="false" show-period="false" class="pull-right" >
-							
-
 						</o-dropdown-filter>
 					</a-col>
 				</a-row>
 			</a-header>
-			<a-header style="z-index:0">
+			<a-header>
 				<a-row>
 					<a-col size="4">
 						<ul class="nav nav-pills">
@@ -65,7 +63,9 @@
 				<a-content ng-show="CC.Collections">
 					<a-row>
 						<a-col size="6">
-							<img src="webroot/img/pie.svg" alt="" style="margin: 0.5rem 6rem;width: 21rem;margin-bottom: 1.5rem;">
+							<canvas id="pie" class="chart chart-pie"
+							  chart-data="CC.Chart.data" chart-labels="CC.Chart.labels">
+							</canvas>
 						</a-col>
 						<a-col size="3">
 							<div class="amount amount-total">
@@ -106,7 +106,7 @@
 					</a-row>
 					<a-row ng-show="CC.ActiveOpt.id=='daily'" style="margin-bottom:20px;">
 						<a-col size="6">
-							<label for="">Collections from {{CC.date_from | date:'dd MMM'}} - {{CC.date_to | date:'dd MMM yyyy'}}</label>
+							<h4 for="">Collections from {{CC.date_from | date:'dd MMM'}} - {{CC.date_to | date:'dd MMM yyyy'}}</h4>
 						</a-col>
 						<a-col size="6">
 							<div class="btn-group btn-group-sm pull-right" ng-class="{open:MoreLess}">
