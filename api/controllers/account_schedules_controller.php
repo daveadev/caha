@@ -5,6 +5,13 @@ class AccountSchedulesController extends AppController {
 
 	function index() {
 		$this->AccountSchedule->recursive = 0;
+		$scheds = $this->paginate();
+		if($this->isAPIRequest()){
+			foreach($scheds as $i=>$sched){
+				//pr($sched);
+			}
+		}
+		//exit();
 		$this->set('accountSchedules', $this->paginate());
 	}
 

@@ -10,15 +10,7 @@ define(['app', 'api', 'simple-sheet'], function(app) {
                 api.GET('accounts', data, function success(response) {
                     console.log(response.data);
                     $scope.Accounts = response.data;
-                    $scope.NextPage = response.meta.next;
-                    $scope.PrevPage = response.meta.prev;
-                    $scope.TotalItems = response.meta.count;
-                    $scope.LastItem = response.meta.page * response.meta.limit;
-                    $scope.FirstItem = $scope.LastItem - (response.meta.limit - 1);
-                    if ($scope.LastItem > $scope.TotalItems) {
-                        $scope.LastItem = $scope.TotalItems;
-                    };
-                    $scope.DataLoading = false;
+                    updatePaginate(response);
                 });
             }
 			function getFees(id){
@@ -32,12 +24,54 @@ define(['app', 'api', 'simple-sheet'], function(app) {
 				api.GET('account_schedules',data, function success(response){
 					$scope.Scheds = response.data;
 				});
-			}function getHist(id){
+			}
+			function getHist(id){
 				var data = {account_id:id};
 				api.GET('account_histories',data, function success(response){
 					$scope.Histories = response.data;
 				});
 			}
+			
+			function updatePaginate(response){
+				$scope.NextPage = response.meta.next;
+				$scope.PrevPage = response.meta.prev;
+				$scope.TotalItems = response.meta.count;
+				$scope.LastItem = response.meta.page * response.meta.limit;
+				$scope.FirstItem = $scope.LastItem - (response.meta.limit - 1);
+				if ($scope.LastItem > $scope.TotalItems) {
+					$scope.LastItem = $scope.TotalItems;
+				};
+				$scope.DataLoading = false;
+			}
+			
+			$scope.SearchStudent = function(){
+				$scope.Search = 1;
+				$scope.Accounts = '';
+				var data = {
+					keyword:$scope.SearchWord,
+					fields:['first_name','middle_name','last_name','id'],
+					limit:'less'
+				}
+				var success = function(response){
+					$scope.Accounts = response.data;
+                    updatePaginate(response);
+				}
+				var error = function(response){
+					
+				}
+				api.GET('accounts',data,success,error);
+			}
+			
+			$scope.ClearSearch = function(){
+				$scope.Search = 0;
+				$scope.SearchWord = '';
+				$scope.Accounts = '';
+				api.GET('accounts', function success(response) {
+					$scope.Accounts = response.data;
+                    updatePaginate(response);
+				});
+			}
+			
             $scope.initAccounts = function() {
                 $scope.hasInfo = false;
                 $scope.hasNoInfo = true;
