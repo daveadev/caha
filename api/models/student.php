@@ -19,9 +19,16 @@ class Student extends AppModel {
 			'className' => 'YearLevel',
 			'foreignKey' => 'year_level_id',
 			'conditions' => '',
-			'fields' => '',
+			'fields' => array('id','name'),
 			'order' => ''
-		)
+		),
+		'Section' => array(
+			'className' => 'Section',
+			'foreignKey' => 'section_id',
+			'conditions' => '',
+			'fields' => array('id','name'),
+			'order' => ''
+		),
 	);
 	function findByName($name){
 		//pr($name); 

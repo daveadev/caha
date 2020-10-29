@@ -92,7 +92,7 @@ define(['app','api','atomic/bomb'],function(app){
 		function getLedgerMonths(){
 			var trnx = ['INIPY','SBQPY'];
 			var data = {
-				esp:2020,
+				esp:$scope.ActiveSY,
 				type:'-',
 				transaction_type_id:trnx,
 				limit:'less'

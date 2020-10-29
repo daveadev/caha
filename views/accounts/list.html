@@ -124,10 +124,10 @@
                             </thead>
                             <tbody>
                                 <tr ng-repeat="fee in Fees">
-                                    <td>{{fee.fee_id}}</td>
-                                    <td class="amount total peso">{{fee.due_amount | currency}}</td>
-                                    <td class="amount total peso">{{fee.paid_amount | currency}}</td>
-                                    <td class="amount total peso">{{fee.due_amount - fee.paid_amount | currency}}</td>
+                                    <td>{{fee.fee}}</td>
+                                    <td class="amount total ">{{fee.due_amount | currency}}</td>
+                                    <td class="amount total ">{{fee.paid_amount | currency}}</td>
+                                    <td class="amount total ">{{fee.due_amount - fee.paid_amount | currency}}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -149,8 +149,8 @@
                                 <tr ng-repeat="schedule in Scheds">
                                     <td>{{schedule.bill_month}}</td>
                                     <td>{{schedule.due_date | date: 'dd MMM yyyy'}}</td>
-                                    <td class="amount total peso">{{schedule.due_amount | currency}}</td>
-                                    <td class="amount total peso">{{schedule.paid_amount | currency}}</td>
+                                    <td class="amount total ">{{schedule.due_amount | currency}}</td>
+                                    <td class="amount total ">{{schedule.paid_amount | currency}}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -169,11 +169,11 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr ng-repeat="history in Histories">
+                                <tr ng-repeat="history in Histories | filter:{details: '!'+'ESC',details: '!'+'QVR',details: '!'+'PUBLIC'}">
                                     <td>{{history.transac_date | date:'dd MMM yyyy'}}</td>
                                     <td>{{history.ref_no}}</td>
                                     <td>{{history.details}}</td>
-                                    <td class="amount total peso">{{history.total_paid | currency}}</td>
+                                    <td class="amount total ">{{history.amount | currency}}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -225,7 +225,7 @@
                                     <td><b>Total</b></td>
                                     <td>&nbsp;</td>
                                     <td>
-                                        <div class="amount peso"><b>{{ totalAmount() | currency }}</b></div>
+                                        <div class="amount "><b>{{ totalAmount() | currency }}</b></div>
                                     </td>
                                     <td>&nbsp;</td>
                                 </tr>

@@ -9,11 +9,13 @@ class AccountFeesController extends AppController {
 		$fees = $this->paginate();
 		if($this->isAPIRequest()){
 			foreach($fees as $i=>$fee){
-				pr($fee);
+				$f = $fee['AccountFee'];
+				$f['fee'] = $fee['Fee']['name'];
+				$fees[$i]['AccountFee'] = $f;
 			}
 		}
-		exit();
-		$this->set('accountFees', $this->paginate());
+		//exit();
+		$this->set('accountFees', $fees);
 	}
 
 	function view($id = null) {
