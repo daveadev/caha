@@ -1,6 +1,7 @@
 <?php
 class AccountFee extends AppModel {
 	var $name = 'AccountFee';
+	var $actsAs = array('Containable');
 	//var $useDbConfig = 'sfm';
 	//The Associations below have been created with all possible keys, those that are not needed can be removed
 
@@ -16,7 +17,7 @@ class AccountFee extends AppModel {
 			'className' => 'Fee',
 			'foreignKey' => 'fee_id',
 			'conditions' => '',
-			'fields' => '',
+			'fields' => array('id','name'),
 			'order' => ''
 		)
 	);

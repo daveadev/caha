@@ -8,7 +8,7 @@
                         <button class="btn btn-default" ng-disabled="!PrevPage || DataLoading" ng-click="navigatePage(PrevPage)"><span class="glyphicon glyphicon-chevron-left"></span></button>
                         <button class="btn btn-default" ng-disabled="!NextPage || DataLoading" ng-click="navigatePage(NextPage)"><span class="glyphicon glyphicon-chevron-right"></span></button>
 
-                        <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" uib-dropdown-toggle>
+                        <button class="btn btn-default dropdown-toggle hidden" type="button" id="dropdownMenu1" uib-dropdown-toggle>
 							<span class="glyphicon glyphicon-filter"></span>
 						  </button>
                         <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
@@ -29,7 +29,7 @@
                             Click the <span class="glyphicon glyphicon-search" aria-hidden="true"></span> to look further. Click the <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> to cancel.
                         </p>
                     </div>
-                    <div class="list-group-item" ng-hide="DataLoading" ng-class="{active: account.id===Account.id}" ng-repeat="account in Accounts | filter:filterAccount" ng-if="Accounts.length" ng-click="openAccountInfo(account)">
+                    <div class="list-group-item" ng-hide="DataLoading" ng-class="{active: account.id===Account.id}" ng-repeat="account in Accounts | filter:{name:SearchWord}" ng-if="Accounts.length" ng-click="openAccountInfo(account)">
                         <h4 class="list-group-item-heading">{{account.name}}</h4>
                         <p class="list-group-item-text"><span>Acct. no:{{account.id}}</span> | <span>Balance: {{account.outstanding_balance | currency: 'P'}}</span></p>
                     </div>
@@ -38,12 +38,12 @@
                     </div>
                 </div>
                 <div class="list-group-item list-group-search-box">
-                    <div class="input-group">
-                        <div class="input-group-btn"><button class="btn btn-default" ng-click="confirmSearch()"><span class="glyphicon glyphicon-search"></span></button></div>
-                        <input type="text" class="form-control" placeholder="Search" ng-model="searchAccount" />
-                        <div class="input-group-btn"><button class="btn btn-default" ng-click="clearSearch()"><span class="glyphicon glyphicon-remove"></span></button></div>
-                    </div>
-                </div>
+					<div class="input-group"> 
+						<div class="input-group-btn"><button class="btn btn-default" ng-click="SearchStudent()"><span class="glyphicon glyphicon-search"></span></button></div>
+						<input type="text" class="form-control" placeholder="Search Student" focus="ActiveStep==1&&!__SIDEBAR_OPEN" ng-model="SearchWord"/>
+						<div class="input-group-btn"><button class="btn btn-default" ng-click="ClearSearch()" ng-show="Search"><span class="glyphicon glyphicon-remove"></span></button></div>
+					</div>
+				</div>
             </div>
         </div>
         <div class="col-md-6">
@@ -52,7 +52,7 @@
                     <label ng-if="Account">{{Account.name}}</label>
                     <label ng-if="!Account">Account Information</label>
                     <div class="pull-right">
-                        <div class="btn-group btn-group-xs " uib-dropdown>
+                        <div class="btn-group btn-group-xs hidden " uib-dropdown>
                             <button class="btn btn-default dropdown-toggle" type="button" uib-dropdown-toggle>
 							<span class="glyphicon glyphicon-chevron-down"></span>
 						  </button>
@@ -87,7 +87,7 @@
 
                         </dl>
                     </div>
-                    <div class="list-group-item list-group-header" ng-show="hasInfo">
+                   <!--  <div class="list-group-item list-group-header" ng-show="hasInfo">
                         <h5>Backlog</h5>
                     </div>
                     <div class="list-group-item" ng-show="hasInfo">
@@ -107,7 +107,7 @@
                                     <td class="text-right">{{back_log.amount}}</td>
                             </tbody>
                         </table>
-                    </div>
+                    </div> -->
 
                     <div class="list-group-item list-group-header" ng-show="hasInfo">
                         <h5>Payment Breakdown</h5>
@@ -124,10 +124,10 @@
                             </thead>
                             <tbody>
                                 <tr ng-repeat="fee in Fees">
-                                    <td>{{fee.fee}}</td>
-                                    <td class="text-right">{{fee.amount | currency: 'P'}}</td>
-                                    <td class="text-right">{{fee.paid | currency: 'P'}}</td>
-                                    <td class="text-right">{{fee.balance | currency: 'P'}}</td>
+                                    <td>{{fee.fee_id}}</td>
+                                    <td class="amount total peso">{{fee.due_amount | currency}}</td>
+                                    <td class="amount total peso">{{fee.paid_amount | currency}}</td>
+                                    <td class="amount total peso">{{fee.due_amount - fee.paid_amount | currency}}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -141,14 +141,16 @@
                                 <tr>
                                     <th class="text-center">Billing Period</th>
                                     <th class="text-center">Due Date</th>
-                                    <th class="text-center">Amount</th>
+                                    <th class="text-center">Due Amount</th>
+                                    <th class="text-center">Paid Amount</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr ng-repeat="schedule in Account.payment_schedule">
-                                    <td>{{schedule.billing_period}}</td>
-                                    <td>{{schedule.date_due}}</td>
-                                    <td class="text-right">{{schedule.amount_due | currency: 'P'}}</td>
+                                <tr ng-repeat="schedule in Scheds">
+                                    <td>{{schedule.bill_month}}</td>
+                                    <td>{{schedule.due_date | date: 'dd MMM yyyy'}}</td>
+                                    <td class="amount total peso">{{schedule.due_amount | currency}}</td>
+                                    <td class="amount total peso">{{schedule.paid_amount | currency}}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -167,11 +169,11 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr ng-repeat="history in Account.payment_history">
-                                    <td>{{history.date}}</td>
+                                <tr ng-repeat="history in Histories">
+                                    <td>{{history.transac_date | date:'dd MMM yyyy'}}</td>
                                     <td>{{history.ref_no}}</td>
                                     <td>{{history.details}}</td>
-                                    <td class="text-right">{{history.amount | currency: 'P'}}</td>
+                                    <td class="amount total peso">{{history.total_paid | currency}}</td>
                                 </tr>
                             </tbody>
                         </table>

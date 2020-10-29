@@ -20,7 +20,11 @@ class Fee extends AppModel {
 			'finderQuery' => '',
 			'deleteQuery' => '',
 			'insertQuery' => ''
-		)
+		),
+		
 	);
+	
+	
+	
 
 }
