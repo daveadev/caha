@@ -85,4 +85,19 @@ class ReportsController extends AppController{
 		
 		$this->set(compact('data'));
 	}
+	
+	function monthly_collections(){
+		$data = file_get_contents(APP."json/monthly_collection.json");
+		$data = json_decode($data,true);
+		//pr($data);exit;
+		$this->set(compact('data'));
+	}
+	
+	function cashier_daily_collections(){
+		$data = file_get_contents(APP."json/cashier_collection.json");
+		$data = json_decode($data,true);
+		$data = $data['data'];
+		//pr($data);exit;
+		$this->set(compact('data'));
+	}
 }

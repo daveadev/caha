@@ -49,6 +49,16 @@
 			array("controller"=>"reports","action"=>"daily_collections")
 	);
 	
+	Router::connect(
+			"/monthly_collections",
+			array("controller"=>"reports","action"=>"monthly_collections")
+	);
+	
+	Router::connect(
+			"/cashier_daily_collections",
+			array("controller"=>"reports","action"=>"cashier_daily_collections")
+	);
+	
 	
 	
 	App::import('Lib', 'Api.SlugRoute');
