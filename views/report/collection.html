@@ -42,7 +42,9 @@
 					<a-col size="3">
 						<div class="input-group" ng-show="CC.ActiveOpt.id=='daily'">
 							<span class="input-group-addon">To: </span>
-							<input type="date" class="input-md form-control" ng-change="CC.ChangeDate()" ng-model="CC.date_to" ng-disabled="CC.Loaded" />
+							<input type="date" class="input-md form-control" ng-change="CC.ChangeDate()" 
+								ng-model="CC.date_to" ng-disabled="CC.Loaded" 
+								min="{{CC.date_from | date:'yyyy-MM-dd'}}" />
 						</div>
 						<div class="input-group" ng-show="CC.ActiveOpt.id=='month'">
 							<span class="input-group-addon">To: </span>
