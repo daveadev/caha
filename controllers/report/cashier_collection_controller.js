@@ -8,6 +8,9 @@ define(['app','api','atomic/bomb'],function(app){
 			$rootScope.__MODULE_NAME = 'Cashier Collection';
 			$scope.Options = [{'id':'daily','desc':'Daily'}]
 			$scope.ActiveOpt = {'id':'daily','desc':'Daily'};
+			//$scope.Headers = ['Sno','Received from','Level','Section','Status','Date','Particular','OR #',{label:'Amount',class:'amount total'},{label:'Total Due',class:'amount total'},{label:'Total Paid',class:'amount total'},{label:'Balance',class:'amount total'}];
+			//$scope.Props = ['sno','name','year_level','section','status','transac_date','details','ref_no','amount','total_due','total_paid','balance'];
+			getTransacs();
 		}
 		$selfScope.$watch("CS.Active",function(active){
 			if(!active) return false;
@@ -40,8 +43,23 @@ define(['app','api','atomic/bomb'],function(app){
 			data.from = $filter('date')(new Date(data.from),'yyyy-MM-dd');
 			data.to = $filter('date')(new Date(data.to),'yyyy-MM-dd');
 			api.GET('cashier_collections',data, function success(response){
+				
 				$scope.Collections = response.data;
 				$scope.Meta = response.meta;
+			});
+		}
+		
+		function getTransacs(){
+			var data = {limit:'less'};
+			api.GET('transaction_types',data, function success(response){
+				var Trnx = {};
+				console.log(response);
+				angular.forEach(response.data, function(tr){
+					console.log(tr);
+					Trnx[tr.id] = tr.name;
+				})
+				$scope.Transacs = Trnx;
+				console.log(Trnx);
 			});
 		}
 		

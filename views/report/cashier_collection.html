@@ -48,7 +48,7 @@
 					
 					<a-row ng-show="CS.ActiveOpt.id=='daily'" style="margin-bottom:20px;">
 						<a-col size="6">
-							<h4 for="">Collections from {{CS.date_from | date:'dd MMM'}} - {{CS.date_to | date:'dd MMM yyyy'}}</h4>
+							<h4 for="">Collections from {{CS.date_from | date:'dd MMM yyyy'}} - {{CS.date_to | date:'dd MMM yyyy'}}</h4>
 						</a-col>
 						<a-col size="6">
 							<a-pager class="pull-right" meta="CS.Meta" on-navigate="CS.gotoPage"></a-pager>
@@ -56,7 +56,7 @@
 					</a-row>
 					<a-row>
 						<a-col>
-							<!-- <a-table headers="CS.Headers" props="CS.Props" data="CS.Collections.monthly_collections" ></a-table> -->
+							<!-- <a-table headers="CS.Headers" props="CS.Props" data="CS.Collections" ></a-table> -->
 							<table class="table table-bordered table-condensed">
 								<thead>
 									<tr>
@@ -65,6 +65,7 @@
 										<th>Level</th>
 										<th>Section</th>
 										<th>Status</th>
+										<th>Date</th>
 										<th>Particular</th>
 										<th>OR #</th>
 										<th>Amount</th>
@@ -79,7 +80,8 @@
 										<td>{{col.name}}</td>
 										<td>{{col.year_level}}</td>
 										<td>{{col.section}}</td>
-										<td>TBA</td>
+										<td>{{col.status}}</td>
+										<td>{{col.transac_date | date:'dd MMM yy'}}</td>
 										<td>{{col.details}}</td>
 										<td>{{col.ref_no}}</td>
 										<td class="amount total">{{col.amount | currency}}</td>

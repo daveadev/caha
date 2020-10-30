@@ -2,6 +2,7 @@
 class CashierCollection extends AppModel {
 	var $name = 'CashierCollection';
 	var $useTable = 'account_histories';
+	var $order = 'transac_date asc';
 	var $actsAs = array('Containable');
 	
 	
@@ -19,6 +20,16 @@ class CashierCollection extends AppModel {
 				'Student.status',
 				'Student.year_level_id',
 				'Student.section_id',
+			),
+			'order' => ''
+		),
+		'Account' => array(
+			'className' => 'Account',
+			'foreignKey' => 'account_id',
+			'conditions' => '',
+			'fields' => array(
+				'Account.id',
+				'Account.subsidy_status',
 			),
 			'order' => ''
 		),
