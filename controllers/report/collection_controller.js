@@ -60,6 +60,7 @@ define(['app','api','atomic/bomb'],function(app){
 		}
 		
 		$scope.Clear = function(){
+			$scope.Loaded = 0;
 			$scope.date_from='';
 			$scope.date_to='';
 			$scope.Collections = '';

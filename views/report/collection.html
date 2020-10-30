@@ -27,13 +27,14 @@
 					<a-col size="3">
 						<div class="input-group" ng-show="CC.ActiveOpt.id=='daily'">
 							<span class="input-group-addon">From: </span>
-							<input type="date" class="input-md form-control" ng-change="CC.ChangeDate()" ng-model="CC.date_from" min="{{cc.date_from | date:'yyyy-MM-dd'}}" />
+							<input type="date" class="input-md form-control" ng-disabled="CC.Loaded"
+							ng-change="CC.ChangeDate()" ng-model="CC.date_from" />
 						</div>
 						<div class="input-group" ng-show="CC.ActiveOpt.id=='month'">
 							<span class="input-group-addon">From: </span>
 							<select name="" id="" class="form-control" ng-change="CC.setFrom(CC.date_from)"
 								ng-options="month as month.label for month in CC.MonthsFilter"
-								ng-model="CC.date_from" >
+								ng-model="CC.date_from" ng-disabled="CC.Loaded" >
 									<option value="">Select month</option>
 							</select>
 						</div>
@@ -41,11 +42,11 @@
 					<a-col size="3">
 						<div class="input-group" ng-show="CC.ActiveOpt.id=='daily'">
 							<span class="input-group-addon">To: </span>
-							<input type="date" class="input-md form-control" ng-change="CC.ChangeDate()" ng-model="CC.date_to" />
+							<input type="date" class="input-md form-control" ng-change="CC.ChangeDate()" ng-model="CC.date_to" ng-disabled="CC.Loaded" />
 						</div>
 						<div class="input-group" ng-show="CC.ActiveOpt.id=='month'">
 							<span class="input-group-addon">To: </span>
-							<select name="" id="" class="form-control" ng-disabled="!CC.date_from"
+							<select name="" id="" class="form-control" ng-disabled="!CC.date_from||CC.Loaded"
 								ng-options="month as month.label for month in CC.FilteredMonths"
 								ng-model="CC.date_to">
 									<option value="">Select month</option>
@@ -104,11 +105,13 @@
 							</div>
 						</a-col>
 					</a-row>
-					<a-row ng-show="CC.ActiveOpt.id=='daily'" style="margin-bottom:20px;">
+					<a-row >
 						<a-col size="6">
-							<h4 for="">Collections from {{CC.date_from | date:'dd MMM yyyy'}} - {{CC.date_to | date:'dd MMM yyyy'}}</h4>
+							<h4 for="" ng-show="CC.ActiveOpt.id=='daily'" >Total collections from {{CC.date_from | date:'dd MMM yyyy'}} - {{CC.date_to | date:'dd MMM yyyy'}}</h4>
+							<h4 for="" ng-show="CC.ActiveOpt.id=='month'" >Total collections from {{CC.date_from.label}} - {{CC.date_to.label}}</h4>
+							<h4 class="total amount peso pull-left">{{CC.Collections.beginning_balance-CC.Collections.ending_balance | currency}}</h4>
 						</a-col>
-						<a-col size="6">
+						<a-col size="6" ng-show="CC.ActiveOpt.id=='daily'" >
 							<div class="btn-group btn-group-sm pull-right" ng-class="{open:MoreLess}">
 								<button class="btn btn-default" >
 									Page {{CC.ActivePage}} of {{CC.Modified.length}}
@@ -132,6 +135,7 @@
 										<th>Month</th>
 										<th>Details</th>
 										<th>Collections</th>
+										<th>Total Collections</th>
 										<th>Balance</th>
 									</tr>
 									<tr ng-show="CC.ActiveOpt.id=='daily'">
@@ -139,6 +143,7 @@
 										<th>Day</th>
 										<th>Details</th>
 										<th>Collections</th>
+										<th>Total Collections</th>
 										<th>Balance</th>
 									</tr>
 								</thead>
@@ -147,6 +152,7 @@
 										<td>{{col.month}}</td>
 										<td>{{col.details}} <span ng-show="$index==CC.Collections.collections.length-1&&CC.Today"> till {{CC.Today}}</span></td>
 										<td class="amount total">{{col.collection | currency}}</td>
+										<td class="amount total">{{col.total_collection | currency}}</td>
 										<td class="amount total">{{col.balance | currency}}</td>
 									</tr>
 									<tr ng-show="CC.ActiveOpt.id=='daily'" ng-repeat="col in CC.Modified[CC.ActivePage-1]">
@@ -154,6 +160,7 @@
 										<td>{{col.day}}</td>
 										<td>{{col.description}}</td>
 										<td class="amount total">{{col.collection | currency}}</td>
+										<td class="amount total">{{col.total_collection | currency}}</td>
 										<td class="amount total">{{col.balance | currency}}</td>
 									</tr>
 								</tbody>
