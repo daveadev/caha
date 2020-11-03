@@ -59,6 +59,11 @@
 			array("controller"=>"reports","action"=>"cashier_daily_collections")
 	);
 	
+	Router::connect(
+			"/sac",
+			array("controller"=>"reports","action"=>"student_account_collection_report")
+	);
+	
 	
 	
 	App::import('Lib', 'Api.SlugRoute');

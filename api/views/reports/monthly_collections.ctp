@@ -1,7 +1,7 @@
 <?php
 App::import('Vendor','monthly_collections');
 
-$chunk_data = array_chunk($data['data'][0]['collections'],1,true);
+$chunk_data = array_chunk($data['data'][0]['collections'],2,true);
 
 $total_page = count($chunk_data);
 $i = 1;

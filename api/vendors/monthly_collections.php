@@ -47,44 +47,50 @@ class MonthlyCollections extends Formsheet{
 			'base_y'=> 1.2,
 			'width'=> 7.5,
 			'height'=> 9.4,
-			'cols'=> 15,
+			'cols'=> 17,
 			'rows'=> 47,	
 		);
 		$this->section($metrics);
-		$y=0;
-		$this->drawLine($y++,'h');
-		$this->drawLine($y++,'h');
-		$y=0.8;
+		$this->drawLine(0,'h');
+		$this->drawLine(2,'h');
 		$this->GRID['font_size']=9;
+		$y=0.8;
+		$this->centerText(13,$y,'Total',2,'b');
+		$this->centerText(15,$y,'Receiving',2,'b');
+		$y=1.6;
 		$this->centerText(0,$y,'Month',2,'b');
 		$this->leftText(3.2,$y,'Description','','b');
 		$this->centerText(11,$y,'Collection',2,'b');
-		$this->centerText(13,$y++,'Balance',2,'b');
+		$this->centerText(13,$y,'Collection',2,'b');
+		$this->centerText(15,$y++,'Balance',2,'b');
 		$totalcollectionperpage = 0;
 		$dvr = '---------------------------------------------';
 		if($page == 1){
 			//TOTAL RECEIVABLES
 			$this->leftText(3.2,$y,'Total Receivable','','');
-			$this->rightText(14.9,$y,number_format($hdr['total_receivables'],2),'','');
+			$this->rightText(16.9,$y,number_format($hdr['total_receivables'],2),'','');
 			$this->leftText(0,$y+0.4,$dvr.$dvr.$dvr.$dvr,'','');
 			$y++;
 			//LESS SUBSIDIES & DISCOUNT
 			$this->leftText(3.2,$y,'Less Subsidies & Discount','','');
-			$this->rightText(15,$y,'('.number_format($hdr['total_subsidies'],2).')','','');
+			$this->rightText(17,$y,'('.number_format($hdr['total_subsidies'],2).')','','');
 			$this->leftText(0,$y+0.4,$dvr.$dvr.$dvr.$dvr,'','');
 			$y++;
 			//NET RECEIVABLES
 			$netrecievable = $hdr['total_receivables']-$hdr['total_subsidies'];
 			$this->leftText(3.2,$y,'Net Receivable','','');
-			$this->rightText(14.9,$y,number_format($netrecievable,2),'','');
+			$this->rightText(16.9,$y,number_format($netrecievable,2),'','');
 			$this->leftText(0,$y+0.4,$dvr.$dvr.$dvr.$dvr,'','');
 			$y++;
 			//COLLECTION FORWARDED
 			$this->leftText(3.2,$y,'Forwarded Collection','','');
-			$this->rightText(12.9,$y,number_format($hdr['collection_forwarded'],2),'','');
-			$this->rightText(14.9,$y,number_format($hdr['beginning_balance'],2),'','');
+			$this->rightText(14.9,$y,number_format($hdr['collection_forwarded'],2),'','');
+			$this->rightText(16.9,$y,number_format($hdr['receivable_balance'],2),'','');
 			$this->leftText(0,$y+0.4,$dvr.$dvr.$dvr.$dvr,'','');
 			$y++;
+			$this->leftText(0,$y+0.4,$dvr.$dvr.$dvr.$dvr,'','');
+			$y++;
+			MonthlyCollections::$grand_total+=$hdr['collection_forwarded'];
 		}
 		$newpage=true;
 		foreach($data as $d){
@@ -92,21 +98,29 @@ class MonthlyCollections extends Formsheet{
 			$this->centerText(0,$y,date('M Y',strtotime($d['month'])),2,'');
 			$this->leftText(3.2,$y,ucfirst($d['details']),'','');
 			$this->rightText(12.9,$y,number_format($d['collection'],2),'','');
-			$this->rightText(14.9,$y,number_format($d['balance'],2),'','');
+			$this->rightText(14.9,$y,number_format($d['t_collection'],2),'','');
+			$this->rightText(16.9,$y,number_format($d['r_balance'],2),'','');
 			$this->leftText(0,$y+0.4,$dvr.$dvr.$dvr.$dvr,'','');
 			MonthlyCollections::$grand_total+=$d['collection'];
 			if($newpage){
 				$newpage=false;
-				$fromdate = date('M d',strtotime($d['month']));
+				$fromdate = date('M Y',strtotime($d['month']));
 			}
-			$todate = date('M d',strtotime($d['month']));
+			$todate = date('M Y',strtotime($d['month']));
 			$y++;
 		}
-		$this->rightText(11,$y,'Total Collection for '.$fromdate.' - '.$todate,'','');
+		($fromdate == $todate)?$fromto = $fromdate:$fromto = $fromdate.' - '.$todate;
+			
+		
+		
+		$this->rightText(11,$y,'Total Collection for '.$fromto,'','');
 		$this->rightText(12.9,$y++,number_format($totalcollectionperpage,2),'','');
 		if($page == $total_page){
-			$this->rightText(11,$y,'Grand Total','','b');
+			$this->rightText(11,$y,'Total','','b');
 			$this->rightText(12.9,$y,number_format(MonthlyCollections::$grand_total,2),'','b');
+			//$this->rightText(14.9,$y,number_format(end($data)['balance'],2),'','b');
+
+		
 		}
 		//FOOTER DETAILS
 		$this->GRID['font_size']=8;
