@@ -107,7 +107,9 @@ class ReportsController extends AppController{
 	}
 	
 	function cashier_daily_collections(){
-		$data = file_get_contents(APP."json/cashier_collection.json");
+		//$data = file_get_contents(APP."json/cashier_collection.json");
+		$data = $_POST['Cashier'];
+		//pr($_POST); exit();
 		$data = json_decode($data,true);
 		$data = $data['data'];
 		//pr($data);exit;

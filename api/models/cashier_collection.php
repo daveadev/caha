@@ -37,7 +37,7 @@ class CashierCollection extends AppModel {
 	);
 	
 	function beforeFind($queryData){
-		
+		//pr($queryData); exit();
 		if($conds=$queryData['conditions']){
 			foreach($conds as $i=>$cond){
 				//$type = 'CashierCollection.type';
