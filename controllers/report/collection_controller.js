@@ -5,7 +5,7 @@ define(['app','api','atomic/bomb'],function(app){
 		const $selfScope =  $scope;
 		$scope = this;
 		$scope.init = function(){
-			$rootScope.__MODULE_NAME = 'Collection Reports';
+			$rootScope.__MODULE_NAME = 'Summary Collection Reports';
 			$scope.Options = [{'id':'daily','desc':'Daily'},{'id':'month','desc':'Monthly'}]
 			$scope.ActiveOpt = {'id':'daily','desc':'Daily'};
 			$scope.Props = ['month','details','collection','balance'];
