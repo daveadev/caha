@@ -19,7 +19,7 @@ class Student extends AppModel {
 			'className' => 'YearLevel',
 			'foreignKey' => 'year_level_id',
 			'conditions' => '',
-			'fields' => array('id','name'),
+			'fields' => array('id','name','description'),
 			'order' => ''
 		),
 		'Section' => array(
