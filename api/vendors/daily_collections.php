@@ -31,10 +31,12 @@ class DailyCollections extends Formsheet{
 		$this->leftText(0,$y++,'Lake Shore Educational Institution','','');
 		$this->leftText(0,$y++,'Daily Collection Summary Report','','');
 		$this->leftText(0,$y++,'School Year: 2020 - 2021','','');
-		$this->leftText(0,$y++,'Month of: '.date('F Y',strtotime($hdr['collections'][0]['date'])) ,'','');
+		$this->leftText(0,$y++,'Month of: '.date('F Y',strtotime($hdr['collections']['date'])) ,'','');
 	}
 	
 	function data($hdr,$data,$total_page,$page){
+		//pr($hrd);
+		//pr($data);
 		$this->showLines = !true;
 		$metrics = array(
 			'base_x'=> 0.5,
