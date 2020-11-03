@@ -98,7 +98,9 @@ class ReportsController extends AppController{
 	} */
 	
 	function monthly_collections(){
-		$data = file_get_contents(APP."json/monthly_collection.json");
+		$data = $_POST['Collections'];
+		
+		//$data = file_get_contents(APP."json/monthly_collection.json");
 		$data = json_decode($data,true);
 		//pr($data);exit;
 		$this->set(compact('data'));
