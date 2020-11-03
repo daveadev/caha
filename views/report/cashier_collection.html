@@ -64,6 +64,7 @@ ng-change="CS.ChangeDate()" ng-model="CS.date_from"  />
 							<table class="table table-bordered table-condensed">
 								<thead>
 									<tr>
+										<th>Cnt</th>
 										<th>Student #</th>
 										<th>Received from</th>
 										<th>Level</th>
@@ -80,13 +81,14 @@ ng-change="CS.ChangeDate()" ng-model="CS.date_from"  />
 								</thead>
 								<tbody>
 									<tr ng-repeat="col in CS.Collections.collections">
+										<td>{{col.cnt}}</td>
 										<td>{{col.sno}}</td>
-										<td>{{col.name}}</td>
-										<td>{{col.year_level}}</td>
+										<td>{{col.received_from}}</td>
+										<td>{{col.level}}</td>
 										<td>{{col.section}}</td>
 										<td>{{col.status}}</td>
-										<td>{{col.transac_date | date:'dd MMM yy'}}</td>
-										<td>{{col.details}}</td>
+										<td>{{col.date}}</td>
+										<td>{{col.particular}}</td>
 										<td>{{col.ref_no}}</td>
 										<td class="amount total">{{col.amount | currency}}</td>
 										<td class="amount total">{{col.total_due | currency}}</td>
