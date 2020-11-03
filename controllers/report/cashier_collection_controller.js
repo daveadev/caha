@@ -56,6 +56,7 @@ define(['app','api','atomic/bomb'],function(app){
 		}
 		
 		function getForPrinting(data){
+			data.limit = 'less';
 			api.GET('cashier_collections',data, function success(response){
 				var print = {data:response.data};
 				$scope.CashierData =  print;
