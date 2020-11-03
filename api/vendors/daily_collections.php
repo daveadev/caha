@@ -128,14 +128,14 @@ class DailyCollections extends Formsheet{
 		}
 		$this->rightText(11,$y,'Total Collection for '.$fromdate.' - '.$todate,'','');
 		$this->rightText(12.9,$y++,number_format($totalcollectionperpage,2),'','');
-		if($page == $total_page){
+		if($page == $total_page && $total_page != 1){
 			$this->rightText(11,$y,'Grand Total','','b');
 			$this->rightText(12.9,$y,number_format(DailyCollections::$grand_total,2),'','b');
 		}
 		//FOOTER DETAILS
 		$this->GRID['font_size']=8;
 		$this->leftText(0,48,'Printed by: '.'Cashier 1','','');
-		$this->centerText(0,48,'Date & Time Printed: '. date("M d, Y h:i:s A"),15,'');
+		$this->centerText(0,48,'Date & Time Printed: '. date("M d, Y h:i:s A"),17,'');
 		$this->rightText(16.9,48,'Page '.$page.' of '.$total_page,'','');
 	}
 }

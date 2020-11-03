@@ -1,8 +1,8 @@
 <?php
 App::import('Vendor','monthly_collections');
 
-$chunk_data = array_chunk($data['data'][0]['collections'],2,true);
-pr($data['data'][0]);exit;
+$chunk_data = array_chunk($data['data'][0]['collections'],38,true);
+//pr($data['data'][0]);exit;
 $total_page = count($chunk_data);
 $i = 1;
 
@@ -15,10 +15,6 @@ foreach($chunk_data as $dt){
 		$pr->createSheet();
 	}
 }
-
-
-
-
 $pr->output();
 ?>
 
