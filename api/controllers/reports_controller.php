@@ -27,11 +27,8 @@ class ReportsController extends AppController{
 	
 	function daily_collections(){
 		$data = $_POST['Collections'];
-		//$data = array('data'=>$data);
+		//$data = file_get_contents(APP."json/daily_collection.json");
 		$data = json_decode($data,true);
-		//pr($data); exit();
-		//No need to json_decode since
-		// your passing the actual data from the API GET collections
 		$this->set(compact('data'));
 	}
 	
@@ -89,30 +86,18 @@ class ReportsController extends AppController{
 		$this->set(compact('data'));
 	}
 	
-	/* function daily_collections(){
-		//$data = file_get_contents(APP."json/daily_collection.json");
-		$data = $_POST['PrintData'];
-		$data = json_encode($data,true);
-		pr($data); exit();
-		$this->set(compact('data'));
-	} */
 	
 	function monthly_collections(){
 		$data = $_POST['Collections'];
-		
 		//$data = file_get_contents(APP."json/monthly_collection.json");
 		$data = json_decode($data,true);
-		//pr($data);exit;
 		$this->set(compact('data'));
 	}
 	
 	function cashier_daily_collections(){
-		//$data = file_get_contents(APP."json/cashier_collection.json");
 		$data = $_POST['Cashier'];
-		//pr($_POST); exit();
+		//$data = file_get_contents(APP."json/cashier_collection.json");
 		$data = json_decode($data,true);
-		$data = $data['data'];
-		//pr($data);exit;
 		$this->set(compact('data'));
 	}
 	
