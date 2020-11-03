@@ -31,7 +31,7 @@ class DailyCollections extends Formsheet{
 		$this->leftText(0,$y++,'Lake Shore Educational Institution','','');
 		$this->leftText(0,$y++,'Daily Collection Summary Report','','');
 		$this->leftText(0,$y++,'School Year: 2020 - 2021','','');
-		$this->leftText(0,$y++,'Month of: '.date('F Y',strtotime($hdr['collections']['date'])) ,'','');
+		//$this->leftText(0,$y++,'Month of: '.date('F Y',strtotime($hdr['collections']['date'])) ,'','');
 	}
 	
 	function data($hdr,$data,$total_page,$page){
@@ -83,8 +83,8 @@ class DailyCollections extends Formsheet{
 			$y++;
 			//COLLECTION FORWARDED
 			$this->leftText(4.2,$y,'Forwarded Collection','','');
-			$this->rightText(12.9,$y,number_format($hdr['collection_forwarded'],2),'','');
-			$this->rightText(14.9,$y,number_format($hdr['total_collected'],2),'','');
+			$this->rightText(14.9,$y,number_format($hdr['collection_forwarded'],2),'','');
+			$this->rightText(16.9,$y,number_format($hdr['receivable_balance'],2),'','');
 			$this->leftText(0,$y+0.4,$dvr.$dvr.$dvr.$dvr,'','');
 			$y++;
 			$this->leftText(0,$y+0.4,$dvr.$dvr.$dvr.$dvr,'','');
