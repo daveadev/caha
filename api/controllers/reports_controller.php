@@ -100,4 +100,17 @@ class ReportsController extends AppController{
 		//pr($data);exit;
 		$this->set(compact('data'));
 	}
+	
+	function student_account_collection_report(){
+		//$data = file_get_contents(APP."json/cashier_collection.json");
+		//$data = json_decode($data,true);
+		//$data = $data['data'];
+		//pr($data);exit;
+		
+		$data = array();
+		$this->set(compact('data'));
+	}
+	
+	
+	
 }

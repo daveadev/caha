@@ -84,6 +84,8 @@ class MonthlyCollections extends Formsheet{
 			$this->rightText(12.9,$y,number_format($hdr['collection_forwarded'],2),'','');
 			$this->rightText(14.9,$y,number_format($hdr['beginning_balance'],2),'','');
 			$this->leftText(0,$y+0.4,$dvr.$dvr.$dvr.$dvr,'','');
+			
+			MonthlyCollections::$grand_total+=$hdr['collection_forwarded'];
 			$y++;
 		}
 		$newpage=true;
@@ -97,16 +99,23 @@ class MonthlyCollections extends Formsheet{
 			MonthlyCollections::$grand_total+=$d['collection'];
 			if($newpage){
 				$newpage=false;
-				$fromdate = date('M d',strtotime($d['month']));
+				$fromdate = date('M Y',strtotime($d['month']));
 			}
-			$todate = date('M d',strtotime($d['month']));
+			$todate = date('M Y',strtotime($d['month']));
 			$y++;
 		}
-		$this->rightText(11,$y,'Total Collection for '.$fromdate.' - '.$todate,'','');
+		($fromdate == $todate)?$fromto = $fromdate:$fromto = $fromdate.' - '.$todate;
+			
+		
+		
+		$this->rightText(11,$y,'Total Collection for '.$fromto,'','');
 		$this->rightText(12.9,$y++,number_format($totalcollectionperpage,2),'','');
 		if($page == $total_page){
-			$this->rightText(11,$y,'Grand Total','','b');
+			$this->rightText(11,$y,'Total Collection','','b');
 			$this->rightText(12.9,$y,number_format(MonthlyCollections::$grand_total,2),'','b');
+			$this->rightText(14.9,$y,number_format(end($data)['balance'],2),'','b');
+
+		
 		}
 		//FOOTER DETAILS
 		$this->GRID['font_size']=8;
