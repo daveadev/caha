@@ -23,184 +23,184 @@
           "day": "Tue",
           "description": "cash",
           "collection": 30185,
-          "total_collection": 99999,
-          "revenue_balance": 5905345
+          "t_collection": 99999,
+          "r_balance": 5905345
         },
         {
           "date": "2020-09-02",
           "day": "Wed",
           "description": "cash",
           "collection": 12005,
-          "total_collection": 99999,
-          "revenue_balance": 5923525
+          "t_collection": 99999,
+          "r_balance": 5923525
         },
         {
           "date": "2020-09-03",
           "day": "Thu",
           "description": "cash",
           "collection": 19650,
-          "total_collection": 99999,
-          "revenue_balance": 5915880
+          "t_collection": 99999,
+          "r_balance": 5915880
         },
         {
           "date": "2020-09-04",
           "day": "Fri",
           "description": "cash",
           "collection": 7510,
-          "total_collection": 99999,
-          "revenue_balance": 5928020
+          "t_collection": 99999,
+          "r_balance": 5928020
         },
         {
           "date": "2020-09-05",
           "day": "Sat",
           "description": "cash",
           "collection": 3885,
-          "total_collection": 99999,
-          "revenue_balance": 5931645
+          "t_collection": 99999,
+          "r_balance": 5931645
         },
         {
           "date": "2020-09-07",
           "day": "Mon",
           "description": "cash",
           "collection": 3045,
-          "total_collection": 99999,
-          "revenue_balance": 5932485
+          "t_collection": 99999,
+          "r_balance": 5932485
         },
         {
           "date": "2020-09-08",
           "day": "Tue",
           "description": "cash",
           "collection": 32845,
-          "total_collection": 99999,
-          "revenue_balance": 5932485
+          "t_collection": 99999,
+          "r_balance": 5932485
         },
         {
           "date": "2020-09-09",
           "day": "Wed",
           "description": "cash",
           "collection": 7770,
-          "total_collection": 99999,
-          "revenue_balance": 5932485
+          "t_collection": 99999,
+          "r_balance": 5932485
         },
         {
           "date": "2020-09-10",
           "day": "Thu",
           "description": "cash",
           "collection": 6975,
-          "total_collection": 99999,
-          "revenue_balance": 5932485
+          "t_collection": 99999,
+          "r_balance": 5932485
         },
         {
           "date": "2020-09-11",
           "day": "Fri",
           "description": "cash",
           "collection": 25830,
-          "total_collection": 99999,
-          "revenue_balance": 5932485
+          "t_collection": 99999,
+          "r_balance": 5932485
         },
         {
           "date": "2020-09-12",
           "day": "Sat",
           "description": "cash",
           "collection": 75915,
-          "total_collection": 99999,
-          "revenue_balance": 5932485
+          "t_collection": 99999,
+          "r_balance": 5932485
         },
         {
           "date": "2020-09-14",
           "day": "Mon",
           "description": "cash",
           "collection": 6510,
-          "total_collection": 99999,
-          "revenue_balance": 5932485
+          "t_collection": 99999,
+          "r_balance": 5932485
         },
         {
           "date": "2020-09-16",
           "day": "Wed",
           "description": "cash",
           "collection": 8135,
-          "total_collection": 99999,
-          "revenue_balance": 5932485
+          "t_collection": 99999,
+          "r_balance": 5932485
         },
         {
           "date": "2020-09-17",
           "day": "Thu",
           "description": "cash",
           "collection": 6250,
-          "total_collection": 99999,
-          "revenue_balance": 5932485
+          "t_collection": 99999,
+          "r_balance": 5932485
         },
         {
           "date": "2020-09-18",
           "day": "Fri",
           "description": "cash",
           "collection": 4510,
-          "total_collection": 99999,
-          "revenue_balance": 5932485
+          "t_collection": 99999,
+          "r_balance": 5932485
         },
         {
           "date": "2020-09-21",
           "day": "Mon",
           "description": "cash",
           "collection": 20275,
-          "total_collection": 99999,
-          "revenue_balance": 5932485
+          "t_collection": 99999,
+          "r_balance": 5932485
         },
         {
           "date": "2020-09-22",
           "day": "Tue",
           "description": "cash",
           "collection": 6435,
-          "total_collection": 99999,
-          "revenue_balance": 5932485
+          "t_collection": 99999,
+          "r_balance": 5932485
         },
         {
           "date": "2020-09-23",
           "day": "Wed",
           "description": "cash",
           "collection": 625,
-          "total_collection": 99999,
-          "revenue_balance": 5932485
+          "t_collection": 99999,
+          "r_balance": 5932485
         },
         {
           "date": "2020-09-24",
           "day": "Thu",
           "description": "cash",
           "collection": 2625,
-          "total_collection": 99999,
-          "revenue_balance": 5932485
+          "t_collection": 99999,
+          "r_balance": 5932485
         },
         {
           "date": "2020-09-25",
           "day": "Fri",
           "description": "cash",
           "collection": 16875,
-          "total_collection": 99999,
-          "revenue_balance": 5932485
+          "t_collection": 99999,
+          "r_balance": 5932485
         },
         {
           "date": "2020-09-28",
           "day": "Mon",
           "description": "cash",
           "collection": 96725,
-          "total_collection": 99999,
-          "revenue_balance": 5932485
+          "t_collection": 99999,
+          "r_balance": 5932485
         },
         {
           "date": "2020-09-29",
           "day": "Tue",
           "description": "cash",
           "collection": 31150,
-          "total_collection": 99999,
-          "revenue_balance": 5932485
+          "t_collection": 99999,
+          "r_balance": 5932485
         },
         {
           "date": "2020-09-30",
           "day": "Wed",
           "description": "cash",
           "collection": 36125,
-          "total_collection": 99999,
-          "revenue_balance": 5932485
+          "t_collection": 99999,
+          "r_balance": 5932485
         }
       ]
     }

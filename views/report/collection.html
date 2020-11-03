@@ -78,7 +78,7 @@
 								</h3>
 							</div>
 							<div class="amount amount-total">
-								<label for=""> {{CC.Collections.bbp | number:2}} % Receivable Due </label>
+								<label for=""> {{CC.Collections.bbp | number:2}} % Receivable Balance </label>
 
 								<h3>
 									<div class="amount total peso">{{CC.Collections.beginning_balance | currency}}</div>
@@ -148,7 +148,7 @@
 										<th>Details</th>
 										<th>Collections</th>
 										<th>Total Collections</th>
-										<th>Balance</th>
+										<th>Receivable Balance</th>
 									</tr>
 									<tr ng-show="CC.ActiveOpt.id=='daily'">
 										<th>Date</th>
@@ -156,7 +156,7 @@
 										<th>Details</th>
 										<th>Collections</th>
 										<th>Total Collections</th>
-										<th>Balance</th>
+										<th>Receivable Balance</th>
 									</tr>
 								</thead>
 								<tbody>
