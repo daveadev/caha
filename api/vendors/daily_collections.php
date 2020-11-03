@@ -31,7 +31,7 @@ class DailyCollections extends Formsheet{
 		$this->leftText(0,$y++,'Lake Shore Educational Institution','','');
 		$this->leftText(0,$y++,'Daily Collection Summary Report','','');
 		$this->leftText(0,$y++,'School Year: 2020 - 2021','','');
-		$this->leftText(0,$y++,'Month of: '.date('F Y',strtotime($hdr['collections']['date'])) ,'','');
+		//$this->leftText(0,$y++,'Month of: '.date('F Y',strtotime($hdr['collections']['date'])) ,'','');
 	}
 	
 	function data($hdr,$data,$total_page,$page){
@@ -53,7 +53,7 @@ class DailyCollections extends Formsheet{
 		$this->GRID['font_size']=9;
 		$y=0.8;
 		$this->centerText(13,$y,'Total',2,'b');
-		$this->centerText(15,$y++,'Receiving',2,'b');
+		$this->centerText(15,$y++,'Receivable',2,'b');
 		$y=1.6;
 		$this->centerText(0,$y,'Date',2,'b');
 		$this->centerText(2,$y,'Day',2,'b');
@@ -68,7 +68,9 @@ class DailyCollections extends Formsheet{
 			//TOTAL RECEIVABLES
 			$this->leftText(4.2,$y,'Total Receivable','','');
 			$this->rightText(16.9,$y,number_format($hdr['total_receivables'],2),'','');
+			$this->SetTextColor(255,0,0);
 			$this->leftText(0,$y+0.4,$dvr.$dvr.$dvr.$dvr,'','');
+			$this->SetTextColor(0,0,0);
 			$y++;
 			//LESS SUBSIDIES & DISCOUNT
 			$this->leftText(4.2,$y,'Less Subsidies & Discount','','');
@@ -82,12 +84,14 @@ class DailyCollections extends Formsheet{
 			$this->leftText(0,$y+0.4,$dvr.$dvr.$dvr.$dvr,'','');
 			$y++;
 			//COLLECTION FORWARDED
-			$this->leftText(4.2,$y,'Forwarded Collection','','');
-			$this->rightText(12.9,$y,number_format($hdr['collection_forwarded'],2),'','');
-			$this->rightText(14.9,$y,number_format($hdr['total_collected'],2),'','');
+			$this->leftText(4.2,$y,'Forwarded','','');
+			$this->rightText(14.9,$y,number_format($hdr['collection_forwarded'],2),'','');
+			$this->rightText(16.9,$y,number_format($hdr['receivable_balance'],2),'','');
 			$this->leftText(0,$y+0.4,$dvr.$dvr.$dvr.$dvr,'','');
 			$y++;
+			$this->SetTextColor(255,0,0);
 			$this->leftText(0,$y+0.4,$dvr.$dvr.$dvr.$dvr,'','');
+			$this->SetTextColor(0,0,0);
 			$y++;
 		}
 		$newpage=true;
@@ -99,7 +103,9 @@ class DailyCollections extends Formsheet{
 			$this->rightText(12.9,$y,number_format($d['collection'],2),'','');
 			$this->rightText(14.9,$y,number_format($d['t_collection'],2),'','');
 			$this->rightText(16.9,$y,number_format($d['r_balance'],2),'','');
+			$this->SetTextColor(185,185,185);
 			$this->leftText(0,$y+0.4,$dvr.$dvr.$dvr.$dvr,'','');
+			$this->SetTextColor(0,0,0);
 			DailyCollections::$grand_total+=$d['collection'];
 			if($newpage){
 				$newpage=false;
