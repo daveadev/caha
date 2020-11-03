@@ -33,20 +33,48 @@ class CashierCollectionsController extends AppController {
 			if(!isset($list[$grade][$sec_id]))
 				$list[$grade][$sec_id] = $data;
 		}
+		
 		//pr($list);exit();
 		if($this->isAPIRequest()){
+			$page = $this->paginate['CashierCollection']['page'];
+			$limit = $this->paginate['CashierCollection']['limit'];
+			$cnt = $limit!=999999?($page-1)*$limit+1:1;
 			foreach($collections as $i=>$col){
 				//pr($col); exit();
 				$st = $col['Student'];
 				$cl = $col['CashierCollection'];
-				$cl['name'] = $st['full_name'];
+				$cl['cnt'] =  $cnt;
+				$status = $col['Account']['subsidy_status'];
+				$status = $status=='REGXX'?'REG':substr($status,-3);
+				if(isset($st['full_name'])):
+				$cl['received_from'] = $st['full_name'];
 				$cl['sno'] = $st['sno'];
-				$cl['status'] = $col['Account']['subsidy_status'];
+				$cl['status'] = $status;
 				$yl_ref = $st['year_level_id'];
 				$sec_ref = $st['section_id'];
-				$cl['year_level'] = $list[$yl_ref][$sec_ref]['yl'];
+				else:
+					$cl['date'] ='-';
+					$cl['received_from'] ='-';
+					$cl['sno'] ='-';
+					$cl['status'] ='-';
+				endif;
+				if(isset($list[$yl_ref][$sec_ref])):
+				$cl['level'] = $list[$yl_ref][$sec_ref]['yl'];
 				$cl['section'] = $list[$yl_ref][$sec_ref]['name'];
+				else:
+					$cl['level'] = '-';
+					$cl['section'] = 'CODE:'.$sec_ref;
+				endif;
+				$cl['particulars'] = $cl['details'];
+				$cl['date'] =  date('d M Y',strtotime($cl['transac_date']));
+				unset($cl['details']);
+				unset($cl['transac_date']);
+				unset($cl['transac_time']);
+				unset($cl['id']);
+				unset($cl['account_id']);
+
 				$collections[$i] = $cl;
+				$cnt++;
 			}
 		}
 		$collections = array('collections'=>$collections,'total'=>$total_collections);
