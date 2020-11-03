@@ -1,1 +1,39 @@
-{"meta":{"message":"List of Collections","limit":10,"next":2,"prev":null,"last":287,"count":2864,"page":1,"pages":287,"epoch":1603865994,"code":200},"data":[{"total_receivables":13450970,"total_subsidies":7529500,"collection_forwarded":2357795,"beginning_balance":3563675,"collections":[{"month":"Sep 2020","details":"cash","collection":461855,"balance":3101820},{"month":"Oct 2020","details":"cash","collection":229875,"balance":2871945}]}]}
+{
+  "meta": {
+    "message": "List of Collections",
+    "limit": 10,
+    "next": 2,
+    "prev": null,
+    "last": 287,
+    "count": 2864,
+    "page": 1,
+    "pages": 287,
+    "epoch": 1603865994,
+    "code": 200
+  },
+  "data": [
+    {
+      "total_receivables": 13450970,
+      "total_subsidies": 7529500,
+      "collection_forwarded": 2357795,
+      "receivable_balance": 3563675,
+      "total_collected": 99999,
+      "collections": [
+        {
+          "month": "Sep 2020",
+          "details": "cash",
+          "collection": 461855,
+          "t_collection": 99999,
+          "r_balance": 3101820
+        },
+        {
+          "month": "Oct 2020",
+          "details": "cash",
+          "collection": 229875,
+          "t_collection": 99999,
+          "r_balance": 2871945
+        }
+      ]
+    }
+  ]
+}

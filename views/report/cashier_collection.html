@@ -1,0 +1,121 @@
+<div ng-controller="CashierController as CS" ng-init="CS.init()">
+	<a-module>
+		<a-container>
+			<a-header is-main="true">
+				<a-row>
+					<a-col size="6">
+						<h4>Cashier Collection</h4>
+					</a-col>
+					<a-col size="6">
+
+						<o-dropdown-filter ng-model="CS.Active" show-section="false" show-sem="false" show-period="false" class="pull-right" >
+						</o-dropdown-filter>
+					</a-col>
+				</a-row>
+			</a-header>
+			<a-header>
+				<a-row>
+					<a-col size="4">
+						<ul class="nav nav-pills">
+							<li ng-repeat="opt in CS.Options" 
+							ng-click="CS.setActOption(opt)" 
+							ng-class="{active:CS.ActiveOpt.id===(opt.id)}">
+								<a>{{opt.desc}}</a>
+							</li>
+						</ul>
+					</a-col>
+					<a-col size="3">
+						<div class="input-group" ng-show="CS.ActiveOpt.id=='daily'">
+							<span class="input-group-addon">From: </span>
+							<input type="date" class="input-md form-control" ng-change="CS.ChangeDate()" ng-model="CS.date_from"  />
+						</div>
+					</a-col>
+					<a-col size="3">
+						<div class="input-group" ng-show="CS.ActiveOpt.id=='daily'">
+							<span class="input-group-addon">To: </span>
+							<input type="date" class="input-md form-control" ng-change="CS.ChangeDate()" ng-model="CS.date_to" />
+						</div>
+					</a-col>
+					<a-col size="2">
+						<button class="btn btn-default" ng-click="CS.Clear()">Clear</button>
+						<button class="btn btn-primary pull-right" ng-click="CS.LoadReport()" ng-disabled="!CS.date_from||!CS.date_to" ng-show="!CS.Collections.length">Load</button>
+						<button class="btn btn-primary pull-right" ng-disabled="!CS.date_from||!CS.date_to" ng-show="CS.Collections.length">Print</button>
+					</a-col>
+				</a-row>
+			</a-header>
+			<a-canvas>
+				<a-content ng-show="CS.Collections">
+					
+					<a-row ng-show="CS.ActiveOpt.id=='daily'" style="margin-bottom:20px;">
+						<a-col size="6">
+							<h4 for="">Collections from {{CS.date_from | date:'dd MMM yyyy'}} - {{CS.date_to | date:'dd MMM yyyy'}}</h4>
+						</a-col>
+						<a-col size="6">
+							<a-pager class="pull-right" meta="CS.Meta" on-navigate="CS.gotoPage"></a-pager>
+						</a-col>
+					</a-row>
+					<a-row>
+						<a-col>
+							<!-- <a-table headers="CS.Headers" props="CS.Props" data="CS.Collections" ></a-table> -->
+							<table class="table table-bordered table-condensed">
+								<thead>
+									<tr>
+										<th>Student #</th>
+										<th>Received from</th>
+										<th>Level</th>
+										<th>Section</th>
+										<th>Status</th>
+										<th>Date</th>
+										<th>Particular</th>
+										<th>OR #</th>
+										<th>Amount</th>
+										<th>Total Due</th>
+										<th>Total Paid</th>
+										<th>Balance</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr ng-repeat="col in CS.Collections">
+										<td>{{col.sno}}</td>
+										<td>{{col.name}}</td>
+										<td>{{col.year_level}}</td>
+										<td>{{col.section}}</td>
+										<td>{{col.status}}</td>
+										<td>{{col.transac_date | date:'dd MMM yy'}}</td>
+										<td>{{col.details}}</td>
+										<td>{{col.ref_no}}</td>
+										<td class="amount total">{{col.amount | currency}}</td>
+										<td class="amount total">{{col.total_due | currency}}</td>
+										<td class="amount total">{{col.total_paid | currency}}</td>
+										<td class="amount total">{{col.balance | currency}}</td>
+									</tr>
+									
+								</tbody>
+							</table>
+						</a-col>
+					</a-row>
+				</a-content>
+				<a-content ng-show="!CS.Collections" style="height: 100%">
+					<div class="empty-state">
+						<div class="well">
+							<div class="empty-state-icon text-center">
+								<i class="glyphicon glyphicon-calendar"></i>
+							</div>
+							<h4>Select date range then load.</h4>
+						</div>
+					</div>
+				</a-content>
+				<a-content ng-show="CS.Loading" style="height: 100%">
+					<div class="empty-state">
+						<div class="well text-center">
+							<div class="empty-state-icon text-center">
+								<i class="glyphicon glyphicon-refresh spin"></i>
+							</div>
+							<h4>Loading collection reports...</h4>
+						</div>
+					</div>
+				</a-content>
+			</a-canvas>
+		</a-container>
+	</a-module>
+</div>

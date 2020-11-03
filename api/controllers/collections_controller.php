@@ -111,12 +111,14 @@ class CollectionsController extends AppController {
 		
 		$collection_range = array();
 		$running_balance = $beginning_balance;
+		$running_collection = $collection_forwarded;
 		foreach($collection_data as $i=>$data){
 			$running_balance -= $data;
+			$running_collection += $data;
 			if($type=='month')
-				$coll = array('month'=>$i,'details'=>'cash','collection'=>$data,'balance'=>$running_balance);
+				$coll = array('month'=>$i,'details'=>'cash','collection'=>$data,'total_collection'=>$running_collection,'balance'=>$running_balance);
 			else
-				$coll = array('date'=>$i,'day'=>date('D', strtotime($i)),'description'=>'Cash','collection'=>$data,'balance'=>$running_balance);
+				$coll = array('date'=>$i,'day'=>date('D', strtotime($i)),'description'=>'Cash','collection'=>$data,'total_collection'=>$running_collection,'balance'=>$running_balance);
 			array_push($collection_range,$coll);
 			
 		}
