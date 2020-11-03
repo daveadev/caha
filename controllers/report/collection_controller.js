@@ -159,20 +159,21 @@ define(['app','api','atomic/bomb'],function(app){
 				collection['cfp'] = (collection.collection_forwarded/total_recvbl)*100;
 				collection['bbp'] = (collection.beginning_balance/total_recvbl)*100;
 				collection['ebp'] = (collection.ending_balance/total_recvbl)*100;
-				
+				collection.coverage_collected = collection.beginning_balance - collection.ending_balance;
+				collection.total_collected =  collection.coverage_collected + collection.collection_forwarded;
 				var $CFP = collection['cfp'];
 				var $BBP = collection['bbp'];
 				var $EBP = collection['ebp'];
 				var $COL = $BBP - $EBP;
 				var $REM = $BBP -  $COL;
-
+				collection['cop'] = $CFP +$COL;
 					$CFP = $filter('number')($CFP, 2);
 					$COL = $filter('number')($COL, 2);
 					$REM = $filter('number')($REM, 2);
 
 				$scope.Loaded = 1;
 				$scope.Chart.colors=['#337ab7','#4e99d8','#dddddd'];
-				$scope.Chart.labels=['Collection Forwarded','Collected','Remaining Balance'];
+				$scope.Chart.labels=['Collection Forwarded','Coverage Collected','Remaining Balance'];
 				$scope.Chart.data =[$CFP,$COL,$REM];
 				if($scope.ActiveOpt.id=='daily'){
 					var i = 0;

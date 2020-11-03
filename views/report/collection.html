@@ -78,10 +78,17 @@
 								</h3>
 							</div>
 							<div class="amount amount-total">
-								<label for=""> {{CC.Collections.bbp | number:2}} % Beginning Balance</label>
+								<label for=""> {{CC.Collections.bbp | number:2}} % Receivable Due </label>
 
 								<h3>
 									<div class="amount total peso">{{CC.Collections.beginning_balance | currency}}</div>
+								</h3>
+							</div>
+							<div class="amount amount-total">
+								<label for=""> {{CC.Collections.cop | number:2}} % Total Collected</label>
+
+								<h3>
+									<div class="amount total peso">{{CC.Collections.total_collected | currency}}</div>
 								</h3>
 							</div>
 
@@ -109,9 +116,12 @@
 					</a-row>
 					<a-row >
 						<a-col size="6">
-							<h4 for="" ng-show="CC.ActiveOpt.id=='daily'" >Total collections from {{CC.date_from | date:'dd MMM yyyy'}} - {{CC.date_to | date:'dd MMM yyyy'}}</h4>
-							<h4 for="" ng-show="CC.ActiveOpt.id=='month'" >Total collections from {{CC.date_from.label}} - {{CC.date_to.label}}</h4>
-							<h4 class="total amount peso pull-left">{{CC.Collections.beginning_balance-CC.Collections.ending_balance | currency}}</h4>
+							<h4 for="">Collections from {{CC.date_from | date:'dd MMM'}} - {{CC.date_to | date:'dd MMM yyyy'}}
+							<div class="clearfix"></div>
+							
+							<div class="amount total peso pull-left">{{CC.Collections.coverage_collected | currency}}
+							</div>
+							</h4>
 						</a-col>
 						<a-col size="6" ng-show="CC.ActiveOpt.id=='daily'" >
 							<div class="btn-group btn-group-sm pull-right" ng-class="{open:MoreLess}">
