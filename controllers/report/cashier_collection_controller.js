@@ -34,6 +34,11 @@ define(['app','api','atomic/bomb'],function(app){
 			$scope.Collections = '';
 		}
 		
+		$scope.PrintData = function(){
+			document.getElementById('PrintCashierCollection').submit();
+		}
+		
+		
 		function getCollections(page){
 			var data = {
 				from: $scope.date_from,
@@ -44,8 +49,16 @@ define(['app','api','atomic/bomb'],function(app){
 			data.to = $filter('date')(new Date(data.to),'yyyy-MM-dd');
 			api.GET('cashier_collections',data, function success(response){
 				
-				$scope.Collections = response.data;
+				$scope.Collections = response.data[0];
 				$scope.Meta = response.meta;
+				getForPrinting(data);
+			});
+		}
+		
+		function getForPrinting(data){
+			api.GET('cashier_collections',data, function success(response){
+				var print = {data:response.data};
+				$scope.CashierData =  print;
 			});
 		}
 		

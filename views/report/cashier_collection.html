@@ -40,17 +40,18 @@ ng-change="CS.ChangeDate()" ng-model="CS.date_from"  />
 					</a-col>
 					<a-col size="2">
 						<button class="btn btn-default" ng-click="CS.Clear()">Clear</button>
-						<button class="btn btn-primary pull-right" ng-click="CS.LoadReport()" ng-disabled="!CS.date_from||!CS.date_to" ng-show="!CS.Collections.length">Load</button>
-						<button class="btn btn-primary pull-right" ng-disabled="!CS.date_from||!CS.date_to" ng-show="CS.Collections.length">Print</button>
+						<button class="btn btn-primary pull-right" ng-click="CS.LoadReport()" ng-disabled="!CS.date_from||!CS.date_to" ng-show="!CS.Collections.collections.length">Load</button>
+						<button class="btn btn-primary pull-right" ng-disabled="!CS.date_from||!CS.date_to" ng-show="CS.Collections.collections.length" ng-click="CS.PrintData()" >Print</button>
 					</a-col>
 				</a-row>
 			</a-header>
 			<a-canvas>
 				<a-content ng-show="CS.Collections">
 					
-					<a-row ng-show="CS.ActiveOpt.id=='daily'" style="margin-bottom:20px;">
+					<a-row ng-show="CS.ActiveOpt.id=='daily'">
 						<a-col size="6">
 							<h4 for="">Collections from {{CS.date_from | date:'dd MMM yyyy'}} - {{CS.date_to | date:'dd MMM yyyy'}}</h4>
+							<h4 class="total amount peso pull-left">{{CS.Collections.total | currency}}</h4>
 						</a-col>
 						<a-col size="6">
 							<a-pager class="pull-right" meta="CS.Meta" on-navigate="CS.gotoPage"></a-pager>
@@ -59,6 +60,7 @@ ng-change="CS.ChangeDate()" ng-model="CS.date_from"  />
 					<a-row>
 						<a-col>
 							<!-- <a-table headers="CS.Headers" props="CS.Props" data="CS.Collections" ></a-table> -->
+							
 							<table class="table table-bordered table-condensed">
 								<thead>
 									<tr>
@@ -77,7 +79,7 @@ ng-change="CS.ChangeDate()" ng-model="CS.date_from"  />
 									</tr>
 								</thead>
 								<tbody>
-									<tr ng-repeat="col in CS.Collections">
+									<tr ng-repeat="col in CS.Collections.collections">
 										<td>{{col.sno}}</td>
 										<td>{{col.name}}</td>
 										<td>{{col.year_level}}</td>
@@ -117,6 +119,9 @@ ng-change="CS.ChangeDate()" ng-model="CS.date_from"  />
 						</div>
 					</div>
 				</a-content>
+				<form id="PrintCashierCollection" action="api/cashier_daily_collections" method="POST" target="_blank">
+					<input type="hidden" value="{{CS.CashierData}}" name="Cashier" />
+				</form>
 			</a-canvas>
 		</a-container>
 	</a-module>
