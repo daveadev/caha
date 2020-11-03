@@ -27,13 +27,15 @@
 					<a-col size="3">
 						<div class="input-group" ng-show="CS.ActiveOpt.id=='daily'">
 							<span class="input-group-addon">From: </span>
-							<input type="date" class="input-md form-control" ng-change="CS.ChangeDate()" ng-model="CS.date_from"  />
+							<input type="date" class="input-md form-control" 
+ng-change="CS.ChangeDate()" ng-model="CS.date_from"  />
 						</div>
 					</a-col>
 					<a-col size="3">
 						<div class="input-group" ng-show="CS.ActiveOpt.id=='daily'">
 							<span class="input-group-addon">To: </span>
-							<input type="date" class="input-md form-control" ng-change="CS.ChangeDate()" ng-model="CS.date_to" />
+							<input type="date" class="input-md form-control" min="{{CS.date_from | date:'yyyy-MM-dd'}}" 
+							ng-change="CS.ChangeDate()" ng-model="CS.date_to" />
 						</div>
 					</a-col>
 					<a-col size="2">

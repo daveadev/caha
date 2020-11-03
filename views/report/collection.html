@@ -58,7 +58,7 @@
 					<a-col size="2">
 						<button class="btn btn-default" ng-click="CC.Clear()">Clear</button>
 						<button class="btn btn-primary pull-right" ng-click="CC.LoadReport()" ng-disabled="!CC.date_from||!CC.date_to" ng-show="!CC.Collections.collections.length">Load</button>
-						<button class="btn btn-primary pull-right" ng-disabled="!CC.date_from||!CC.date_to" ng-show="CC.Collections.collections.length">Print</button>
+						<button class="btn btn-primary pull-right" ng-disabled="!CC.date_from||!CC.date_to" ng-show="CC.Collections.collections.length" ng-click="CC.PrintBtn()">Print</button>
 					</a-col>
 				</a-row>
 			</a-header>
@@ -78,15 +78,14 @@
 								</h3>
 							</div>
 							<div class="amount amount-total">
-								<label for=""> {{CC.Collections.bbp | number:2}} % Receivable Balance </label>
+								<label for=""> {{CC.Collections.bbp | number:2}} % Receivable Balance</label>
 
 								<h3>
-									<div class="amount total peso">{{CC.Collections.beginning_balance | currency}}</div>
+									<div class="amount total peso">{{CC.Collections.receivable_balance | currency}}</div>
 								</h3>
 							</div>
 							<div class="amount amount-total">
-								<label for=""> {{CC.Collections.cop | number:2}} % Total Collected</label>
-
+								<label for=""> {{CC.Collections.ccp | number:2}} % Total Collected</label>
 								<h3>
 									<div class="amount total peso">{{CC.Collections.total_collected | currency}}</div>
 								</h3>
@@ -116,12 +115,9 @@
 					</a-row>
 					<a-row >
 						<a-col size="6">
-							<h4 for="">Collections from {{CC.date_from | date:'dd MMM'}} - {{CC.date_to | date:'dd MMM yyyy'}}
-							<div class="clearfix"></div>
-							
-							<div class="amount total peso pull-left">{{CC.Collections.coverage_collected | currency}}
-							</div>
-							</h4>
+							<h4 for="" ng-show="CC.ActiveOpt.id=='daily'" >Total collections from {{CC.date_from | date:'dd MMM yyyy'}} - {{CC.date_to | date:'dd MMM yyyy'}}</h4>
+							<h4 for="" ng-show="CC.ActiveOpt.id=='month'" >Total collections from {{CC.date_from.label}} - {{CC.date_to.label}}</h4>
+							<h4 class="total amount peso pull-left">{{CC.Collections.coverage_collected | currency}}</h4>
 						</a-col>
 						<a-col size="6" ng-show="CC.ActiveOpt.id=='daily'" >
 							<div class="btn-group btn-group-sm pull-right" ng-class="{open:MoreLess}">
@@ -148,7 +144,7 @@
 										<th>Details</th>
 										<th>Collections</th>
 										<th>Total Collections</th>
-										<th>Receivable Balance</th>
+										<th>Balance</th>
 									</tr>
 									<tr ng-show="CC.ActiveOpt.id=='daily'">
 										<th>Date</th>
@@ -156,7 +152,7 @@
 										<th>Details</th>
 										<th>Collections</th>
 										<th>Total Collections</th>
-										<th>Receivable Balance</th>
+										<th>Balance</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -164,16 +160,16 @@
 										<td>{{col.month}}</td>
 										<td>{{col.details}} <span ng-show="$index==CC.Collections.collections.length-1&&CC.Today"> till {{CC.Today}}</span></td>
 										<td class="amount total">{{col.collection | currency}}</td>
-										<td class="amount total">{{col.total_collection | currency}}</td>
-										<td class="amount total">{{col.balance | currency}}</td>
+										<td class="amount total">{{col.t_collection | currency}}</td>
+										<td class="amount total">{{col.r_balance | currency}}</td>
 									</tr>
 									<tr ng-show="CC.ActiveOpt.id=='daily'" ng-repeat="col in CC.Modified[CC.ActivePage-1]">
 										<td>{{col.date | date:'dd MMM yyyy'}}</td>
 										<td>{{col.day}}</td>
 										<td>{{col.description}}</td>
 										<td class="amount total">{{col.collection | currency}}</td>
-										<td class="amount total">{{col.total_collection | currency}}</td>
-										<td class="amount total">{{col.balance | currency}}</td>
+										<td class="amount total">{{col.t_collection | currency}}</td>
+										<td class="amount total">{{col.r_balance | currency}}</td>
 									</tr>
 								</tbody>
 							</table>
@@ -200,6 +196,9 @@
 						</div>
 					</div>
 				</a-content>
+				<form id="PrintDailyForm" action="api/daily_collections" method="POST" target="_blank">
+					<input type="hidden" value="{{CC.PrintData}}" name="Collections" />
+				</form>
 			</a-canvas>
 		</a-container>
 	</a-module>
