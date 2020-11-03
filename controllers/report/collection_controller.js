@@ -89,7 +89,14 @@ define(['app','api','atomic/bomb'],function(app){
 		
 		$scope.PrintBtn = function(){
 			 // wrap into {data: ...}
-			document.getElementById('PrintDailyForm').submit();
+			
+			if($scope.ActiveOpt.id == 'daily'){
+				document.getElementById('PrintDailyForm').submit();
+			}else{
+				document.getElementById('PrintMonthlyForm').submit();
+			}
+			 
+			
 		}
 		
 		
