@@ -16,7 +16,8 @@
       "total_receivables": 13483030,
       "total_subsidies": 7547500,
       "collection_forwarded": 461855,
-      "beginning_balance": 5473675,
+      "receivable_balance": 5473675,
+      "total_collected": 99999,
       "collections": [
         {
           "date": "2020-09-01",
