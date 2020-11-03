@@ -25,6 +25,16 @@ class ReportsController extends AppController{
 		}
 	}
 	
+	function daily_collections(){
+		$data = $_POST['Collections'];
+		//$data = array('data'=>$data);
+		$data = json_decode($data,true);
+		pr($data); exit();
+		//No need to json_decode since
+		// your passing the actual data from the API GET collections
+		$this->set(compact('data'));
+	}
+	
 	function receipt(){
 		$trnxId = $_POST['TransactionId'];
 		$trnx = $this->Transaction->findById($trnxId);
@@ -79,12 +89,13 @@ class ReportsController extends AppController{
 		$this->set(compact('data'));
 	}
 	
-	function daily_collections(){
-		$data = file_get_contents(APP."json/daily_collection.json");
-		$data = json_decode($data,true);
-		
+	/* function daily_collections(){
+		//$data = file_get_contents(APP."json/daily_collection.json");
+		$data = $_POST['PrintData'];
+		$data = json_encode($data,true);
+		pr($data); exit();
 		$this->set(compact('data'));
-	}
+	} */
 	
 	function monthly_collections(){
 		$data = file_get_contents(APP."json/monthly_collection.json");

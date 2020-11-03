@@ -41,6 +41,7 @@ define(['app','api','atomic/bomb'],function(app){
 			$scope.date_from='';
 			$scope.date_to='';
 			$scope.Collections ='';
+			$scope.Loaded = 0;
 			$scope.ActiveOpt = opt;
 			if(opt.id=='month')
 				getLedgerMonths();
@@ -85,6 +86,12 @@ define(['app','api','atomic/bomb'],function(app){
 			else
 				$scope.ActivePage--;
 		}
+		
+		$scope.PrintBtn = function(){
+			 // wrap into {data: ...}
+			document.getElementById('PrintDailyForm').submit();
+		}
+		
 		
 		function formatDate(date){
 			var d = new Date(date)
@@ -154,13 +161,15 @@ define(['app','api','atomic/bomb'],function(app){
 				
 			}
 			api.GET('collections',data, function success(response){
+				$scope.PrintData = {data:response.data};
 				var collection = response.data[0];
 				var total_recvbl = collection.total_receivables-collection.total_subsidies;	
 				collection['cfp'] = (collection.collection_forwarded/total_recvbl)*100;
-				collection['bbp'] = (collection.beginning_balance/total_recvbl)*100;
+				collection['bbp'] = (collection.receivable_balance/total_recvbl)*100;
 				collection['ebp'] = (collection.ending_balance/total_recvbl)*100;
-				collection.coverage_collected = collection.beginning_balance - collection.ending_balance;
-				collection.total_collected =  collection.coverage_collected + collection.collection_forwarded;
+				collection['ccp'] = (collection.total_collected/total_recvbl)*100;
+				//collection.coverage_collected = collection.receivable_balance - collection.ending_balance;
+				//collection.total_collected =  collection.coverage_collected + collection.collection_forwarded;
 				var $CFP = collection['cfp'];
 				var $BBP = collection['bbp'];
 				var $EBP = collection['ebp'];
@@ -194,7 +203,7 @@ define(['app','api','atomic/bomb'],function(app){
 					collection.collections = collections;
 				}
 				$scope.Collections = collection;
-				console.log($scope.Collections);
+			
 				$scope.Loading = 0;
 			});
 		}

@@ -25,7 +25,15 @@ class StudentAccountCollectionsController extends AppController {
 				$list[$grade][$sec_id] = $data;
 		}
 		$collections =  array();
-		foreach($Accounts as $i=>$account){
+		
+		if($this->isAPIRequest()){
+			$col = $this->Account->find('all',array('recursive'=>0));
+			$total = 0;
+			foreach($col as $payment){
+				$total+=$payment['Account']['payment_total'];
+			}
+			//pr($collections);
+			foreach($Accounts as $i=>$account){
 				$st = $account['Student'];
 				$acc = $account['Account'];
 				// Build your data here
@@ -41,16 +49,20 @@ class StudentAccountCollectionsController extends AppController {
 				$accountObj['subsidy'] = $acc['discount_amount'];
 				$accountObj['fee_dues'] = $acc['assessment_total']-$acc['discount_amount'];
 				$accountObj['payments'] = array();
+				$payment = $accountObj['subsidy'];
 				foreach($account['AccountSchedule'] as $sched){
+					$payment += $sched['paid_amount'];
 					$schedObj['bill_month'] = $sched['bill_month'];
 					$schedObj['payment'] = $sched['paid_amount'];
-					$schedObj['balance'] = $sched['due_amount'];
+					$schedObj['balance'] = $accountObj['total_fees']-$payment;
 					array_push($accountObj['payments'],$schedObj);
 				}
 				array_push($collections, $accountObj);
+			}
+			//$collections['total_collected'] = $total;
 		}
 		//pr($collections);exit();
-		$student_account_collections  =  array('collections'=>$collections);
+		$student_account_collections  =  array('total_collected'=>$total,'collections'=>$collections);
 		$student_account_collections =  array(
 							array('StudentAccountCollection'=>$student_account_collections)
 						);

@@ -112,13 +112,15 @@ class CollectionsController extends AppController {
 		$collection_range = array();
 		$running_balance = $beginning_balance;
 		$running_collection = $collection_forwarded;
+		$total_collected = 0;
 		foreach($collection_data as $i=>$data){
 			$running_balance -= $data;
 			$running_collection += $data;
+			$total_collected += $data;
 			if($type=='month')
-				$coll = array('month'=>$i,'details'=>'cash','collection'=>$data,'total_collection'=>$running_collection,'balance'=>$running_balance);
+				$coll = array('month'=>$i,'details'=>'cash','collection'=>$data,'t_collection'=>$running_collection,'r_balance'=>$running_balance);
 			else
-				$coll = array('date'=>$i,'day'=>date('D', strtotime($i)),'description'=>'Cash','collection'=>$data,'total_collection'=>$running_collection,'balance'=>$running_balance);
+				$coll = array('date'=>$i,'day'=>date('D', strtotime($i)),'description'=>'Cash','collection'=>$data,'t_collection'=>$running_collection,'r_balance'=>$running_balance);
 			array_push($collection_range,$coll);
 			
 		}
@@ -128,8 +130,10 @@ class CollectionsController extends AppController {
 			'total_receivables'=>$total_rcvbl,
 			'total_subsidies'=>$total_subs,
 			'collection_forwarded'=>$collection_forwarded,
-			'beginning_balance'=>$beginning_balance,
+			'receivable_balance'=>$beginning_balance,
 			'ending_balance'=>$running_balance,
+			'coverage_collected'=>$total_collected,
+			'total_collected'=>$running_collection,
 			'collections'=>$collection_range
 
 		);
