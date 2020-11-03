@@ -31,7 +31,13 @@ class DailyCollections extends Formsheet{
 		$this->leftText(0,$y++,'Lake Shore Educational Institution','','');
 		$this->leftText(0,$y++,'Daily Collection Summary Report','','');
 		$this->leftText(0,$y++,'School Year: 2020 - 2021','','');
-		//$this->leftText(0,$y++,'Month of: '.date('F Y',strtotime($hdr['collections']['date'])) ,'','');
+		//pr($hdr[0]['date']);exit;
+	
+		$lastcollectionsdata = end($hdr);
+		$frommonth = date('M d, Y',strtotime($hdr[0]['date']));
+		$tomonth = date('M d, Y',strtotime($lastcollectionsdata['date']));
+		$this->leftText(0,$y++,'Collections from '.$frommonth.' to '.$tomonth ,'','');
+	
 	}
 	
 	function data($hdr,$data,$total_page,$page){
@@ -68,28 +74,34 @@ class DailyCollections extends Formsheet{
 			//TOTAL RECEIVABLES
 			$this->leftText(4.2,$y,'Total Receivable','','');
 			$this->rightText(16.9,$y,number_format($hdr['total_receivables'],2),'','');
-			$this->SetTextColor(255,0,0);
+			$this->SetTextColor(185,185,185);
 			$this->leftText(0,$y+0.4,$dvr.$dvr.$dvr.$dvr,'','');
 			$this->SetTextColor(0,0,0);
 			$y++;
 			//LESS SUBSIDIES & DISCOUNT
 			$this->leftText(4.2,$y,'Less Subsidies & Discount','','');
 			$this->rightText(17,$y,'('.number_format($hdr['total_subsidies'],2).')','','');
+			$this->SetTextColor(185,185,185);
 			$this->leftText(0,$y+0.4,$dvr.$dvr.$dvr.$dvr,'','');
+			$this->SetTextColor(0,0,0);
 			$y++;
 			//NET RECEIVABLES
 			$netrecievable = $hdr['total_receivables']-$hdr['total_subsidies'];
 			$this->leftText(4.2,$y,'Net Receivable','','');
 			$this->rightText(16.9,$y,number_format($netrecievable,2),'','');
+			$this->SetTextColor(185,185,185);
 			$this->leftText(0,$y+0.4,$dvr.$dvr.$dvr.$dvr,'','');
+			$this->SetTextColor(0,0,0);
 			$y++;
 			//COLLECTION FORWARDED
 			$this->leftText(4.2,$y,'Forwarded','','');
 			$this->rightText(14.9,$y,number_format($hdr['collection_forwarded'],2),'','');
 			$this->rightText(16.9,$y,number_format($hdr['receivable_balance'],2),'','');
+			$this->SetTextColor(185,185,185);
 			$this->leftText(0,$y+0.4,$dvr.$dvr.$dvr.$dvr,'','');
+			$this->SetTextColor(0,0,0);
 			$y++;
-			$this->SetTextColor(255,0,0);
+			$this->SetTextColor(185,185,185);
 			$this->leftText(0,$y+0.4,$dvr.$dvr.$dvr.$dvr,'','');
 			$this->SetTextColor(0,0,0);
 			$y++;
@@ -124,7 +136,7 @@ class DailyCollections extends Formsheet{
 		$this->GRID['font_size']=8;
 		$this->leftText(0,48,'Printed by: '.'Cashier 1','','');
 		$this->centerText(0,48,'Date & Time Printed: '. date("M d, Y h:i:s A"),15,'');
-		$this->rightText(14.9,48,'Page '.$page.' of '.$total_page,'','');
+		$this->rightText(16.9,48,'Page '.$page.' of '.$total_page,'','');
 	}
 }
 ?>

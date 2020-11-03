@@ -2,7 +2,7 @@
 App::import('Vendor','monthly_collections');
 
 $chunk_data = array_chunk($data['data'][0]['collections'],2,true);
-
+pr($data['data'][0]);exit;
 $total_page = count($chunk_data);
 $i = 1;
 
