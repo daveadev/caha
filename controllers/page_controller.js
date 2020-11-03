@@ -14,7 +14,7 @@ define(['app','api'], function (app) {
 	   		const RIGHTS ={
 	   				'admin':'all',
 	   				'cashr':['cashier','cashier_collections'],
-	   				'money':['collections']
+	   				'money':['collections','cashier_collections']
 	   		}
 	   		const USER = $rootScope.__USER.user;
 	   		var allowedMods = RIGHTS[USER.user_type]|| false;
