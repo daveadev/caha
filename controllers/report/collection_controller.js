@@ -161,7 +161,7 @@ define(['app','api','atomic/bomb'],function(app){
 				
 			}
 			api.GET('collections',data, function success(response){
-				$scope.PrintData = {data:response.data};
+				$scope.PrintData = angular.copy({data:response.data});
 				var collection = response.data[0];
 				var total_recvbl = collection.total_receivables-collection.total_subsidies;	
 				collection['cfp'] = (collection.collection_forwarded/total_recvbl)*100;

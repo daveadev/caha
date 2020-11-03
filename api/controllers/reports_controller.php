@@ -29,7 +29,7 @@ class ReportsController extends AppController{
 		$data = $_POST['Collections'];
 		//$data = array('data'=>$data);
 		$data = json_decode($data,true);
-		pr($data); exit();
+		//pr($data); exit();
 		//No need to json_decode since
 		// your passing the actual data from the API GET collections
 		$this->set(compact('data'));
