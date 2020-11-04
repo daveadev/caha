@@ -51,7 +51,7 @@ define(['app','api','atomic/bomb'],function(app){
 				
 				$scope.Collections = response.data[0];
 				$scope.Meta = response.meta;
-				getForPrinting(data);
+				if($scope.Meta.page==1) getForPrinting(data);
 			});
 		}
 		
