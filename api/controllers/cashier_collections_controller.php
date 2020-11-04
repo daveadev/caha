@@ -34,6 +34,7 @@ class CashierCollectionsController extends AppController {
 				$list[$grade][$sec_id] = $data;
 		}
 		
+	
 		//pr($list);exit();
 		if($this->isAPIRequest()){
 			$page = $this->paginate['CashierCollection']['page'];
@@ -47,7 +48,7 @@ class CashierCollectionsController extends AppController {
 				$status = $col['Account']['subsidy_status'];
 				$status = $status=='REGXX'?'REG':substr($status,-3);
 				if(isset($st['full_name'])):
-				$cl['received_from'] = $st['full_name'];
+				$cl['received_from'] = $st['class_name'];
 				$cl['sno'] = $st['sno'];
 				$cl['status'] = $status;
 				$yl_ref = $st['year_level_id'];
