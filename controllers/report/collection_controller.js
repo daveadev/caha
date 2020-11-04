@@ -179,6 +179,9 @@ define(['app','api','atomic/bomb'],function(app){
 			}else{
 				var today = new Date();
 				var currMonth = today.getMonth()+1;
+				$scope.Today = '';
+				console.log(data.to.month);
+				console.log(currMonth);
 				if(currMonth==parseInt(data.to.month))
 					$scope.Today = (new Date()).getUTCDate()+' '+data.to.label;
 				data.from = data.from.year+'-'+data.from.month+'-01';
