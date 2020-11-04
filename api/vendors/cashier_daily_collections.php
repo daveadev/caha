@@ -22,9 +22,9 @@ class CashierDailyCollections extends Formsheet{
 	function hdr($hdr){
 		$this->showLines = !true;
 		$metrics = array(
-			'base_x'=> 0.5,
+			'base_x'=> 0.25,
 			'base_y'=> 0.25,
-			'width'=> 10,
+			'width'=> 10.5,
 			'height'=> 0.8,
 			'cols'=> 38,
 			'rows'=> 4,	
@@ -41,11 +41,11 @@ class CashierDailyCollections extends Formsheet{
 	function data($hdr,$data,$total_page,$page){
 		$this->showLines = !true;
 		$metrics = array(
-			'base_x'=> 0.5,
+			'base_x'=> 0.25,
 			'base_y'=> 1.2,
-			'width'=> 10,
+			'width'=> 10.5,
 			'height'=> 7,
-			'cols'=> 36,
+			'cols'=> 37,
 			'rows'=> 35,	
 		);
 		$this->section($metrics);
@@ -56,17 +56,17 @@ class CashierDailyCollections extends Formsheet{
 		$this->GRID['font_size']=8;
 		$this->centerText(0,$y,'#',1,'b');
 		$this->leftText(1,$y,'Student No.','','b');
-		$this->leftText(4,$y,'Received From','','b');
+		$this->leftText(3.5,$y,'Received From','','b');
 		$this->leftText(11,$y,'Level','','b');
 		$this->leftText(13,$y,'Section','','b');
 		$this->centerText(16,$y,'Status',2,'b');
 		$this->leftText(18,$y,'Particular','','b');
-		$this->centerText(21,$y,'O.R No.',3,'b');
-		$this->centerText(24,$y,'Amount',3,'b');
-		$this->centerText(27,$y,'Total Due',3,'b');
-		$this->centerText(30,$y,'Total Paid',3,'b');
-		$this->centerText(33,$y++,'Total Balance',3,'b');
-		$dvr = '---------------------------------------------';
+		$this->centerText(22,$y,'O.R No.',3,'b');
+		$this->centerText(25,$y,'Amount',3,'b');
+		$this->centerText(28,$y,'Total Due',3,'b');
+		$this->centerText(31,$y,'Total Paid',3,'b');
+		$this->centerText(34,$y++,'Total Balance',3,'b');
+		$dvr = '----------------------------------------------------------------------------------------------------------------------------------------------';
 		$this->GRID['font_size']=8;
 		$amount = 0;
 		$total_due = 0;
@@ -79,17 +79,17 @@ class CashierDailyCollections extends Formsheet{
 			$balance+= $d['balance'];
 			$this->centerText(0,$y,$d['cnt'],1,'');
 			$this->leftText(1,$y,$d['sno'],'','');
-			$this->leftText(4,$y,$d['received_from'],'','');
+			$this->leftText(3.5,$y,$d['received_from'],'','');
 			$this->leftText(11,$y,$d['level'],'','');
 			$this->leftText(13,$y,$d['section'],'','');
 			$this->centerText(16,$y,$d['status'],2,'');
 			$this->leftText(18,$y,$d['particulars'],'','');
-			$this->centerText(21,$y,$d['ref_no'],3,'');
-			$this->rightText(26.9,$y,number_format($d['amount'],2),'','');
-			$this->rightText(29.9,$y,number_format($d['total_due'],2),'','');
-			$this->rightText(32.9,$y,number_format($d['total_paid'],2),'','');
-			$this->rightText(35.9,$y,number_format($d['balance'],2),'','');
-			$this->leftText(0,$y+0.4,$dvr.$dvr.$dvr.$dvr.$dvr.$dvr,'','');
+			$this->centerText(22,$y,$d['ref_no'],3,'');
+			$this->rightText(27.9,$y,number_format($d['amount'],2),'','');
+			$this->rightText(30.9,$y,number_format($d['total_due'],2),'','');
+			$this->rightText(33.9,$y,number_format($d['total_paid'],2),'','');
+			$this->rightText(36.9,$y,number_format($d['balance'],2),'','');
+			$this->leftText(0,$y+0.4,$dvr.$dvr,'','');
 			//CashierDailyCollections::$grand_total+=$d['total_paid'];
 			CashierDailyCollections::$total_amount+=$d['amount'];
 			CashierDailyCollections::$total_due+=$d['total_due'];
@@ -100,27 +100,27 @@ class CashierDailyCollections extends Formsheet{
 			
 			$y++;
 		}
-		$this->rightText(23.9,$y,'Sub Total ','','');
-		$this->rightText(26.9,$y,number_format($amount,2),'','');
-		$this->rightText(29.9,$y,number_format($total_due,2),'','');
-		$this->rightText(32.9,$y,number_format($total_paid,2),'','');
-		$this->rightText(35.9,$y++,number_format($balance,2),'','');
+		$this->rightText(24.9,$y,'Sub Total ','','');
+		$this->rightText(27.9,$y,number_format($amount,2),'','');
+		$this->rightText(30.9,$y,number_format($total_due,2),'','');
+		$this->rightText(33.9,$y,number_format($total_paid,2),'','');
+		$this->rightText(36.9,$y++,number_format($balance,2),'','');
 
 		
 		
 		if($page == $total_page){
-			$this->rightText(23.9,$y,'Grand Total','','b');
-			$this->rightText(26.9,$y,number_format(CashierDailyCollections::$total_amount,2),'','');
-			$this->rightText(29.9,$y,number_format(CashierDailyCollections::$total_due,2),'','');
-			$this->rightText(32.9,$y,number_format(CashierDailyCollections::$total_paid,2),'','');
-			$this->rightText(35.9,$y,number_format(CashierDailyCollections::$total_balance,2),'','');
+			$this->rightText(24.9,$y,'Grand Total','','b');
+			$this->rightText(27.9,$y,number_format(CashierDailyCollections::$total_amount,2),'','');
+			$this->rightText(30.9,$y,number_format(CashierDailyCollections::$total_due,2),'','');
+			$this->rightText(33.9,$y,number_format(CashierDailyCollections::$total_paid,2),'','');
+			$this->rightText(36.9,$y,number_format(CashierDailyCollections::$total_balance,2),'','');
 			//$this->rightText(32.9,$y,number_format(CashierDailyCollections::$grand_total,2),'','b');
 		}
 		//FOOTER DETAILS
 		$this->GRID['font_size']=8;
 		$this->leftText(0,36,'Printed by: '.'Cashier 1','','');
-		$this->centerText(0,36,'Date & Time Printed: '. date("M d, Y h:i:s A"),35,'');
-		$this->rightText(36,36,'Page '.$page.' of '.$total_page,'','');
+		$this->centerText(0,36,'Date & Time Printed: '. date("M d, Y h:i:s A"),37,'');
+		$this->rightText(37,36,'Page '.$page.' of '.$total_page,'','');
 	
 	}
 }
