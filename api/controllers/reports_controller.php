@@ -27,7 +27,9 @@ class ReportsController extends AppController{
 	
 	function daily_collections(){
 		$data = $_POST['Collections'];
+		//test data
 		//$data = file_get_contents(APP."json/daily_collection.json");
+		//end test data
 		$data = json_decode($data,true);
 		$this->set(compact('data'));
 	}
@@ -86,18 +88,26 @@ class ReportsController extends AppController{
 		$this->set(compact('data'));
 	}
 	
-	
 	function monthly_collections(){
 		$data = $_POST['Collections'];
+		//test data
 		//$data = file_get_contents(APP."json/monthly_collection.json");
+		//end test data
+		
 		$data = json_decode($data,true);
 		$this->set(compact('data'));
 	}
 	
 	function cashier_daily_collections(){
-		$data = $_POST['Cashier'];
-		//$data = file_get_contents(APP."json/cashier_collection.json");
+		//use test data if Cashier is not set
+		if(!isset($_POST['Cashier'])){
+			$data = file_get_contents(APP."json/cashier_collection.json");
+		}else{
+			$data = $_POST['Cashier'];
+		}
+		
 		$data = json_decode($data,true);
+		//$data = $data['data'];
 		$this->set(compact('data'));
 	}
 	
@@ -106,10 +116,8 @@ class ReportsController extends AppController{
 		$data = json_decode($data,true);
 		$data = $data['data'];
 		//pr($data);exit;
-		
 		$this->set(compact('data'));
 	}
-	
 	
 	
 }
