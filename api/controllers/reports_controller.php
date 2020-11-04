@@ -10,6 +10,7 @@ class ReportsController extends AppController{
 			
 			//Student's Details
 			$this->Student->bindModel(array('belongsTo' => array('Section')));
+			$this->Student->recursive=1;
 			$student = $this->Student->find('first',array(array('Student.id'=>$account_id)));
 			
 			//Student's SOA
@@ -18,7 +19,6 @@ class ReportsController extends AppController{
 				'order'=>array('Ledger.transac_date','Ledger.id')
 			));
 			//pr($student);exit;
-			
 			$this->set(compact('data','student'));
 		}else{
 			die('No data available.Contact your system administrator.');
@@ -27,11 +27,9 @@ class ReportsController extends AppController{
 	
 	function daily_collections(){
 		$data = $_POST['Collections'];
-		
 		//test data
 		//$data = file_get_contents(APP."json/daily_collection.json");
 		//end test data
-		
 		$data = json_decode($data,true);
 		$this->set(compact('data'));
 	}
@@ -92,7 +90,6 @@ class ReportsController extends AppController{
 	
 	function monthly_collections(){
 		$data = $_POST['Collections'];
-		
 		//test data
 		//$data = file_get_contents(APP."json/monthly_collection.json");
 		//end test data
@@ -110,7 +107,7 @@ class ReportsController extends AppController{
 		}
 		
 		$data = json_decode($data,true);
-		$data = $data['data'];
+		//$data = $data['data'];
 		$this->set(compact('data'));
 	}
 	

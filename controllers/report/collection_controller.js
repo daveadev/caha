@@ -124,6 +124,24 @@ define(['app','api','atomic/bomb'],function(app){
 						Months.push(selection);
 					}
 				});
+				var today = new Date();
+				var currMonth = today.getMonth()+1;
+				var last = Months[Months.length-1];
+				last = last.split(' ');
+				var last_item = last[0];
+				var year = last[1];
+				do{
+					last_item++;
+					var item = {};
+					if(last_item>12){
+						last_item = last_item-12;
+						year = parseInt(year)+1;
+					}
+					item = last_item+' '+year;
+					Months.push(item);
+				}
+				while(last_item!=currMonth)
+				console.log(Months);
 				$scope.MonthsFilter = [];
 				angular.forEach(Months, function(mo){
 					var month = mo.split(' ');

@@ -51,11 +51,12 @@ define(['app','api','atomic/bomb'],function(app){
 				
 				$scope.Collections = response.data[0];
 				$scope.Meta = response.meta;
-				getForPrinting(data);
+				if($scope.Meta.page==1) getForPrinting(data);
 			});
 		}
 		
 		function getForPrinting(data){
+			data.limit = 'less';
 			api.GET('cashier_collections',data, function success(response){
 				var print = {data:response.data};
 				$scope.CashierData =  print;

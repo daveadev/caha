@@ -35,7 +35,7 @@ class CashierDailyCollections extends Formsheet{
 		$this->leftText(0,$y++,'Lake Shore Educational Institution','','');
 		$this->leftText(0,$y++,'Cashier Daily Collection Report','','');
 		$this->leftText(0,$y++,'School Year: 2020 - 2021','','');
-		$this->leftText(0,$y++,'Date: '.date('d M Y',strtotime($hdr['date'])),'','');
+		//$this->leftText(0,$y++,'Date: '.date('d M Y',strtotime($hdr['date'])),'','');
 	}
 	
 	function data($hdr,$data,$total_page,$page){
@@ -109,7 +109,7 @@ class CashierDailyCollections extends Formsheet{
 		
 		
 		if($page == $total_page){
-			$this->rightText(23.9,$y,'Total','','b');
+			$this->rightText(23.9,$y,'Grand Total','','b');
 			$this->rightText(26.9,$y,number_format(CashierDailyCollections::$total_amount,2),'','');
 			$this->rightText(29.9,$y,number_format(CashierDailyCollections::$total_due,2),'','');
 			$this->rightText(32.9,$y,number_format(CashierDailyCollections::$total_paid,2),'','');
