@@ -72,7 +72,39 @@ class CollectionsController extends AppController {
 				$day++;
 				$collection_data[$new_date]=0;
 			}
+		}else{
+			$from = explode('-',$from);
+			$to = explode('-',$to);
+			$mo = $from[1]-1;
+			do{
+				$mo++;
+				if($mo>12){
+					$mo = $mo-12;
+					$from[0] = $from[0]+1;
+				}
+				switch($mo){
+					case '01': $month = 'Jan '; break;
+					case '02': $month = 'Feb '; break;
+					case '03': $month = 'Mar '; break;
+					case '04': $month = 'Apr '; break;
+					case '05': $month = 'May '; break;
+					case '06': $month = 'Jun '; break;
+					case '07': $month = 'Jul '; break;
+					case '08': $month = 'Aug '; break;
+					case '09': $month = 'Sep '; break;
+					case '10': $month = 'Oct '; break;
+					case '11': $month = 'Nov '; break;
+					case '12': $month = 'Dec '; break;
+				}
+				$data = $month.$from[0];
+				$collection_data[$data]=0;
+				
+			}
+			while($mo!=$to[1]);
 		}
+		//pr($to[1]);
+		//pr($mo);
+		//pr($collection_data);
 		//exit();
 		foreach($projected as $i=>$t){
 			$amount = $t['Ledger']['amount'];
@@ -105,7 +137,6 @@ class CollectionsController extends AppController {
 				//pr($mo);
 			}
 		}
-		//pr($collection_data);
 		//exit();
 		
 		
@@ -118,7 +149,7 @@ class CollectionsController extends AppController {
 			$running_collection += $data;
 			$total_collected += $data;
 			if($type=='month')
-				$coll = array('month'=>$i,'details'=>'cash','collection'=>$data,'t_collection'=>$running_collection,'r_balance'=>$running_balance);
+				$coll = array('month'=>$i,'details'=>'Cash','collection'=>$data,'t_collection'=>$running_collection,'r_balance'=>$running_balance);
 			else
 				$coll = array('date'=>$i,'day'=>date('D', strtotime($i)),'description'=>'Cash','collection'=>$data,'t_collection'=>$running_collection,'r_balance'=>$running_balance);
 			array_push($collection_range,$coll);

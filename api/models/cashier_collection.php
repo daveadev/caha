@@ -2,7 +2,7 @@
 class CashierCollection extends AppModel {
 	var $name = 'CashierCollection';
 	var $useTable = 'account_histories';
-	var $order = 'transac_date asc';
+	var $order = 'transac_date,ref_no asc';
 	var $actsAs = array('Containable');
 	
 	

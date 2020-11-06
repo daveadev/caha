@@ -18,7 +18,7 @@ class ParseschedController extends AppController {
 
 		$highestColumn = $LedgerObj->setActiveSheetIndex(0)->getHighestColumn();
 		$highestRow = $LedgerObj->setActiveSheetIndex(0)->getHighestRow();
-		
+		//pr($file); exit();
 		for($row=2;$row<=792;$row++){
 			$total_payments = 0;
 			$id = $ledgers[$row]['A'];
@@ -37,10 +37,10 @@ class ParseschedController extends AppController {
 					$total_payments +=$a['Ledger']['amount'];
 			}
 			
-			/* pr($leds);
-			pr($discount);
-			pr($dept);
-			exit(); */
+			//pr($leds);
+			//pr($discount);
+			//pr($dept);
+			//exit();
 			$ESC_HS = array(
 				array('UPONNROL',2030, '2020-09-01'),
 				array('SEP2020',625, '2020-09-15'),
