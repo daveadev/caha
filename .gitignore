@@ -3,3 +3,4 @@ api/config/core.php
 api/tmp/
 api/config/database.php
 node_modules/*
+api/files/latest ledger.xlsx
