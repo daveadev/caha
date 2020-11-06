@@ -34,13 +34,18 @@ class StudentAccountCollectionsController extends AppController {
 			}
 			//pr($collections);
 			foreach($Accounts as $i=>$account){
+				$cnt=$i+1;
+				if(isset($_GET['page'])&&$_GET['page']!==1)
+					$cnt=(($_GET['page']-1)*10)+$i+1;
+				//pr($_GET['page']);
 				$st = $account['Student'];
 				$acc = $account['Account'];
 				// Build your data here
+				//pr($account); exit();
 				$accountObj =  array();
 				$yl_ref = $st['year_level_id'];
 				$sec_ref = $st['section_id'];
-				$accountObj['cnt'] = $i+1;
+				$accountObj['cnt'] = $cnt;
 				$accountObj['account_id'] = $acc['id'];
 				$accountObj['name'] = $st['full_name'];
 				$accountObj['year_level'] = $list[$yl_ref][$sec_ref]['yl'];
