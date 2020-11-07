@@ -2,12 +2,16 @@
 class StudentAccountCollectionsController extends AppController {
 
 	var $name = 'StudentAccountCollections';
-	var $uses = array('Account','Section');
+	var $uses = array('StudentAccountCollection','Account','Section');
 
 	function index(){
-		$order =  array(); // Sort by level then last name G7- G10
-		$recrusive= 2; // to get the Account Schedule data
+		//$this->StudentAccountCollection->recursive = 0;
+		//$this->paginate['StudentAccountCollection']['contain'] = array('Account.id');
+		
+		//pr($this->paginate); exit();
 		$Accounts = $this->paginate();
+		
+		//pr($Accounts); exit();
 		if(isset($_GET['account_id']))
 			$Accounts = $this->paginate('Account',array('id'=>$_GET['account_id']));
 		//echo count($Accounts); exit();
@@ -34,12 +38,16 @@ class StudentAccountCollectionsController extends AppController {
 			}
 			//pr($collections);
 			foreach($Accounts as $i=>$account){
+				//pr($account); exit();
 				$cnt=$i+1;
 				if(isset($_GET['page'])&&$_GET['page']!==1)
 					$cnt=(($_GET['page']-1)*10)+$i+1;
 				//pr($_GET['page']);
 				$st = $account['Student'];
-				$acc = $account['Account'];
+				if(isset($_GET['account_id']))
+					$acc = $account['Account'];
+				else
+					$acc = $account['StudentAccountCollection'];
 				// Build your data here
 				//pr($account); exit();
 				$accountObj =  array();

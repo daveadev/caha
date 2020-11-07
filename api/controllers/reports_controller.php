@@ -113,9 +113,10 @@ class ReportsController extends AppController{
 	
 	function student_account_collection_report(){
 		$data = file_get_contents(APP."json/student_account_collection.json");
+		//$data = $_POST['student'];
 		$data = json_decode($data,true);
-		$data = $data['data'];
-		//pr($data);exit;
+		//$data = $data['data'];
+		pr($data); exit;
 		$this->set(compact('data'));
 	}
 	

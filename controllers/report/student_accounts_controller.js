@@ -1,7 +1,7 @@
 "use strict";
 define(['app','api','atomic/bomb'],function(app){
-	app.register.controller('StudentAccController',['$scope','$rootScope','api',
-	function($scope,$rootScope,api){
+	app.register.controller('StudentAccController',['$scope','$rootScope','api','$filter',
+	function($scope,$rootScope,api,$filter){
 		const $selfScope =  $scope;
 		$scope = this;
 		$scope.init = function(){
@@ -14,6 +14,8 @@ define(['app','api','atomic/bomb'],function(app){
 				'pay9','bal9'
 			];
 			getStudentAccountsColl();
+			getForPrint();
+			$scope.LoadingPrint = 1;
 		}
 		
 		$selfScope.$watch("SA.Active",function(active){
@@ -25,8 +27,25 @@ define(['app','api','atomic/bomb'],function(app){
 			getStudentAccountsColl(page);
 		}
 		
+		$scope.Print = function(){
+			console.log($scope.forPrinting);
+			document.getElementById('PrintStudentAccount').submit();
+		}
+		
+		function getForPrint(){
+			var data = {
+				limit:'less'
+			}
+			api.GET('student_account_collections', data, function success(response){
+				var print = {data:response.data};
+				$scope.forPrinting = print;
+				$scope.LoadingPrint = 0;
+			});
+		}
+		
 		function getStudentAccountsColl(page){
 			var data = {
+				//account_id:'LSS97238',
 				limit:10
 			}
 			if(page)
@@ -46,6 +65,21 @@ define(['app','api','atomic/bomb'],function(app){
 							row['bal'+ctr]=sched.balance;
 							ctr++;
 						});
+					}else{
+						var ctr = 1;
+						var currbal = 0;
+						console.log(col.payments);
+						for(var i=1;i<=9;i++){
+							if(i==1||i==5){
+								row['pay'+i]=col.payments[ctr-1].payment;
+								row['bal'+i]=col.payments[ctr-1].balance;
+								currbal = col.payments[ctr-1].balance;
+								ctr++;
+							}else{
+								row['pay'+i]=0;
+								row['bal'+i]=currbal;
+							}
+						}
 					}
 					
 					update_fields.push(row);

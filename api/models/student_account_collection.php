@@ -25,6 +25,22 @@ class StudentAccountCollection extends AppModel {
 		)
 		
 	);
+	
+	var $hasMany = array(
+		'AccountSchedule' => array(
+			'className' => 'AccountSchedule',
+			'foreignKey' => 'account_id',
+			'dependent' => false,
+			'conditions' => '',
+			'fields' => '',
+			'order' => '',
+			'limit' => '',
+			'offset' => '',
+			'exclusive' => '',
+			'finderQuery' => '',
+			'counterQuery' => ''
+		),
+	);
 	function beforeFind($queryData){
 		//pr($queryData);
 		if($conds=$queryData['conditions']){
@@ -42,8 +58,8 @@ class StudentAccountCollection extends AppModel {
 			
 			$queryData['conditions']=$conds;
 		}
-		$order = array("FIELD('G7','G8','G9','GX','GY','GZ')");
-		$queryData['order']=$order;
+		//$order = array("FIELD('G7','G8','G9','GX','GY','GZ')");
+		//$queryData['order']=$order;
 		//pr($queryData); //exit();
 		return $queryData;
 	} 
