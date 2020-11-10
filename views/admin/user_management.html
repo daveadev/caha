@@ -1,0 +1,148 @@
+<div class="row" ng-controller="UserManagementController" ng-init="init()">
+	<button class="btn btn-primary btn-fab top right fixed" ng-click="OpenModal()">
+		<span class="glyphicon glyphicon-plus"></span>
+	</button>
+	<script type="text/ng-template" id="UserManagementModalContent.html">
+		<div class="modal-header">
+			<h3 class="modal-title">User</h3>
+		</div>
+		<div class="modal-body">
+			<div class="row">
+				<div class="col-md-12">
+					<div class="form-group">
+						<label>Username</label>
+						<input ng-disabled="isReset" class="form-control" ng-model="ModalUser.username"/>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<div class="form-group">
+						<label>User Type</label>
+						<select ng-disabled="isReset" class="form-control" ng-model="ModalUser.user_type_id"
+														 ng-options="userType.id as userType.name for userType in UserTypes | orderBy:'id' ">
+							<option value="">--Select User Type--</option>
+						</select>
+					</div>
+				</div>
+			</div>
+			<div class="row" ng-if="Mode=='edit'">
+				<div class="col-md-12 text-right">
+					<button ng-click="reset()" class="btn btn-default">Reset</button>
+				</div>
+			</div>
+			<div class="row ">
+				<div class="col-md-12">
+					<label>Password</label>
+					<input ng-disabled="Mode=='edit'" class="form-control" ng-model="ModalUser.password"/>
+				</div>
+			</div>
+		</div>
+		<div class="modal-footer">
+			<button class="btn btn-default pull-left" ng-click="cancelModal()">Cancel</button>
+			<button class="btn btn-danger pull-left" ng-click="deleteModal()" ng-show="Mode==='edit'&&!deleting">Archieve</button>
+			<button class="btn btn-primary" ng-click="confirmModal()" ng-show="idle">
+				<span ng-if="!isReset">Confirm</span>
+				<span ng-if="isReset">Reset Password</span>
+			</button>
+			<button class="btn btn-primary" ng-disabled="!idle" ng-show="!idle">Saving...</button>
+			<button class="btn btn-danger pull-left" ng-disabled="deleting" ng-show="deleting">Archieving...</button>
+		</div>
+	</script>
+	<div class="col-md-12">
+		<div class="list-group">
+			<div class="list-group-item list-group-header">
+				<div class="pull-right"> 
+					<div class="btn-group btn-group-sm">
+						<button class="btn btn-default" ng-show="Users.length">
+							{{FirstItem}} - {{LastItem}} of {{TotalItems}}
+						</button>
+						<button class="btn btn-default" ng-disabled="!PrevPage" ng-click="navigatePage(PrevPage)">
+							<span class="glyphicon glyphicon-chevron-left"></span>
+						</button>
+						<button class="btn btn-default" ng-disabled="!NextPage" ng-click="navigatePage(NextPage)">
+							<span class="glyphicon glyphicon-chevron-right"></span>
+						</button>
+					</div>
+				</div>
+				<label class="clear-fix">Users</label>
+			</div>
+			<div class="list-group-canvas">
+				<div class="list-group-item list-group-header">
+					<ul class="nav nav-pills">
+						<li ng-repeat="Department in Departments"
+							ng-click="setActiveDepartment(Department)"
+							ng-class="{active:ActiveDepartment.id===(Department.id)}">
+							<a>{{Department.id}}</a>
+						</li>
+						<div class="pull-right">
+							<div class="btn-group dropdown" ng-class="{open:OpenFilter}">
+								<button class="btn btn-default" ng-hide="ActiveStatus">
+									All
+								</button>
+								<button class="btn btn-default" ng-show="ActiveStatus">
+									{{ActiveStatus.name}}
+								</button>
+								<button class="btn btn-default dropdown-toggle" type="button" ng-click="OpenFilter=!OpenFilter" ng-show="!ActiveStatus">
+									<span class="glyphicon glyphicon-filter"></span>
+								</button>
+								<button class="btn btn-default dropdown-toggle" type="button" ng-click="ClearFilter()" ng-show="ActiveStatus">
+									<span class="glyphicon glyphicon-remove"></span>
+								</button>
+								<ul class="dropdown-menu pull-right">
+									<li ng-repeat="stat in Statuses"
+																ng-click="setActiveStatus(stat)">
+										<a href="">
+											{{stat.name}}
+										</a>
+									</li>
+								</ul>
+							</div>
+						</div>
+					</ul>
+				</div>
+				<div class="list-group-item">
+					<table class="table table-bordered">
+						<thead ng-show="Users.length">
+							<tr>
+								<th class="col-md-4">Username</th>
+								<th class="col-md-4">User Type</th>
+								<th class="col-md-4">Status</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr ng-repeat="User in Users"
+								ng-click="OpenModal(User,'edit')">
+								<td>{{User.username}}</td>
+								<td>{{User.user_type_id}}</td>
+								<td>{{User.status}}</td>
+							</tr>
+						</tbody>
+					</table>
+					<div class="empty-state" ng-show="!Users&&!IsLoading"  >
+						<div class="well">
+							<div class="empty-state-icon">
+								<i class="glyphicon glyphicon-list-alt"></i>
+							</div>
+							<h4>No Information Available</h4>
+						</div>
+					</div>
+					<div class="empty-state" ng-show="IsLoading&&!Users"  >
+						<div class="well">
+							<div class="empty-state-icon">
+								<i class="glyphicon glyphicon-refresh spin"></i>
+							</div>
+							<h4>LOADING INFORMATION</h4>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="list-group-item list-group-search-box">
+				<div class="input-group col-md-12">
+					<input type="text" class="form-control" placeholder="Search by username" 
+					ng-change="SearchUser()" ng-model="SearchWord" ng-model-options='{ debounce: 500 }' />
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

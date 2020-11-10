@@ -27,6 +27,7 @@ require.config({
         'atomic':'vendors/atomic_design',
 		'util':'../config/util',
 		'report':'../controllers/report',
+		'admin':'../controllers/admin',
     },
     // Add angular modules that does not support AMD out of the box, put it in a shim
     shim: {
