@@ -37,6 +37,7 @@ class ReportsController extends AppController{
 	function receipt(){
 		$trnxId = $_POST['TransactionId'];
 		$trnx = $this->Transaction->findById($trnxId);
+		pr($trnx); exit();
 		$refNo = $trnx['Transaction']['ref_no'];
 		$totalPaid = $trnx['Transaction']['amount'];
 		$totalPaid =  number_format($totalPaid,2,'.',',');
