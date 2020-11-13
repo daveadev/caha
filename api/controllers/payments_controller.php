@@ -20,7 +20,7 @@ class PaymentsController extends AppController {
 		$acc = $this->Account->find('first',array('recursive'=>0,'conditions'=>array('id'=>$account_id)));
 		$Account = $acc['Account'];
 		$payment_to_date = $Account['payment_total']+$Account['discount_amount'];
-		$curr_refNo = 'OR '.$booklet['series_counter'];
+		$curr_refNo = $booklet['receipt_type']. ' ' .$booklet['series_counter'];
 		$total_payment = 0;
 		$today = date("Y-m-d");
 		$time = date("h:i:s");
@@ -58,9 +58,10 @@ class PaymentsController extends AppController {
 		// to get the total payment of all payments and save transac payments
 		foreach($payments as $i=>$pay){
 			$tp = array('transaction_id'=>$transac_id,'payment_method_id'=>$pay['id'],'amount'=>$pay['amount']);
-			if($pay['id']=='CHCK'){
+			if($pay['id']!=='CASH'){
 				$tp['valid_on']=$pay['date'];
 				$tp['details']=$pay['bank'];
+				$isCharge = $pay['bank'];
 			}
 			else
 				$tp['details']='Cash';
@@ -70,35 +71,70 @@ class PaymentsController extends AppController {
 		}
 		$account_total = $Account['discount_amount']+$Account['payment_total']+$total_payment;
 		
+		/* pr($transactions);
+		pr($payments);
+		pr($account_total);
+		pr($total_payment);
+		exit(); */
 		
 		
 		// for Ledgers and Account transactions
 		$transac_payment = $total_payment;
 		foreach($transactions as $trnx){
-			switch($trnx['id']){
-				case 'INIPY': $detail = 'Initial Payment'; break;
-				case 'OLDAC': $detail = 'Old Account Payment';; break;
-				case 'SBQPY': $detail = 'Subsequent Payment'; break;
-			}
+			$detail = $trnx['name'];
 			$payment = $total_payment;
 			if($trnx['amount']<$total_payment){
 				$payment = $trnx['amount'];
 				$transac_payment -=$payment;
 			}
 			$payment_to_date += $payment;
-			//Save to ledger
-			$ledgerItem =  array(
-				'account_id'=>$account_id,
-				'type'=>'-',
-				'transaction_type_id'=>$trnx['id'],
-				'esp'=>$ESP,
-				'transac_date'=>$today,
-				'transac_time'=>$time,
-				'ref_no'=>$curr_refNo,
-				'details'=>$detail,
-				'amount'=>$payment
-			);
 			
+			
+			//Save to ledger
+			if($trnx['type']!=='AR'){
+				$ledgerItem =  array(
+					'account_id'=>$account_id,
+					'type'=>'-',
+					'transaction_type_id'=>$trnx['id'],
+					'esp'=>$ESP,
+					'transac_date'=>$today,
+					'transac_time'=>$time,
+					'ref_no'=>$curr_refNo,
+					'details'=>$detail,
+					'amount'=>$payment
+				);
+			}
+			if($trnx['type']!=='AR'&&$isCharge){
+				
+				$ledgerItem['amount']=$total_payment;
+				$ledgerItem['details']=$detail.'/'.$isCharge;
+			}
+			
+			if($trnx['type']=='AR'&&$isCharge){
+				$charge =  array(
+					'account_id'=>$account_id,
+					'type'=>'+',
+					'transaction_type_id'=>$trnx['id'],
+					'esp'=>$ESP,
+					'transac_date'=>$today,
+					'transac_time'=>$time,
+					'ref_no'=>$curr_refNo,
+					'details'=>$detail,
+					'amount'=>$payment
+				);
+				array_push($ledger_accounts,$charge);
+				$ledgerItem =  array(
+					'account_id'=>$account_id,
+					'type'=>'-',
+					'transaction_type_id'=>$trnx['id'],
+					'esp'=>$ESP,
+					'transac_date'=>$today,
+					'transac_time'=>$time,
+					'ref_no'=>$curr_refNo,
+					'details'=>$isCharge,
+					'amount'=>$total_payment
+				);
+			}
 			
 			// save to account histories
 			$history = array(
@@ -132,9 +168,10 @@ class PaymentsController extends AppController {
 			array_push($account_history,$history);
 			array_push($ledger_accounts,$ledgerItem);
 			array_push($transac_details,$td);
-			if($trnx['id']=='OLDAC'){
+			if($trnx['id']=='OLDAC')
 				$total_payment -= $trnx['amount'];
-			}
+			if($trnx['type']=='AR')
+				$total_payment -= $trnx['amount'];
 			
 		}
 		

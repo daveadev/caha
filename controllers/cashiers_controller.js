@@ -15,6 +15,7 @@ define(['app', 'api'], function(app) {
                 { id: 3, title: "Payment", description: "Select Payment Methods" },
                 { id: 4, title: "Confirmation", description: "Confirmation" }
             ];
+			
             //Initialize components
             $scope.initCashier = function() {
 				$scope.Today = new Date();
@@ -59,6 +60,8 @@ define(['app', 'api'], function(app) {
                     $scope.hasInfo = $scope.hasStudentInfo || $scope.hasTransactionInfo || $scope.hasPaymentInfo;
                 };
 				getAll();
+				$scope.RectTypes = ['OR','AR'];
+				$scope.ActiveTyp = 'OR';
             };
             
 			
@@ -94,6 +97,18 @@ define(['app', 'api'], function(app) {
 				var newURL = 'api/soa?account_id='+acct_id;
 				window.open(newURL);
 			}
+			
+			$scope.setActiveTyp = function(typ){
+				$scope.TransactionTypes = '';
+				$scope.ActiveBooklet = '';
+				getBooklet(typ);
+				if(typ=='AR')
+					getAr();
+				else
+					getOr();
+				$scope.ActiveTyp = typ;
+			}
+			
             //Get BookletID
 			function getAll(){
 				api.GET('booklets', function success(response) {
@@ -106,27 +121,44 @@ define(['app', 'api'], function(app) {
 					$scope.Students = response.data;
 				});
 				//Get transaction_types.js
-				api.GET('transaction_types', function success(response) {
-					$scope.TransactionTypes = response.data;
-				});
 				//Get payment_methods.js
 				api.GET('payment_methods', function success(response) {
 					$scope.Payments = response.data;
 				});
 			}
+			
+			function getBooklet(typ){
+				var data = {receipt_type:typ};
+				api.GET('booklets',data, function success(response){
+					$scope.ActiveBooklet = response.data[0];
+				});
+			}
+			
+			function getAr(){
+				var data = {
+					type:'AR'
+				};
+				api.GET('transaction_types',data, function success(response){
+					$scope.TransactionTypes = response.data;
+				});
+			}
+			function getOr(){
+				var data = {
+					account_no:$scope.ActiveStudent.id,
+					pay:true,
+				};
+				api.GET('transaction_types',data, function success(response){
+					$scope.TransactionTypes = response.data;
+				});
+			}
+			
             //Change the step for navigation
             $scope.nextStep = function() {
                 if ($scope.ActiveStep === 1) {
                     //Pass value of student information
 					$scope.Disabled = 1;
                     $scope.ActiveStudent = $scope.SelectedStudent;
-                    var data = {};
-                    data.pay = true;
-                    data.account_no = $scope.ActiveStudent.id;
-					console.log(data);
-                    api.GET('transaction_types', data, function success(response) {
-                        $scope.TransactionTypes = response.data;
-                    });
+					getOr();
 					
                 }
                 if ($scope.ActiveStep === 2) {
@@ -141,7 +173,8 @@ define(['app', 'api'], function(app) {
                         var transaction = {
                             id: transactionType.id,
                             amount: transactionType.amount,
-							name: transactionType.name
+							name: transactionType.name,
+							type: transactionType.type
                         };
                         if ($scope.SelectedTransactions[transactionType.id]) {
                             $scope.TotalDue = $scope.TotalDue + transaction.amount;
@@ -151,7 +184,6 @@ define(['app', 'api'], function(app) {
 					console.log($scope.TotalDue);
                 }
                 if ($scope.ActiveStep === 3) {
-					
                     //Pass value of payment information
 					if('CHCK' in $scope.SelectedPayments){
 						if($scope.SelectedPayments['CHCK']){
@@ -170,9 +202,12 @@ define(['app', 'api'], function(app) {
                             id: pid,
                             amount: amount,
                         };
-						if(payment.id=='CHCK'){
+						if(payment.id!='CASH'){
 							payment.date = $scope.PopoverDetails.date;
-							payment.bank = $scope.PopoverDetails.bank+' - '+$scope.PopoverDetails.ref_no;
+							if($scope.PopoverDetails.bank)
+								payment.bank = $scope.PopoverDetails.bank+' - '+$scope.PopoverDetails.ref_no;
+							else
+								payment.bank = $scope.PopoverDetails.ref_no;
 						}
                         if ($scope.SelectedPayments[paymentMethod.id]) {
                             $scope.TotalPaid = $scope.TotalPaid + payment.amount;
@@ -210,6 +245,7 @@ define(['app', 'api'], function(app) {
                     };
                     $scope.TransactionId = null;
                     $scope.CashierSaving = true;
+					//console.log($scope.Payment); return;
                     api.POST('payments', $scope.Payment, function success(response) {
                         $scope.TransactionId  = response.data.transaction_id;
                         $scope.openModal();
@@ -226,6 +262,12 @@ define(['app', 'api'], function(app) {
                 if ($scope.ActiveStep > 1) {
                     $scope.ActiveStep--;
                 };
+				if($scope.ActiveStep==2)
+					$scope.ActiveTransactions = [];
+				if($scope.ActiveStep==3){
+					$scope.ActivePayments = [];
+					$scope.TotalPaid = 0;
+				}
             };
             //Make the navigation clickable
             $scope.updateStep = function(step) {
@@ -351,8 +393,11 @@ define(['app', 'api'], function(app) {
                 $scope.PopoverDetails.is_open = false;
                 $scope.ActivePaymentMethod = {};
 				$scope.Popdone = 1;
+				computeChange();
+				console.log($scope.CurrentChange);
 				if($scope.CurrentChange>=0)
 					$scope.Disabled = 0;
+				
             }
             $scope.updateCurrentChange = function() {
                 var cash = 0;
@@ -370,7 +415,7 @@ define(['app', 'api'], function(app) {
 					}
                 }
                 $scope.CurrentChange = (cash + noncash) - $scope.TotalDue;
-				if($scope.SelectedPayments['CHCK']){
+				if($scope.SelectedPayments['CHCK']||$scope.SelectedPayments['CHRG']){
 					if((cash+noncash)>=$scope.TotalDue&&$scope.Popdone)
 						$scope.Disabled=0;
 				}
@@ -381,6 +426,25 @@ define(['app', 'api'], function(app) {
 						$scope.Disabled = 1;
 				}
             }
+			
+			function computeChange(){
+				
+                var cash = 0;
+                var noncash = 0;
+				for (var index in $scope.Payments) {
+                    var payment = $scope.Payments[index];
+					console.log(payment);
+                    if (payment.id == 'CASH'){
+						if(payment.amount)
+							cash += payment.amount; 
+					}
+                    if (payment.id != 'CASH') { 
+						if(payment.amount)
+							noncash += payment.amount; 
+					}
+                }
+                $scope.CurrentChange = (cash + noncash) - $scope.TotalDue;
+			}
         };
     }]);
     app.register.controller('BookletModalController', ['$scope', '$rootScope', '$uibModalInstance', 'api', function($scope, $rootScope, $uibModalInstance, api) {

@@ -1,7 +1,7 @@
 <?php
 class TransactionType extends AppModel {
 	var $name = 'TransactionType';
-	var $consumableFields = array('id','name','token','amount','amounts','description');
+	var $consumableFields = array('id','name','token','amount','amounts','description','type');
 	var $virtualFields = array(
 				'token'=>"MD5(GROUP_CONCAT(AccountSchedule.due_date,'/P',AccountSchedule.due_amount))",
 				'amounts'=>"GROUP_CONCAT(AccountSchedule.due_date,'/P',AccountSchedule.due_amount-AccountSchedule.paid_amount)",
@@ -90,7 +90,10 @@ class TransactionType extends AppModel {
 					array('TransactionType.type'=>'reactive','AccountSchedule.id'),
 					array('TransactionType.type'=>'passive','AccountSchedule.id'=>null)
 					));
-
+			//pr(array_keys($queryData['conditions'][0])); exit();
+			$key = array_keys($queryData['conditions'][0]);
+			if(in_array('TransactionType.type',$key))
+				$conditions = array('TransactionType.type'=>'AR');
 			array_push($queryData['conditions'],$conditions);
 			$queryData['order']=array('AccountSchedule.id'=>'desc','AccountSchedule.order'=>'asc');
 		else:

@@ -172,6 +172,14 @@
 				<div class="list-group-canvas list-group-search-results">
 					<div class="list-group-item list-group-header">
 						<h5>Select Transactions</h5>
+						<ul class="nav nav-pills">
+							<li ng-repeat="typ in RectTypes" 
+								ng-click="setActiveTyp(typ)"
+								ng-class="{active:typ==ActiveTyp}"
+								>
+								<a>{{typ}}</a>
+							</li>
+						</ul>
 					</div>
 					<div class="list-group-item" 
 						ng-repeat="transaction_type in TransactionTypes | filter:filterTransaction">
@@ -192,7 +200,7 @@
 							<div class="col-md-4" ng-show="SelectedTransactions[transaction_type.id]">
 								<div class="input-group input-amount">
 								<span class="input-group-addon">₱</span>
-								<input type="number" class="form-control" ng-model="transaction_type.amount" autoselect focus="FocusTransaction[transaction_type.id]" />
+								<input type="number" class="form-control" ng-disabled="ActiveTyp=='AR'" ng-model="transaction_type.amount" autoselect focus="FocusTransaction[transaction_type.id]" />
 								</div>
 							</div>
 						</div>
@@ -400,14 +408,18 @@
 			<button class="btn btn-xs btn-danger btn-dismiss" ng-click="closePop($event)"><span class="glyphicon glyphicon-remove"></span></button>
 			<dl>
 				<dt ng-if="ActivePaymentMethod.id!='CHRG'">Bank</dt>
-				<dd ng-if="ActivePaymentMethod.id!='CHRG'" ><input ng-model="PopoverDetails.bank" type="text" class="form-control input-sm" placeholder="Issuing Bank"/></dd>
-				<dt>Check No</dt>
-				<dd><input ng-model="PopoverDetails.ref_no" type="text" class="form-control input-sm" placeholder="{{ActivePaymentMethod.name}}  number"/></dd>
+				<dd ng-if="ActivePaymentMethod.id!='CHRG'"><input ng-model="PopoverDetails.bank" type="text" class="form-control input-sm" placeholder="Issuing Bank"/></dd>
+				<dt ng-show="ActivePaymentMethod.id=='CHCK'">Check No</dt>
+				<dt ng-show="ActivePaymentMethod.id=='CHRG'">LGU Voucher No</dt>
+				<dd>
+					<input ng-model="PopoverDetails.ref_no" type="text" class="form-control input-sm" placeholder="{{ActivePaymentMethod.name}}  number" ng-show="ActivePaymentMethod.id=='CHCK'" />
+					<input ng-model="PopoverDetails.ref_no" type="text" class="form-control input-sm" placeholder="ch number" ng-show="ActivePaymentMethod.id=='CHRG'" />
+				</dd>
 				<dt>{{ActivePaymentMethod.name}} Date</dt>
 				<dd ng-if="ActivePaymentMethod.id=='CARD'"><input ng-model="PopoverDetails.date" type="text" class="form-control input-sm" placeholder="{{ActivePaymentMethod.name}} expiry" /></dd>
 				<dd ng-if="ActivePaymentMethod.id!='CARD'"><input ng-model="PopoverDetails.date" type="date" class="form-control input-sm" placeholder="{{ActivePaymentMethod.name}} date" /></dd>
 			</dl>
-			<button class="btn btn-sm btn-block btn-primary" ng-click="savePopoverDetails(ActivePaymentMethod.id)" ng-disabled="!PopoverDetails.date||!PopoverDetails.bank||!PopoverDetails.ref_no" >Confirm</button>
+			<button class="btn btn-sm btn-block btn-primary" ng-click="savePopoverDetails(ActivePaymentMethod.id)" ng-disabled="!PopoverDetails.date||!PopoverDetails.ref_no" >Confirm</button>
 		</script>
 		<script type="text/ng-template" id="successModal.html">
 			<div class="modal-body text-center">
