@@ -37,7 +37,7 @@ class ReportsController extends AppController{
 	function receipt(){
 		$trnxId = $_POST['TransactionId'];
 		$trnx = $this->Transaction->findById($trnxId);
-		pr($trnx); exit();
+		
 		$refNo = $trnx['Transaction']['ref_no'];
 		$totalPaid = $trnx['Transaction']['amount'];
 		$totalPaid =  number_format($totalPaid,2,'.',',');
@@ -45,7 +45,7 @@ class ReportsController extends AppController{
 		$esp = $trnx['Transaction']['esp'];
 		$syShort = (int)substr($esp, 2,2);
 		$syFor = $syShort.'-'.($syShort+1);
-		
+		pr($trnx); exit();
 		$trnDate = $trnx['Transaction']['transac_date'];
 		$trnDate =  date('d M Y',strtotime($trnDate));
 		
@@ -113,11 +113,15 @@ class ReportsController extends AppController{
 	}
 	
 	function student_account_collection_report(){
-		$data = file_get_contents(APP."json/student_account_collection.json");
-		//$data = $_POST['student'];
+		if(!isset($_POST['student'])){
+			$data = file_get_contents(APP."json/student_account_collection.json");
+		}else{
+			$data = $_POST['student'];	
+		}
+		
 		$data = json_decode($data,true);
 		//$data = $data['data'];
-		pr($data); exit;
+		//pr($data); exit;
 		$this->set(compact('data'));
 	}
 	
