@@ -56,13 +56,13 @@ define(['app','api','atomic/bomb'],function(app){
 				angular.forEach(collections, function(col){
 					var row = {};
 					row['student'] = col.name;
-					row['fee'] = col.total_fees;
+					row['fee'] = $filter('currency')(col.total_fees);
 					
 					if(col.payments.length>2){
 						var ctr = 1;
 						angular.forEach(col.payments, function(sched){
-							row['pay'+ctr]=sched.payment;
-							row['bal'+ctr]=sched.balance;
+							row['pay'+ctr]=$filter('currency')(sched.payment);
+							row['bal'+ctr]=$filter('currency')(sched.balance);
 							ctr++;
 						});
 					}else{
@@ -71,13 +71,13 @@ define(['app','api','atomic/bomb'],function(app){
 						console.log(col.payments);
 						for(var i=1;i<=9;i++){
 							if(i==1||i==5){
-								row['pay'+i]=col.payments[ctr-1].payment;
-								row['bal'+i]=col.payments[ctr-1].balance;
-								currbal = col.payments[ctr-1].balance;
+								row['pay'+i]=$filter('currency')(col.payments[ctr-1].payment);
+								row['bal'+i]=$filter('currency')(col.payments[ctr-1].balance);
+								currbal = $filter('currency')(col.payments[ctr-1].balance);
 								ctr++;
 							}else{
 								row['pay'+i]=0;
-								row['bal'+i]=currbal;
+								row['bal'+i]=$filter('currency')(currbal);
 							}
 						}
 					}
