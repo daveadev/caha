@@ -3,9 +3,9 @@ class TransactionType extends AppModel {
 	var $name = 'TransactionType';
 	var $consumableFields = array('id','name','token','amount','amounts','description','type');
 	var $virtualFields = array(
-				'token'=>"MD5(GROUP_CONCAT(AccountSchedule.due_date,'/P',AccountSchedule.due_amount))",
-				'amounts'=>"GROUP_CONCAT(AccountSchedule.due_date,'/P',AccountSchedule.due_amount-AccountSchedule.paid_amount)",
-				'description'=>"GROUP_CONCAT(AccountSchedule.bill_month)",
+				'token'=>"MD5(GROUP_CONCAT(AccountSchedule.due_date,'/',AccountSchedule.due_amount))",
+				'amounts'=>"GROUP_CONCAT(AccountSchedule.due_date,'/',AccountSchedule.due_amount-AccountSchedule.paid_amount ORDER BY AccountSchedule.order)",
+				'description'=>"GROUP_CONCAT(AccountSchedule.bill_month ORDER BY AccountSchedule.order)",
 				'amount'=> "SUM(
 						IF(
 						AccountSchedule.transaction_type_id='INIPY'
@@ -14,7 +14,7 @@ class TransactionType extends AppModel {
 							IF (
 								AccountSchedule.transaction_type_id='SBQPY'
 								AND AccountSchedule.order >1,
-								AccountSchedule.due_amount-AccountSchedule.paid_amount,0
+								AccountSchedule.due_amount-AccountSchedule.paid_amount,TransactionType.default_amount
 							)
 						)
 				)"
@@ -79,8 +79,8 @@ class TransactionType extends AppModel {
 		                    'conditions' => array(
 		                        'AccountSchedule.account_id '=>$delimiter,
 		                        'AccountSchedule.transaction_type_id = TransactionType.id',
-		                        'AccountSchedule.status !='=> 'PAID',
-								'AccountSchedule.due_date <='=> $transacDate
+		                        'AccountSchedule.status !='=> 'PAID'
+								//'AccountSchedule.due_date <='=> $transacDate
 		                    )
 		                ),
 	                );
