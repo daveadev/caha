@@ -45,7 +45,7 @@ class ReportsController extends AppController{
 		$esp = $trnx['Transaction']['esp'];
 		$syShort = (int)substr($esp, 2,2);
 		$syFor = $syShort.'-'.($syShort+1);
-		pr($trnx); exit();
+		//pr($trnx); exit();
 		$trnDate = $trnx['Transaction']['transac_date'];
 		$trnDate =  date('d M Y',strtotime($trnDate));
 		
