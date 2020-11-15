@@ -54,7 +54,7 @@ class PaymentsController extends AppController {
 		
 		$transac_id = $this->Transaction->id;
 		
-		
+		$isCharge = false;
 		// to get the total payment of all payments and save transac payments
 		foreach($payments as $i=>$pay){
 			$tp = array('transaction_id'=>$transac_id,'payment_method_id'=>$pay['id'],'amount'=>$pay['amount']);
