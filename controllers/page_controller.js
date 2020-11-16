@@ -13,7 +13,7 @@ define(['app','api'], function (app) {
 	   $rootScope.__isAllowed = function(module){
 	   		const RIGHTS ={
 	   				'admin':'all',
-	   				'cashr':['cashier','cashier_collections'],
+	   				'cashr':['cashier','cashier_collections','account_info'],
 	   				'money':['collections','cashier_collections']
 	   		}
 	   		const USER = $rootScope.__USER.user;

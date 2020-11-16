@@ -9,8 +9,12 @@ class CashierCollectionsController extends AppController {
 		$start = $_GET['from'];
 		$end = $_GET['to'];
 		//pr($start);
-		$conds = array('details LIKE'=>'% Payment','flag'=>'-','and'=>array('transac_date <='=>$end,'transac_date >='=>$start));
-		$collections = $this->paginate('CashierCollection',array('CashierCollection.transac_date'=>'asc'),array('CashierCollection.transac_date'=>'asc'));
+		$conds = array('OR'=>array(
+								array('AccountHistory.ref_no LIKE'=>'OR%'),
+								array('AccountHistory.ref_no LIKE'=>'AR%')
+								),
+								'flag'=>'-','and'=>array('transac_date <='=>$end,'transac_date >='=>$start));
+		$collections = $this->paginate();
 
 		$sections = $this->Section->find('all',array('recursive'=>1));
 		$total = $this->AccountHistory->find('all',array('conditions'=>$conds));
@@ -40,8 +44,8 @@ class CashierCollectionsController extends AppController {
 			$page = $this->paginate['CashierCollection']['page'];
 			$limit = $this->paginate['CashierCollection']['limit'];
 			$cnt = $limit!=999999?($page-1)*$limit+1:1;
+			//pr($collections); exit();
 			foreach($collections as $i=>$col){
-				//pr($col); exit();
 				$st = $col['Student'];
 				$cl = $col['CashierCollection'];
 				$cl['cnt'] =  $cnt;

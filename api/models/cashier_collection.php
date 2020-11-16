@@ -53,7 +53,12 @@ class CashierCollection extends AppModel {
 					unset($cond[$to]);
 				}
 			}
-			$conds = array('details LIKE'=>'% Payment','flag'=>'-','and'=>array('transac_date <='=>$end,'transac_date >='=>$start));
+			$conds = array('OR'=>array(
+								array('CashierCollection.ref_no LIKE'=>'OR%'),
+								array('CashierCollection.ref_no LIKE'=>'AR%')
+								),
+								
+						'flag'=>'-','and'=>array('transac_date <='=>$end,'transac_date >='=>$start));
 			$queryData['conditions']=$conds;
 		}
 		//pr($queryData); exit();

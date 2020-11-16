@@ -1,0 +1,54 @@
+<div class="row" ng-controller="AccountInfoController" ng-init="init()">
+	<div class="col-md-4">
+		<div class="list-group">
+			<div class="list-group-item list-group-header">
+				<label>Account Information</label>
+			</div>
+			<div class="list-group-canvas">
+				<div class="list-group-item">
+					<h4 class="list-group-item-heading">Password & Security</h4>
+					<p class="list-group-item-text">Manage your password.</p>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="col-md-8">
+		<div class="list-group">
+			<div class="list-group-item list-group-header">
+				<label>Password & Security</label>
+			</div>
+			<div class="list-group-canvas">
+				<div class="list-group-item list-group-header">
+					<h5 class="pull-left">Change password</h5>
+					<div class="pull-right">
+						<button class="btn btn-primary" ng-click="Save()">Save</button>
+					</div>
+					<div class="clearfix"></div>
+				</div>
+				<div class="list-group-item">
+					<dl class="dl-horizontal">
+						<dt><label for="">Old Password</label></dt>
+						<dd>
+							<div class="form-group">
+								<input type="password"  ng-model="OldPassword" class="form-control">
+							</div>
+						</dd>
+						<dt><label for="">New Password</label></dt>
+						<dd>
+							<div class="form-group">
+								<input type="password" ng-model="NewPassword" class="form-control">
+							</div>
+						</dd>
+						<dt><label for="">Confirm Password</label></dt>
+						<dd>
+							<div class="form-group">
+								<input type="password"  ng-model="ConfirmPassword"  class="form-control">
+							</div>
+						</dd>
+					</dl>
+
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
