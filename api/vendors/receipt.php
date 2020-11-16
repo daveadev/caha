@@ -25,7 +25,7 @@ class OfficialReceipt extends Formsheet{
 			'rows'=> 62,	
 		);
 		$this->section($metrics);
-		$this->DrawImage(0,0,4.25,6.7,__DIR__ ."/receipt-clean.jpg");
+		//$this->DrawImage(0,0,4.25,6.7,__DIR__ ."/receipt-clean.jpg");
 	}
 	
 	
@@ -44,7 +44,8 @@ class OfficialReceipt extends Formsheet{
 		$y=1;
 		$this->GRID['font_size']=16;
 		$this->SetTextColor(78,68,66);
-		$this->leftText(15.8,4,'OR','','');
+		$this->leftText(15.8,4,'','','');
+		//$this->leftText(15.8,4,'OR','','');
 		
 		$this->SetTextColor(231,31,54);
 		$this->rightText(20.9,4,$data['ref_no'],'','');
@@ -69,9 +70,11 @@ class OfficialReceipt extends Formsheet{
 		$y=12.3;
 		$this->GRID['font_size']=9;
 		foreach($data['transac_details'] as $itm){
+			//pr($itm);exit;
 			$this->rightText(15,$y,'','','');
 			$this->rightText(15,$y,$itm['item'],'','');
-			$this->rightText(20,$y,number_format($itm['amount'],2),'','');
+
+			$this->rightText(20,$y,$itm['amount'],'','');
 			$y++;
 		}
 		

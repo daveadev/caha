@@ -116,7 +116,7 @@ class ReportsController extends AppController{
 		//$data = $_POST['student'];
 		$data = json_decode($data,true);
 		//$data = $data['data'];
-		pr($data); exit;
+		//pr($data); exit;
 		$this->set(compact('data'));
 	}
 	
