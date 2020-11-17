@@ -14,7 +14,6 @@ define(['app','api','atomic/bomb'],function(app){
 				'pay9','bal9'
 			];
 			getStudentAccountsColl();
-			getForPrint();
 			$scope.LoadingPrint = 1;
 		}
 		
@@ -32,14 +31,23 @@ define(['app','api','atomic/bomb'],function(app){
 			document.getElementById('PrintStudentAccount').submit();
 		}
 		
-		function getForPrint(){
+		var coll = [];
+		function getForPrint(ctr){
 			var data = {
-				limit:'less'
+				limit:50,
+				page:ctr
 			}
 			api.GET('student_account_collections', data, function success(response){
-				var print = {data:response.data};
-				$scope.forPrinting = print;
-				$scope.LoadingPrint = 0;
+				coll = coll.concat(response.data[0].collections);
+				if(response.meta.next){
+					ctr++;
+					getForPrint(ctr);
+				}else{
+					var print = {data:[{'total_collected':response.data[0].total_collected,'collections':coll}]};
+					console.log(print);
+					$scope.forPrinting = print;
+					$scope.LoadingPrint = 0;
+				}
 			});
 		}
 		
@@ -51,6 +59,7 @@ define(['app','api','atomic/bomb'],function(app){
 			if(page)
 				data.page = page;
 			api.GET('student_account_collections', data,function success(response){
+				getForPrint(1);
 				var collections = response.data[0].collections;
 				var update_fields = []; 
 				angular.forEach(collections, function(col){
