@@ -34,7 +34,7 @@ class StudentAccountCollection extends Formsheet{
 		$this->leftText(0,$y++,'As of '.date("M d,Y h:i:s A"),'','');
 	}
 	
-	function data(){
+	function data($data,$total_page,$page){
 		$this->showLines = !true;
 		$metrics = array(
 			'base_x'=> 0.5,
@@ -77,8 +77,41 @@ class StudentAccountCollection extends Formsheet{
 		$this->centerText($x+=$xntrvl,$y,'Payment',$xntrvl,'b');
 		$this->centerText($x+=$xntrvl,$y,'Balance',$xntrvl,'b');
 		$this->centerText($x+=$xntrvl,$y,'Payment',$xntrvl,'b');
+		//pr($data);
+		$y++;
+		
+		
+		foreach($data as $d){
+			$x=26.9;
+			$this->centerText(1,$y,$d['name'],7,'');
+			$this->centerText(8,$y,$d['year_level'],2,'');
+			$this->centerText(10,$y,$d['section'],5,'');
+			$this->rightText(17.9,$y,$d['total_fees'],'','');
+			$this->rightText(20.9,$y,$d['subsidy'],'','');
+			$this->rightText(23.9,$y,number_format($d['fee_dues'],2),'','');
+			foreach($d['payments'] as $pymnt){
+				$this->rightText($x,$y,number_format($pymnt['payment'],2),'','');
+				$this->rightText($x+3,$y,number_format($pymnt['balance']),'','');
+				$x+=6;
+				if($x >40){
+					$x=0;
+					$this->createSheet();
+				}
+			}
+			$y++;
+		}
 		
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }
 ?>
 	
