@@ -34,10 +34,13 @@ class DailyCollections extends Formsheet{
 		//pr($hdr[0]['date']);exit;
 	
 		$lastcollectionsdata = end($hdr);
-		$frommonth = date('M d, Y',strtotime($hdr[0]['date']));
-		$tomonth = date('M d, Y',strtotime($lastcollectionsdata['date']));
-		$this->leftText(0,$y++,'Collections from '.$frommonth.' to '.$tomonth ,'','');
-	
+		$fromdate = date('M d, Y',strtotime($hdr[0]['date']));
+		$todate = date('M d, Y',strtotime($lastcollectionsdata['date']));
+		if($todate == $fromdate){
+			$this->leftText(0,$y++,'Collections for '.$fromdate,'','');
+		}else{
+			$this->leftText(0,$y++,'Collections from '.$fromdate.' to '.$todate ,'','');
+		}
 	}
 	
 	function data($hdr,$data,$total_page,$page){
@@ -121,12 +124,17 @@ class DailyCollections extends Formsheet{
 			DailyCollections::$grand_total+=$d['collection'];
 			if($newpage){
 				$newpage=false;
-				$fromdate = date('M d',strtotime($d['date']));
+				$fromdate = date('d M Y',strtotime($d['date']));
 			}
-			$todate = date('M d',strtotime($d['date']));
+			$todate = date('d M Y',strtotime($d['date']));
 			$y++;
 		}
-		$this->rightText(11,$y,'Total Collection for '.$fromdate.' - '.$todate,'','');
+		if($todate == $fromdate){
+			$this->rightText(11,$y,'Total Collection for '.$fromdate,'','');
+		}else{
+			$this->rightText(11,$y,'Total Collection for '.$fromdate.' to '.$todate,'','');
+		}
+		
 		$this->rightText(12.9,$y++,number_format($totalcollectionperpage,2),'','');
 		if($page == $total_page && $total_page != 1){
 			$this->rightText(11,$y,'Grand Total','','b');
