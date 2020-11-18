@@ -45,7 +45,7 @@ class CashierDailyCollections extends Formsheet{
 			'base_y'=> 1.2,
 			'width'=> 10.5,
 			'height'=> 7,
-			'cols'=> 37,
+			'cols'=> 28,
 			'rows'=> 35,	
 		);
 		$this->section($metrics);
@@ -72,6 +72,7 @@ class CashierDailyCollections extends Formsheet{
 		$total_due = 0;
 		$total_paid = 0;
 		$balance = 0;
+		
 		foreach($data as $d){
 			$amount+= $d['amount'];
 			$total_due+= $d['total_due'];
@@ -86,15 +87,17 @@ class CashierDailyCollections extends Formsheet{
 			$this->leftText(18,$y,$d['particulars'],'','');
 			$this->centerText(22,$y,$d['ref_no'],3,'');
 			$this->rightText(27.9,$y,number_format($d['amount'],2),'','');
-			$this->rightText(30.9,$y,number_format($d['total_due'],2),'','');
-			$this->rightText(33.9,$y,number_format($d['total_paid'],2),'','');
-			$this->rightText(36.9,$y,number_format($d['balance'],2),'','');
+			//$this->rightText(30.9,$y,number_format($d['total_due'],2),'','');
+			//$this->rightText(33.9,$y,number_format($d['total_paid'],2),'','');
+			//$this->rightText(36.9,$y,number_format($d['balance'],2),'','');
+			$this->SetTextColor(185,185,185);
 			$this->leftText(0,$y+0.4,$dvr.$dvr,'','');
+			$this->SetTextColor(0,0,0);
 			//CashierDailyCollections::$grand_total+=$d['total_paid'];
 			CashierDailyCollections::$total_amount+=$d['amount'];
-			CashierDailyCollections::$total_due+=$d['total_due'];
-			CashierDailyCollections::$total_paid+=$d['total_paid'];
-			CashierDailyCollections::$total_balance+=$d['balance'];
+			//CashierDailyCollections::$total_due+=$d['total_due'];
+			//CashierDailyCollections::$total_paid+=$d['total_paid'];
+			//CashierDailyCollections::$total_balance+=$d['balance'];
 			
 
 			
@@ -102,25 +105,25 @@ class CashierDailyCollections extends Formsheet{
 		}
 		$this->rightText(24.9,$y,'Sub Total ','','');
 		$this->rightText(27.9,$y,number_format($amount,2),'','');
-		$this->rightText(30.9,$y,number_format($total_due,2),'','');
-		$this->rightText(33.9,$y,number_format($total_paid,2),'','');
-		$this->rightText(36.9,$y++,number_format($balance,2),'','');
-
+		//$this->rightText(30.9,$y,number_format($total_due,2),'','');
+		//$this->rightText(33.9,$y,number_format($total_paid,2),'','');
+		//$this->rightText(36.9,$y,number_format($balance,2),'','');
+		$y++;
 		
 		
 		if($page == $total_page){
 			$this->rightText(24.9,$y,'Grand Total','','b');
 			$this->rightText(27.9,$y,number_format(CashierDailyCollections::$total_amount,2),'','');
-			$this->rightText(30.9,$y,number_format(CashierDailyCollections::$total_due,2),'','');
-			$this->rightText(33.9,$y,number_format(CashierDailyCollections::$total_paid,2),'','');
-			$this->rightText(36.9,$y,number_format(CashierDailyCollections::$total_balance,2),'','');
+			//$this->rightText(30.9,$y,number_format(CashierDailyCollections::$total_due,2),'','');
+			//$this->rightText(33.9,$y,number_format(CashierDailyCollections::$total_paid,2),'','');
+			//$this->rightText(36.9,$y,number_format(CashierDailyCollections::$total_balance,2),'','');
 			//$this->rightText(32.9,$y,number_format(CashierDailyCollections::$grand_total,2),'','b');
 		}
 		//FOOTER DETAILS
 		$this->GRID['font_size']=8;
 		$this->leftText(0,36,'Printed by: '.'Cashier 1','','');
-		$this->centerText(0,36,'Date & Time Printed: '. date("M d, Y h:i:s A"),37,'');
-		$this->rightText(37,36,'Page '.$page.' of '.$total_page,'','');
+		$this->centerText(0,36,'Date & Time Printed: '. date("M d, Y h:i:s A"),28,'');
+		$this->rightText(28,36,'Page '.$page.' of '.$total_page,'','');
 	
 	}
 }

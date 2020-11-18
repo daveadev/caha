@@ -107,8 +107,10 @@ class ReportsController extends AppController{
 			$data = $_POST['Cashier'];
 		}
 		
+		
 		$data = json_decode($data,true);
 		//$data = $data['data'];
+		//$data  = array();
 		$this->set(compact('data'));
 	}
 	

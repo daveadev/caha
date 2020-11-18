@@ -1,5 +1,5 @@
 <?php
-App::import('Vendor','monthly_collections');
+App::import('Vendor','collections/monthly_collections');
 
 $chunk_data = array_chunk($data['data'][0]['collections'],38,true);
 //pr($data['data'][0]);exit;
