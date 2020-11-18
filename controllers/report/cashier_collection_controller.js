@@ -48,10 +48,14 @@ define(['app','api','atomic/bomb'],function(app){
 			data.from = $filter('date')(new Date(data.from),'yyyy-MM-dd');
 			data.to = $filter('date')(new Date(data.to),'yyyy-MM-dd');
 			api.GET('cashier_collections',data, function success(response){
-				
+				$scope.NoCollections = 0;
 				$scope.Collections = response.data[0];
+				if(!$scope.Collections.total)
+					$scope.NoCollections = 1;
 				$scope.Meta = response.meta;
 				if($scope.Meta.page==1) getForPrinting(data);
+			},function error(response){
+				
 			});
 		}
 		

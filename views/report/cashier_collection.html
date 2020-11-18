@@ -27,15 +27,15 @@
 					<a-col size="3">
 						<div class="input-group" ng-show="CS.ActiveOpt.id=='daily'">
 							<span class="input-group-addon">From: </span>
-							<input type="date" class="input-md form-control" 
-ng-change="CS.ChangeDate()" ng-model="CS.date_from"  />
+							<input type="date" class="input-md form-control" ng-disabled="CS.Collections"
+							ng-change="CS.ChangeDate()" ng-model="CS.date_from"  />
 						</div>
 					</a-col>
 					<a-col size="3">
 						<div class="input-group" ng-show="CS.ActiveOpt.id=='daily'">
 							<span class="input-group-addon">To: </span>
 							<input type="date" class="input-md form-control" min="{{CS.date_from | date:'yyyy-MM-dd'}}" 
-							ng-change="CS.ChangeDate()" ng-model="CS.date_to" />
+							ng-disabled="CS.Collections" ng-change="CS.ChangeDate()" ng-model="CS.date_to" />
 						</div>
 					</a-col>
 					<a-col size="2">
@@ -46,7 +46,7 @@ ng-change="CS.ChangeDate()" ng-model="CS.date_from"  />
 				</a-row>
 			</a-header>
 			<a-canvas>
-				<a-content ng-show="CS.Collections">
+				<a-content ng-show="CS.Collections&&!CS.NoCollections">
 					
 					<a-row ng-show="CS.ActiveOpt.id=='daily'">
 						<a-col size="6">
@@ -108,6 +108,16 @@ ng-change="CS.ChangeDate()" ng-model="CS.date_from"  />
 								<i class="glyphicon glyphicon-calendar"></i>
 							</div>
 							<h4>Select date range then load.</h4>
+						</div>
+					</div>
+				</a-content>
+				<a-content ng-show="CS.NoCollections" style="height: 100%">
+					<div class="empty-state">
+						<div class="well">
+							<div class="empty-state-icon text-center">
+								<i class="glyphicon glyphicon-exclamation-sign"></i>
+							</div>
+							<h4>No Collections!</h4>
 						</div>
 					</div>
 				</a-content>
