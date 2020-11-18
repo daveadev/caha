@@ -1,5 +1,5 @@
 <?php
-App::import('Vendor','cashier_daily_collections');
+App::import('Vendor','collections/cashier_daily_collections');
 
 $chunk_data = array_chunk($data['data'][0]['collections'],30,true);
 //pr($chunk_data);exit;

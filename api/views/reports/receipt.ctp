@@ -1,5 +1,5 @@
 <?php
-App::import('Vendor','receipt');
+App::import('Vendor','receipts/receipt');
 
 //pr($data);exit;
 

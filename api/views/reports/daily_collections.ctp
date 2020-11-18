@@ -1,5 +1,5 @@
 <?php
-App::import('Vendor','daily_collections');
+App::import('Vendor','collections/daily_collections');
 
 $chunk_data = array_chunk($data['data'][0]['collections'],38,true);
 $total_page = count($chunk_data);
