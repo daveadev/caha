@@ -24,24 +24,24 @@
 							</li>
 						</ul>
 					</a-col>
-					<a-col size="3">
+					<a-col size="3" style="margin-left: 80px;margin-top:4px;margin-right: -35px;">
 						<div class="input-group" ng-show="CS.ActiveOpt.id=='daily'">
 							<span class="input-group-addon">From: </span>
 							<input type="date" class="input-md form-control" ng-disabled="CS.Collections"
 							ng-change="CS.ChangeDate()" ng-model="CS.date_from"  />
 						</div>
 					</a-col>
-					<a-col size="3">
+					<a-col size="3" style="margin-right: -60px;margin-top:4px;margin-left: 15px;">
 						<div class="input-group" ng-show="CS.ActiveOpt.id=='daily'">
 							<span class="input-group-addon">To: </span>
 							<input type="date" class="input-md form-control" min="{{CS.date_from | date:'yyyy-MM-dd'}}" 
 							ng-disabled="CS.Collections" ng-change="CS.ChangeDate()" ng-model="CS.date_to" />
 						</div>
 					</a-col>
-					<a-col size="2">
+					<a-col size="2" align="right" style="margin-top:4px;">
 						<button class="btn btn-default" ng-click="CS.Clear()">Clear</button>
-						<button class="btn btn-primary pull-right" ng-click="CS.LoadReport()" ng-disabled="!CS.date_from||!CS.date_to" ng-show="!CS.Collections.collections.length">Load</button>
-						<button class="btn btn-primary pull-right" ng-disabled="!CS.date_from||!CS.date_to" ng-show="CS.Collections.collections.length" ng-click="CS.PrintData()" >Print</button>
+						<button class="btn btn-primary" ng-click="CS.LoadReport()" ng-disabled="!CS.date_from||!CS.date_to" ng-show="!CS.Collections.collections.length">Load</button>
+						<button class="btn btn-primary" ng-disabled="!CS.date_from||!CS.date_to" ng-show="CS.Collections.collections.length" ng-click="CS.PrintData()" >Print</button>
 					</a-col>
 				</a-row>
 			</a-header>

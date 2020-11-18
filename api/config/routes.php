@@ -60,7 +60,7 @@
 	);
 	
 	Router::connect(
-			"/student_account_collection_report",
+			"/sac",
 			array("controller"=>"reports","action"=>"student_account_collection_report")
 	);
 	

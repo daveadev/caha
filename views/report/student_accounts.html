@@ -1,7 +1,7 @@
 <div ng-controller="StudentAccController as SA" ng-init="SA.init()">
 	<a-module>
 		<a-container>
-			<a-header>
+			<a-header is-main="true">
 				<a-row>
 					<a-col size="6">
 						<h4>Student Accounts Collection Report</h4>
@@ -15,10 +15,16 @@
 			<a-header>
 				<a-row>
 					<a-col size="6">
-						<a-pager class="pull-left" meta="SA.Meta" on-navigate="SA.gotoPage"></a-pager>
+						<a-pager meta="SA.Meta" on-navigate="SA.gotoPage"></a-pager>
 					</a-col>
-					<a-col size="6">
-						<button class="btn btn-primary pull-right" ng-disabled="!SA.Data.length||SA.LoadingPrint" ng-click="SA.Print()">Print</button>
+					<a-col size="6" align="right">
+						<div class="btn-group">
+							<a-button>
+								<a-glyph icon="eye-close"></a-glyph>
+								Hide Balance
+							</a-button>
+						</div>
+						<button class="btn btn-primary" ng-disabled="!SA.Data.length||SA.LoadingPrint" ng-click="SA.Print()">Print</button>
 					</a-col>
 				</a-row>
 			</a-header>
