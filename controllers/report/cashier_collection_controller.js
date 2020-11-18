@@ -8,8 +8,8 @@ define(['app','api','atomic/bomb'],function(app){
 			$rootScope.__MODULE_NAME = 'Cashier Collection';
 			$scope.Options = [{'id':'daily','desc':'Daily'}]
 			$scope.ActiveOpt = {'id':'daily','desc':'Daily'};
-			//$scope.Headers = ['Sno','Received from','Level','Section','Status','Date','Particular','OR #',{label:'Amount',class:'amount total'},{label:'Total Due',class:'amount total'},{label:'Total Paid',class:'amount total'},{label:'Balance',class:'amount total'}];
-			//$scope.Props = ['sno','name','year_level','section','status','transac_date','details','ref_no','amount','total_due','total_paid','balance'];
+			$scope.Headers = ['cnt','Sno','Received from','Level','Section','Status','Date','Particular','OR #',{label:'Amount',class:'amount total'}];
+			$scope.Props = ['cnt','sno','received_from','level','section','status','date','particulars','ref_no','amount'];
 			getTransacs();
 		}
 		$selfScope.$watch("CS.Active",function(active){

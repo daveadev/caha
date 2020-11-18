@@ -39,7 +39,7 @@
 						</div>
 					</a-col>
 					<a-col size="2" align="right" style="margin-top:4px;">
-						<button class="btn btn-default" ng-click="CS.Clear()">Clear</button>
+						<button class="btn btn-default" ng-click="CS.Clear()" ng-disabled="!CS.date_from||!CS.date_to" >Clear</button>
 						<button class="btn btn-primary" ng-click="CS.LoadReport()" ng-disabled="!CS.date_from||!CS.date_to" ng-show="!CS.Collections.collections.length">Load</button>
 						<button class="btn btn-primary" ng-disabled="!CS.date_from||!CS.date_to" ng-show="CS.Collections.collections.length" ng-click="CS.PrintData()" >Print</button>
 					</a-col>
@@ -59,9 +59,9 @@
 					</a-row>
 					<a-row>
 						<a-col>
-							<!-- <a-table headers="CS.Headers" props="CS.Props" data="CS.Collections" ></a-table> -->
+							<a-table headers="CS.Headers" props="CS.Props" data="CS.Collections.collections" ></a-table>
 							
-							<table class="table table-bordered table-condensed">
+							<!-- <table class="table table-bordered table-condensed">
 								<thead>
 									<tr>
 										<th>Cnt</th>
@@ -73,10 +73,10 @@
 										<th>Date</th>
 										<th>Particular</th>
 										<th>OR #</th>
-										<th>Amount</th><!-- 
+										<th>Amount</th>
 										<th>Total Due</th>
 										<th>Total Paid</th>
-										<th>Balance</th> -->
+										<th>Balance</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -90,14 +90,14 @@
 										<td>{{col.date}}</td>
 										<td>{{col.particulars}}</td>
 										<td>{{col.ref_no}}</td>
-										<td class="amount total">{{col.amount | currency}}</td><!-- 
+										<td class="amount total">{{col.amount | currency}}</td>
 										<td class="amount total">{{col.total_due | currency}}</td>
 										<td class="amount total">{{col.total_paid | currency}}</td>
-										<td class="amount total">{{col.balance | currency}}</td> -->
+										<td class="amount total">{{col.balance | currency}}</td>
 									</tr>
 									
 								</tbody>
-							</table>
+							</table> -->
 						</a-col>
 					</a-row>
 				</a-content>
@@ -117,7 +117,7 @@
 							<div class="empty-state-icon text-center">
 								<i class="glyphicon glyphicon-exclamation-sign"></i>
 							</div>
-							<h4>No Collections!</h4>
+							<h4>No Collections found!</h4>
 						</div>
 					</div>
 				</a-content>
