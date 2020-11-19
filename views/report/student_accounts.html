@@ -19,21 +19,29 @@
 					</a-col>
 					<a-col size="6" align="right">
 						<div class="btn-group">
-							<a-button>
-								<a-glyph icon="eye-close"></a-glyph>
+							<a-button ng-click="SA.ToggleBalance()">
+								<a-glyph icon="eye-close" ></a-glyph>
 								Hide Balance
 							</a-button>
 						</div>
-						<button class="btn btn-primary" ng-disabled="!SA.Data.length||SA.LoadingPrint" ng-click="SA.Print()">Print</button>
+						<button class="btn btn-primary" ng-disabled="!SA.Data.length||SA.LoadingPrint" ng-click="SA.Print()">
+							<i class="glyphicon glyphicon-refresh spin" ng-show="SA.LoadingPrint"></i>
+							Print
+						</button>
 					</a-col>
 				</a-row>
 			</a-header>
 			<a-canvas>
 				<a-content style="overflow-x:auto;">
-					<a-row>
-						<div class="col-md-12" >
-							<a-table headers="SA.Headers" props="SA.Props" data="SA.Data" is-sticky="true" ></a-table> 
+					<a-row  ng-if="!SA.HiddenBal" >
+						<div class="col-md-12">
+							<a-table headers="SA.Headers" props="SA.Props" data="SA.Data" is-sticky="true"></a-table> 
 						</div>
+					</a-row>
+					<a-row ng-if="SA.HiddenBal" >
+						<a-col>
+							<a-table headers="SA.HHeaders" props="SA.HProps" data="SA.Data" is-sticky="true"></a-table> 
+						</a-col>
 					</a-row>
 				</a-content>
 				<form id="PrintStudentAccount" action="api/sac" method="POST" target="_blank">

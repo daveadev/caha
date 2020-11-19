@@ -8,8 +8,8 @@ define(['app','api','atomic/bomb'],function(app){
 			$rootScope.__MODULE_NAME = 'Cashier Collection';
 			$scope.Options = [{'id':'daily','desc':'Daily'}]
 			$scope.ActiveOpt = {'id':'daily','desc':'Daily'};
-			//$scope.Headers = ['Sno','Received from','Level','Section','Status','Date','Particular','OR #',{label:'Amount',class:'amount total'},{label:'Total Due',class:'amount total'},{label:'Total Paid',class:'amount total'},{label:'Balance',class:'amount total'}];
-			//$scope.Props = ['sno','name','year_level','section','status','transac_date','details','ref_no','amount','total_due','total_paid','balance'];
+			$scope.Headers = ['cnt','Sno','Received from','Level','Section','Status','Date','Particular','OR #',{label:'Amount',class:'amount total'}];
+			$scope.Props = ['cnt','sno','received_from','level','section','status','date','particulars','ref_no','amount'];
 			getTransacs();
 		}
 		$selfScope.$watch("CS.Active",function(active){
@@ -48,10 +48,14 @@ define(['app','api','atomic/bomb'],function(app){
 			data.from = $filter('date')(new Date(data.from),'yyyy-MM-dd');
 			data.to = $filter('date')(new Date(data.to),'yyyy-MM-dd');
 			api.GET('cashier_collections',data, function success(response){
-				
+				$scope.NoCollections = 0;
 				$scope.Collections = response.data[0];
+				if(!$scope.Collections.total)
+					$scope.NoCollections = 1;
 				$scope.Meta = response.meta;
 				if($scope.Meta.page==1) getForPrinting(data);
+			},function error(response){
+				
 			});
 		}
 		
