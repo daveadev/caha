@@ -127,5 +127,9 @@ class ReportsController extends AppController{
 		$this->set(compact('data'));
 	}
 	
+	function acknowledgement_receipt(){
+		$data = array();
+		$this->set(compact('data'));
+	}
 	
 }

@@ -63,6 +63,10 @@
 			"/sac",
 			array("controller"=>"reports","action"=>"student_account_collection_report")
 	);
+	Router::connect(
+			"/ar",
+			array("controller"=>"reports","action"=>"acknowledgement_receipt")
+	);
 	
 	
 	

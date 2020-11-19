@@ -25,7 +25,7 @@ class OfficialReceipt extends Formsheet{
 			'rows'=> 62,	
 		);
 		$this->section($metrics);
-		//$this->DrawImage(0,0,4.25,6.7,__DIR__ ."/receipt-clean.jpg");
+		//$this->DrawImage(0,0,4.25,6.7,__DIR__ ."/../images/receipt-clean.jpg");
 	}
 	
 	
