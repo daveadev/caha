@@ -144,6 +144,8 @@ class CollectionsController extends AppController {
 		$running_balance = $beginning_balance;
 		$running_collection = $collection_forwarded;
 		$total_collected = 0;
+		$items = count($collection_data);
+		$item = 0;
 		foreach($collection_data as $i=>$data){
 			$running_balance -= $data;
 			$running_collection += $data;
@@ -152,10 +154,19 @@ class CollectionsController extends AppController {
 				$coll = array('month'=>$i,'details'=>'Cash','collection'=>$data,'t_collection'=>$running_collection,'r_balance'=>$running_balance);
 			else
 				$coll = array('date'=>$i,'day'=>date('D', strtotime($i)),'description'=>'Cash','collection'=>$data,'t_collection'=>$running_collection,'r_balance'=>$running_balance);
+			if($type=='month'&&++$item==$items&&$to[1]==date('m')){
+				$last_date = date_create($projected[count($projected)-1]['Ledger']['transac_date']);
+				$last_date = date_format($last_date,'d M Y');
+				$coll['details'] = 'Cash until '.$last_date;
+			}
 			array_push($collection_range,$coll);
 			
 		}
+		/* pr($to);
+		pr(date('m'));
+		pr($collection_range);
 		
+		exit() */;
 		
 		$annual_collections = array(
 			'total_receivables'=>$total_rcvbl,
