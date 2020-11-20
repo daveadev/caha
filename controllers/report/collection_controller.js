@@ -179,13 +179,7 @@ define(['app','api','atomic/bomb'],function(app){
 				data.from = $filter('date')(new Date(data.from),'yyyy-MM-dd');
 				data.to = $filter('date')(new Date(data.to),'yyyy-MM-dd');
 			}else{
-				var today = new Date();
-				var currMonth = today.getMonth()+1;
-				$scope.Today = '';
-				console.log(data.to.month);
-				console.log(currMonth);
-				if(currMonth==parseInt(data.to.month))
-					$scope.Today = (new Date()).getUTCDate()+' '+data.to.label;
+				
 				data.from = data.from.year+'-'+data.from.month+'-01';
 				data.to = data.to.year+'-'+data.to.month+'-31';
 				
@@ -193,6 +187,15 @@ define(['app','api','atomic/bomb'],function(app){
 			api.GET('collections',data, function success(response){
 				$scope.PrintData = angular.copy({data:response.data});
 				var collection = response.data[0];
+				/* if($scope.ActiveOpt.id=='month'){
+					var today = new Date();
+					var currMonth = today.getMonth()+1;
+					$scope.Today = '';
+					console.log(data.to.month);
+					console.log(currMonth);
+					if(currMonth==parseInt(data.to.month))
+						$scope.Today = collection[collection.length-1];
+				} */
 				var total_recvbl = collection.total_receivables-collection.total_subsidies;	
 				collection['cfp'] = (collection.collection_forwarded/total_recvbl)*100;
 				collection['bbp'] = (collection.receivable_balance/total_recvbl)*100;

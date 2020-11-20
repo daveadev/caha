@@ -24,7 +24,7 @@
 							</li>
 						</ul>
 					</a-col>
-					<a-col size="3">
+					<a-col size="3" style="margin-left: 80px;margin-top:4px;margin-right: -35px;">
 						<div class="input-group" ng-show="CC.ActiveOpt.id=='daily'">
 							<span class="input-group-addon">From: </span>
 							<input type="date" class="input-md form-control" ng-disabled="CC.Loaded"
@@ -39,7 +39,7 @@
 							</select>
 						</div>
 					</a-col>
-					<a-col size="3">
+					<a-col size="3" style="margin-right: -60px;margin-top:4px;margin-left: 15px;">
 						<div class="input-group" ng-show="CC.ActiveOpt.id=='daily'">
 							<span class="input-group-addon">To: </span>
 							<input type="date" class="input-md form-control" ng-change="CC.ChangeDate()" 
@@ -55,8 +55,8 @@
 							</select>
 						</div>
 					</a-col>
-					<a-col size="2">
-						<button class="btn btn-default" ng-click="CC.Clear()">Clear</button>
+					<a-col size="2" align="right" style="margin-top:4px;">
+						<button class="btn btn-default" ng-click="CC.Clear()" ng-disabled="!CC.date_from||!CC.date_to" style="margin-right: 5%;">Clear</button>
 						<button class="btn btn-primary pull-right" ng-click="CC.LoadReport()" ng-disabled="!CC.date_from||!CC.date_to" ng-show="!CC.Collections.collections.length">Load</button>
 						<button class="btn btn-primary pull-right" ng-disabled="!CC.date_from||!CC.date_to" ng-show="CC.Collections.collections.length" ng-click="CC.PrintBtn()">Print</button>
 					</a-col>
