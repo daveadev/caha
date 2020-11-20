@@ -35,7 +35,8 @@ class ReportsController extends AppController{
 	}
 	
 	function receipt(){
-		$trnxId = $_POST['TransactionId'];
+		//$trnxId = 1;//FOR SAMPLE OR DATAA
+		$trnxId = $_POST['TransactionId'];//1
 		$trnx = $this->Transaction->findById($trnxId);
 		
 		$refNo = $trnx['Transaction']['ref_no'];

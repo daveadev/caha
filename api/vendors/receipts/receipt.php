@@ -25,7 +25,7 @@ class OfficialReceipt extends Formsheet{
 			'rows'=> 62,	
 		);
 		$this->section($metrics);
-		//$this->DrawImage(0,0,4.25,6.7,__DIR__ ."/../images/receipt-clean.jpg");
+		//$this->DrawImage(0,0,4.25,6.4,__DIR__ ."/../images/receipt-clean.jpg");
 	}
 	
 	
@@ -42,13 +42,11 @@ class OfficialReceipt extends Formsheet{
 		$this->section($metrics);
 	
 		$y=1;
-		$this->GRID['font_size']=16;
-		$this->SetTextColor(78,68,66);
-		$this->leftText(15.8,4,'','','');
-		//$this->leftText(15.8,4,'OR','','');
-		
+		$this->GRID['font_size']=10;
+		//$this->SetTextColor(78,68,66);
+		$this->rightText(15.8,4,'','','');
 		$this->SetTextColor(231,31,54);
-		$this->rightText(20.9,4,$data['ref_no'],'','');
+		$this->rightText(20.5,4,substr($data['ref_no'], 2),'','');
 		
 		$this->SetTextColor(44,39,41);
 		$this->GRID['font_size']=9;
@@ -60,14 +58,14 @@ class OfficialReceipt extends Formsheet{
 		//Receive payment from
 		$this->leftText(11,8.4,$data['student'],'','');
 		//Payment for
-		$this->leftText(8,11,$data['sy'],'','');
+		$this->leftText(8,10.25,$data['sy'],'','');
 		//Year
-		$this->leftText(15,10.45,$data['year_level'].' / ','','');
+		$this->leftText(15,10.05,$data['year_level'].' / ','','');
 		//Section
-		$this->leftText(15,11.1,$data['section'],'','');
+		$this->leftText(15,10.75,$data['section'],'','');
 		
 		
-		$y=12.3;
+		$y=11.7;
 		$this->GRID['font_size']=9;
 		foreach($data['transac_details'] as $itm){
 			//pr($itm);exit;
@@ -81,10 +79,10 @@ class OfficialReceipt extends Formsheet{
 		
 		
 		//Total
-		$this->rightText(20,27.3,$data['total_paid'],'','');
+		$this->rightText(20,26.3,$data['total_paid'],'','');
 		
 		//Cashier
-		$this->centerText(13,29.6,$data['cashier'],7,'');
+		$this->centerText(13,28.3,$data['cashier'],7,'');
 		
 	
 		
