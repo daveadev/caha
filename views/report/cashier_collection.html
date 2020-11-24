@@ -19,38 +19,46 @@
 						<ul class="nav nav-pills">
 							<li ng-repeat="opt in CS.Options" 
 							ng-click="CS.setActOption(opt)" 
-							ng-class="{active:CS.ActiveOpt.id===(opt.id)}">
-								<a>{{opt.desc}}</a>
+							ng-class="{active:CS.ActiveOpt===(opt)}">
+								<a>{{opt}}</a>
 							</li>
 						</ul>
 					</a-col>
-					<a-col size="3" style="margin-left: 80px;margin-top:4px;margin-right: -35px;">
-						<div class="input-group" ng-show="CS.ActiveOpt.id=='daily'">
+					<a-col size="3" style="margin-left: 80px;margin-top:4px;margin-right: -35px;" ng-show="CS.ActiveUser.user_type!='cashr'">
+						<div class="input-group">
 							<span class="input-group-addon">From: </span>
 							<input type="date" class="input-md form-control" ng-disabled="CS.Collections"
 							ng-change="CS.ChangeDate()" ng-model="CS.date_from"  />
 						</div>
 					</a-col>
-					<a-col size="3" style="margin-right: -60px;margin-top:4px;margin-left: 15px;">
-						<div class="input-group" ng-show="CS.ActiveOpt.id=='daily'">
+					<a-col size="3" style="margin-right: -60px;margin-top:4px;margin-left: 15px;" ng-show="CS.ActiveUser.user_type!='cashr'">
+						<div class="input-group">
 							<span class="input-group-addon">To: </span>
 							<input type="date" class="input-md form-control" min="{{CS.date_from | date:'yyyy-MM-dd'}}" 
 							ng-disabled="CS.Collections" ng-change="CS.ChangeDate()" ng-model="CS.date_to" />
 						</div>
 					</a-col>
+					<a-col size="3" ng-show="CS.ActiveUser.user_type=='cashr'"></a-col>
+					<a-col size="3" style="margin-top:4px;" ng-show="CS.ActiveUser.user_type=='cashr'">
+						<div class="input-group">
+							<span class="input-group-addon">Date:</span>
+							<input type="date" class="form-control input-md" ng-model="CS.cash_date" ng-disabled="CS.Collections" />
+						</div>
+					</a-col>
 					<a-col size="2" align="right" style="margin-top:4px;">
-						<button class="btn btn-default" ng-click="CS.Clear()" ng-disabled="!CS.date_from||!CS.date_to" >Clear</button>
-						<button class="btn btn-primary" ng-click="CS.LoadReport()" ng-disabled="!CS.date_from||!CS.date_to" ng-show="!CS.Collections.collections.length">Load</button>
-						<button class="btn btn-primary" ng-disabled="!CS.date_from||!CS.date_to" ng-show="CS.Collections.collections.length" ng-click="CS.PrintData()" >Print</button>
+						<button class="btn btn-default" ng-click="CS.Clear()" ng-disabled="(!CS.date_from||!CS.date_to)&&!CS.cash_date" >Clear</button>
+						<button class="btn btn-primary" ng-click="CS.LoadReport()" ng-disabled="(!CS.date_from||!CS.date_to)&&!CS.cash_date" ng-show="!CS.Collections.collections.length">Load</button>
+						<button class="btn btn-primary" ng-disabled="(!CS.date_from||!CS.date_to)&&!CS.cash_date" ng-show="CS.Collections.collections.length" ng-click="CS.PrintData()" >Print</button>
 					</a-col>
 				</a-row>
 			</a-header>
 			<a-canvas>
 				<a-content ng-show="CS.Collections&&!CS.NoCollections">
 					
-					<a-row ng-show="CS.ActiveOpt.id=='daily'">
+					<a-row>
 						<a-col size="6">
-							<h4 for="">Collections from {{CS.date_from | date:'dd MMM yyyy'}} - {{CS.date_to | date:'dd MMM yyyy'}}</h4>
+							<h4 ng-show="CS.ActiveUser.user_type!='cashr'" for="">Collections from {{CS.date_from | date:'dd MMM yyyy'}} - {{CS.date_to | date:'dd MMM yyyy'}}</h4>
+							<h4 ng-show="CS.ActiveUser.user_type=='cashr'" for="">Collections for {{CS.cash_date| date:'dd MMM yyyy'}}</h4>
 							<h4 class="total amount peso pull-left">{{CS.Collections.total | currency}}</h4>
 						</a-col>
 						<a-col size="6">
@@ -58,8 +66,12 @@
 						</a-col>
 					</a-row>
 					<a-row>
-						<a-col>
+						<a-col ng-if="CS.ActiveUser.user_type!=='cashr'">
 							<a-table headers="CS.Headers" props="CS.Props" data="CS.Collections.collections" ></a-table>
+						</a-col>
+						<a-col ng-if="CS.ActiveUser.user_type=='cashr'">
+							<a-table  headers="CS.CHeaders" props="CS.CProps" data="CS.Collections.collections" ></a-table>
+							
 							
 							<!-- <table class="table table-bordered table-condensed">
 								<thead>

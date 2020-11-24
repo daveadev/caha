@@ -6,22 +6,29 @@ define(['app','api','atomic/bomb'],function(app){
 		$scope = this;
 		$scope.init = function(){
 			$rootScope.__MODULE_NAME = 'Cashier Collection';
-			$scope.Options = [{'id':'daily','desc':'Daily'}]
-			$scope.ActiveOpt = {'id':'daily','desc':'Daily'};
-			$scope.Headers = ['cnt','Sno','Received from','Level','Section','Status','Date','Particular','OR #',{label:'Amount',class:'amount total'}];
-			$scope.Props = ['cnt','sno','received_from','level','section','status','date','particulars','ref_no','amount'];
+			$scope.Options = ['OR','AR']
+			$scope.ActiveOpt = 'OR';
+			$scope.CHeaders = ['cnt','Sno','Received from','Level','Section','Status','Date','Particular','OR #',{label:'Amount',class:'amount total'}];
+			$scope.Headers = ['cnt','Sno','Received from','Level','Section','Status','Date','Particular','OR #',{label:'Amount',class:'amount total'},{label:'Total Due',class:'amount total'},{label:'Total Paid',class:'amount total'},{label:'Balance',class:'amount total'},];
+			$scope.CProps = ['cnt','sno','received_from','level','section','status','date','particulars','ref_no','amount'];
+			$scope.Props = ['cnt','sno','received_from','level','section','status','date','particulars','ref_no','amount','total_due','total_paid','balance'];
 			getTransacs();
+			$scope.ActiveUser = $rootScope.__USER.user;
+			console.log($scope.ActiveUser);
 		}
 		$selfScope.$watch("CS.Active",function(active){
 			if(!active) return false;
 			console.log(active);
 			$scope.ActiveSY =  active.sy;
 			if($scope.date_to)
-				getCollections();
+				getCollections(1);
 		});
-		
+		$scope.setActOption = function(opt){
+			$scope.ActiveOpt = opt;
+			getCollections(1);
+		}
 		$scope.LoadReport = function(){
-			getCollections();
+			getCollections(1);
 		}
 		
 		$scope.gotoPage = function(page){
@@ -41,12 +48,19 @@ define(['app','api','atomic/bomb'],function(app){
 		
 		function getCollections(page){
 			var data = {
-				from: $scope.date_from,
-				to: $scope.date_to,
-				'page': page
+				type:$scope.ActiveOpt,
+				'page': page,
 			}
-			data.from = $filter('date')(new Date(data.from),'yyyy-MM-dd');
-			data.to = $filter('date')(new Date(data.to),'yyyy-MM-dd');
+			if($scope.ActiveUser.user_type!='cashr'){
+				data.from = $scope.date_from;
+				data.to = $scope.date_to;
+				data.from = $filter('date')(new Date(data.from),'yyyy-MM-dd');
+				data.to = $filter('date')(new Date(data.to),'yyyy-MM-dd');
+			}else{
+				data.date = $filter('date')(new Date($scope.cash_date),'yyyy-MM-dd');
+				data.cashr = true;
+			}
+			//data.limit = 'less';
 			api.GET('cashier_collections',data, function success(response){
 				$scope.NoCollections = 0;
 				$scope.Collections = response.data[0];

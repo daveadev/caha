@@ -20,13 +20,16 @@
 					<a-col size="6" align="right">
 						<div class="btn-group">
 							<a-button ng-click="SA.ToggleBalance()">
-								<a-glyph icon="eye-close" ></a-glyph>
-								Hide Balance
+								<a-glyph icon="eye-close" ng-show="!SA.HiddenBal" ></a-glyph>
+								<a-glyph icon="eye-open" ng-show="SA.HiddenBal" ></a-glyph>
+								<span ng-show="!SA.HiddenBal">Hide Balance</span>
+								<span ng-show="SA.HiddenBal">Show Balance</span>
 							</a-button>
 						</div>
 						<button class="btn btn-primary" ng-disabled="!SA.Data.length||SA.LoadingPrint" ng-click="SA.Print()">
 							<i class="glyphicon glyphicon-refresh spin" ng-show="SA.LoadingPrint"></i>
-							Print
+							<span ng-show="SA.LoadingPrint">Loading</span>
+							<span ng-show="!SA.LoadingPrint">Print</span>
 						</button>
 					</a-col>
 				</a-row>
