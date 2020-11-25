@@ -53,8 +53,9 @@ class VouchersController extends AppController {
 			$data['details']='Voucher';
 			$data['amount']=$v['amount'];
 			if($this->VoucherLedger->saveAll($data)){
+				$data['type']='-';
 				if($this->Ledger->saveAll($data)){
-					$data['type']='-';
+					$data['type']='+';
 					$this->Ledger->saveAll($data);
 				}
 			}
