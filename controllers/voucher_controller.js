@@ -8,7 +8,7 @@ define(['app','api','atomic/bomb'],function(app){
 			$rootScope.__MODULE_NAME = 'Vouchers';
 			$scope.Headers = ['Sno','Student','Voucher No',{label:'Amount',class:'amount total'},'Status'];
 			$scope.Props = ['sno','student','voucher_no','amount','status'];
-			
+			$scope.Data = '';
 		}
 		$selfScope.$watch("VC.Active",function(active){
 			if(!active) return false;
@@ -22,6 +22,7 @@ define(['app','api','atomic/bomb'],function(app){
 		}
 		
 		$scope.SaveVoucher = function(){
+			$scope.Saving = 1;
 			console.log($scope.Student);
 			var data = {
 				account_id:$scope.Student.id,
@@ -29,9 +30,11 @@ define(['app','api','atomic/bomb'],function(app){
 				issue_date:$scope.date,
 				amount:$scope.amount,
 				available_balance:$scope.amount,
-				esp:$scope.ActiveSY
+				esp:$scope.ActiveSY,
+				status:'RECVD'
 			};
 			api.POST('vouchers',data, function success(response){
+				$scope.Saving = 0;
 				aModal.close("VoucherModal");
 				getVouchers(1);
 			});
@@ -49,6 +52,8 @@ define(['app','api','atomic/bomb'],function(app){
 			api.GET('vouchers',data, function success(response){
 				$scope.Data = response.data;
 				$scope.Meta = response.meta;
+			},function error(response){
+				$scope.NoRecords = 1;
 			});
 		}
 		

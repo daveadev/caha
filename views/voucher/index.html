@@ -24,12 +24,22 @@
 				</a-row>
 			</a-header>
 			<a-canvas>
-				<a-content>
+				<a-content ng-show="VC.Data">
 					<a-row>
 						<a-col>
 							<a-table headers="VC.Headers" props="VC.Props" data="VC.Data"></a-table>
 						</a-col>
 					</a-row>
+				</a-content>
+				<a-content ng-show="VC.NoRecords" style="height: 100%">
+					<div class="empty-state">
+						<div class="well">
+							<div class="empty-state-icon text-center">
+								<i class="glyphicon glyphicon-exclamation-sign"></i>
+							</div>
+							<h4>No Records found!</h4>
+						</div>
+					</div>
 				</a-content>
 			</a-canvas>
 		</a-container>
@@ -61,7 +71,8 @@
 		</a-modal-body>
 		<a-modal-footer>
 			<button class="btn btn-default pull-left" ng-click="VC.Cancel()">Cancel</button>
-			<button class="btn btn-primary pull-right" ng-click="VC.SaveVoucher()" >Confirm</button>
+			<button class="btn btn-primary pull-right" ng-click="VC.SaveVoucher()" ng-show="!VC.Saving">Confirm</button>
+			<button class="btn btn-primary pull-right" ng-show="VC.Saving" disabled >Saving...</button>
 		</a-modal-footer>
 	
 	</a-modal>

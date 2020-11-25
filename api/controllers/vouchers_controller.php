@@ -2,6 +2,7 @@
 class VouchersController extends AppController {
 
 	var $name = 'Vouchers';
+	var $uses = array('Voucher','VoucherLedger','Ledger');
 
 	function index() {
 		$this->Voucher->recursive = 0;
@@ -39,6 +40,25 @@ class VouchersController extends AppController {
 	}
 
 	function add() {
+		//pr($this->data); exit();
+		if(!isset($this->data['Voucher']['id'])){
+			$v = $this->data['Voucher'];
+			$data['account_id'] = $v['account_id'];
+			$data['type'] = '+';
+			$data['transaction_type_id']='VOCHR';
+			$data['esp']=$v['esp'];
+			$data['transac_date']=$v['issue_date'];
+			$data['transac_time']=time();
+			$data['ref_no']=$v['voucher_no'];
+			$data['details']='Voucher';
+			$data['amount']=$v['amount'];
+			if($this->VoucherLedger->saveAll($data)){
+				if($this->Ledger->saveAll($data)){
+					$data['type']='-';
+					$this->Ledger->saveAll($data);
+				}
+			}
+		}
 		if (!empty($this->data)) {
 			$this->Voucher->create();
 			if ($this->Voucher->save($this->data)) {
