@@ -3,8 +3,9 @@ class ParseaccountController extends AppController {
 	var $name = 'Parseaccount';
 	var $uses = array('Account','Ledger');
 	
-	function index(){
-		require_once '../vendors/autoload.php';
+	function add(){
+		pr($this->data); exit();
+	/* 	require_once '../vendors/autoload.php';
 		$dir = '../files';
 		$file = scandir($dir);
 		//pr($file[2]); exit();
@@ -17,10 +18,9 @@ class ParseaccountController extends AppController {
 
 
 		$highestColumn = $LedgerObj->setActiveSheetIndex(0)->getHighestColumn();
-		$highestRow = $LedgerObj->setActiveSheetIndex(0)->getHighestRow();
+		$highestRow = $LedgerObj->setActiveSheetIndex(0)->getHighestRow(); */
 		$account_ids = array();
-		
-		for($row=2;$row<=$highestRow;$row++){
+		for($row=2;$row<=3;$row++){
 			$acc_id = $ledgers[$row]['A'];
 			if(!in_array($acc_id,$account_ids)){
 				array_push($account_ids,$acc_id);

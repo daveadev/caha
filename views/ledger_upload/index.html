@@ -1,0 +1,64 @@
+<div ng-controller="LedgerReaderController as LR" ng-init="LR.init()">
+	<a-module>
+		<a-header is-main="true">
+			<a-row>
+				<a-col size="6">
+					<h4>Ledger Reader</h4>
+				</a-col>
+				<a-col size="5">
+					<div class="input-group">
+					  <input type="text" ng-model="LR.SelectedFile.name" class="form-control" placeholder="Select a file" readonly aria-describedby="basic-addon2">
+					  <span class="input-group-addon" id="basic-addon2" style="cursor:pointer;" >
+						<span class="glyphicon glyphicon-folder-open" style="cursor:pointer;"> Browse</span>
+						<input class="form-control" type="file" ngf-select="LR.SelectFile($file)" style="opacity: 0; width: 20%; position: absolute; top: 1px; cursor:pointer;" />
+					  </span>
+					</div>
+				</a-col>
+				<a-col size="1">
+					<input type="button" class="btn btn-primary btn-block" value="Load" ng-click="LR.Upload()" ng-disabled="!LR.SelectedFile" />
+				</a-col>
+			</a-row>
+		</a-header>
+		<a-header>
+			<a-row>
+				<a-col size="6">
+				
+				</a-col>
+				<a-col size="6">
+					<button class="btn btn-primary pull-right" ng-disabled="!LR.Data.length" ng-click="LR.UploadLedger()" >Uplaod</button>
+				</a-col>
+			</a-row>
+		</a-header>
+		<a-canvas>
+			<a-content ng-if="LR.Data.length">
+				<a-row>
+					<a-col>
+						<a-table headers="LR.Headers" props="LR.Props" data="LR.Data"></a-table>
+					</a-col>
+				</a-row>
+			</a-content>
+			<a-content ng-if="!LR.Data.length&&!LR.Loading" >
+				<div class="empty-state">
+					<div class="well text-center">
+						<div class="empty-state-icon text-center">
+							<i class="glyphicon glyphicon-list-alt"></i>
+						</div>
+						<h4>Upload excel file and load</h4>
+					</div>
+				</div>
+			</a-content>
+			<a-content ng-if="(LR.Loading||LR.Saving)&&!LR.Data.length" >
+				<div class="empty-state">
+					<div class="well text-center">
+						<div class="empty-state-icon text-center">
+							<i class="glyphicon glyphicon-refresh spin"></i>
+						</div>
+						<h4 ng-show="!LR.Saving&&LR.Saving">Loading Excel data...</h4>
+						<h4 ng-show="LR.Saving">Saving Ledgers and creating Accounts...</h4>
+						<h4 ng-show="LR.Saved">Saving Ledgers...</h4>
+					</div>
+				</div>
+			</a-content>
+		</a-canvas>
+	</a-module>
+</div>
