@@ -10,6 +10,7 @@ class TransactionTypesController extends AppController {
 		$transactionTypes =  $this->paginate();
 		foreach($transactionTypes as $i=>$tty){
 			$T = $tty['TransactionType'];
+			//pr($T); exit();
 			//Compute for the correct amount for SP
 			if($T['amounts']&&$T['id']=='SBQPY'):
 				$amounts =  array();

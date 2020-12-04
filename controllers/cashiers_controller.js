@@ -139,6 +139,10 @@ define(['app', 'api'], function(app) {
 					type:'AR'
 				};
 				api.GET('transaction_types',data, function success(response){
+					angular.forEach(response.data,function(res){
+						if(res.is_quantity)
+							res.qty = 1;
+					})
 					$scope.TransactionTypes = response.data;
 				});
 			}
@@ -158,7 +162,10 @@ define(['app', 'api'], function(app) {
                     //Pass value of student information
 					$scope.Disabled = 1;
                     $scope.ActiveStudent = $scope.SelectedStudent;
-					getOr();
+					if($scope.ActiveTyp=='OR')
+						getOr();
+					else
+						getAr();
 					
                 }
                 if ($scope.ActiveStep === 2) {
@@ -174,14 +181,25 @@ define(['app', 'api'], function(app) {
                             id: transactionType.id,
                             amount: transactionType.amount,
 							name: transactionType.name,
-							type: transactionType.type
+							type: transactionType.type,
+							is_quantity: transactionType.is_quantity,
+							is_specify: transactionType.is_specify,
+							qty: transactionType.qty
+							
                         };
                         if ($scope.SelectedTransactions[transactionType.id]) {
-                            $scope.TotalDue = $scope.TotalDue + transaction.amount;
+							if(transactionType.is_quantity&&transactionType.is_specify){
+								transaction.details = transactionType.desc+'_'+$scope.qty+'x'+transaction.amount;
+							}
+							if(transactionType.is_quantity&&!transactionType.is_specify){
+								transaction.details = transactionType.qty+'x'+transaction.amount;
+							}
+							
+                            $scope.TotalDue = $scope.TotalDue + (transaction.amount*transactionType.qty);
                             $scope.ActiveTransactions.push(transaction);
                         };
                     };
-					console.log($scope.TotalDue);
+					console.log($scope.ActiveTransactions);
                 }
                 if ($scope.ActiveStep === 3) {
                     //Pass value of payment information
@@ -278,7 +296,6 @@ define(['app', 'api'], function(app) {
 				$scope.SelectedTransactions[id] = !$scope.SelectedTransactions[id];
 				if(!$scope.SelectedTransactions[id])
 					$scope.Disabled = 1;
-				console.log($scope.TransactionTypes);
 				angular.forEach($scope.SelectedTransactions, function(trans){
 					if(trans==true)
 						$scope.Disabled = 0;
@@ -426,6 +443,15 @@ define(['app', 'api'], function(app) {
 						$scope.Disabled = 1;
 				}
             }
+			
+			$scope.CountQty = function(qty,id){
+				return;
+				angular.forEach($scope.TransactionTypes, function(trnx){
+					if(trnx.id==id)
+						trnx.amount = qty*trnx.amount;
+				});
+				//$scope.TransactionTypes[id].amount = qty * $scope.TransactionTypes[id].amount;
+			}
 			
 			function computeChange(){
 				

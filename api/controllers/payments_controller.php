@@ -160,13 +160,18 @@ class PaymentsController extends AppController {
 			$td = array(
 				'transaction_id'=>$transac_id,
 				'transaction_type_id'=>$trnx['id'],
-				'detail'=>$detail,
+				'details'=>$detail,
 				'amount'=>$payment
 			);
+			if($trnx['type']=='AR')
+				$td['details'] = $trnx['details'];
+			
 			
 			array_push($account_transac,$acct_transac);
-			array_push($account_history,$history);
-			array_push($ledger_accounts,$ledgerItem);
+			if(!$trnx['type']=='AR'){
+				array_push($ledger_accounts,$ledgerItem);
+				array_push($account_history,$history);
+			}
 			array_push($transac_details,$td);
 			if($trnx['id']=='OLDAC')
 				$total_payment -= $trnx['amount'];
@@ -268,12 +273,15 @@ class PaymentsController extends AppController {
 		);
 		$DataCollection['Account']['transaction_id']  = $transac_id;
 		foreach($DataCollection as $model=>$collection){
-			if($this->$model->saveAll($collection)){
-				$this->Session->setFlash(__('The '. $i .' has been saved', true));
-			}
-			else{
-				$this->Session->setFlash(__('Error saving '.$i, true));
-				break;
+			//pr($collection); continue;
+			if($collection){
+				if($this->$model->saveAll($collection)){
+					$this->Session->setFlash(__('The '. $i .' has been saved', true));
+				}
+				else{
+					$this->Session->setFlash(__('Error saving '.$i, true));
+					break;
+				}
 			}
 		}
 		$this->data['Payment'] = array('transaction_id'=>$transac_id);
