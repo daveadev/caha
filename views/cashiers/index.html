@@ -197,13 +197,13 @@
 									</div>
 								</div>
 							</div>
-							<div class="col-md-3" ng-if="transaction_type.is_quantity&&SelectedTransactions[transaction_type.id]" >
+							<div class="col-md-2" ng-if="transaction_type.is_quantity&&SelectedTransactions[transaction_type.id]" >
 								<input style="margin-top:13px;" type="number" class="form-control" placeholder="quantity" ng-model="transaction_type.qty" ng-change="CountQty(transaction_type.qty,transaction_type.id)">
 							</div>
 							<div class="col-md-1" ng-if="transaction_type.is_quantity&&SelectedTransactions[transaction_type.id]">
 								<p style="margin-top:20px">x</p>
 							</div>
-							<div ng-class="{'col-md-5':ActiveTyp=='OR','col-md-3':ActiveTyp=='AR'}" ng-show="SelectedTransactions[transaction_type.id]">
+							<div ng-class="{'col-md-5':ActiveTyp=='OR','col-md-4':ActiveTyp=='AR'}" ng-show="SelectedTransactions[transaction_type.id]">
 								<div class="input-group input-amount">
 									<span class="input-group-addon">₱</span>
 									<input type="number" class="form-control" ng-model="transaction_type.amount" autoselect focus="FocusTransaction[transaction_type.id]" ng-disabled="!transaction_type.is_specify" />
