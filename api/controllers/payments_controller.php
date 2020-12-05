@@ -74,8 +74,7 @@ class PaymentsController extends AppController {
 		/* pr($transactions);
 		pr($payments);
 		pr($account_total);
-		pr($total_payment);
-		exit(); */
+		pr($total_payment); */
 		
 		
 		// for Ledgers and Account transactions
@@ -137,22 +136,39 @@ class PaymentsController extends AppController {
 			}
 			
 			// save to account histories
-			$history = array(
-				'account_id'=>$account_id,
-				'transac_date'=>$today,
-				'transac_time'=>$time,
-				'ref_no'=>$curr_refNo,
-				'details'=>$detail,
-				'flag'=>'-',
-				'amount'=>$payment
-			);
-			if($trnx['id']!=='OLDAC'){
-				$history['total_due']=$Account['assessment_total'];
-				$history['total_paid']=$payment_to_date;
-				$history['balance']=$Account['outstanding_balance']-$payment;
-				$Account['outstanding_balance'] = $Account['assessment_total']-$payment_to_date;
-				$Account['payment_total'] = $payment_to_date;
+			if($trnx['type']=='OR'){
+				$history = array(
+					'account_id'=>$account_id,
+					'transac_date'=>$today,
+					'transac_time'=>$time,
+					'ref_no'=>$curr_refNo,
+					'details'=>$detail,
+					'flag'=>'-',
+					'amount'=>$payment
+				);
+				if($trnx['id']!=='OLDAC'){
+					$history['total_due']=$Account['assessment_total'];
+					$history['total_paid']=$payment_to_date;
+					$history['balance']=$Account['outstanding_balance']-$payment;
+					$Account['outstanding_balance'] = $Account['assessment_total']-$payment_to_date;
+					$Account['payment_total'] = $payment_to_date;
+				}
+			}else{
+				$history = array(
+					'account_id'=>$account_id,
+					'transac_date'=>$today,
+					'transac_time'=>$time,
+					'ref_no'=>$curr_refNo,
+					'details'=>$detail,
+					'flag'=>'-',
+					'amount'=>$total_payment,
+					'total_due'=>0,
+					'total_paid'=>0,
+					'balance'=>0
+				);
 			}
+			
+			
 			// save to account transactions
 			$acct_transac =  array('account_id'=>$account_id,'transaction_type_id'=>$trnx['id'],'ref_no'=>$curr_refNo,'amount'=>$payment);
 			
@@ -163,14 +179,14 @@ class PaymentsController extends AppController {
 				'details'=>$detail,
 				'amount'=>$payment
 			);
-			if($trnx['type']=='AR')
+			if($trnx['type']=='AR'){
 				$td['details'] = $trnx['details'];
-			
-			
+				$td['amount'] = $total_payment;
+			}
 			array_push($account_transac,$acct_transac);
+			array_push($account_history,$history);
 			if(!$trnx['type']=='AR'){
 				array_push($ledger_accounts,$ledgerItem);
-				array_push($account_history,$history);
 			}
 			array_push($transac_details,$td);
 			if($trnx['id']=='OLDAC')

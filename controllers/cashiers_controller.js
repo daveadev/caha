@@ -189,13 +189,15 @@ define(['app', 'api'], function(app) {
                         };
                         if ($scope.SelectedTransactions[transactionType.id]) {
 							if(transactionType.is_quantity&&transactionType.is_specify){
-								transaction.details = transactionType.desc+'_'+$scope.qty+'x'+transaction.amount;
+								transaction.details = transactionType.desc+'_'+transactionType.qty+'x'+transaction.amount;
 							}
 							if(transactionType.is_quantity&&!transactionType.is_specify){
 								transaction.details = transactionType.qty+'x'+transaction.amount;
 							}
-							
-                            $scope.TotalDue = $scope.TotalDue + (transaction.amount*transactionType.qty);
+							if($scope.ActiveTyp=='AR')
+								$scope.TotalDue = $scope.TotalDue + (transaction.amount*transactionType.qty);
+							else
+								$scope.TotalDue = $scope.TotalDue + transaction.amount;
                             $scope.ActiveTransactions.push(transaction);
                         };
                     };

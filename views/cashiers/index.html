@@ -66,6 +66,7 @@
 							<thead>
 								<tr>
 									<th class="text-center">Transaction</td>
+									<th class="text-center" ng-show="ActiveTyp=='AR'">Quantity</th>
 									<th class="text-center">Amount</td>
 								</tr>
 							</thead>
@@ -75,13 +76,15 @@
 								</tr>
 								<tr ng-show="ActiveTransactions.length" ng-repeat="transaction in ActiveTransactions">
 									<td>{{transaction.name}}</td>
-									<td>{{transaction.qty}} * <div class="amount" ng-class="{peso:$first}">{{transaction.amount | currency}}</div></td>
+									<td ng-show="transaction.qty">{{transaction.qty}}</td>
+									<td><div class="amount" ng-class="{peso:$first}">{{transaction.amount | currency}}</div></td>
 								</tr>
 							</tbody>
 							<tfoot>
 								<tr>
 									<td><b>Total</b></td>
-									<td><div class="amount peso"><b>{{TotalDue | currency}}</b></div></td>
+									<td ng-show="ActiveTyp!='AR'"><div class="amount peso"><b>{{TotalDue | currency}}</b></div></td>
+									<td colspan="2" ng-show="ActiveTyp=='AR'"><div class="amount peso"><b>{{TotalDue | currency}}</b></div></td>
 								</tr>
 							</tfoot>
 						</table>

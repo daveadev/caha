@@ -8,8 +8,8 @@ define(['app','api','atomic/bomb'],function(app){
 			$rootScope.__MODULE_NAME = 'Cashier Collection';
 			$scope.Options = ['OR','AR']
 			$scope.ActiveOpt = 'OR';
-			$scope.CHeaders = ['cnt','Sno','Received from','Level','Section','Status','Date','Particular','OR #',{label:'Amount',class:'amount total'}];
-			$scope.Headers = ['cnt','Sno','Received from','Level','Section','Status','Date','Particular','OR #',{label:'Amount',class:'amount total'},{label:'Total Due',class:'amount total'},{label:'Total Paid',class:'amount total'},{label:'Balance',class:'amount total'},];
+			$scope.CHeaders = ['cnt','Sno','Received from','Level','Section','Status','Date','Particular','Ref no',{label:'Amount',class:'amount total'}];
+			$scope.Headers = ['cnt','Sno','Received from','Level','Section','Status','Date','Particular','Ref no',{label:'Amount',class:'amount total'},{label:'Total Due',class:'amount total'},{label:'Total Paid',class:'amount total'},{label:'Balance',class:'amount total'},];
 			$scope.CProps = ['cnt','sno','received_from','level','section','status','date','particulars','ref_no','amount'];
 			$scope.Props = ['cnt','sno','received_from','level','section','status','date','particulars','ref_no','amount','total_due','total_paid','balance'];
 			getTransacs();
