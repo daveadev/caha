@@ -369,6 +369,11 @@ define(['app', 'api'], function(app) {
                     animation: true,
                     templateUrl: 'bookletModal.html',
                     controller: 'BookletModalController',
+					resolve:{
+						rectTypes:function(){
+							return $scope.RectTypes;
+						}
+					}
                 });
                 modalInstance.opened.then(function() { $rootScope.__MODAL_OPEN = true; });
 
@@ -475,17 +480,56 @@ define(['app', 'api'], function(app) {
 			}
         };
     }]);
-    app.register.controller('BookletModalController', ['$scope', '$rootScope', '$uibModalInstance', 'api', function($scope, $rootScope, $uibModalInstance, api) {
+    app.register.controller('BookletModalController', ['$scope', '$rootScope', '$uibModalInstance', 'api','rectTypes', function($scope, $rootScope, $uibModalInstance, api,rectTypes) {
         //Get the data entered and push it to booklets.js
-        $scope.confirmBooklet = function() {
-            $rootScope.__MODAL_OPEN = false;
-            $uibModalInstance.dismiss('confirm');
+		$scope.ActiveTyp = 'OR';
+		getBooklet();
+		$scope.RectTypes = rectTypes;
+		$scope.setActiveType = function(typ){
+			$scope.ActiveTyp = typ;
+			getBooklet();
+		}
+		
+        $scope.confirmBooklet = function(book) {
+            //
+			
+			if(book.series_counter<$scope.InitialCtr){
+				alert('Lower counter not allowed!'); 
+				return;
+			}
+			var yes = confirm('Save series counter?');
+			if(yes){
+				//var data = {series_counter:book.series_counter};
+				api.POST('booklets', book, function success(response){
+					$uibModalInstance.close();
+					$rootScope.__MODAL_OPEN = false;
+				});
+			}else{
+				return false;
+			}
         };
         //Close modal
         $scope.cancelBooklet = function() {
             $rootScope.__MODAL_OPEN = false;
             $uibModalInstance.dismiss('cancel');
         };
+		
+		$scope.registerCounter = function(book){
+			$scope.InitialCtr = book.series_counter;
+		}
+		
+		function getBooklet(){
+			var data = {
+				receipt_type:$scope.ActiveTyp
+			}
+			api.GET('booklets', data, function success(response){
+				angular.forEach(response.data, function(book){
+					book.label = book.series_start+' - '+book.series_end;
+				});
+				$scope.Booklets = response.data;
+			});
+		}
+		
     }]);
     app.register.controller('SuccessModalController', ['$scope', '$rootScope', '$timeout', '$uibModalInstance', 'api', 'TransactionId',function($scope, $rootScope, $timeout, $uibModalInstance, api,TransactionId) {
         $rootScope.__MODAL_OPEN = true;

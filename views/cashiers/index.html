@@ -369,47 +369,28 @@
 			</div>
 			<div class="modal-body">
 				<div class="row">
-					<div class="col-md-12">
-						<div class="form-group">
-							Series No.
-						</div>						
-					</div>
-				</div>
-				<div class="row">
 					<div class="col-md-4">
-						<div class="form-group">
-							<input type="number" placeholder="Series Start" class="form-control" ng-model="seriesStart" ng-blur="setSeriesCounter(seriesStart)"/>
+						<label for="">Doc Type</label> <br />
+						<div class="btn-group" role="group" aria-label="Doc Type">
+							<button type="button" class="btn btn-default" ng-click="setActiveType(typ)"
+								ng-repeat="typ in RectTypes" ng-class="{'btn-primary':ActiveTyp==typ}">{{typ}}
+							</button>
 						</div>
 					</div>
 					<div class="col-md-4">
-						<div class="form-group">
-							<input type="number" placeholder="Series End" class="form-control" ng-model="seriesEnd"/>
-						</div>
+						<label for="">Series</label>
+						<select name="" id="" class="form-control" ng-change="registerCounter(book)"
+							ng-options="book as book.label for book in Booklets" ng-model="book" ></select>
 					</div>
 					<div class="col-md-4">
-						<div class="form-group">
-							<input type="number" placeholder="Series Counter" class="form-control" ng-model="seriesCounter"/>
-						</div>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-md-12">
-						<div class="form-group">
-							Cashier.
-						</div>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-md-12">
-						<div class="form-group">
-							<input type="text" placeholder="Cashier" class="form-control" ng-model="cashier"/>
-						</div>
+						<label for="">Counter</label>
+						<input type="number" class="form-control" ng-model="book.series_counter" />
 					</div>
 				</div>
 			</div>
 			<div class="modal-footer">
 				<button class="btn btn-default pull-left" type="button" ng-click="cancelBooklet()">Cancel</button>
-				<button class="btn btn-primary" type="button" ng-click="confirmBooklet()">Confirm</button>
+				<button class="btn btn-primary" type="button" ng-click="confirmBooklet(book)" ng-disabled="book.series_counter<InitialCtr">Confirm</button>
 			</div>
 		</script>
 		<script type="text/ng-template" id="accountInfoBox.html">
