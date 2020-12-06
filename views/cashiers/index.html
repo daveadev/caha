@@ -206,11 +206,12 @@
 							<div class="col-md-1" ng-if="transaction_type.is_quantity&&SelectedTransactions[transaction_type.id]">
 								<p style="margin-top:20px">x</p>
 							</div>
-							<div ng-class="{'col-md-5':ActiveTyp=='OR','col-md-4':ActiveTyp=='AR'}" ng-show="SelectedTransactions[transaction_type.id]">
+							<div ng-class="{'col-md-5':ActiveTyp=='OR','col-md-4':ActiveTyp=='AR&&transaction_type.is_quantity', 'col-md-5':!transaction_type.is_quantity}" ng-show="SelectedTransactions[transaction_type.id]">
 								<div class="input-group input-amount">
 									<span class="input-group-addon">₱</span>
 									<input type="number" class="form-control" ng-model="transaction_type.amount" autoselect focus="FocusTransaction[transaction_type.id]" ng-disabled="!transaction_type.is_specify" />
 								</div>
+								<div class="help-text pull-right" ng-show="SelectedTransactions[transaction_type.id]" >Total: {{transaction_type.amount*transaction_type.qty | currency}}</div>
 							</div>
 							
 						</div>
@@ -218,7 +219,7 @@
 							<div class="col-md-5">
 								<div class="input-group" ng-show="transaction_type.is_specify&&SelectedTransactions[transaction_type.id]" style="margin-bottom: 5px;">
 									<span class="input-group-addon" id="basic-addon1">Specify: </span>
-									<input type="text" class="form-control" ng-model="transaction_type.desc" placeholder="specify" aria-describedby="basic-addon1" >
+									<input type="text" class="form-control" ng-model="transaction_type.desc" aria-describedby="basic-addon1" >
 								</div>
 								<!-- <div class="input-group" ng-show="transaction_type.is_quantity&&SelectedTransactions[transaction_type.id]" >
 									<span class="input-group-addon" id="basic-addon1">Quantity: </span>
