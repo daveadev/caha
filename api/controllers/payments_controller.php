@@ -80,6 +80,7 @@ class PaymentsController extends AppController {
 		// for Ledgers and Account transactions
 		$transac_payment = $total_payment;
 		foreach($transactions as $trnx){
+			
 			$detail = $trnx['name'];
 			$payment = $total_payment;
 			if($trnx['amount']<$total_payment){
@@ -185,7 +186,8 @@ class PaymentsController extends AppController {
 			}
 			array_push($account_transac,$acct_transac);
 			array_push($account_history,$history);
-			if(!$trnx['type']=='AR'){
+			//pr($ledgerItem);
+			if($trnx['type']!=='AR'){
 				array_push($ledger_accounts,$ledgerItem);
 			}
 			array_push($transac_details,$td);
@@ -195,7 +197,6 @@ class PaymentsController extends AppController {
 				$total_payment -= $trnx['amount'];
 			
 		}
-		
 		
 		
 		// for account payment schedule
