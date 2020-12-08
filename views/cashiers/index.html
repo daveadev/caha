@@ -209,7 +209,7 @@
 							<div ng-class="{'col-md-5':ActiveTyp=='OR','col-md-4':ActiveTyp=='AR'&&transaction_type.is_quantity, 'col-md-5':'!'+transaction_type.is_quantity}" ng-show="SelectedTransactions[transaction_type.id]">
 								<div class="input-group input-amount">
 									<span class="input-group-addon">₱</span>
-									<input type="number" class="form-control" ng-model="transaction_type.amount" min="0"autoselect focus="FocusTransaction[transaction_type.id]" ng-disabled="!transaction_type.is_specify" />
+									<input type="number" class="form-control" ng-model="transaction_type.amount" min="0"autoselect focus="FocusTransaction[transaction_type.id]" ng-disabled="!transaction_type.is_specify&&ActiveTyp!='OR'" />
 								</div>
 								<div class="help-text pull-right" ng-show="SelectedTransactions[transaction_type.id]&&transaction_type.is_quantity&&ActiveTyp=='AR'" >Total: {{transaction_type.amount*transaction_type.qty | currency}}</div>
 							</div>
