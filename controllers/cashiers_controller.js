@@ -18,6 +18,8 @@ define(['app', 'api'], function(app) {
 			
             //Initialize components
             $scope.initCashier = function() {
+				$scope.ActiveUser = $rootScope.__USER.user;
+				console.log($scope.ActiveUser);
 				$scope.Today = new Date();
                 $scope.ActiveSY  = $rootScope._APP.ACTIVE_SY;
                 $scope.ActiveSYShort = parseInt($scope.ActiveSY.toString().substr(2,2));
@@ -112,6 +114,7 @@ define(['app', 'api'], function(app) {
             //Get BookletID
 			function getAll(){
 				api.GET('booklets', function success(response) {
+					$scope.Booklets = response.data;
 					$scope.ActiveBooklet = response.data[0];
 				}); 
 
@@ -130,6 +133,7 @@ define(['app', 'api'], function(app) {
 			function getBooklet(typ){
 				var data = {receipt_type:typ};
 				api.GET('booklets',data, function success(response){
+					$scope.Booklets = response.data;
 					$scope.ActiveBooklet = response.data[0];
 				});
 			}
@@ -365,6 +369,7 @@ define(['app', 'api'], function(app) {
                 }
                 //Opening the modal
             $scope.displaySettings = function() {
+				$scope.ActiveBooklet['label'] = $scope.ActiveBooklet.series_start+' - '+$scope.ActiveBooklet.series_end;
                 var modalInstance = $uibModal.open({
                     animation: true,
                     templateUrl: 'bookletModal.html',
@@ -372,11 +377,31 @@ define(['app', 'api'], function(app) {
 					resolve:{
 						rectTypes:function(){
 							return $scope.RectTypes;
+						},
+						actType:function(){
+							return $scope.ActiveTyp;
+						},
+						book:function(){
+							return $scope.ActiveBooklet;
+						},
+						booklets:function(){
+							return $scope.Booklets;
 						}
 					}
                 });
                 modalInstance.opened.then(function() { $rootScope.__MODAL_OPEN = true; });
-
+				var promise = modalInstance.result;
+				var callback = function(book){
+					$scope.ActiveTyp = book.receipt_type;
+					if($scope.ActiveTyp=='OR')
+						getOr();
+					else
+						getAr();
+					$scope.ActiveBooklet = book;
+				};
+				var fallback = function(){
+				};
+				promise.then(callback,fallback);
             };
             $scope.openModal = function() {
                 var modalInstance = $uibModal.open({
@@ -391,7 +416,7 @@ define(['app', 'api'], function(app) {
                     }
                 });
                 modalInstance.result.then(function() {
-
+					
                 }, function(source) {
                     $scope.initCashier();
                 });
@@ -480,19 +505,26 @@ define(['app', 'api'], function(app) {
 			}
         };
     }]);
-    app.register.controller('BookletModalController', ['$scope', '$rootScope', '$uibModalInstance', 'api','rectTypes', function($scope, $rootScope, $uibModalInstance, api,rectTypes) {
+    app.register.controller('BookletModalController', ['$scope', '$rootScope', '$uibModalInstance', 'api','rectTypes','actType','book','booklets',
+	function($scope, $rootScope, $uibModalInstance, api,rectTypes,actType,book,booklets) {
         //Get the data entered and push it to booklets.js
-		$scope.ActiveTyp = 'OR';
-		getBooklet();
+		$scope.ActiveUser = $rootScope.__USER.user;
+		$scope.InitialCtr = book.series_counter;
 		$scope.RectTypes = rectTypes;
+		$scope.ActiveTyp = actType;
+		$scope.Booklets = booklets;
+		$scope.ActiveBook = book;
+		
+		
 		$scope.setActiveType = function(typ){
+			$scope.ActiveBook = '';
 			$scope.ActiveTyp = typ;
 			getBooklet();
 		}
 		
         $scope.confirmBooklet = function(book) {
             //
-			
+			console.log(book);
 			if(book.series_counter<$scope.InitialCtr){
 				alert('Lower counter not allowed!'); 
 				return;
@@ -501,7 +533,8 @@ define(['app', 'api'], function(app) {
 			if(yes){
 				//var data = {series_counter:book.series_counter};
 				api.POST('booklets', book, function success(response){
-					$uibModalInstance.close();
+					
+					$uibModalInstance.close($scope.ActiveBook);
 					$rootScope.__MODAL_OPEN = false;
 				});
 			}else{
@@ -515,6 +548,8 @@ define(['app', 'api'], function(app) {
         };
 		
 		$scope.registerCounter = function(book){
+			console.log(book);
+			$scope.ActiveBook = book;
 			$scope.InitialCtr = book.series_counter;
 		}
 		
@@ -527,6 +562,8 @@ define(['app', 'api'], function(app) {
 					book.label = book.series_start+' - '+book.series_end;
 				});
 				$scope.Booklets = response.data;
+				$scope.ActiveBook = response.data[0];
+				$scope.InitialCtr = $scope.ActiveBook.series_counter;
 			});
 		}
 		

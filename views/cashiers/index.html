@@ -23,7 +23,7 @@
 					<div class="pull-right">
 					<button class="btn btn-xs btn-success" uib-popover-template="'accountInfoBox.html'" popover-append-to-body="true" popover-placement="bottom" ng-disabled="!ActiveStudent.id"> <span class="glyphicon glyphicon-user" aria-hidden="true"></span> Student Account</button>
 					<button class="btn btn-xs btn-danger" ng-click="initCashier()" ng-disabled="ActiveStep==1"> Clear</button>
-					<button class="btn btn-xs btn-info" ng-click="displaySettings()"> <span class="glyphicon glyphicon-cog" aria-hidden="true"></span></button>
+					<button class="btn btn-xs btn-info" ng-click="displaySettings()"> <span class="glyphicon glyphicon-cog"></span> Series Config</button>
 					</div>
 				</div>
 				<div class="list-group-canvas">
@@ -201,7 +201,7 @@
 								</div>
 							</div>
 							<div class="col-md-2" ng-show="transaction_type.is_quantity&&SelectedTransactions[transaction_type.id]" >
-								<input style="margin-top:13px;" type="number" class="form-control" placeholder="quantity" ng-model="transaction_type.qty" ng-change="CountQty(transaction_type.qty,transaction_type.id)">
+								<input style="margin-top:13px;" type="number" class="form-control" placeholder="quantity" min="1" ng-model="transaction_type.qty" ng-change="CountQty(transaction_type.qty,transaction_type.id)">
 							</div>
 							<div class="col-md-1" ng-show="transaction_type.is_quantity&&SelectedTransactions[transaction_type.id]">
 								<p style="margin-top:20px">x</p>
@@ -209,7 +209,7 @@
 							<div ng-class="{'col-md-5':ActiveTyp=='OR','col-md-4':ActiveTyp=='AR'&&transaction_type.is_quantity, 'col-md-5':'!'+transaction_type.is_quantity}" ng-show="SelectedTransactions[transaction_type.id]">
 								<div class="input-group input-amount">
 									<span class="input-group-addon">₱</span>
-									<input type="number" class="form-control" ng-model="transaction_type.amount" autoselect focus="FocusTransaction[transaction_type.id]" ng-disabled="!transaction_type.is_specify" />
+									<input type="number" class="form-control" ng-model="transaction_type.amount" min="0"autoselect focus="FocusTransaction[transaction_type.id]" ng-disabled="!transaction_type.is_specify" />
 								</div>
 								<div class="help-text pull-right" ng-show="SelectedTransactions[transaction_type.id]&&transaction_type.is_quantity&&ActiveTyp=='AR'" >Total: {{transaction_type.amount*transaction_type.qty | currency}}</div>
 							</div>
@@ -263,7 +263,7 @@
 							<div class="col-md-5" ng-show="SelectedPayments[payment.id]">
 								<div class="input-group input-amount col-md-10 col-md-push-1">
 									<span class="input-group-addon">₱</span>
-									<input type="number" class="form-control" ng-model="payment.amount" ng-change="updateCurrentChange()" autoselect focus="FocusPayment[payment.id]"/>
+									<input type="number" class="form-control" ng-model="payment.amount" min="0" ng-change="updateCurrentChange()" autoselect focus="FocusPayment[payment.id]"/>
 									<div class="input-group-btn" ng-if="payment.id!='CASH'">
 										<button class="btn btn-default" pop-title="{{payment.name+' details'}}" uib-popover-template="'paymentDetailsBox.html'" popover-append-to-body="true" pop-placement="top"  popover-is-open="shouldOpen[payment.id]" ng-click="setActivePopover(payment)">
 											<span class="glyphicon glyphicon-{{payment.icon}}"></span>
@@ -377,18 +377,18 @@
 					</div>
 					<div class="col-md-4">
 						<label for="">Series</label>
-						<select name="" id="" class="form-control" ng-change="registerCounter(book)"
-							ng-options="book as book.label for book in Booklets" ng-model="book" ></select>
+						<select name="" id="" class="form-control" ng-change="registerCounter(ActiveBook)" ng-disabled="ActiveUser.user_type=='cashr'"
+							ng-options="book as book.label for book in Booklets" ng-model="ActiveBook" ></select>
 					</div>
 					<div class="col-md-4">
 						<label for="">Counter</label>
-						<input type="number" class="form-control" ng-model="book.series_counter" />
+						<input type="number" class="form-control" ng-model="ActiveBook.series_counter" />
 					</div>
 				</div>
 			</div>
 			<div class="modal-footer">
 				<button class="btn btn-default pull-left" type="button" ng-click="cancelBooklet()">Cancel</button>
-				<button class="btn btn-primary" type="button" ng-click="confirmBooklet(book)" ng-disabled="book.series_counter<InitialCtr">Confirm</button>
+				<button class="btn btn-primary" type="button" ng-click="confirmBooklet(ActiveBook)" ng-disabled="ActiveBook.series_counter<InitialCtr">Confirm</button>
 			</div>
 		</script>
 		<script type="text/ng-template" id="accountInfoBox.html">
