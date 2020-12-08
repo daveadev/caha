@@ -377,7 +377,7 @@
 					</div>
 					<div class="col-md-4">
 						<label for="">Series</label>
-						<select name="" id="" class="form-control" ng-change="registerCounter(ActiveBook)" ng-disabled="ActiveUser.user_type=='cashr'"
+						<select name="" id="" class="form-control" ng-change="registerCounter(ActiveBook)" 
 							ng-options="book as book.label for book in Booklets" ng-model="ActiveBook" ></select>
 					</div>
 					<div class="col-md-4">
@@ -388,7 +388,7 @@
 			</div>
 			<div class="modal-footer">
 				<button class="btn btn-default pull-left" type="button" ng-click="cancelBooklet()">Cancel</button>
-				<button class="btn btn-primary" type="button" ng-click="confirmBooklet(ActiveBook)" ng-disabled="ActiveBook.series_counter<InitialCtr">Confirm</button>
+				<button class="btn btn-primary" type="button" ng-click="confirmBooklet(ActiveBook)" >Confirm</button>
 			</div>
 		</script>
 		<script type="text/ng-template" id="accountInfoBox.html">
