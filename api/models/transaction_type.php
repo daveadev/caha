@@ -1,7 +1,7 @@
 <?php
 class TransactionType extends AppModel {
 	var $name = 'TransactionType';
-	var $consumableFields = array('id','name','token','amount','amounts','description','type');
+	var $consumableFields = array('id','name','token','amount','amounts','description','type','is_quantity','is_specify');
 	var $virtualFields = array(
 				'token'=>"MD5(GROUP_CONCAT(AccountSchedule.due_date,'/',AccountSchedule.due_amount))",
 				'amounts'=>"GROUP_CONCAT(AccountSchedule.due_date,'/',AccountSchedule.due_amount-AccountSchedule.paid_amount ORDER BY AccountSchedule.order)",

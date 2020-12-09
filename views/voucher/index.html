@@ -1,0 +1,80 @@
+<div ng-controller="VoucherController as VC" ng-init="VC.init()" >
+	<a-module>
+		<button class="btn btn-fab btn-primary top fixed right" ng-click="VC.openModal()"><span class="glyphicon glyphicon-plus"></span></button>
+		<a-container>
+			<a-header is-main="true">
+				<a-row>
+					<a-col size="6">
+						<h4>Vouchers</h4>
+					</a-col>
+					<a-col size="6">
+						<o-dropdown-filter ng-model="VC.Active" show-section="false" show-sem="false" show-period="false" class="pull-right" >
+						</o-dropdown-filter>
+					</a-col>
+				</a-row>
+			</a-header>
+			<a-header>
+				<a-row>
+					<a-col size="6">
+						
+					</a-col>
+					<a-col size="6">
+						<a-pager class="pull-right" meta="VC.Meta" on-navigate="VC.gotoPage" ></a-pager>
+					</a-col>
+				</a-row>
+			</a-header>
+			<a-canvas>
+				<a-content ng-show="VC.Data">
+					<a-row>
+						<a-col>
+							<a-table headers="VC.Headers" props="VC.Props" data="VC.Data"></a-table>
+						</a-col>
+					</a-row>
+				</a-content>
+				<a-content ng-show="VC.NoRecords" style="height: 100%">
+					<div class="empty-state">
+						<div class="well">
+							<div class="empty-state-icon text-center">
+								<i class="glyphicon glyphicon-exclamation-sign"></i>
+							</div>
+							<h4>No Records found!</h4>
+						</div>
+					</div>
+				</a-content>
+			</a-canvas>
+		</a-container>
+	</a-module>
+	<a-modal id="VoucherModal" title="Voucher">
+		<a-modal-body>
+			<a-row style="margin-bottom:15px;">
+				<a-col>
+					<label>Student</label>
+					<m-search-student ng-model="VC.Student">
+					</m-search-student>
+				</a-col>
+			</a-row>
+			<a-row>
+				<a-col size="6">
+					<m-formgroup label="Voucher No:" ng-model="VC.voucher_no"> </m-formgroup>
+				</a-col>
+				<a-col size="6">
+					<label>Date Issued</label>
+					<input type="date" class="form-control" ng-model="VC.date" />
+				</a-col>
+			</a-row>
+			<a-row>
+				<a-col>
+					<label>Amount</label>
+					<input type="number" class="form-control" ng-model="VC.amount" />
+				</a-col>
+			</a-row>
+		</a-modal-body>
+		<a-modal-footer>
+			<button class="btn btn-default pull-left" ng-click="VC.Cancel()">Cancel</button>
+			<button class="btn btn-primary pull-right" ng-click="VC.SaveVoucher()" ng-show="!VC.Saving">Confirm</button>
+			<button class="btn btn-primary pull-right" ng-show="VC.Saving" disabled >Saving...</button>
+		</a-modal-footer>
+	
+	</a-modal>
+
+</div>

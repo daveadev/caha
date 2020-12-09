@@ -6,14 +6,18 @@ class CashierCollectionsController extends AppController {
 	
 	function index() {
 		$this->paginate['CashierCollection']['contain'] = array('Student','Account');
-		$start = $_GET['from'];
-		$end = $_GET['to'];
+		
+		$type = $_GET['type'];
+		if(!isset($_GET['cashr'])){
+			$start = $_GET['from'];
+			$end = $_GET['to'];
+			$conds =  array('AccountHistory.ref_no LIKE'=> $type.'%','flag'=>'-','and'=>array('transac_date <='=>$end,'transac_date >='=>$start));
+		}else{
+			$date = $_GET['date'];
+			$conds =  array('AccountHistory.ref_no LIKE'=> $type.'%','flag'=>'-','transac_date'=>$date);
+		}
 		//pr($start);
-		$conds = array('OR'=>array(
-								array('AccountHistory.ref_no LIKE'=>'OR%'),
-								array('AccountHistory.ref_no LIKE'=>'AR%')
-								),
-								'flag'=>'-','and'=>array('transac_date <='=>$end,'transac_date >='=>$start));
+		//$conds =  array('AccountHistory.ref_no LIKE'=> $type.'%','flag'=>'-','and'=>array('transac_date <='=>$end,'transac_date >='=>$start));
 		$collections = $this->paginate();
 
 		$sections = $this->Section->find('all',array('recursive'=>1));

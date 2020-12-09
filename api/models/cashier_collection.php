@@ -43,7 +43,8 @@ class CashierCollection extends AppModel {
 				//$type = 'CashierCollection.type';
 				$from = 'CashierCollection.from';
 				$to = 'CashierCollection.to';
-				
+				$type = 'CashierCollection.type';
+				$date = 'CashierCollection.date';
 				if(isset($cond[$from])){
 					$start =$cond[$from];
 					unset($cond[$from]);
@@ -52,13 +53,20 @@ class CashierCollection extends AppModel {
 					$end = $cond[$to];
 					unset($cond[$to]);
 				}
+				if(isset($cond[$type])){
+					$typ = $cond[$type];
+					unset($cond[$type]);
+				}
+				if(isset($cond[$date])){
+					$dates = $cond[$date];
+					unset($cond[$date]);
+				}
 			}
-			$conds = array('OR'=>array(
-								array('CashierCollection.ref_no LIKE'=>'OR%'),
-								array('CashierCollection.ref_no LIKE'=>'AR%')
-								),
-								
-						'flag'=>'-','and'=>array('transac_date <='=>$end,'transac_date >='=>$start));
+			if(!isset($dates))
+				$conds = array('CashierCollection.ref_no LIKE'=> $typ.'%','flag'=>'-','and'=>array('transac_date <='=>$end,'transac_date >='=>$start));
+			else
+				$conds = array('CashierCollection.ref_no LIKE'=> $typ.'%','flag'=>'-','transac_date'=>$dates);
+			
 			$queryData['conditions']=$conds;
 		}
 		//pr($queryData); exit();

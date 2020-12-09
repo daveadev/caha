@@ -11,7 +11,8 @@ class ReportsController extends AppController{
 			//Student's Details
 			$this->Student->bindModel(array('belongsTo' => array('Section')));
 			$this->Student->recursive=1;
-			$student = $this->Student->find('first',array(array('Student.id'=>$account_id)));
+			$conditions = array(array('Student.id'=>$account_id));
+			$student = $this->Student->find('first',compact('conditions'));
 			
 			//Student's SOA
 			$data = $this->Ledger->find('all',array(
