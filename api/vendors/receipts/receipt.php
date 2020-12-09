@@ -56,7 +56,7 @@ class OfficialReceipt extends Formsheet{
 		//Student No.
 		$this->leftText(8,7,$data['sno'],'','');
 		//Receive payment from
-		$this->leftText(11,8.4,$data['student'],'','');
+		$this->leftText(6,8.7,$data['student'],'','');
 		//Payment for
 		$this->leftText(8,10.25,$data['sy'],'','');
 		//Year
