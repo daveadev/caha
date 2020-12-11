@@ -38,11 +38,8 @@ define(['app','api','atomic/bomb'],function(app){
 		}
 		
 		$scope.ToggleBalance = function(){
-			//$scope.Data = '';
 			$scope.HiddenBal = !$scope.HiddenBal;
-			//$scope.Data = data;
 			console.log($scope.HiddenBal);
-			console.log($scope.Data);
 		}
 		
 		var coll = [];
@@ -104,25 +101,26 @@ define(['app','api','atomic/bomb'],function(app){
 				}else{
 					var ctr = 1;
 					var currbal = 0;
-					console.log(col.payments);
 					for(var i=1;i<=9;i++){
 						if(i==1||i==5){
 							row['pay'+i]=$filter('currency')(col.payments[ctr-1].payment);
-							row['bal'+i]=$filter('currency')(col.payments[ctr-1].balance);
-							currbal = $filter('currency')(col.payments[ctr-1].balance);
+							if(!$scope.HiddenBal)
+								row['bal'+i]=$filter('currency')(col.payments[ctr-1].balance);
+							//currbal = $filter('currency')(col.payments[ctr-1].balance);
 							ctr++;
 						}else{
 							row['pay'+i]=0;
-							row['bal'+i]=$filter('currency')(currbal);
+							if(!$scope.HiddenBal)
+								row['bal'+i]=$filter('currency')(currbal);
 						}
 					}
 				}
 				
 				update_fields.push(row);
 			});
-			console.log(update_fields);
 			return update_fields;
 		}
+		
 	
 	}]);
 
