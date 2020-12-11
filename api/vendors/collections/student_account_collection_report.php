@@ -2,11 +2,12 @@
 require('vendors/fpdf17/formsheet.php');
 class StudentAccountCollection extends Formsheet{
 	protected static $_width = 8.5;
-	protected static $_height = 26;
+	protected static $_height = 13;
 	protected static $_unit = 'in';
 	protected static $_orient = 'L';	
 	protected static $curr_page = 1;
 	protected static $page_count;
+	protected static $ctr = 1.8;
 	protected static $grand_total = 0;
 	
 	function StudentAccountCollection(){
@@ -19,9 +20,9 @@ class StudentAccountCollection extends Formsheet{
 		$this->showLines = !true;
 		$metrics = array(
 			'base_x'=> 0.5,
-			'base_y'=> 0.25,
+			'base_y'=> 0.2,
 			'width'=> 7.5,
-			'height'=> 0.8,
+			'height'=> 0.7,
 			'cols'=> 38,
 			'rows'=> 4,	
 		);
@@ -38,16 +39,17 @@ class StudentAccountCollection extends Formsheet{
 		$this->showLines = !true;
 		$metrics = array(
 			'base_x'=> 0.5,
-			'base_y'=> 1.2,
-			'width'=> 25,
-			'height'=> 7,
-			'cols'=> 90,
-			'rows'=> 35,	
+			'base_y'=> 1,
+			'width'=> 12,
+			'height'=> 7.2,
+			'cols'=> 48,
+			'rows'=> 36,	
 		);
 		$this->section($metrics);
 		$y=1;
-		$this->drawBox(0,0,45,35);
-		$this->drawMultipleLines(1,34,1,'h');
+		$this->drawBox(0,0,48,36);
+		$this->drawMultipleLines(2,35,1,'h');
+		$this->drawLine(1,'h',array(24,24));
 		$this->drawLine(8,'v');
 		$this->drawLine(10,'v');
 		$this->drawLine(15,'v');
@@ -56,15 +58,16 @@ class StudentAccountCollection extends Formsheet{
 		$this->drawLine($x+=$xntrvl,'v');
 		$this->drawLine($x+=$xntrvl,'v');
 		$this->drawLine($x+=$xntrvl,'v');
+		$this->drawLine($x+=$xntrvl,'v',array(1,35));
 		$this->drawLine($x+=$xntrvl,'v');
+		$this->drawLine($x+=$xntrvl,'v',array(1,35));
 		$this->drawLine($x+=$xntrvl,'v');
+		$this->drawLine($x+=$xntrvl,'v',array(1,35));
 		$this->drawLine($x+=$xntrvl,'v');
-		$this->drawLine($x+=$xntrvl,'v');
-		$this->drawLine($x+=$xntrvl,'v');
-		$this->drawLine($x+=$xntrvl,'v');
-		$y=0.7;
+		$this->drawLine($x+=$xntrvl,'v',array(1,35));
+		$y=1.2;
 		$this->GRID['font_size']=8;
-		$this->centerText(1,$y,'Name',7,'b');
+		$this->centerText(1,$y,'Name',6,'b');
 		$this->centerText(8,$y,'Year',2,'b');
 		$this->centerText(10,$y,'Section',5,'b');
 		$x=15;
@@ -72,72 +75,109 @@ class StudentAccountCollection extends Formsheet{
 		$this->centerText($x,$y,'Total Fees',$xntrvl,'b');
 		$this->centerText($x+=$xntrvl,$y,'Subsidy',$xntrvl,'b');
 		$this->centerText($x+=$xntrvl,$y,'Fee Due',$xntrvl,'b');
+		$y=1.8;
 		$this->centerText($x+=$xntrvl,$y,'IP',$xntrvl,'b');
-		$this->centerText($x+=$xntrvl,$y,'Payment',$xntrvl,'b');
 		$this->centerText($x+=$xntrvl,$y,'Balance',$xntrvl,'b');
 		$this->centerText($x+=$xntrvl,$y,'Payment',$xntrvl,'b');
 		$this->centerText($x+=$xntrvl,$y,'Balance',$xntrvl,'b');
 		$this->centerText($x+=$xntrvl,$y,'Payment',$xntrvl,'b');
 		$this->centerText($x+=$xntrvl,$y,'Balance',$xntrvl,'b');
-		//pr($data);
-		$y++;
+		$this->centerText($x+=$xntrvl,$y,'Payment',$xntrvl,'b');
+		$this->centerText($x+=$xntrvl,$y,'Balance',$xntrvl,'b');
 		
-		//pr($data);exit;
-		foreach($data as $d){
+		pr($data);exit;
+		$y=2.8;
+		foreach($data as $hdrk=>$d){
 			$x=29.9;
-			$this->centerText(1,$y,$d['name'],7,'');
+			$this->leftText(0.2,$y,$d['name'],'','');
 			$this->centerText(8,$y,$d['year_level'],2,'');
 			$this->centerText(10,$y,$d['section'],5,'');
 			$this->rightText(17.9,$y,number_format($d['total_fees'],2),'','');
 			$this->rightText(20.9,$y,number_format($d['subsidy'],2),'','');
-			$this->rightText(23.9,$y,number_format($d['fee_dues'],2),'','');
-			/* $this->rightText(26.9,$y,number_format($d['payments'][0]['payment'],2),'','');
-			$i=1;
-			$isFirstPage=true;
-			array_shift($d['payments']);
-			foreach($d['payments'] as $pymnt){
-				
-				if($i < 4){
-					$this->rightText($x,$y,number_format($pymnt['payment'],2),'','');
-					$this->rightText($x+3,$y,number_format($pymnt['balance'],2),'','');
+			$this->rightText(23.9,$y,number_format($d['fee_dues'],2),'','');	
+			$x=26.9;
+			$hdrx = 24;
+			foreach($d['payments'] as $k=>$p){
+				if($k<4){
+					if($hdrk<1){//HEADER
+						$this->centerText($hdrx,0.8,$p['bill_month'],6,'b');	
+						$hdrx+=6;
+					}
+					//$this->rightText($x,$y,$p['bill_month'],'','');
+					$this->rightText($x,$y,number_format($p['payment'],2).' '.$k,'','');
+					$this->rightText($x+3,$y,number_format($p['balance'],2),'','');
+					$x+=6;
 				}
-				$i++;
+			}
+			$y++;
+		}
+		$this->rightText(47.9,36.8,'Page '.$page.'-0 of '.$total_page,'','');
+		
+		//2nd Col Page
+		$this->createSheet();
+		$this->drawBox(0,0,48,36);
+		$this->drawMultipleLines(2,35,1,'h');
+		$y=1.8;
+		$x=0;
+		$xntrvl=3;
+		$this->drawLine(1,'h');
+		$this->drawLine($x+=$xntrvl,'v',array(1,35));
+		$this->drawLine($x+=$xntrvl,'v');
+		$this->drawLine($x+=$xntrvl,'v',array(1,35));
+		$this->drawLine($x+=$xntrvl,'v');
+		$this->drawLine($x+=$xntrvl,'v',array(1,35));
+		$this->drawLine($x+=$xntrvl,'v');
+		$this->drawLine($x+=$xntrvl,'v',array(1,35));
+		$this->drawLine($x+=$xntrvl,'v');
+		$this->drawLine($x+=$xntrvl,'v',array(1,35));
+		$this->drawLine($x+=$xntrvl,'v');
+		$this->drawLine($x+=$xntrvl,'v',array(1,35));
+		$this->drawLine($x+=$xntrvl,'v');
+		$this->drawLine($x+=$xntrvl,'v',array(1,35));
+		$this->drawLine($x+=$xntrvl,'v');
+		$this->drawLine($x+=$xntrvl,'v',array(1,35));
+		$x=0;
+		$xntrvl=3;
+		$this->centerText($x,$y,'Payment',$xntrvl,'b');
+		$this->centerText($x+=$xntrvl,$y,'Balance',$xntrvl,'b');
+		$this->centerText($x+=$xntrvl,$y,'Payment',$xntrvl,'b');
+		$this->centerText($x+=$xntrvl,$y,'Balance',$xntrvl,'b');
+		$this->centerText($x+=$xntrvl,$y,'Payment',$xntrvl,'b');
+		$this->centerText($x+=$xntrvl,$y,'Balance',$xntrvl,'b');
+		$this->centerText($x+=$xntrvl,$y,'Payment',$xntrvl,'b');
+		$this->centerText($x+=$xntrvl,$y,'Balance',$xntrvl,'b');
+		$this->centerText($x+=$xntrvl,$y,'Payment',$xntrvl,'b');
+		$this->centerText($x+=$xntrvl,$y,'Balance',$xntrvl,'b');
+		$this->centerText($x+=$xntrvl,$y,'Payment',$xntrvl,'b');
+		$this->centerText($x+=$xntrvl,$y,'Balance',$xntrvl,'b');
+		$this->centerText($x+=$xntrvl,$y,'Payment',$xntrvl,'b');
+		$this->centerText($x+=$xntrvl,$y,'Balance',$xntrvl,'b');
+		$this->centerText($x+=$xntrvl,$y,'Payment',$xntrvl,'b');
+		$this->centerText($x+=$xntrvl,$y,'Balance',$xntrvl,'b');
+		
+		
+		$y=2.8;
+		foreach($data as $hdrk=>$d){
+			$x=2.9;
+			$hdrx=0;
+			foreach($d['payments'] as $k=>$p){
+				if ($k < 4) continue;
+				if($hdrk<1){//HEADER
+					$this->centerText($hdrx,0.8,$p['bill_month'],6,'b');	
+					$hdrx+=6;
+				}
+				//$this->rightText($x,$y,$p['bill_month'],'','');
+				$this->rightText($x,$y,number_format($p['payment'],2).' '.$k,'','');
+				$this->rightText($x+3,$y,number_format($p['balance'],2),'','');
 				$x+=6;
-			}*/
+				
+			}
 			$y++;
 		}
 		
+		$this->rightText(47.9,36.8,'Page '.$page.'-1 of '.$total_page,'','');
+
 	}
-	
-	
-	function first_page_payment($payments){
-		$this->showLines = !true;
-		$metrics = array(
-			'base_x'=> 0.5,
-			'base_y'=> 1.2,
-			'width'=> 12,
-			'height'=> 7,
-			'cols'=> 42,
-			'rows'=> 35,	
-		);
-		$this->section($metrics);
-		$y=1;
-		$this->GRID['font_size']=8;
-		$x=23.9;
-	//	pr($payments);
-		foreach($payments as $d){
-			$this->rightText($x,$y,$d['payment'],'','');
-			$this->rightText($x,$y,$d['balance'],'','');
-			$x+=6;
-		}
-		
-	}
-	
-	
-	
-	
-	
-	
 	
 }
 ?>
