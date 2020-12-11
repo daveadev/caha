@@ -137,7 +137,7 @@ class PaymentsController extends AppController {
 			}
 			
 			// save to account histories
-			if($trnx['type']=='OR'){
+			if($trnx['type']!=='AR'){
 				$history = array(
 					'account_id'=>$account_id,
 					'transac_date'=>$today,
