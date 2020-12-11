@@ -55,7 +55,7 @@ define(['app','api','atomic/bomb'],function(app){
 					getForPrint(ctr);
 				}else{
 					var final_collections = buildData(coll);
-					var print = {data:[{'total_collected':response.data[0].total_collected,'collections':final_collections}]};
+					var print = {data:[{'total_collected':response.data[0].total_collected,'collections':final_collections,'columns':$scope.Props}]};
 					$scope.forPrinting = print;
 					$scope.LoadingPrint = 0;
 				}
