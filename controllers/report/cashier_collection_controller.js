@@ -64,6 +64,12 @@ define(['app','api','atomic/bomb'],function(app){
 			api.GET('cashier_collections',data, function success(response){
 				$scope.NoCollections = 0;
 				$scope.Collections = response.data[0];
+				angular.forEach($scope.Collections.collections, function(col){
+					col.amount = $filter('currency')(col.amount);
+					col.balance = $filter('currency')(col.balance);
+					col.total_due = $filter('currency')(col.total_due);
+					col.total_paid = $filter('currency')(col.total_paid);
+				});
 				if(!$scope.Collections.total)
 					$scope.NoCollections = 1;
 				$scope.Meta = response.meta;
