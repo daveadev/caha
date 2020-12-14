@@ -35,7 +35,7 @@ class StudentAccountCollection extends Formsheet{
 		$this->leftText(0,$y++,'As of '.date("M d,Y h:i:s A"),'','');
 	}
 	
-	function data($data,$total_page,$page){
+	function data($data,$thdr,$total_page,$page){
 		$this->showLines = !true;
 		$metrics = array(
 			'base_x'=> 0.5,
@@ -85,30 +85,47 @@ class StudentAccountCollection extends Formsheet{
 		$this->centerText($x+=$xntrvl,$y,'Payment',$xntrvl,'b');
 		$this->centerText($x+=$xntrvl,$y,'Balance',$xntrvl,'b');
 		
+		$pb = array_slice($thdr, 5);
+		pr($pb);exit;
+		foreach($pb as $col){
+			
+		}
+		
 		//pr($data);exit;
 		$y=2.8;
 		foreach($data as $hdrk=>$d){
 			$x=29.9;
-			$this->leftText(0.2,$y,$d['name'],'','');
+			$this->leftText(0.2,$y,$d['student'],'','');
 			$this->centerText(8,$y,$d['year_level'],2,'');
 			$this->centerText(10,$y,$d['section'],5,'');
-			$this->rightText(17.9,$y,number_format($d['total_fees'],2),'','');
-			$this->rightText(20.9,$y,number_format($d['subsidy'],2),'','');
-			$this->rightText(23.9,$y,number_format($d['fee_dues'],2),'','');	
-			$x=26.9;
+			$this->rightText(17.9,$y,$d['fee'],'','');
+			$this->rightText(20.9,$y,$d['subsidy'],'','');
+			//$this->rightText(23.9,$y,'','','');	
+			
+			$x=23.9;
+			$this->rightText($x+=3,$y,$d['pay1'],'','');
+			$this->rightText($x+=3,$y,$d['bal1'],'','');
+			$this->rightText($x+=3,$y,$d['pay2'],'','');
+			$this->rightText($x+=3,$y,$d['bal2'],'','');
+			$this->rightText($x+=3,$y,$d['pay3'],'','');
+			$this->rightText($x+=3,$y,$d['bal3'],'','');
+			$this->rightText($x+=3,$y,$d['pay4'],'','');
+			$this->rightText($x+=3,$y,$d['bal4'],'','');
+			
+			/*
 			$hdrx = 24;
-			foreach($d['payments'] as $k=>$p){
+			 foreach($d['payments'] as $k=>$p){
 				if($k<4){
-					if($hdrk<1){//HEADER
+				 	if($hdrk<1){//HEADER
 						$this->centerText($hdrx,0.8,$p['bill_month'],6,'b');	
 						$hdrx+=6;
-					}
+					} 
 					//$this->rightText($x,$y,$p['bill_month'],'','');
 					$this->rightText($x,$y,number_format($p['payment'],2).' '.$k,'','');
 					$this->rightText($x+3,$y,number_format($p['balance'],2),'','');
 					$x+=6;
 				}
-			}
+			} */
 			$y++;
 		}
 		$this->rightText(47.9,36.8,'Page '.$page.'-0 of '.$total_page,'','');
@@ -148,18 +165,23 @@ class StudentAccountCollection extends Formsheet{
 		$this->centerText($x+=$xntrvl,$y,'Balance',$xntrvl,'b');
 		$this->centerText($x+=$xntrvl,$y,'Payment',$xntrvl,'b');
 		$this->centerText($x+=$xntrvl,$y,'Balance',$xntrvl,'b');
-		$this->centerText($x+=$xntrvl,$y,'Payment',$xntrvl,'b');
-		$this->centerText($x+=$xntrvl,$y,'Balance',$xntrvl,'b');
-		$this->centerText($x+=$xntrvl,$y,'Payment',$xntrvl,'b');
-		$this->centerText($x+=$xntrvl,$y,'Balance',$xntrvl,'b');
-		$this->centerText($x+=$xntrvl,$y,'Payment',$xntrvl,'b');
-		$this->centerText($x+=$xntrvl,$y,'Balance',$xntrvl,'b');
 		
 		
 		$y=2.8;
 		foreach($data as $hdrk=>$d){
-			$x=2.9;
-			$hdrx=0;
+			$x=-0.1;
+			$this->rightText($x+=3,$y,$d['pay5'],'','');
+			$this->rightText($x+=3,$y,$d['bal5'],'','');
+			$this->rightText($x+=3,$y,$d['pay6'],'','');
+			$this->rightText($x+=3,$y,$d['bal6'],'','');
+			$this->rightText($x+=3,$y,$d['pay7'],'','');
+			$this->rightText($x+=3,$y,$d['bal7'],'','');
+			$this->rightText($x+=3,$y,$d['pay8'],'','');
+			$this->rightText($x+=3,$y,$d['bal8'],'','');
+			$this->rightText($x+=3,$y,$d['pay9'],'','');
+			$this->rightText($x+=3,$y,$d['bal9'],'','');
+			
+			/* $hdrx=0;
 			foreach($d['payments'] as $k=>$p){
 				if ($k < 4) continue;
 				if($hdrk<1){//HEADER
@@ -171,7 +193,7 @@ class StudentAccountCollection extends Formsheet{
 				$this->rightText($x+3,$y,number_format($p['balance'],2),'','');
 				$x+=6;
 				
-			}
+			} */
 			$y++;
 		}
 		
