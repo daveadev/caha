@@ -38,8 +38,9 @@ define(['app','api','atomic/bomb'],function(app){
 		}
 		
 		$scope.ToggleBalance = function(){
+			$scope.LoadingPrint = 1;
 			$scope.HiddenBal = !$scope.HiddenBal;
-			console.log($scope.HiddenBal);
+			getForPrint(1);
 		}
 		
 		var coll = [];
@@ -56,6 +57,8 @@ define(['app','api','atomic/bomb'],function(app){
 				}else{
 					var final_collections = buildData(coll);
 					var print = {data:[{'total_collected':response.data[0].total_collected,'collections':final_collections,'columns':$scope.Props}]};
+					if($scope.HiddenBal)
+						print.data[0].columns = $scope.HHeaders;
 					$scope.forPrinting = print;
 					$scope.LoadingPrint = 0;
 				}
@@ -95,7 +98,9 @@ define(['app','api','atomic/bomb'],function(app){
 					var ctr = 1;
 					angular.forEach(col.payments, function(sched){
 						row['pay'+ctr]=$filter('currency')(sched.payment);
-						row['bal'+ctr]=$filter('currency')(sched.balance);
+						if(!$scope.HiddenBal)
+							row['bal'+ctr]=$filter('currency')(sched.balance);
+						
 						ctr++;
 					});
 				}else{

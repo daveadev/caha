@@ -13,4 +13,27 @@ class Ledger extends AppModel {
 			'order' => ''
 		)
 	);
+	
+	function beforeFind($queryData){
+		//pr($queryData); exit();
+		if($conds=$queryData['conditions']){
+			foreach($conds as $i=>$cond){
+				if(!is_array($cond))
+					break;
+				$keys =  array_keys($cond);
+				$search = 'Ledger.rect';
+				
+				if(in_array($search,$keys)){
+					$cond['Ledger.ref_no LIKE']='OR %';
+					unset($cond[$search]);
+				}
+				$conds[$i]=$cond;
+				//pr($conds);
+			}
+			
+			$queryData['conditions']=$conds;
+		}
+		
+		return $queryData;
+	}
 }
