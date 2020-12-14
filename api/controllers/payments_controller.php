@@ -56,7 +56,7 @@ class PaymentsController extends AppController {
 			$booklet['status'] = 'INACTV';
 		
 		
-		pr($booklet); exit();
+		//pr($booklet); exit();
 		$transac_payments = array();
 		$ledger_accounts = array();
 		$account_transac = array();

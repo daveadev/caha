@@ -58,7 +58,7 @@ define(['app','api','atomic/bomb'],function(app){
 					var final_collections = buildData(coll);
 					var print = {data:[{'total_collected':response.data[0].total_collected,'collections':final_collections,'columns':$scope.Props}]};
 					if($scope.HiddenBal)
-						print.data[0].columns = $scope.HProps;
+						print.data[0].columns = $scope.HHeaders;
 					$scope.forPrinting = print;
 					$scope.LoadingPrint = 0;
 				}
