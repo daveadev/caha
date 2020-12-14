@@ -32,7 +32,8 @@
 							<div class="col-md-6">
 								<dl>
 									<label>Series No.</label>
-									<dd><h3 class="amount pull-left" style="width:100%; text-align: left; margin-top:0">{{ActiveBooklet.series_counter}}</h3></dd>
+									<dd><h3 class="amount pull-left" style="width:40%; text-align: left; margin-top:0">{{ActiveBooklet.series_counter}}</h3> <button class="btn btn-default" ng-click="displaySettings()">CHANGE</button></dd> 
+									<br />
 									<dt>Date</dt>{{Today | date:'dd MMM yyyy'}}
 									<dt>Account</dt>
 									<dd>{{ActiveStudent.sno}} | {{ActiveStudent.name}}</dd>
@@ -76,7 +77,7 @@
 								</tr>
 								<tr ng-show="ActiveTransactions.length" ng-repeat="transaction in ActiveTransactions">
 									<td>{{transaction.name}}</td>
-									<td ng-show="transaction.qty">{{transaction.qty}}</td>
+									<td ng-show="ActiveTyp=='AR'" class="text-center">{{transaction.qty}} <span ng-show="!transaction.qty">1</span></td>
 									<td><div class="amount" ng-class="{peso:$first}">{{transaction.amount | currency}}</div></td>
 								</tr>
 							</tbody>
@@ -375,20 +376,32 @@
 							</button>
 						</div>
 					</div>
-					<div class="col-md-4">
+					<div class="col-md-8">
 						<label for="">Series</label>
 						<select name="" id="" class="form-control" ng-change="registerCounter(ActiveBook)" 
 							ng-options="book as book.label for book in Booklets" ng-model="ActiveBook" ></select>
 					</div>
-					<div class="col-md-4">
+					<div class="col-md-12" style="margin-top:10px;">
 						<label for="">Counter</label>
-						<input type="number" class="form-control" ng-model="ActiveBook.series_counter" />
+						<div class="input-group input-amount">
+							<span class="input-group-addon">{{ActiveTyp}} #</span>
+							<input type="number" class="form-control" ng-model="ActiveBook.series_counter" min="{{ActiveBook.series_start}}" />
+						</div>
+					</div>
+					<div class="col-md-12 " style="margin-top:10px;">
+						<label for="">Confirmation</label>
+						<div class="btn-group" role="group" aria-label="Conf" style="width: 100%">
+							<button type="button" class="btn btn-lg btn-default" ng-click="MarkReceipt(act)" ng-class="{'btn-primary':ActiveMark.id==act.id}"
+								ng-repeat="act in Actions" style="width:50%;" >
+								<span class="pull-left glyphicon {{act.class}}"></span> {{act.desc}}
+							</button>
+						</div>
 					</div>
 				</div>
 			</div>
 			<div class="modal-footer">
 				<button class="btn btn-default pull-left" type="button" ng-click="cancelBooklet()">Cancel</button>
-				<button class="btn btn-primary" type="button" ng-click="confirmBooklet(ActiveBook)" >Confirm</button>
+				<button class="btn btn-primary" type="button" ng-click="confirmBooklet(ActiveBook)" ng-disabled="!ActiveMark||ActiveBooklet.series_counter==InitialCtr">Confirm</button>
 			</div>
 		</script>
 		<script type="text/ng-template" id="accountInfoBox.html">

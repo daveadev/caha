@@ -30,7 +30,33 @@ class PaymentsController extends AppController {
 		// booklet =  $this->Booklet->find('first');
 		// series_no =  $booklet['Booklet']['receipt_type'] .' '. $booklet['Booklet']['series_counter'];
 		// 
+		if($booklet['series_counter']<$booklet['series_end']){
+			if(isset($booklet['mark'])){
+				if($booklet['mark']=='bypass'){
+					$booklet['series_counter']=$booklet['InitialCtr'];
+				}else{
+					$series=$booklet['series_counter']+1;
+					do{
+					$result = $this->Ledger->find('first',array('recursive'=>0,'conditions'=>array('Ledger.ref_no'=>'OR '.$series)));
+						$series++;
+					}while(!empty($result));
+					$series--;
+					$booklet['series_counter'] = $series;
+				}
+			}else{
+				$series=$booklet['series_counter']+1;
+				do{
+				$result = $this->Ledger->find('first',array('recursive'=>0,'conditions'=>array('Ledger.ref_no'=>'OR '.$series)));
+					$series++;
+				}while(!empty($result));
+				$series--;
+				$booklet['series_counter'] = $series;
+			}
+		}else
+			$booklet['status'] = 'INACTV';
 		
+		
+		pr($booklet); exit();
 		$transac_payments = array();
 		$ledger_accounts = array();
 		$account_transac = array();
@@ -272,10 +298,6 @@ class PaymentsController extends AppController {
 		}
 		
 		
-		if($booklet['series_counter']<$booklet['series_end'])
-			$booklet['series_counter'] = $booklet['series_counter']+1;
-		else
-			$booklet['status'] = 'INACTV';
 		
 		$DataCollection = array(
 			'TransactionPayment'=>$transac_payments,

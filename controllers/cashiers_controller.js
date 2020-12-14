@@ -386,6 +386,9 @@ define(['app', 'api'], function(app) {
 						},
 						booklets:function(){
 							return $scope.Booklets;
+						},
+						activeSY:function(){
+							return $scope.ActiveSY;
 						}
 					}
                 });
@@ -505,16 +508,23 @@ define(['app', 'api'], function(app) {
 			}
         };
     }]);
-    app.register.controller('BookletModalController', ['$scope', '$rootScope', '$uibModalInstance', 'api','rectTypes','actType','book','booklets',
-	function($scope, $rootScope, $uibModalInstance, api,rectTypes,actType,book,booklets) {
+    app.register.controller('BookletModalController', ['$scope', '$rootScope', '$uibModalInstance', 'api','rectTypes','actType','book','booklets','activeSY',
+	function($scope, $rootScope, $uibModalInstance, api,rectTypes,actType,book,booklets,activeSY) {
         //Get the data entered and push it to booklets.js
+		$scope.ActiveSY = activeSY;
 		$scope.ActiveUser = $rootScope.__USER.user;
 		$scope.InitialCtr = book.series_counter;
 		$scope.RectTypes = rectTypes;
 		$scope.ActiveTyp = actType;
 		$scope.Booklets = booklets;
 		$scope.ActiveBook = book;
-		
+		$scope.Actions = [
+			{id:'byps','desc':'Bypass this time only','class':'glyphicon-random'},
+			{id:'skip','desc':'Skip and update counter','class':'glyphicon-fast-forward'},
+			
+		];
+		$scope.ActiveMark = {id:'byps','desc':'Bypass this time only','class':'glyphicon-random'};
+		getOrs();
 		
 		$scope.setActiveType = function(typ){
 			$scope.ActiveBook = '';
@@ -523,20 +533,26 @@ define(['app', 'api'], function(app) {
 		}
 		
         $scope.confirmBooklet = function(book) {
-            //
-			console.log(book);
-			if(book.series_counter<$scope.InitialCtr){
-				alert('Lower counter not allowed!'); 
-				return;
+            
+			if($scope.ActiveTyp=='OR'){
+				var ctr = 'OR '+book.series_counter;
+				if($scope.ORs.indexOf(ctr)!==-1){
+					alert('This reference # is already used in the records');
+					return;
+				}
 			}
 			var yes = confirm('Save series counter?');
 			if(yes){
 				//var data = {series_counter:book.series_counter};
-				api.POST('booklets', book, function success(response){
+				if($scope.ActiveMark.id=='byps'){
+					book.InitialCtr = $scope.InitialCtr;
+					book.mark = 'bypass';
+				}else
+					book.mark = 'skip';
 					
-					$uibModalInstance.close($scope.ActiveBook);
-					$rootScope.__MODAL_OPEN = false;
-				});
+				$uibModalInstance.close($scope.ActiveBook);
+				$rootScope.__MODAL_OPEN = false;
+			
 			}else{
 				return false;
 			}
@@ -553,6 +569,15 @@ define(['app', 'api'], function(app) {
 			$scope.InitialCtr = book.series_counter;
 		}
 		
+		$scope.MarkReceipt = function(action){
+			$scope.ActiveMark = action;
+			if(action.id=='byps'){
+				
+			}else{
+				
+			}
+		}
+		
 		function getBooklet(){
 			var data = {
 				receipt_type:$scope.ActiveTyp
@@ -564,6 +589,24 @@ define(['app', 'api'], function(app) {
 				$scope.Booklets = response.data;
 				$scope.ActiveBook = response.data[0];
 				$scope.InitialCtr = $scope.ActiveBook.series_counter;
+			});
+		}
+		
+		function getOrs(){
+			var data = {
+				type:'-',
+				rect:'OR',
+				esp:$scope.ActiveSY,
+				limit:'less'
+			}
+			
+			api.GET('ledgers',data, function success(response){
+				var ORs = response.data;
+				$scope.ORs = [];
+				angular.forEach(ORs, function(or){
+					$scope.ORs.push(or.ref_no);
+				});
+				console.log($scope.ORs);
 			});
 		}
 		
