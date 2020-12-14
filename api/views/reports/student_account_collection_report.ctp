@@ -2,7 +2,7 @@
 App::import('Vendor','collections/student_account_collection_report');
 
 $chunk_data = array_chunk($data['data'][0]['collections'],34,true);
-//pr($data);exit;
+pr($data);exit;
 $total_page = count($chunk_data);
 $i = 1;
 

@@ -67,6 +67,10 @@
 			"/ar",
 			array("controller"=>"reports","action"=>"acknowledgement_receipt")
 	);
+	Router::connect(
+			"/daily_remittance",
+			array("controller"=>"reports","action"=>"daily_remittance")
+	);
 	
 	
 	

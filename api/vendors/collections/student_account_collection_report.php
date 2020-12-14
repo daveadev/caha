@@ -85,7 +85,7 @@ class StudentAccountCollection extends Formsheet{
 		$this->centerText($x+=$xntrvl,$y,'Payment',$xntrvl,'b');
 		$this->centerText($x+=$xntrvl,$y,'Balance',$xntrvl,'b');
 		
-		pr($data);exit;
+		//pr($data);exit;
 		$y=2.8;
 		foreach($data as $hdrk=>$d){
 			$x=29.9;

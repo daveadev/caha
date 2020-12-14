@@ -134,4 +134,8 @@ class ReportsController extends AppController{
 		$this->set(compact('data'));
 	}
 	
+	function daily_remittance(){
+		$data = array();
+		$this->set(compact('data'));
+	}
 }
