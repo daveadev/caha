@@ -33,17 +33,39 @@ define(['app','api','atomic/bomb'],function(app){
 		}
 		
 		$scope.Print = function(){
-			console.log($scope.forPrinting);
+			if(print.data[0].hidden!=$scope.HiddenBal){
+				var final_collections = buildData(coll);
+				print = {data:[{'collections':final_collections,'columns':$scope.Headers}]};
+				print.data[0].collections = final_collections;
+				print.data[0].columns = $scope.Headers;
+				if($scope.HiddenBal){
+					print.data[0].columns = $scope.HHeaders;
+					print.data[0].hidden = true;
+				}else
+					print.data[0].hidden = false;
+				$scope.forPrinting = print;
+			}
 			document.getElementById('PrintStudentAccount').submit();
 		}
 		
 		$scope.ToggleBalance = function(){
-			$scope.LoadingPrint = 1;
 			$scope.HiddenBal = !$scope.HiddenBal;
-			getForPrint(1);
+			if(print.data){
+				var final_collections = buildData(coll);
+				print = {data:[{'collections':final_collections,'columns':$scope.Headers}]};
+				print.data[0].collections = final_collections;
+				print.data[0].columns = $scope.Headers;
+				if($scope.HiddenBal){
+					print.data[0].columns = $scope.HHeaders;
+					print.data[0].hidden = true;
+				}else
+					print.data[0].hidden = false;
+				$scope.forPrinting = print;
+			}
 		}
 		
 		var coll = [];
+		var print = {};
 		function getForPrint(ctr){
 			var data = {
 				limit:50,
@@ -55,8 +77,9 @@ define(['app','api','atomic/bomb'],function(app){
 					ctr++;
 					getForPrint(ctr);
 				}else{
+					console.log(coll);
 					var final_collections = buildData(coll);
-					var print = {data:[{'total_collected':response.data[0].total_collected,'collections':final_collections,'columns':$scope.Props}]};
+					print = {data:[{'total_collected':response.data[0].total_collected,'collections':final_collections,'columns':$scope.Headers}]};
 					if($scope.HiddenBal)
 						print.data[0].columns = $scope.HHeaders;
 					$scope.forPrinting = print;
