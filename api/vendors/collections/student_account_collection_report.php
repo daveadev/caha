@@ -84,12 +84,22 @@ class StudentAccountCollection extends Formsheet{
 		$this->centerText($x+=$xntrvl,$y,'Balance',$xntrvl,'b');
 		$this->centerText($x+=$xntrvl,$y,'Payment',$xntrvl,'b');
 		$this->centerText($x+=$xntrvl,$y,'Balance',$xntrvl,'b');
-/* 		
+		
 		$pb = array_slice($thdr, 5);
-		pr($pb);exit;
-		foreach($pb as $col){
-			
-		} */
+		
+		//pr($pb);exit;
+		$x=24;
+		$xntrvl=6;
+		$y=0.8;
+		foreach($pb as $k => $col){
+			if($k<8){
+				if ($k % 2 == 0) {
+					$hdr = explode(" ",$col);
+					$this->centerText($x,$y,$hdr[0],$xntrvl,'b');
+					$x+=$xntrvl;
+				}
+			}
+		}
 		
 		//pr($data);exit;
 		$y=2.8;
@@ -111,6 +121,7 @@ class StudentAccountCollection extends Formsheet{
 			$this->rightText($x+=3,$y,$d['bal3'],'','');
 			$this->rightText($x+=3,$y,$d['pay4'],'','');
 			$this->rightText($x+=3,$y,$d['bal4'],'','');
+			
 			
 			/*
 			$hdrx = 24;
@@ -165,6 +176,19 @@ class StudentAccountCollection extends Formsheet{
 		$this->centerText($x+=$xntrvl,$y,'Balance',$xntrvl,'b');
 		$this->centerText($x+=$xntrvl,$y,'Payment',$xntrvl,'b');
 		$this->centerText($x+=$xntrvl,$y,'Balance',$xntrvl,'b');
+		
+		$x=0;
+		$xntrvl=6;
+		$y=0.8;
+		foreach($pb as $k => $col){
+			if ($k < 8) continue;
+				if ($k % 2 == 0) {
+					$hdr = explode(" ",$col);
+					$this->centerText($x,$y,$hdr[0],$xntrvl,'b');
+					$x+=$xntrvl;
+				}
+			
+		}
 		
 		
 		$y=2.8;
