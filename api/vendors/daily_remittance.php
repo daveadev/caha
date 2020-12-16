@@ -52,18 +52,24 @@ class DailyRemittance extends Formsheet{
 		$this->GRID['font_size']=9;
 		
 		$this->drawBox(0,0,14,30);
+		$this->drawLine(1,'h',array(3,8));
 		$this->drawLine(3,'v');
-		$this->drawLine(7,'v');
+		$this->drawLine(7,'v',array(1,29));
 		$this->drawLine(11,'v');
-		$this->drawLine(14,'v');
 		$this->drawMultipleLines(2,29,1,'h');
-		$this->leftText(0.2,-0.3,'OR','','');
-		$this->centerText(3,-0.3,'SERIES',8,'');
+		$this->leftText(0,-0.3,'Doc Type: OR','','');
 		$y = 1.2;
 		$this->leftText(0.2,$y,'Booklet No.','','');
-		$this->centerText(3,$y,'From',4,'');
-		$this->centerText(7,$y,'To',4,'');
+		
+		$this->centerText(3,$y-0.5,'SERIES',8,'');
+		$this->centerText(3,$y+0.5,'From',4,'');
+		$this->centerText(7,$y+0.5,'To',4,'');
 		$this->centerText(11,$y,'Amount',3,'');
+		
+		
+		$y = 36;
+		$this->GRID['font_size']=7;
+		$this->leftText(0,$y,'Date & Time Printed:','','');
 	}
 	
 	function cash_breakdown(){
