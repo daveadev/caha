@@ -84,12 +84,12 @@ class StudentAccountCollection extends Formsheet{
 		$this->centerText($x+=$xntrvl,$y,'Balance',$xntrvl,'b');
 		$this->centerText($x+=$xntrvl,$y,'Payment',$xntrvl,'b');
 		$this->centerText($x+=$xntrvl,$y,'Balance',$xntrvl,'b');
-		
+/* 		
 		$pb = array_slice($thdr, 5);
 		pr($pb);exit;
 		foreach($pb as $col){
 			
-		}
+		} */
 		
 		//pr($data);exit;
 		$y=2.8;
