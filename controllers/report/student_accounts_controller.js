@@ -6,16 +6,16 @@ define(['app','api','atomic/bomb'],function(app){
 		$scope = this;
 		$scope.init = function(){
 			$rootScope.__MODULE_NAME = 'Student Accounts Collection';
-			$scope.Headers = ['Student','Year Level','Section','Fee Dues','Subsidy','IP Pay','IP Bal','SEP-20 Pay','SEP-20 Bal','OCT-20 Pay','OCT-20 Bal','NOV-20 Pay','NOV-20 Bal','DEC-20 Pay','DEC-20 Bal','JAN-21 Pay','JAN-21 Bal','FEB-21 Pay','FEB-21 Bal','MAR-21 Pay','MAR-21 Bal','APR-21 Pay','APR-21 Bal'];
+			$scope.Headers = ['Student','Year Level','Section','Total Fees','Subsidy','Fee Dues','IP Pay','IP Bal','SEP-20 Pay','SEP-20 Bal','OCT-20 Pay','OCT-20 Bal','NOV-20 Pay','NOV-20 Bal','DEC-20 Pay','DEC-20 Bal','JAN-21 Pay','JAN-21 Bal','FEB-21 Pay','FEB-21 Bal','MAR-21 Pay','MAR-21 Bal','APR-21 Pay','APR-21 Bal'];
 			$scope.Props = [
-				'student','year_level','section','fee','subsidy','pay1','bal1','pay2','bal2',
+				'student','year_level','section','fee','subsidy','fee_dues','pay1','bal1','pay2','bal2',
 				'pay3','bal3','pay4','bal4','pay5','bal5',
 				'pay6','bal6','pay7','bal7','pay8','bal8',
 				'pay9','bal9'
 			];
-			$scope.HHeaders = ['Student','Year Level','Section','Fee Dues','Subsidy','IP Pay','SEP-20 Pay','OCT-20 Pay','NOV-20 Pay','DEC-20 Pay','JAN-21 Pay','FEB-21 Pay','MAR-21 Pay','APR-21 Pay',];
+			$scope.HHeaders = ['Student','Year Level','Section','Total Fees','Subsidy','Fee Dues','IP Pay','SEP-20 Pay','OCT-20 Pay','NOV-20 Pay','DEC-20 Pay','JAN-21 Pay','FEB-21 Pay','MAR-21 Pay','APR-21 Pay',];
 			$scope.HProps = [
-				'student','year_level','section','fee','subsidy','pay1','pay2',
+				'student','year_level','section','fee','subsidy','fee_dues','pay1','pay2',
 				'pay3','pay4','pay5','pay6','pay7','pay8',
 				'pay9',
 			];
@@ -116,6 +116,8 @@ define(['app','api','atomic/bomb'],function(app){
 				row['section']=col.section;
 				row['fee'] = $filter('currency')(col.total_fees);
 				row['subsidy'] = $filter('currency')(col.subsidy);
+				row['fee_dues'] = $filter('currency')(col.total_fees-col.subsidy);
+				
 				
 				if(col.payments.length>2){
 					var ctr = 1;
