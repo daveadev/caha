@@ -1,7 +1,7 @@
 "use strict";
 define(['app','api','atomic/bomb'],function(app){
-	app.register.controller('CashierController',['$scope','$rootScope','api','$filter',
-	function($scope,$rootScope,api,$filter){
+	app.register.controller('CashierController',['$scope','$rootScope','api','$filter','aModal',
+	function($scope,$rootScope,api,$filter,aModal){
 		const $selfScope =  $scope;
 		$scope = this;
 		$scope.init = function(){
@@ -12,9 +12,23 @@ define(['app','api','atomic/bomb'],function(app){
 			$scope.Headers = ['cnt','Sno','Received from','Level','Section','Status','Date','Particular','Ref no',{label:'Amount',class:'amount total'},{label:'Total Due',class:'amount total'},{label:'Total Paid',class:'amount total'},{label:'Balance',class:'amount total'},];
 			$scope.CProps = ['cnt','sno','received_from','level','section','status','date','particulars','ref_no','amount'];
 			$scope.Props = ['cnt','sno','received_from','level','section','status','date','particulars','ref_no','amount','total_due','total_paid','balance'];
+			$scope.Tabs = [{id:1,name:'Breakdown'},{id:2,name:'Booklets'}];
+			$scope.ActiveTab = 1;
+			$scope.Dinominations = [
+				{denomination:1000.00,quantity:0},
+				{denomination:500.00,quantity:0},
+				{denomination:200.00,quantity:0},
+				{denomination:100.00,quantity:0},
+				{denomination:50.00,quantity:0},
+				{denomination:20.00,quantity:0},
+				{denomination:10.00,quantity:0},
+				{denomination:5.00,quantity:0},
+				{denomination:1.00,quantity:0},
+			];
+			$scope.Total = 0;
 			getTransacs();
 			$scope.ActiveUser = $rootScope.__USER.user;
-			console.log($scope.ActiveUser);
+			getCashier();
 		}
 		$selfScope.$watch("CS.Active",function(active){
 			if(!active) return false;
@@ -29,6 +43,7 @@ define(['app','api','atomic/bomb'],function(app){
 		}
 		$scope.LoadReport = function(){
 			getCollections(1);
+			getRemittance();
 		}
 		
 		$scope.gotoPage = function(page){
@@ -45,6 +60,34 @@ define(['app','api','atomic/bomb'],function(app){
 			document.getElementById('PrintCashierCollection').submit();
 		}
 		
+		$scope.openModal = function(){
+			
+			aModal.open("RemitModal");
+		}
+		
+		$scope.Cancel = function(){
+			aModal.close("RemitModal");
+		}
+		
+		$scope.ComputeTotal = function(){
+			$scope.Total = 0;
+			angular.forEach($scope.Dinominations, function(d){
+				d.amount = d.denomination*d.quantity;
+				$scope.Total += d.amount;
+			});
+		}
+		
+		$scope.SaveNPrint = function(){
+			
+		}
+		
+		function getCashier(){
+			var data = {id:$scope.ActiveUser.id}
+			api.GET('users',data,function success(response){
+				$scope.ActiveUser.cashier_id = response.data[0].cashier_id;
+				$scope.ActiveUser.cashier_name = response.data[0].cashier;
+			});
+		}
 		
 		function getCollections(page){
 			var data = {
@@ -98,6 +141,25 @@ define(['app','api','atomic/bomb'],function(app){
 				})
 				$scope.Transacs = Trnx;
 				console.log(Trnx);
+			});
+		}
+		
+		function getRemittance(){
+			var data = {
+				cashier_id: $scope.ActiveUser.cashier_id
+			};
+			data.remittance_date = $filter('date')(new Date($scope.cash_date),'yyyy-MM-dd');
+			console.log(data);
+			api.GET('remittances',data, function success(response){
+				$scope.Remittance = response.data[0].breakdown;
+				$scope.Total = 0;
+				angular.forEach($scope.Remittance, function(rem){
+					$scope.Total += rem.amount;
+				});
+				$scope.Remitted = true;
+			},function error(response){
+				$scope.Remittance = $scope.Dinominations;
+				$scope.Remitted = false;
 			});
 		}
 		

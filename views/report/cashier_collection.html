@@ -63,6 +63,8 @@
 						</a-col>
 						<a-col size="6">
 							<a-pager class="pull-right" meta="CS.Meta" on-navigate="CS.gotoPage"></a-pager>
+							<button class="btn btn-primary pull-right" ng-click="CS.openModal()" ng-show="CS.ActiveUser.user_type=='cashr'" ng-if="!CS.Remitted" >REMIT</button>
+							<button class="btn btn-primary pull-right" ng-click="CS.openModal()" ng-show="CS.ActiveUser.user_type=='cashr'" ng-if="CS.Remitted" >VIEW REMITTANCE</button>
 						</a-col>
 					</a-row>
 					<a-row>
@@ -149,4 +151,52 @@
 			</a-canvas>
 		</a-container>
 	</a-module>
+	<a-modal id="RemitModal" title="Daily Remittance">
+		<a-modal-body>
+			<a-row>
+				<a-col size="6">
+					<h4>Remittance Date</h4>
+					<h4>{{CS.cash_date | date:'dd MMM yyyy' }}</h4>
+				</a-col>
+				<a-col size="6" class="text-right">
+					<h4 >Total Collection</h4>
+					<h4 class="total amount peso">{{CS.Collections.total | currency }}</h4>
+				</a-col>
+			</a-row>
+			<a-navtab ng-model="CS.ActiveTab" options="CS.Tabs" ></a-navtab>
+			<a-row ng-show="CS.ActiveTab==1" >
+				<a-col>
+					<h4 class="amount total peso"> Diff. {{CS.Total - CS.Collections.total | currency }}</h4>
+					<table class="table table-bordered table-condensed">
+						<thead>
+							<tr>
+								<th>Denomination</th>
+								<th class="col-md-3">Quantity</th>
+								<th>Amount</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr ng-repeat="item in CS.Remittance">
+								<td class="amount total">{{item.denomination | currency}}</td>
+								<td>
+									<input type="number" class="form-control" ng-model="item.quantity" min="0" ng-change="CS.ComputeTotal()" ng-disabled="CS.Remitted" />
+								</td>
+								<td class="amount total">{{item.denomination * item.quantity | currency}}</td>
+							</tr>
+						</tbody>
+						<tfoot>
+							<tr>
+								<td colspan="2">Total</td>
+								<td class="amount total">{{CS.Total | currency}}</td>
+							</tr>
+						</tfoot>
+					</table>
+				</a-col>
+			</a-row>
+		</a-modal-body>
+		<a-modal-footer>
+			<button class="btn btn-default pull-left" ng-click="CS.Cancel()">Cancel</button>
+			<button class="btn btn-primary" ng-disabled="CS.Total!==CS.Collections.total">Print</button>
+		</a-modal-footer>
+	</a-modal>
 </div>
