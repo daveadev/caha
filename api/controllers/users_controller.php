@@ -32,8 +32,23 @@ class UsersController extends AppController {
 	}
 	function index() {
 		$this->User->recursive = 0;
-		//pr($this->paginate()); exit();
-		$this->set('users', $this->paginate());
+		$users = $this->paginate();
+		if($this->isAPIRequest()){
+			foreach($users as $i => $user){
+				$t = array();
+				$t['id'] = $user['User']['id'];
+				$t['username'] = $user['User']['username'];
+				$t['user_type_id'] = $user['User']['user_type_id'];
+				if(isset($user['Cashier'][0])){
+					//pr($user);
+					$t['cashier_id'] = $user['Cashier'][0]['id'];
+					$t['cashier'] = $user['Cashier'][0]['employee_name'];
+				}
+				$users[$i]=array('User'=>$t);
+			}
+		} 
+		$this->set('users', $users);
+		
 	}
 
 	function view($id = null) {
