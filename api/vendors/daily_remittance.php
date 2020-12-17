@@ -66,6 +66,16 @@ class DailyRemittance extends Formsheet{
 		$this->centerText(7,$y+0.5,'To',4,'');
 		$this->centerText(11,$y,'Amount',3,'');
 		
+		//data
+		$y=2.7;
+		for($i=1;$i<10;$i++){
+			$this->leftText(0.2,$y,'Booklet No.'. $i,'','');
+			$this->centerText(3,$y,'xx',4,'');
+			$this->centerText(7,$y,'xxx',4,'');
+			$this->centerText(11,$y,'xxxx',3,'');
+			$y++;
+		}
+		
 		
 		$y = 36;
 		$this->GRID['font_size']=7;
@@ -97,17 +107,30 @@ class DailyRemittance extends Formsheet{
 		$this->centerText(0,$y,'Denomination',4,'');
 		$this->centerText(4,$y,'Qty',2,'');
 		$this->centerText(6,$y,'Amount',3,'');
+		
+		//data
+		$y=2.7;
+		for($i=1;$i<10;$i++){
+			$this->leftText(0.2,$y,'Denomination '.$i,'','');
+			$this->centerText(4,$y,'xx',2,'');
+			$this->centerText(6,$y,'xxx',3,'');
+			$y++;
+		}
+		
 	
 		$y = 20.8;
 		$this->rightText(5.8,$y,'Total','','');
+		$this->leftText(6.2,$y,'xx','','');
 		
 		$y=24.8;
 		$this->leftText(0,$y,'Prepared:','','');
 		$this->drawLine($y+0.2,'h',array(3,5));
+		$this->centerText(3,$y,'xx',5,'');
 		$this->centerText(3,$y+1,'Cashier',5,'');
 		$y+=4;
 		$this->leftText(0,$y,'Recived:','','');
 		$this->drawLine($y+0.2,'h',array(3,5));
+		$this->centerText(3,$y,'xx',5,'');
 		$this->centerText(3,$y+1,'Signature Over Printed Name',5,'');
 	}
 	
