@@ -13,7 +13,7 @@ foreach($chunk_data as $k=>$dt){
 	if(!$data['data'][0]['hidden']){
 		$pr->data($dt,$thdr,$total_page,$i);
 	}else{
-		//$pr->hidden_balance($dt,$thdr,$total_page,$i);
+		$pr->hidden_balance($dt,$thdr,$total_page,$i);
 	}
 	if(count($chunk_data) != ($i++)){
 		$pr->createSheet();
