@@ -10,7 +10,11 @@ $i = 1;
 $pr= new StudentAccountCollection();
 foreach($chunk_data as $k=>$dt){
 	$pr->hdr();
-	$pr->data($dt,$thdr,$total_page,$i);
+	if(!$data['data'][0]['hidden']){
+		$pr->data($dt,$thdr,$total_page,$i);
+	}else{
+		$pr->hidden_balance($dt,$thdr,$total_page,$i);
+	}
 	if(count($chunk_data) != ($i++)){
 		$pr->createSheet();
 	}

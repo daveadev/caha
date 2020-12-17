@@ -76,7 +76,7 @@ class StudentAccountCollection extends Formsheet{
 		$this->centerText($x+=$xntrvl,$y,'Subsidy',$xntrvl,'b');
 		$this->centerText($x+=$xntrvl,$y,'Fee Due',$xntrvl,'b');
 		$y=1.8;
-		$this->centerText($x+=$xntrvl,$y,'IP',$xntrvl,'b');
+		$this->centerText($x+=$xntrvl,$y,'Payment',$xntrvl,'b');
 		$this->centerText($x+=$xntrvl,$y,'Balance',$xntrvl,'b');
 		$this->centerText($x+=$xntrvl,$y,'Payment',$xntrvl,'b');
 		$this->centerText($x+=$xntrvl,$y,'Balance',$xntrvl,'b');
@@ -85,9 +85,7 @@ class StudentAccountCollection extends Formsheet{
 		$this->centerText($x+=$xntrvl,$y,'Payment',$xntrvl,'b');
 		$this->centerText($x+=$xntrvl,$y,'Balance',$xntrvl,'b');
 		
-		$pb = array_slice($thdr, 5);
-		
-		//pr($pb);exit;
+		$pb = array_slice($thdr, 6);
 		$x=24;
 		$xntrvl=6;
 		$y=0.8;
@@ -95,7 +93,10 @@ class StudentAccountCollection extends Formsheet{
 			if($k<8){
 				if ($k % 2 == 0) {
 					$hdr = explode(" ",$col);
-					$this->centerText($x,$y,$hdr[0],$xntrvl,'b');
+					$hdr = str_replace('-', ' 20', $hdr[0]);
+					//$hdr = str_replace('20', '2020', $hdr);
+					$hdr = str_replace('IP', 'Initial Payment', $hdr);
+					$this->centerText($x,$y,$hdr,$xntrvl,'b');
 					$x+=$xntrvl;
 				}
 			}
@@ -107,10 +108,10 @@ class StudentAccountCollection extends Formsheet{
 			$x=29.9;
 			$this->leftText(0.2,$y,$d['student'],'','');
 			$this->centerText(8,$y,$d['year_level'],2,'');
-			$this->centerText(10,$y,$d['section'],5,'');
+			$this->leftText(10.2,$y,$d['section'],'','');
 			$this->rightText(17.9,$y,$d['fee'],'','');
 			$this->rightText(20.9,$y,$d['subsidy'],'','');
-			//$this->rightText(23.9,$y,'','','');	
+			$this->rightText(23.9,$y,$d['fee_dues'],'','');	
 			
 			$x=23.9;
 			$this->rightText($x+=3,$y,$d['pay1'],'','');
@@ -121,7 +122,6 @@ class StudentAccountCollection extends Formsheet{
 			$this->rightText($x+=3,$y,$d['bal3'],'','');
 			$this->rightText($x+=3,$y,$d['pay4'],'','');
 			$this->rightText($x+=3,$y,$d['bal4'],'','');
-			
 			
 			/*
 			$hdrx = 24;
@@ -139,7 +139,7 @@ class StudentAccountCollection extends Formsheet{
 			} */
 			$y++;
 		}
-		$this->rightText(47.9,36.8,'Page '.$page.'-0 of '.$total_page,'','');
+		$this->rightText(47.9,36.8,'Page '.$page.'.0 of '.$total_page,'','');
 		
 		//2nd Col Page
 		$this->createSheet();
@@ -184,10 +184,12 @@ class StudentAccountCollection extends Formsheet{
 			if ($k < 8) continue;
 				if ($k % 2 == 0) {
 					$hdr = explode(" ",$col);
-					$this->centerText($x,$y,$hdr[0],$xntrvl,'b');
+					$hdr = str_replace('-', ' 20', $hdr[0]);
+					//$hdr = str_replace('20', '2020', $hdr);
+					$hdr = str_replace('IP', 'Initial Payment', $hdr);
+					$this->centerText($x,$y,$hdr,$xntrvl,'b');
 					$x+=$xntrvl;
 				}
-			
 		}
 		
 		
@@ -221,9 +223,89 @@ class StudentAccountCollection extends Formsheet{
 			$y++;
 		}
 		
-		$this->rightText(47.9,36.8,'Page '.$page.'-1 of '.$total_page,'','');
-
+		$this->rightText(47.9,36.8,'Page '.$page.'.1 of '.$total_page,'','');
 	}
+	
+	function hidden_balance($data,$thdr,$total_page,$page){
+		$this->showLines = !true;
+		$metrics = array(
+			'base_x'=> 0.5,
+			'base_y'=> 1,
+			'width'=> 12,
+			'height'=> 7.2,
+			'cols'=> 51,
+			'rows'=> 36,	
+		);
+		$this->section($metrics);
+		$y=1;
+		$this->drawBox(0,0,51,36);
+		$this->drawMultipleLines(2,35,1,'h');
+		$this->drawLine(1,'h',array(27,24));
+		$this->drawLine(8,'v');
+		$this->drawLine(10,'v');
+		$this->drawLine(15,'v');
+		$x=15;
+		$xntrvl=3;
+		$this->drawLine($x+=$xntrvl,'v');
+		$this->drawLine($x+=$xntrvl,'v');
+		$this->drawLine($x+=$xntrvl,'v');
+		$this->drawLine($x+=$xntrvl,'v');
+		$this->drawLine($x+=$xntrvl,'v',array(1,35));
+		$this->drawLine($x+=$xntrvl,'v',array(1,35));
+		$this->drawLine($x+=$xntrvl,'v',array(1,35));
+		$this->drawLine($x+=$xntrvl,'v',array(1,35));
+		$this->drawLine($x+=$xntrvl,'v',array(1,35));
+		$this->drawLine($x+=$xntrvl,'v',array(1,35));
+		$this->drawLine($x+=$xntrvl,'v',array(1,35));
+		$y=1.2;
+		$this->GRID['font_size']=8;
+		$this->centerText(1,$y,'Name',6,'b');
+		$this->centerText(8,$y,'Year',2,'b');
+		$this->centerText(10,$y,'Section',5,'b');
+		$x=15;
+		$this->centerText(15,$y,'Total Fees',3,'b');
+		$this->centerText(18,$y,'Subsidy',3,'b');
+		$this->centerText(21,$y,'Fee Due',3,'b');
+		$this->centerText(24,$y-0.3,'Initial',3,'b');
+		$this->centerText(24,$y+0.4,'Payment',3,'b');
+		$y=0.7;
+		$this->centerText(27,$y,'Payment',24,'b');
+		
+		$pb = array_slice($thdr, 7);
+		$x=27;
+		$xntrvl=3;
+		$y=1.7;
+		foreach($pb as $k => $col){
+			$hdr = explode(" ",$col);
+			$hdr = str_replace('-', ' 20', $hdr[0]);
+			$this->centerText($x,$y,ucfirst(strtolower($hdr)),$xntrvl,'b');
+			$x+=$xntrvl;
+		}
+		
+		$y=2.8;
+		foreach($data as $hdrk=>$d){
+			$x=29.9;
+			$this->leftText(0.2,$y,$d['student'],'','');
+			$this->centerText(8,$y,$d['year_level'],2,'');
+			$this->leftText(10.2,$y,$d['section'],'','');
+			$this->rightText(17.9,$y,$d['fee'],'','');
+			$this->rightText(20.9,$y,$d['subsidy'],'','');
+			$this->rightText(23.9,$y,$d['fee_dues'],'','');	
+			$x=23.9;
+			$this->rightText($x+=3,$y,$d['pay1'],'','');
+			$this->rightText($x+=3,$y,$d['pay2'],'','');
+			$this->rightText($x+=3,$y,$d['pay3'],'','');
+			$this->rightText($x+=3,$y,$d['pay4'],'','');
+			$this->rightText($x+=3,$y,$d['pay5'],'','');
+			$this->rightText($x+=3,$y,$d['pay6'],'','');
+			$this->rightText($x+=3,$y,$d['pay7'],'','');
+			$this->rightText($x+=3,$y,$d['pay8'],'','');
+			$this->rightText($x+=3,$y,$d['pay9'],'','');
+			$y++;
+		}
+		$this->rightText(50.9,36.8,'Page '.$page.' of '.$total_page,'','');
+	}
+	
 	
 }
 ?>
