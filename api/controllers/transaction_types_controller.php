@@ -39,7 +39,14 @@ class TransactionTypesController extends AppController {
 					$__amounts = array();
 					// Loop into the applicable month until currYrMo
 					for($j=0,$b=$billYrMo;$b<=$currYrMo;$j++,$b++){
+						$year_checker = str_split($b,4);
+						//pr($year_checker[1]);
+						if($year_checker[1]>12){
+							$b = $year_checker[0]+1 . $year_checker[1]-12;
+						}
 						$dueAmount+=(float)$amounts[$j];
+						//pr($billYrMo);
+						//pr($currYrMo);
 						array_push($__amounts,$due_dates[$j].'/'.$amounts[$j]);
 						array_push($__description,$desc[$j]);						
 					}
