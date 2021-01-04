@@ -2,6 +2,7 @@
 class RemittancesController extends AppController {
 
 	var $name = 'Remittances';
+	var $uses = array('Remittance','RemittanceBreakdown');
 
 	function index() {
 		$this->Remittance->recursive = 0;
@@ -36,7 +37,16 @@ class RemittancesController extends AppController {
 		
 		if (!empty($this->data)) {
 			$this->Remittance->create();
+			
 			if ($this->Remittance->save($this->data)) {
+				$last = $this->Remittance->id;
+				$details = $this->data['Remittance']['details'];
+				foreach($details as $i=>$d){
+					$d['remittance_id'] = $last;
+					$details[$i] = $d;
+				}
+				$this->RemittanceBreakdown->saveAll($details);
+				//pr($details);
 				$this->Session->setFlash(__('The Remittance has been saved', true));
 				$this->redirect(array('action' => 'index'));
 			} else {
