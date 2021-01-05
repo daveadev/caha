@@ -135,8 +135,8 @@ class ReportsController extends AppController{
 	}
 	
 	function daily_remittance(){
-		$data = array();
-		pr(json_decode($_POST['Cashier'],true)); exit();
+		$data = json_decode($_POST['Cashier'],true);
+		//pr(json_decode($_POST['Cashier'],true)); exit();
 		$this->set(compact('data'));
 	}
 }

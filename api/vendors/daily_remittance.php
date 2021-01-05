@@ -37,7 +37,7 @@ class DailyRemittance extends Formsheet{
 		$this->centerText(0,$y++,'Date:',38,'');
 	}
 	
-	function series(){
+	function booklet($booklet){
 		$this->showLines = !true;
 		$metrics = array(
 			'base_x'=> 0.5,
@@ -68,40 +68,39 @@ class DailyRemittance extends Formsheet{
 		
 		//data
 		$y=2.7;
-		for($i=1;$i<10;$i++){
-			$this->leftText(0.2,$y,'Booklet No.'. $i,'','');
-			$this->centerText(3,$y,'xx',4,'');
-			$this->centerText(7,$y,'xxx',4,'');
-			$this->centerText(11,$y,'xxxx',3,'');
+		foreach($booklet as $d){
+			$this->leftText(0.2,$y,$d['booklet_no'],'','');
+			$this->centerText(3,$y,$d['series_start'],4,'');
+			$this->centerText(7,$y,$d['series_end'],4,'');
+			$this->rightText(13.9,$y,number_format($d['amount'],2),'','');
 			$y++;
 		}
 		
-		
 		$y = 36;
 		$this->GRID['font_size']=7;
-		$this->leftText(0,$y,'Date & Time Printed:','','');
+		$this->leftText(0,$y,'Date & Time Printed: '.date("M d,Y h:i:s A"),'','');
 	}
 	
-	function cash_breakdown(){
+	function cash_breakdown($breakdown){
 		$this->showLines = !true;
 		$metrics = array(
 			'base_x'=> 6.7,
 			'base_y'=> 1.2,
 			'width'=> 3.8,
-			'height'=> 4,
+			'height'=> 2.8,
 			'cols'=> 9,
-			'rows'=> 20,	
+			'rows'=> 14,	
 		);
 		$this->section($metrics);
 		$y=1;
 		$this->GRID['font_size']=9;
 		
-		$this->drawBox(0,0,9,20);
-		$this->drawLine(4,'v',array(0,21));
-		$this->drawLine(6,'v',array(0,21));
-		$this->drawLine(9,'v',array(20,1));
-		$this->drawLine(21,'h',array(4,5));
-		$this->drawMultipleLines(2,19,1,'h');
+		$this->drawBox(0,0,9,14);
+		$this->drawLine(4,'v',array(0,15));
+		$this->drawLine(6,'v',array(0,15));
+		$this->drawLine(9,'v',array(14,1));
+		$this->drawLine(15,'h',array(4,5));
+		$this->drawMultipleLines(2,13,1,'h');
 		$this->centerText(0,-0.3,'CASH BREAKDOWN',9,'');
 		$y = 1.2;
 		$this->centerText(0,$y,'Denomination',4,'');
@@ -110,17 +109,19 @@ class DailyRemittance extends Formsheet{
 		
 		//data
 		$y=2.7;
-		for($i=1;$i<10;$i++){
-			$this->leftText(0.2,$y,'Denomination '.$i,'','');
-			$this->centerText(4,$y,'xx',2,'');
-			$this->centerText(6,$y,'xxx',3,'');
+		$total = 0;
+		foreach($breakdown as $d){
+			$this->leftText(0.2,$y,$d['denomination'],'','');
+			$this->centerText(4,$y,number_format($d['quantity'],2),2,'');
+			$this->rightText(8.9,$y,number_format($d['amount'],2),'','');
+			$total+=$d['amount'];
 			$y++;
+			
 		}
 		
-	
-		$y = 20.8;
+		$y = 14.8;
 		$this->rightText(5.8,$y,'Total','','');
-		$this->leftText(6.2,$y,'xx','','');
+		$this->rightText(8.9,$y,number_format($total,2),'','');
 		
 		$y=24.8;
 		$this->leftText(0,$y,'Prepared:','','');
@@ -133,14 +134,6 @@ class DailyRemittance extends Formsheet{
 		$this->centerText(3,$y,'xx',5,'');
 		$this->centerText(3,$y+1,'Signature Over Printed Name',5,'');
 	}
-	
-	
-
-
-
-
-
-
 }
 ?>
 	
