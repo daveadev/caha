@@ -166,7 +166,7 @@
 			<a-navtab ng-model="CS.ActiveTab" options="CS.Tabs" ></a-navtab>
 			<a-row ng-show="CS.ActiveTab==1" >
 				<a-col>
-					<h4 class="amount total peso"> Diff. {{CS.Total - CS.Collections.total | currency }}</h4>
+					<h4 class="pull-right"> Diff. <span class="amount total peso">{{CS.Total - CS.Collections.total | currency }}</span></h4>
 					<table class="table table-bordered table-condensed">
 						<thead>
 							<tr>
@@ -196,7 +196,7 @@
 		</a-modal-body>
 		<a-modal-footer>
 			<button class="btn btn-default pull-left" ng-click="CS.Cancel()">Cancel</button>
-			<button class="btn btn-primary" ng-disabled="CS.Total!==CS.Collections.total">Print</button>
+			<button class="btn btn-primary" ng-disabled="CS.Total!==CS.Collections.total" ng-click="CS.SaveNPrint()" >Print</button>
 		</a-modal-footer>
 	</a-modal>
 </div>

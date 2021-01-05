@@ -61,11 +61,12 @@ define(['app','api','atomic/bomb'],function(app){
 		}
 		
 		$scope.openModal = function(){
-			
+			$scope.Total = 0;
 			aModal.open("RemitModal");
 		}
 		
 		$scope.Cancel = function(){
+			$scope.Total = 0;
 			aModal.close("RemitModal");
 		}
 		
@@ -78,7 +79,21 @@ define(['app','api','atomic/bomb'],function(app){
 		}
 		
 		$scope.SaveNPrint = function(){
-			
+			var data = {cashier_id: $scope.ActiveUser.cashier_id};
+			data.remittance_date = $filter('date')(new Date($scope.cash_date),'yyyy-MM-dd');
+			data.total_collection = 0;
+			data.details = [];
+			angular.forEach($scope.Dinominations, function(d){
+				data.total_collection+=d.amount;
+				data.details.push(d)
+			});
+			var success = function(response){
+				aModal.close("RemitModal");
+			}
+			var error = function(response){
+				
+			}
+			api.POST('remittances', data, success, error);
 		}
 		
 		function getCashier(){
