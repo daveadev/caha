@@ -283,6 +283,7 @@ class StudentAccountCollection extends Formsheet{
 		}
 		
 		$y=2.8;
+		//pr($pb);exit;
 		foreach($data as $hdrk=>$d){
 			$x=29.9;
 			$this->leftText(0.2,$y,$d['student'],'','');
