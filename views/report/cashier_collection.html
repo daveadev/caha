@@ -176,7 +176,7 @@
 							</tr>
 						</thead>
 						<tbody>
-							<tr ng-repeat="item in CS.Remittance">
+							<tr ng-repeat="item in CS.Remittance.breakdown">
 								<td class="amount total">{{item.denomination | currency}}</td>
 								<td>
 									<input type="number" class="form-control" ng-model="item.quantity" min="0" ng-change="CS.ComputeTotal()" ng-disabled="CS.Remitted" />
@@ -196,7 +196,11 @@
 		</a-modal-body>
 		<a-modal-footer>
 			<button class="btn btn-default pull-left" ng-click="CS.Cancel()">Cancel</button>
-			<button class="btn btn-primary" ng-disabled="CS.Total!==CS.Collections.total" ng-click="CS.SaveNPrint()" >Print</button>
+			<button class="btn btn-primary" ng-disabled="CS.Total!==CS.Collections.total" ng-click="CS.SaveNPrint()" ng-show="!CS.Remitted">Confirm</button>
+			<button class="btn btn-primary" ng-disabled="CS.Total!==CS.Collections.total" ng-click="CS.PrintRemit()" ng-show="CS.Remitted">Print</button>
 		</a-modal-footer>
 	</a-modal>
+	<form id="PrintRemittance" action="api/daily_remittance" method="POST" target="_blank">
+		<input type="hidden" value="{{CS.Remittance}}" name="Cashier" />
+	</form>
 </div>

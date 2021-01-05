@@ -23,7 +23,10 @@ define(['app','api','atomic/bomb'],function(app){
 				{denomination:20.00,quantity:0},
 				{denomination:10.00,quantity:0},
 				{denomination:5.00,quantity:0},
-				{denomination:1.00,quantity:0},
+				{denomination:0.50,quantity:0},
+				{denomination:0.25,quantity:0},
+				{denomination:0.05,quantity:0},
+				{denomination:0.01,quantity:0},
 			];
 			$scope.Total = 0;
 			getTransacs();
@@ -59,9 +62,12 @@ define(['app','api','atomic/bomb'],function(app){
 		$scope.PrintData = function(){
 			document.getElementById('PrintCashierCollection').submit();
 		}
+		$scope.PrintRemit = function(){
+			document.getElementById('PrintRemittance').submit();
+		}
 		
 		$scope.openModal = function(){
-			$scope.Total = 0;
+			$scope.ComputeTotal();
 			aModal.open("RemitModal");
 		}
 		
@@ -72,7 +78,7 @@ define(['app','api','atomic/bomb'],function(app){
 		
 		$scope.ComputeTotal = function(){
 			$scope.Total = 0;
-			angular.forEach($scope.Dinominations, function(d){
+			angular.forEach($scope.Remittance.breakdown, function(d){
 				d.amount = d.denomination*d.quantity;
 				$scope.Total += d.amount;
 			});
@@ -89,6 +95,8 @@ define(['app','api','atomic/bomb'],function(app){
 			});
 			var success = function(response){
 				aModal.close("RemitModal");
+				$scope.PrintRemit();
+				getRemittance();
 			}
 			var error = function(response){
 				
@@ -166,14 +174,17 @@ define(['app','api','atomic/bomb'],function(app){
 			data.remittance_date = $filter('date')(new Date($scope.cash_date),'yyyy-MM-dd');
 			console.log(data);
 			api.GET('remittances',data, function success(response){
-				$scope.Remittance = response.data[0].breakdown;
+				$scope.Remittance = {};
+				$scope.Remittance.breakdown = response.data[0].breakdown;
+				$scope.Remittance.booklet = [{booklet_no:null,series_start:111,series_end:999,amount:999}];
 				$scope.Total = 0;
-				angular.forEach($scope.Remittance, function(rem){
+				angular.forEach($scope.Remittance.breakdown, function(rem){
 					$scope.Total += rem.amount;
 				});
 				$scope.Remitted = true;
 			},function error(response){
-				$scope.Remittance = $scope.Dinominations;
+				$scope.Remittance = {};
+				$scope.Remittance.breakdown = $scope.Dinominations;
 				$scope.Remitted = false;
 			});
 		}

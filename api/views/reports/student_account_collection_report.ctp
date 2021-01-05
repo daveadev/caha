@@ -10,7 +10,7 @@ $i = 1;
 $pr= new StudentAccountCollection();
 foreach($chunk_data as $k=>$dt){
 	$pr->hdr();
-	if($data['data'][0]['hidden']){
+	if(isset($data['data'][0]['hidden'])){
 		$pr->hidden_balance($dt,$thdr,$total_page,$i);
 	}else{
 		$pr->data($dt,$thdr,$total_page,$i);
