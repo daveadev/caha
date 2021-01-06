@@ -177,6 +177,10 @@ define(['app','api','atomic/bomb'],function(app){
 			};
 			data.remittance_date = $filter('date')(new Date($scope.cash_date),'yyyy-MM-dd');
 			var col = $scope.Collections.collections;
+			var min = Math.min.apply(Math,col.map(function(item){return item.ref_no.split(" ")[1];}))
+			var max = Math.max.apply(Math,col.map(function(item){return item.ref_no.split(" ")[1];}))
+			console.log(min);
+			console.log(max);
 			api.GET('remittances',data, function success(response){
 				
 				$scope.Remittance = {};
@@ -187,14 +191,14 @@ define(['app','api','atomic/bomb'],function(app){
 				angular.forEach($scope.Remittance.breakdown, function(rem){
 					$scope.Total += rem.amount;
 				});
-				$scope.Remittance.booklet = [{booklet_no:null,series_start:col[col.length-1].ref_no.split(" ")[1],series_end:col[0].ref_no.split(" ")[1],amount:$scope.Total}];
+				$scope.Remittance.booklet = [{booklet_no:null,series_start:min,series_end:max,amount:$scope.Total}];
 				
 				$scope.Remitted = true;
 				console.log($scope.Remittance.booklet);
 			},function error(response){
 				$scope.Remittance = {};
 				$scope.Remittance.breakdown = $scope.Dinominations;
-				$scope.Remittance.booklet = [{booklet_no:null,series_start:col[col.length-1].ref_no.split(" ")[1],series_end:col[0].ref_no.split(" ")[1]}];
+				$scope.Remittance.booklet = [{booklet_no:null,series_start:min,series_end:max}];
 				$scope.Remittance.date = data.remittance_date;
 				$scope.Remitted = false;
 				console.log($scope.Remittance.booklet);
