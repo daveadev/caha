@@ -129,7 +129,7 @@ class DailyRemittance extends Formsheet{
 		$this->centerText(3,$y,'xx',5,'');
 		$this->centerText(3,$y+1,'Cashier',5,'');
 		$y+=4;
-		$this->leftText(0,$y,'Recived:','','');
+		$this->leftText(0,$y,'Received:','','');
 		$this->drawLine($y+0.2,'h',array(3,5));
 		$this->centerText(3,$y,'xx',5,'');
 		$this->centerText(3,$y+1,'Signature Over Printed Name',5,'');
