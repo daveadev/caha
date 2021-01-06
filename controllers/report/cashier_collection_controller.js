@@ -32,6 +32,7 @@ define(['app','api','atomic/bomb'],function(app){
 			getTransacs();
 			$scope.ActiveUser = $rootScope.__USER.user;
 			getCashier();
+			console.log($scope.ActiveUser);
 		}
 		$selfScope.$watch("CS.Active",function(active){
 			if(!active) return false;
@@ -63,10 +64,12 @@ define(['app','api','atomic/bomb'],function(app){
 			document.getElementById('PrintCashierCollection').submit();
 		}
 		$scope.PrintRemit = function(){
+			
 			document.getElementById('PrintRemittance').submit();
 		}
 		
 		$scope.openModal = function(){
+			$scope.Total = 0;
 			$scope.ComputeTotal();
 			aModal.open("RemitModal");
 		}
@@ -82,6 +85,7 @@ define(['app','api','atomic/bomb'],function(app){
 				d.amount = d.denomination*d.quantity;
 				$scope.Total += d.amount;
 			});
+			$scope.Remittance.booklet[0].amount = $scope.Total;
 		}
 		
 		$scope.SaveNPrint = function(){
@@ -139,6 +143,7 @@ define(['app','api','atomic/bomb'],function(app){
 				if(!$scope.Collections.total)
 					$scope.NoCollections = 1;
 				$scope.Meta = response.meta;
+				
 				if($scope.Meta.page==1) getForPrinting(data);
 			},function error(response){
 				
@@ -176,16 +181,38 @@ define(['app','api','atomic/bomb'],function(app){
 			api.GET('remittances',data, function success(response){
 				$scope.Remittance = {};
 				$scope.Remittance.breakdown = response.data[0].breakdown;
-				$scope.Remittance.booklet = [{booklet_no:null,series_start:111,series_end:999,amount:999}];
+				//$scope.Remittance.booklet = [{booklet_no:null,series_start:111,series_end:999,amount:999}];
+				$scope.Remittance.doctype = $scope.ActiveOpt;
+				$scope.Remittance.date = data.remittance_date;
 				$scope.Total = 0;
 				angular.forEach($scope.Remittance.breakdown, function(rem){
 					$scope.Total += rem.amount;
 				});
 				$scope.Remitted = true;
+				getBooklet();
 			},function error(response){
 				$scope.Remittance = {};
 				$scope.Remittance.breakdown = $scope.Dinominations;
+				$scope.Remittance.booklet = [{booklet_no:null,series_start:111,series_end:999,amount:999}];
+				$scope.Remittance.doctype = $scope.ActiveOpt;
+				$scope.Remittance.date = data.remittance_date;
 				$scope.Remitted = false;
+				getBooklet();
+			});
+		}
+		
+		// temporary booklet
+		function getBooklet(){
+			var data = {
+				cashier_id:$scope.ActiveUser.cashier_id
+			};
+			api.GET('booklets',data, function success(response){
+				angular.forEach(response.data, function(res){
+					res.booklet_no = null;
+				});
+				$scope.Booklet = response.data;
+				$scope.Remittance.booklet = $scope.Booklet;
+				$scope.Remittance.booklet[0].amount = $scope.Total;
 			});
 		}
 		
