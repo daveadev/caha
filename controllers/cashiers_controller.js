@@ -524,7 +524,7 @@ define(['app', 'api'], function(app) {
 			
 		];
 		$scope.ActiveMark = {id:'byps','desc':'Bypass this time only','class':'glyphicon-random'};
-		getOrs();
+		
 		
 		$scope.setActiveType = function(typ){
 			$scope.ActiveBook = '';
@@ -533,31 +533,13 @@ define(['app', 'api'], function(app) {
 		}
 		
         $scope.confirmBooklet = function(book) {
-            
-			if($scope.ActiveTyp=='OR'){
-				var ctr = 'OR '+book.series_counter;
-				if($scope.ORs.indexOf(ctr)!==-1){
-					alert('This reference # is already used in the records');
-					return;
-				}
-			}
-			var yes = confirm('Save series counter?');
-			if(yes){
-				//var data = {series_counter:book.series_counter};
-				if($scope.ActiveMark.id=='byps'){
-					book.InitialCtr = $scope.InitialCtr;
-					book.mark = 'bypass';
-				}else
-					book.mark = 'skip';
-					
-				$uibModalInstance.close($scope.ActiveBook);
-				$rootScope.__MODAL_OPEN = false;
-			
-			}else{
-				return false;
-			}
+            console.log($scope.ActiveTyp);
+			if($scope.ActiveTyp=='OR')
+				checkOr(book);
         };
+		
         //Close modal
+		
         $scope.cancelBooklet = function() {
             $rootScope.__MODAL_OPEN = false;
             $uibModalInstance.dismiss('cancel');
@@ -569,14 +551,6 @@ define(['app', 'api'], function(app) {
 			$scope.InitialCtr = book.series_counter;
 		}
 		
-		$scope.MarkReceipt = function(action){
-			$scope.ActiveMark = action;
-			if(action.id=='byps'){
-				
-			}else{
-				
-			}
-		}
 		
 		function getBooklet(){
 			var data = {
@@ -592,21 +566,31 @@ define(['app', 'api'], function(app) {
 			});
 		}
 		
-		function getOrs(){
+		
+		
+		function checkOr(book){
 			var data = {
-				type:'-',
-				rect:'OR',
-				esp:$scope.ActiveSY,
-				limit:'less'
+				ref_no: 'OR '+book.series_counter
 			}
-			
 			api.GET('ledgers',data, function success(response){
-				var ORs = response.data;
-				$scope.ORs = [];
-				angular.forEach(ORs, function(or){
-					$scope.ORs.push(or.ref_no);
-				});
-				console.log($scope.ORs);
+				alert('Norem');
+				return;
+			}, function error(response){
+				var yes = confirm('Save series counter?');
+				if(yes){
+					//var data = {series_counter:book.series_counter};
+					if($scope.ActiveMark.id=='byps'){
+						book.InitialCtr = $scope.InitialCtr;
+						book.mark = 'bypass';
+					}else
+						book.mark = 'skip';
+						
+					$uibModalInstance.close($scope.ActiveBook);
+					$rootScope.__MODAL_OPEN = false;
+				
+				}else{
+					return false;
+				}
 			});
 		}
 		
