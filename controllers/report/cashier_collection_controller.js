@@ -32,6 +32,7 @@ define(['app','api','atomic/bomb'],function(app){
 			getTransacs();
 			$scope.ActiveUser = $rootScope.__USER.user;
 			getCashier();
+			
 		}
 		$selfScope.$watch("CS.Active",function(active){
 			if(!active) return false;
@@ -46,7 +47,7 @@ define(['app','api','atomic/bomb'],function(app){
 		}
 		$scope.LoadReport = function(){
 			getCollections(1);
-			
+			getOrs();
 		}
 		
 		$scope.gotoPage = function(page){
@@ -131,6 +132,7 @@ define(['app','api','atomic/bomb'],function(app){
 			}
 			//data.limit = 'less';
 			api.GET('cashier_collections',data, function success(response){
+				
 				$scope.NoCollections = 0;
 				$scope.Collections = response.data[0];
 				angular.forEach($scope.Collections.collections, function(col){
@@ -142,7 +144,6 @@ define(['app','api','atomic/bomb'],function(app){
 				if(!$scope.Collections.total)
 					$scope.NoCollections = 1;
 				$scope.Meta = response.meta;
-				getRemittance();
 				if($scope.Meta.page==1) getForPrinting(data);
 			},function error(response){
 				
@@ -176,9 +177,9 @@ define(['app','api','atomic/bomb'],function(app){
 				cashier_id: $scope.ActiveUser.cashier_id
 			};
 			data.remittance_date = $filter('date')(new Date($scope.cash_date),'yyyy-MM-dd');
-			var col = $scope.Collections.collections;
-			var min = Math.min.apply(Math,col.map(function(item){return item.ref_no.split(" ")[1];}))
-			var max = Math.max.apply(Math,col.map(function(item){return item.ref_no.split(" ")[1];}))
+			var col = $scope.Booklet.collections;
+			var min = Math.min.apply(Math,col.map(function(item){return item.ref_no.split(" ")[1];}));
+			var max = Math.max.apply(Math,col.map(function(item){return item.ref_no.split(" ")[1];}));
 			console.log(min);
 			console.log(max);
 			api.GET('remittances',data, function success(response){
@@ -206,6 +207,31 @@ define(['app','api','atomic/bomb'],function(app){
 			});
 		}
 		
+		// temporary
+		function getOrs(page){
+			var data = {
+				type:$scope.ActiveOpt,
+				limit: "less",
+			}
+			if($scope.ActiveUser.user_type!='cashr'){
+				data.from = $scope.date_from;
+				data.to = $scope.date_to;
+				data.from = $filter('date')(new Date(data.from),'yyyy-MM-dd');
+				data.to = $filter('date')(new Date(data.to),'yyyy-MM-dd');
+			}else{
+				data.date = $filter('date')(new Date($scope.cash_date),'yyyy-MM-dd');
+				data.cashr = true;
+			}
+			//data.limit = 'less';
+			api.GET('cashier_collections',data, function success(response){
+				console.log(response.data[0]);
+				$scope.NoCollections = 0;
+				$scope.Booklet = response.data[0];
+				getRemittance();
+			},function error(response){
+				
+			});
+		}
 		
 		
 	}]);
