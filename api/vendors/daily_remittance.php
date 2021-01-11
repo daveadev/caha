@@ -16,7 +16,7 @@ class DailyRemittance extends Formsheet{
 		$this->createSheet();
 	}
 	
-	function hdr(){
+	function hdr($date){
 		$this->showLines = !true;
 		$metrics = array(
 			'base_x'=> 0.5,
@@ -34,7 +34,8 @@ class DailyRemittance extends Formsheet{
 		$this->centerText(0,$y++,'Lake Shore Educational Institution',38,'');
 		$this->GRID['font_size']=9;
 		$this->centerText(0,$y++,'Daily Remittance Report',38,'');
-		$this->centerText(0,$y++,'Date:',38,'');
+		$date = strtotime($date);
+		$this->centerText(0,$y++,'Date: '. date('M d, Y',$date),38,'');
 	}
 	
 	function booklet($booklet){
@@ -126,12 +127,12 @@ class DailyRemittance extends Formsheet{
 		$y=24.8;
 		$this->leftText(0,$y,'Prepared:','','');
 		$this->drawLine($y+0.2,'h',array(3,5));
-		$this->centerText(3,$y,'xx',5,'');
+		$this->centerText(3,$y,'Accounting',5,'');
 		$this->centerText(3,$y+1,'Cashier',5,'');
 		$y+=4;
 		$this->leftText(0,$y,'Received:','','');
 		$this->drawLine($y+0.2,'h',array(3,5));
-		$this->centerText(3,$y,'xx',5,'');
+		$this->centerText(3,$y,'Finance',5,'');
 		$this->centerText(3,$y+1,'Signature Over Printed Name',5,'');
 	}
 }
