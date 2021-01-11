@@ -63,6 +63,8 @@ class CollectionsController extends AppController {
 				if($day>$max_day){
 					$day=1;
 					$month++;
+					if($month>12)
+						$month = 1;
 				}
 				if(strlen($day)==1)
 					$day='0'.$day;
@@ -133,6 +135,8 @@ class CollectionsController extends AppController {
 				
 			}else{
 				$mo = $led['transac_date'];
+				if(!isset($collection_data[$mo]))
+					$collection_data[$mo] = 0;
 				$collection_data[$mo] += $amount;
 				//pr($mo);
 			}
