@@ -1,6 +1,6 @@
 <?php
 App::import('Vendor','daily_remittance');
-pr($data);exit;
+//pr($data);exit;
 
 $pr= new DailyRemittance();
 $pr->hdr($data['date']);
