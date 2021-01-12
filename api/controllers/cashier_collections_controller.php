@@ -2,7 +2,7 @@
 class CashierCollectionsController extends AppController {
 
 	var $name = 'CashierCollections';
-	var $uses = array('CashierCollection','Section','Student','Account','AccountHistory');
+	var $uses = array('CashierCollection','Section','Student','Account','AccountHistory','Transaction');
 	
 	function index() {
 		$this->paginate['CashierCollection']['contain'] = array('Student','Account');
@@ -11,20 +11,20 @@ class CashierCollectionsController extends AppController {
 		if(!isset($_GET['cashr'])){
 			$start = $_GET['from'];
 			$end = $_GET['to'];
-			$conds =  array('AccountHistory.ref_no LIKE'=> $type.'%','flag'=>'-','and'=>array('transac_date <='=>$end,'transac_date >='=>$start));
+			$conds =  array('Transaction.ref_no LIKE'=> $type.'%','and'=>array('transac_date <='=>$end,'transac_date >='=>$start));
 		}else{
 			$date = $_GET['date'];
-			$conds =  array('AccountHistory.ref_no LIKE'=> $type.'%','flag'=>'-','transac_date'=>$date);
+			$conds =  array('Transaction.ref_no LIKE'=> $type.'%','transac_date'=>$date);
 		}
 		//pr($start);
 		//$conds =  array('AccountHistory.ref_no LIKE'=> $type.'%','flag'=>'-','and'=>array('transac_date <='=>$end,'transac_date >='=>$start));
 		$collections = $this->paginate();
 
 		$sections = $this->Section->find('all',array('recursive'=>1));
-		$total = $this->AccountHistory->find('all',array('conditions'=>$conds));
+		$total = $this->Transaction->find('all',array('conditions'=>$conds));
 		$total_collections = 0;
 		foreach($total as $i=>$amount){
-			$total_collections += $amount['AccountHistory']['amount'];
+			$total_collections += $amount['Transaction']['amount'];
 		}
 		//pr($total_collections);
 		//exit();
