@@ -38,7 +38,7 @@ class DailyRemittance extends Formsheet{
 		$this->centerText(0,$y++,'Date: '. date('M d, Y',$date),38,'');
 	}
 	
-	function booklet($booklet){
+	function booklet($booklet,$doctype){
 		$this->showLines = !true;
 		$metrics = array(
 			'base_x'=> 0.5,
@@ -58,7 +58,7 @@ class DailyRemittance extends Formsheet{
 		$this->drawLine(7,'v',array(1,29));
 		$this->drawLine(11,'v');
 		$this->drawMultipleLines(2,29,1,'h');
-		$this->leftText(0,-0.3,'Doc Type: OR','','');
+		$this->leftText(0,-0.3,'Doc Type: '.$doctype,'','');
 		$y = 1.2;
 		$this->leftText(0.2,$y,'Booklet No.','','');
 		

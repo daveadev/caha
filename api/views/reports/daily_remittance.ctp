@@ -4,7 +4,7 @@ App::import('Vendor','daily_remittance');
 
 $pr= new DailyRemittance();
 $pr->hdr($data['date']);
-$pr->booklet($data['booklet']);
+$pr->booklet($data['booklet'],$data['doctype']);
 $pr->cash_breakdown($data['breakdown']);
 
 $pr->output();
