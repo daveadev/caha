@@ -54,10 +54,11 @@ class DailyRemittance extends Formsheet{
 		
 		$this->drawBox(0,0,14,30);
 		$this->drawLine(1,'h',array(3,8));
+		$this->drawLine(2,'h');
 		$this->drawLine(3,'v');
 		$this->drawLine(7,'v',array(1,29));
 		$this->drawLine(11,'v');
-		$this->drawMultipleLines(2,29,1,'h');
+		//$this->drawMultipleLines(2,29,1,'h');
 		$this->leftText(0,-0.3,'Doc Type: '.$doctype,'','');
 		$y = 1.2;
 		$this->leftText(0.2,$y,'Booklet No.','','');
@@ -132,9 +133,8 @@ class DailyRemittance extends Formsheet{
 		$y+=4;
 		$this->leftText(0,$y,'Received:','','');
 		$this->drawLine($y+0.2,'h',array(3,5));
-		$this->centerText(3,$y,'',5,'');
-		$this->centerText(3,$y+1,'Signature Over Printed Name',5,'');
-		$this->centerText(3,$y+2,'Finance',5,'');
+		$this->centerText(3,$y,'Signature Over Printed Name',5,'');
+		$this->centerText(3,$y+1,'Finance',5,'');
 	}
 }
 ?>
