@@ -90,18 +90,18 @@ class DailyRemittance extends Formsheet{
 			'width'=> 3.8,
 			'height'=> 2.8,
 			'cols'=> 9,
-			'rows'=> 14,	
+			'rows'=> 15,	
 		);
 		$this->section($metrics);
 		$y=1;
 		$this->GRID['font_size']=9;
 		
-		$this->drawBox(0,0,9,14);
-		$this->drawLine(4,'v',array(0,15));
-		$this->drawLine(6,'v',array(0,15));
-		$this->drawLine(9,'v',array(14,1));
-		$this->drawLine(15,'h',array(4,5));
-		$this->drawMultipleLines(2,13,1,'h');
+		$this->drawBox(0,0,9,15);
+		$this->drawLine(4,'v',array(0,16));
+		$this->drawLine(6,'v',array(0,16));
+		$this->drawLine(9,'v',array(15,1));
+		$this->drawLine(16,'h',array(4,5));
+		$this->drawMultipleLines(2,14,1,'h');
 		$this->centerText(0,-0.3,'CASH BREAKDOWN',9,'');
 		$y = 1.2;
 		$this->centerText(0,$y,'Denomination',4,'');
@@ -120,7 +120,7 @@ class DailyRemittance extends Formsheet{
 			
 		}
 		
-		$y = 14.8;
+		$y = 15.8;
 		$this->rightText(5.8,$y,'Total','','');
 		$this->rightText(8.9,$y,number_format($total,2),'','');
 		
