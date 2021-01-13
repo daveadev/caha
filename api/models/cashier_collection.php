@@ -1,10 +1,10 @@
 <?php
 class CashierCollection extends AppModel {
 	var $name = 'CashierCollection';
-	var $useTable = 'account_histories';
+	var $useTable = 'transactions';
 	var $order = 'transac_date,ref_no asc';
+	var $recursive = 2;
 	var $actsAs = array('Containable');
-	
 	
 	var $belongsTo = array(
 		'Student' => array(
@@ -33,7 +33,21 @@ class CashierCollection extends AppModel {
 			),
 			'order' => ''
 		),
-		
+	);
+	var $hasMany = array(
+		'TransactionDetail' => array(
+			'className' => 'TransactionDetail',
+			'foreignKey' => 'transaction_id',
+			'dependent' => false,
+			'conditions' => '',
+			'fields' => '',
+			'order' => '',
+			'limit' => '',
+			'offset' => '',
+			'exclusive' => '',
+			'finderQuery' => '',
+			'counterQuery' => ''
+		)
 	);
 	
 	function beforeFind($queryData){
@@ -63,9 +77,9 @@ class CashierCollection extends AppModel {
 				}
 			}
 			if(!isset($dates))
-				$conds = array('CashierCollection.ref_no LIKE'=> $typ.'%','flag'=>'-','and'=>array('transac_date <='=>$end,'transac_date >='=>$start));
+				$conds = array('CashierCollection.ref_no LIKE'=> $typ.'%','and'=>array('transac_date <='=>$end,'transac_date >='=>$start));
 			else
-				$conds = array('CashierCollection.ref_no LIKE'=> $typ.'%','flag'=>'-','transac_date'=>$dates);
+				$conds = array('CashierCollection.ref_no LIKE'=> $typ.'%','transac_date'=>$dates);
 			
 			$queryData['conditions']=$conds;
 		}

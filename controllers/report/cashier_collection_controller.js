@@ -23,6 +23,7 @@ define(['app','api','atomic/bomb'],function(app){
 				{denomination:20.00,quantity:0},
 				{denomination:10.00,quantity:0},
 				{denomination:5.00,quantity:0},
+				{denomination:1.00,quantity:0},
 				{denomination:0.50,quantity:0},
 				{denomination:0.25,quantity:0},
 				{denomination:0.05,quantity:0},
@@ -202,8 +203,6 @@ define(['app','api','atomic/bomb'],function(app){
 				$scope.Remittance.booklet = [{booklet_no:null,series_start:min,series_end:max}];
 				$scope.Remittance.date = data.remittance_date;
 				$scope.Remitted = false;
-				console.log($scope.Remittance.booklet);
-				
 			});
 		}
 		
@@ -225,11 +224,10 @@ define(['app','api','atomic/bomb'],function(app){
 			//data.limit = 'less';
 			api.GET('cashier_collections',data, function success(response){
 				console.log(response.data[0]);
-				$scope.NoCollections = 0;
 				$scope.Booklet = response.data[0];
 				getRemittance();
 			},function error(response){
-				
+				getRemittance();
 			});
 		}
 		

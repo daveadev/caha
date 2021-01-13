@@ -10,6 +10,13 @@ class TransactionDetail extends AppModel {
 			'conditions' => '',
 			'fields' => '',
 			'order' => ''
+		),
+		'CashierCollection' => array(
+			'className' => 'CashierCollection',
+			'foreignKey' => 'transaction_id',
+			'conditions' => '',
+			'fields' => '',
+			'order' => ''
 		)
 	);
 }

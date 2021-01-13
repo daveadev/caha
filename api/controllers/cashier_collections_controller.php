@@ -2,10 +2,10 @@
 class CashierCollectionsController extends AppController {
 
 	var $name = 'CashierCollections';
-	var $uses = array('CashierCollection','Section','Student','Account','AccountHistory','Transaction');
+	var $uses = array('CashierCollection','Section','Student','Account','AccountHistory','Transaction','TransactionDetail');
 	
 	function index() {
-		$this->paginate['CashierCollection']['contain'] = array('Student','Account');
+		$this->paginate['CashierCollection']['contain'] = array('Student','Account','TransactionDetail');
 		
 		$type = $_GET['type'];
 		if(!isset($_GET['cashr'])){
@@ -50,6 +50,7 @@ class CashierCollectionsController extends AppController {
 			$cnt = $limit!=999999?($page-1)*$limit+1:1;
 			//pr($collections); exit();
 			foreach($collections as $i=>$col){
+				//pr($col);
 				$st = $col['Student'];
 				$cl = $col['CashierCollection'];
 				$cl['cnt'] =  $cnt;
@@ -74,7 +75,7 @@ class CashierCollectionsController extends AppController {
 					$cl['level'] = '-';
 					$cl['section'] = 'CODE:'.$sec_ref;
 				endif;
-				$cl['particulars'] = $cl['details'];
+				$cl['particulars'] = $col['TransactionDetail'][0]['details'];
 				$cl['date'] =  date('d M Y',strtotime($cl['transac_date']));
 				unset($cl['details']);
 				unset($cl['transac_date']);
@@ -85,7 +86,9 @@ class CashierCollectionsController extends AppController {
 				$collections[$i] = $cl;
 				$cnt++;
 			}
+			//pr($collections);
 		}
+		//exit();
 		$collections = array('collections'=>$collections,'total'=>$total_collections);
 		$cashierCollections = array(array('CashierCollection'=>$collections));
 		//pr($collections); exit();
