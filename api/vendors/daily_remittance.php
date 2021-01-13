@@ -52,12 +52,12 @@ class DailyRemittance extends Formsheet{
 		$y=1;
 		$this->GRID['font_size']=9;
 		
-		$this->drawBox(0,0,14,30);
+		$this->drawBox(0,0,14,2);
 		$this->drawLine(1,'h',array(3,8));
 		$this->drawLine(2,'h');
-		$this->drawLine(3,'v');
-		$this->drawLine(7,'v',array(1,29));
-		$this->drawLine(11,'v');
+		$this->drawLine(3,'v',array(0,2));
+		$this->drawLine(7,'v',array(1,1));
+		$this->drawLine(11,'v',array(0,2));
 		//$this->drawMultipleLines(2,29,1,'h');
 		$this->leftText(0,-0.3,'Doc Type: '.$doctype,'','');
 		$y = 1.2;
@@ -113,8 +113,8 @@ class DailyRemittance extends Formsheet{
 		$y=2.7;
 		$total = 0;
 		foreach($breakdown as $d){
-			$this->leftText(0.2,$y,$d['denomination'],'','');
-			$this->centerText(4,$y,number_format($d['quantity'],2),2,'');
+			$this->centerText(0,$y,$d['denomination'],4,'');
+			$this->centerText(4,$y,$d['quantity'],2,'');
 			$this->rightText(8.9,$y,number_format($d['amount'],2),'','');
 			$total+=$d['amount'];
 			$y++;
@@ -122,8 +122,8 @@ class DailyRemittance extends Formsheet{
 		}
 		
 		$y = 15.8;
-		$this->rightText(5.8,$y,'Total','','');
-		$this->rightText(8.9,$y,number_format($total,2),'','');
+		$this->rightText(5.8,$y,'Total','','b');
+		$this->rightText(8.9,$y,number_format($total,2),'','b');
 		
 		$y=24.8;
 		$this->leftText(0,$y,'Prepared:','','');
