@@ -33,6 +33,13 @@ class CashierCollection extends AppModel {
 			),
 			'order' => ''
 		),
+		'Booklet' => array(
+			'className' => 'Booklet',
+			'foreignKey' => 'booklet_id',
+			'conditions' => '',
+			'fields' => '',
+			'order' => ''
+		),
 	);
 	var $hasMany = array(
 		'TransactionDetail' => array(

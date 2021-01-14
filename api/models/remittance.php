@@ -11,7 +11,14 @@ class Remittance extends AppModel {
 			'conditions' => '',
 			'fields' => '',
 			'order' => ''
-		)
+		),
+		'RemittanceBooklet' => array(
+			'className' => 'RemittanceBooklet',
+			'foreignKey' => 'remittance_id',
+			'conditions' => '',
+			'fields' => '',
+			'order' => ''
+		),
 	);
 	
 
