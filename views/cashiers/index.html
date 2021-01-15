@@ -449,4 +449,17 @@
 				<input type="hidden" name="TransactionId" value="{{TransactionId}}"/>
 			</form>
 		</script>
+		<script type="text/ng-template" id="dangerModal.html">
+			<div class="modal-body text-center">
+				<button class="btn btn-danger btn-fab btn-fab-drop" ng-class="{show:ShowButton}"><span class="glyphicon glyphicon-exclamation-sign"></span></button>
+				<h1>Warning</h1>
+				<p>Booklet consumed, please select.</p>
+			</div>
+			<div class="modal-footer">
+				<button class="btn btn-danger btn-block" type="button" ng-click="dismissModal()">Select New Booklet</button>
+			</div>
+			<form action="api/receipt" method="POST" target="_blank" id="PrintReceipt">
+				<input type="hidden" name="TransactionId" value="{{TransactionId}}"/>
+			</form>
+		</script>
 </div>
