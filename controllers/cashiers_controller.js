@@ -116,6 +116,7 @@ define(['app', 'api'], function(app) {
 				api.GET('booklets', function success(response) {
 					$scope.Booklets = response.data;
 					$scope.ActiveBooklet = response.data[0];
+					$scope.openDanger();
 				}); 
 
 				//Get students.js
@@ -411,6 +412,24 @@ define(['app', 'api'], function(app) {
                     animation: true,
                     size: 'sm',
                     templateUrl: 'successModal.html',
+                    controller: 'SuccessModalController',
+                    resolve:{
+                        TransactionId:function(){
+                            return $scope.TransactionId
+                        }
+                    }
+                });
+                modalInstance.result.then(function() {
+					
+                }, function(source) {
+                    $scope.initCashier();
+                });
+			}
+			$scope.openDanger = function() {
+                var modalInstance = $uibModal.open({
+                    animation: true,
+                    size: 'sm',
+                    templateUrl: 'dangerModal.html',
                     controller: 'SuccessModalController',
                     resolve:{
                         TransactionId:function(){
