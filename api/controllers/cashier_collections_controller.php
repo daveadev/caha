@@ -54,6 +54,7 @@ class CashierCollectionsController extends AppController {
 				//pr($col);
 				$st = $col['Student'];
 				$cl = $col['CashierCollection'];
+				$acct = $col['Account'];
 				$book = $col['Booklet'];
 				$booknum = $book['booklet_number'];
 				if(!isset($booklets[$booknum])){
@@ -101,7 +102,9 @@ class CashierCollectionsController extends AppController {
 				unset($cl['transac_time']);
 				unset($cl['id']);
 				unset($cl['account_id']);
-
+				$cl['total_due'] = $acct['assessment_total'];
+				$cl['total_paid'] = $acct['payment_total'];
+				$cl['balance'] = $acct['outstanding_balance'];
 				$collections[$i] = $cl;
 				$cnt++;
 			}

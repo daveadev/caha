@@ -18,27 +18,32 @@ class BookletsController extends AppController {
 
 	function add() {
 		if (!empty($this->data)) {
-			$this->Booklet->create();
 			//pr($this->data); exit();
 			$booklet = $this->data['Booklet'];
-			if(isset($this->data['Cashier']))
-				$cashier = $this->data['Cashier'];
-			$data = array();
-			foreach($booklet as $i=>$b){
-				if(!isset($this->data['Cashier'])){
-					$b['cashier_id'] = null;
-					$b['cashier'] = 'unassigned';
-				}else{
-					
-					$b['cashier_id'] = $cashier['id'];
-					$b['cashier'] = $cashier['employee_name'];
+			$this->Booklet->create();
+			if(isset($booklet['label'])){
+				$data = $this->data['Booklet'];
+			}else{
+				
+				if(isset($this->data['Cashier']))
+					$cashier = $this->data['Cashier'];
+				$data = array();
+				foreach($booklet as $i=>$b){
+					if(!isset($this->data['Cashier'])){
+						$b['cashier_id'] = null;
+						$b['cashier'] = 'unassigned';
+					}else{
+						
+						$b['cashier_id'] = $cashier['id'];
+						$b['cashier'] = $cashier['employee_name'];
+					}
+					if(!isset($this->data['Cashier']))
+						$b['status'] = 'UNASS';
+					else
+						$b['status'] = 'ASSGN';
+					$b['receipt_type'] = $b['doctype'];
+					$data[$i] = $b;
 				}
-				if(!isset($this->data['Cashier']))
-					$b['status'] = 'UNASS';
-				else
-					$b['status'] = 'ASSGN';
-				$b['receipt_type'] = $b['doctype'];
-				$data[$i] = $b;
 			}
 			$success = $this->Booklet->saveAll($data);
 			//exit();

@@ -9,6 +9,7 @@ class PaymentsController extends AppController {
 		$student = $this->data['Student'];
 		$transactions = $this->data['Transaction'];
 		$booklet = $this->data['Booklet'];
+		//pr($booklet); exit();
 		$account_id = $student['id'];
 		$ESP =  $this->data['Cashier']['esp'];
 		$TOTAL_DUE =  $this->data['Cashier']['total_due'];
@@ -53,7 +54,7 @@ class PaymentsController extends AppController {
 				$booklet['series_counter'] = $series;
 			}
 		}else
-			$booklet['status'] = 'INACTV';
+			$booklet['status'] = 'CONSM';
 		
 		
 		//pr($booklet); exit();
@@ -324,6 +325,8 @@ class PaymentsController extends AppController {
 			}
 		}
 		$this->data['Payment'] = array('transaction_id'=>$transac_id);
+		if($booklet['status'] == 'CONSM')
+			$this->data['Payment'] = array('transaction_id'=>$transac_id,'booklet'=>'Consumed');
 		$this->set(compact('payments'));
 		//exit();
 		/*
