@@ -195,7 +195,8 @@
 			</a-row>
 			<a-row ng-show="CS.ActiveTab==2" >
 				<a-col>
-					<h4 class="pull-right"> Diff. <span class="amount total peso">{{CS.Total - CS.Collections.total | currency }}</span></h4>
+					<!-- <h4 class="pull-right"> Diff. <span class="amount total peso">{{CS.Total - CS.Collections.total | currency }}</span></h4> -->
+					
 					<table class="table table-bordered table-condensed">
 						<thead>
 							<tr>
@@ -206,7 +207,7 @@
 							</tr>
 						</thead>
 						<tbody>
-							<tr ng-repeat="item in CS.Collections.booklets">
+							<tr ng-repeat="item in CS.Booklet">
 								<td class="amount total">{{item.booklet_no}}</td>
 								<td>{{item.series_start}}</td>
 								<td>{{item.series_end}}</td>
@@ -216,7 +217,7 @@
 						<tfoot>
 							<tr>
 								<td colspan="3">Total</td>
-								<td class="amount total">{{CS.Total | currency}}</td>
+								<td class="amount total">{{CS.Collections.total | currency}}</td>
 							</tr>
 						</tfoot>
 					</table>
