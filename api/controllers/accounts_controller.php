@@ -23,6 +23,7 @@ class AccountsController extends AppController {
 					$section = $sections[$sectId];
 
 				$acc['Account']['name'] =$stud['full_name'];
+				$acc['Account']['account_no'] =$acc['Account']['id'];
 				$acc['Account']['sno'] =$stud['sno'];
 
 				$acc['Account']['year_level'] =$yearLevel;

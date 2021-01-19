@@ -115,8 +115,8 @@ class Account extends AppModel {
 					break;
 				$keys =  array_keys($cond);
 				
-				$search = ['Account.first_name LIKE','Account.middle_name','Account.last_name'];
-				
+				$search = ['Account.name LIKE','Account.first_name LIKE','Account.middle_name','Account.last_name'];
+			
 				if(in_array($search[0],$keys)){
 					$val = array_values($cond);
 					$students = $this->Student->findByName($val[0]);
@@ -124,6 +124,7 @@ class Account extends AppModel {
 					unset($cond['Account.first_name LIKE']);
 					unset($cond['Account.middle_name LIKE']);
 					unset($cond['Account.last_name LIKE']);
+					unset($cond['Account.name LIKE']);
 					unset($cond['Account.id LIKE']);
 					$cond['Account.id']=$student_ids;
 				}
