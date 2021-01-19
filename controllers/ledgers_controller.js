@@ -104,7 +104,7 @@ define(['app', 'api', 'simple-sheet'], function(app) {
             var day = tDate.getDate();
             var year = tDate.getFullYear();
             var nDate = month + ' ' + day + ', ' + year;
-
+            var trnxId=   null;//$scope.details.id || null;
             var ledger = {
                 account: {
                     account_no : $scope.Account.id,
@@ -114,9 +114,10 @@ define(['app', 'api', 'simple-sheet'], function(app) {
                 type: $scope.type,
                 date: nDate,
                 ref_no: $scope.refNo,
-                transaction_type_id: $scope.details.id,
+                transaction_type_id:trnxId,
                 amount: $scope.amount
             };
+            console.log(ledger);
             api.POST('ledgers', ledger, function success(response) {
                 $uibModalInstance.dismiss('confirm');
             });
