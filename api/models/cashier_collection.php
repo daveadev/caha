@@ -30,7 +30,18 @@ class CashierCollection extends AppModel {
 			'fields' => array(
 				'Account.id',
 				'Account.subsidy_status',
+				'Account.discount_amount',
+				'Account.assessment_total',
+				'Account.payment_total',
+				'Account.outstanding_balance',
 			),
+			'order' => ''
+		),
+		'Booklet' => array(
+			'className' => 'Booklet',
+			'foreignKey' => 'booklet_id',
+			'conditions' => '',
+			'fields' => '',
 			'order' => ''
 		),
 	);

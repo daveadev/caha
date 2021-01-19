@@ -385,10 +385,10 @@
 						<label for="">Counter</label>
 						<div class="input-group input-amount">
 							<span class="input-group-addon">{{ActiveTyp}} #</span>
-							<input type="number" class="form-control" ng-model="ActiveBook.series_counter" min="{{ActiveBook.series_start}}" />
+							<input type="number" class="form-control" ng-model="ActiveBook.series_counter" min="{{ActiveBook.series_start}}" ng-disabled="HiddenAction" />
 						</div>
 					</div>
-					<div class="col-md-12 " style="margin-top:10px;">
+					<div class="col-md-12 " style="margin-top:10px;" ng-hide="HiddenAction">
 						<label for="">Confirmation</label>
 						<div class="btn-group" role="group" aria-label="Conf" style="width: 100%">
 							<button type="button" class="btn btn-lg btn-default" ng-click="MarkReceipt(act)" ng-class="{'btn-primary':ActiveMark.id==act.id}"
@@ -400,8 +400,9 @@
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button class="btn btn-default pull-left" type="button" ng-click="cancelBooklet()">Cancel</button>
-				<button class="btn btn-primary" type="button" ng-click="confirmBooklet(ActiveBook)" ng-disabled="!ActiveMark||ActiveBooklet.series_counter==InitialCtr">Confirm</button>
+				<button class="btn btn-default pull-left" type="button" ng-click="cancelBooklet()" >Cancel</button>
+				<button class="btn btn-primary" type="button" ng-click="confirmBooklet(ActiveBook)" ng-show="!Saving" ng-disabled="!ActiveBook||Disabled">Confirm</button>
+				<button class="btn btn-primary" type="button" ng-show="Saving" disabled >Saving...</button>
 			</div>
 		</script>
 		<script type="text/ng-template" id="accountInfoBox.html">
@@ -453,7 +454,7 @@
 			<div class="modal-body text-center">
 				<button class="btn btn-danger btn-fab btn-fab-drop" ng-class="{show:ShowButton}"><span class="glyphicon glyphicon-exclamation-sign"></span></button>
 				<h1>Warning</h1>
-				<p>Booklet consumed, please select.</p>
+				<p>Booklet consumed, please select booklet.</p>
 			</div>
 			<div class="modal-footer">
 				<button class="btn btn-danger btn-block" type="button" ng-click="dismissModal()">Select New Booklet</button>

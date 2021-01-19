@@ -97,7 +97,8 @@ define(['app','api','atomic/bomb'],function(app){
 				data.total_collection+=d.amount;
 				data.details.push(d)
 			});
-			$scope.Remittance.booklet[0].amount = $scope.Total;
+			data.booklets = $scope.Booklet;
+			//$scope.Remittance.booklet[0].amount = $scope.Total;
 			var success = function(response){
 				aModal.close("RemitModal");
 				$scope.PrintRemit();
@@ -163,13 +164,11 @@ define(['app','api','atomic/bomb'],function(app){
 			var data = {limit:'less'};
 			api.GET('transaction_types',data, function success(response){
 				var Trnx = {};
-				console.log(response);
 				angular.forEach(response.data, function(tr){
 					console.log(tr);
 					Trnx[tr.id] = tr.name;
 				})
 				$scope.Transacs = Trnx;
-				console.log(Trnx);
 			});
 		}
 		
@@ -178,13 +177,8 @@ define(['app','api','atomic/bomb'],function(app){
 				cashier_id: $scope.ActiveUser.cashier_id
 			};
 			data.remittance_date = $filter('date')(new Date($scope.cash_date),'yyyy-MM-dd');
-			var col = $scope.Booklet.collections;
-			var min = Math.min.apply(Math,col.map(function(item){return item.ref_no.split(" ")[1];}));
-			var max = Math.max.apply(Math,col.map(function(item){return item.ref_no.split(" ")[1];}));
-			console.log(min);
-			console.log(max);
+			
 			api.GET('remittances',data, function success(response){
-				
 				$scope.Remittance = {};
 				$scope.Remittance.breakdown = response.data[0].breakdown;
 				$scope.Remittance.doctype = $scope.ActiveOpt;
@@ -193,15 +187,15 @@ define(['app','api','atomic/bomb'],function(app){
 				angular.forEach($scope.Remittance.breakdown, function(rem){
 					$scope.Total += rem.amount;
 				});
-				$scope.Remittance.booklet = [{booklet_no:null,series_start:min,series_end:max,amount:$scope.Total}];
-				
+				$scope.Remittance.booklet = response.data[0].booklets;
 				$scope.Remitted = true;
 				console.log($scope.Remittance.booklet);
 			},function error(response){
 				$scope.Remittance = {};
 				$scope.Remittance.breakdown = $scope.Dinominations;
-				$scope.Remittance.booklet = [{booklet_no:null,series_start:min,series_end:max}];
+				$scope.Remittance.booklet = $scope.Booklet;
 				$scope.Remittance.date = data.remittance_date;
+				$scope.Remittance.doctype = $scope.ActiveOpt;
 				$scope.Remitted = false;
 			});
 		}
@@ -224,7 +218,7 @@ define(['app','api','atomic/bomb'],function(app){
 			//data.limit = 'less';
 			api.GET('cashier_collections',data, function success(response){
 				console.log(response.data[0]);
-				$scope.Booklet = response.data[0];
+				$scope.Booklet = response.data[0].booklets;
 				getRemittance();
 			},function error(response){
 				getRemittance();
