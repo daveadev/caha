@@ -586,7 +586,10 @@ define(['app', 'api'], function(app) {
 		$scope.RectTypes = rectTypes;
 		$scope.ActiveTyp = actType;
 		$scope.Booklets = booklets;
-		
+		if(book){
+			$scope.ActiveBook = book;
+			$scope.Booklets.push(book);
+		}
 		$scope.Actions = [
 			{id:'byps','desc':'Bypass this time only','class':'glyphicon-random'},
 			{id:'skip','desc':'Skip and update counter','class':'glyphicon-fast-forward'},
@@ -599,10 +602,10 @@ define(['app', 'api'], function(app) {
 			$scope.HiddenAction = false;
 			if($scope.Booklets.length<=1)
 				$scope.Booklets.push(book);
-			$scope.ActiveBook = book;
 		}
-		if(!$scope.Booklets)
+		if(!$scope.Booklets.length)
 			getBooklet();
+		
 		//$scope.ActiveMark = {id:'byps','desc':'Bypass this time only','class':'glyphicon-random'};
 		
 		
@@ -641,7 +644,8 @@ define(['app', 'api'], function(app) {
 		function getBooklet(){
 			var data = {
 				receipt_type:$scope.ActiveTyp,
-				status:'ASSGN'
+				status:'ASSGN',
+				limit:'less'
 			}
 			api.GET('booklets', data, function success(response){
 				angular.forEach(response.data, function(book){
