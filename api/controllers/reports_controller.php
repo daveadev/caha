@@ -139,4 +139,9 @@ class ReportsController extends AppController{
 		//pr(json_decode($_POST['Cashier'],true)); exit();
 		$this->set(compact('data'));
 	}
+
+	function balance_sheet(){
+		$data = array();
+		$this->set(compact('data'));
+	}
 }

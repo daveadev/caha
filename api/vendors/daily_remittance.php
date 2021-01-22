@@ -78,7 +78,7 @@ class DailyRemittance extends Formsheet{
 			$y++;
 		}
 		
-		$y = 36;
+		$y = 27;
 		$this->GRID['font_size']=7;
 		$this->leftText(0,$y,'Date & Time Printed: '.date("M d,Y h:i:s A"),'','');
 	}
