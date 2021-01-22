@@ -2,20 +2,25 @@
 class RemittancesController extends AppController {
 
 	var $name = 'Remittances';
-	var $uses = array('Remittance','RemittanceBreakdown');
+	var $uses = array('Remittance','RemittanceBreakdown','RemittanceBooklet');
 
 	function index() {
 		$this->Remittance->recursive = 0;
 		$remittances = $this->paginate();
 		if($this->isAPIRequest()){
 			foreach($remittances as $i=>$r){
+				//pr($r);
 				$rem['id'] = $r['Remittance']['id'];
 				$rem['cashier_id'] = $r['Remittance']['cashier_id'];
 				$rem['remittance_date'] = $r['Remittance']['remittance_date'];
 				$rem['total_collection'] = $r['Remittance']['total_collection'];
 				$rem['breakdown'] = array();
+				$rem['booklets'] = array();
 				foreach($r['RemittanceBreakdown'] as $a=>$rb){
 					array_push($rem['breakdown'],$rb);
+				}
+				foreach($r['RemittanceBooklet'] as $a=>$rb){
+					array_push($rem['booklets'],$rb);
 				}
 				$remittances[$i]['Remittance'] = $rem;
 			}
@@ -41,11 +46,17 @@ class RemittancesController extends AppController {
 			if ($this->Remittance->save($this->data)) {
 				$last = $this->Remittance->id;
 				$details = $this->data['Remittance']['details'];
+				$booklets = $this->data['Remittance']['booklets'];
 				foreach($details as $i=>$d){
 					$d['remittance_id'] = $last;
 					$details[$i] = $d;
 				}
+				foreach($booklets as $i=>$d){
+					$d['remittance_id'] = $last;
+					$booklets[$i] = $d;
+				}
 				$this->RemittanceBreakdown->saveAll($details);
+				$this->RemittanceBooklet->saveAll($booklets);
 				//pr($details);
 				$this->Session->setFlash(__('The Remittance has been saved', true));
 				$this->redirect(array('action' => 'index'));

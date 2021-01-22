@@ -10,7 +10,14 @@ class Transaction extends AppModel {
 			'conditions' => '',
 			'fields' => '',
 			'order' => ''
-		)
+		),
+		'Booklet' => array(
+			'className' => 'Booklet',
+			'foreignKey' => 'booklet_id',
+			'conditions' => '',
+			'fields' => '',
+			'order' => ''
+		),
 	);
 
 	var $hasMany = array(

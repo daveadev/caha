@@ -18,6 +18,7 @@ define(['app', 'api'], function(app) {
 			
             //Initialize components
             $scope.initCashier = function() {
+				$scope.Consumed = 0;
 				$scope.ActiveUser = $rootScope.__USER.user;
 				console.log($scope.ActiveUser);
 				$scope.Today = new Date();
@@ -61,12 +62,21 @@ define(['app', 'api'], function(app) {
                 function updateHasInfo() {
                     $scope.hasInfo = $scope.hasStudentInfo || $scope.hasTransactionInfo || $scope.hasPaymentInfo;
                 };
-				getAll();
+				if($scope.ActiveUser.user_type=='cashr')
+					getCashierId();
+				else
+					getAll();
 				$scope.RectTypes = ['OR','AR'];
 				$scope.ActiveTyp = 'OR';
             };
             
-			
+			function getCashierId(){
+				var data = {user_id:$scope.ActiveUser.id}
+				api.GET('cashiers',data, function success(response){
+					$scope.cashier_id = response.data[0].id;
+					getAll();
+				});
+			}
 			$scope.SearchStudent = function(){
 				$scope.Search = 1;
 				$scope.Students = '';
@@ -103,7 +113,7 @@ define(['app', 'api'], function(app) {
 			$scope.setActiveTyp = function(typ){
 				$scope.TransactionTypes = '';
 				$scope.ActiveBooklet = '';
-				getBooklet(typ);
+				getBooklet();
 				if(typ=='AR')
 					getAr();
 				else
@@ -113,9 +123,14 @@ define(['app', 'api'], function(app) {
 			
             //Get BookletID
 			function getAll(){
-				api.GET('booklets', function success(response) {
-					$scope.Booklets = response.data;
+				var filter = {status:'ACTIV'}
+				api.GET('booklets',filter, function success(response) {
 					$scope.ActiveBooklet = response.data[0];
+					getAssigendBooks();
+					//$scope.openDanger();
+				}, function error(response){
+					$scope.ActiveBooklet = {};
+					$scope.openDanger();
 				}); 
 
 				//Get students.js
@@ -130,10 +145,26 @@ define(['app', 'api'], function(app) {
 				});
 			}
 			
-			function getBooklet(typ){
-				var data = {receipt_type:typ};
+			function getAssigendBooks(){
+				var data = {
+					status:'ASSGN',
+					limit:'less'
+				};
+				if($scope.cashier_id)
+					data.cashier_id = $scope.cashier_id;
 				api.GET('booklets',data, function success(response){
+					angular.forEach(response.data, function(book){
+						book.label = book.series_start+' - '+book.series_end;
+					});
 					$scope.Booklets = response.data;
+				},function error(response){
+					$scope.Booklets = [$scope.ActiveBooklet];
+				});
+			}
+			
+			function getBooklet(typ){
+				var data = {receipt_type:typ,status:'ACTIV'};
+				api.GET('booklets',data, function success(response){
 					$scope.ActiveBooklet = response.data[0];
 				});
 			}
@@ -272,6 +303,8 @@ define(['app', 'api'], function(app) {
 					//console.log($scope.Payment); return;
                     api.POST('payments', $scope.Payment, function success(response) {
                         $scope.TransactionId  = response.data.transaction_id;
+						if(response.data.booklet)
+							$scope.Consumed = true;
                         $scope.openModal();
                     });
 
@@ -313,6 +346,8 @@ define(['app', 'api'], function(app) {
                 //Set the selected student 
             $scope.setSelecetedStudent = function(student) {
 				$scope.Disabled = 0;
+				if(!$scope.ActiveBooklet)
+					$scope.Disabled = 1;
                 $scope.SelectedStudent = student;
             };
             //Take the value if it is true or false
@@ -368,8 +403,9 @@ define(['app', 'api'], function(app) {
                     return true;
                 }
                 //Opening the modal
-            $scope.displaySettings = function() {
-				$scope.ActiveBooklet['label'] = $scope.ActiveBooklet.series_start+' - '+$scope.ActiveBooklet.series_end;
+            $scope.displaySettings = function(hideConf) {
+				if($scope.ActiveBooklet)
+					$scope.ActiveBooklet['label'] = $scope.ActiveBooklet.series_start+' - '+$scope.ActiveBooklet.series_end;
                 var modalInstance = $uibModal.open({
                     animation: true,
                     templateUrl: 'bookletModal.html',
@@ -389,20 +425,29 @@ define(['app', 'api'], function(app) {
 						},
 						activeSY:function(){
 							return $scope.ActiveSY;
+						},
+						hideConf:function(){
+							return hideConf;
 						}
 					}
                 });
                 modalInstance.opened.then(function() { $rootScope.__MODAL_OPEN = true; });
 				var promise = modalInstance.result;
 				var callback = function(book){
-					$scope.ActiveTyp = book.receipt_type;
-					if($scope.ActiveTyp=='OR')
-						getOr();
-					else
-						getAr();
+					if($scope.Consumed){
+						$scope.initCashier();
+					}else{
+						$scope.ActiveTyp = book.receipt_type;
+						console.log(book);
+						if($scope.ActiveTyp=='OR')
+							getOr();
+						else
+							getAr();
+					}
 					$scope.ActiveBooklet = book;
 				};
 				var fallback = function(){
+					
 				};
 				promise.then(callback,fallback);
             };
@@ -421,7 +466,29 @@ define(['app', 'api'], function(app) {
                 modalInstance.result.then(function() {
 					
                 }, function(source) {
-                    $scope.initCashier();
+                    if($scope.Consumed){
+						$scope.openDanger();
+						$scope.ActiveBooklet = {};
+					}else
+						$scope.initCashier();
+                });
+			}
+			$scope.openDanger = function() {
+                var modalInstance = $uibModal.open({
+                    animation: true,
+                    size: 'sm',
+                    templateUrl: 'dangerModal.html',
+                    controller: 'DangerModal',
+                    resolve:{
+                        TransactionId:function(){
+                            return $scope.TransactionId
+                        }
+                    }
+                });
+                modalInstance.result.then(function() {
+					//$scope.displaySettings('hideConf');
+                }, function(source) {
+					$scope.displaySettings('hideConf');
                 });
             }
             $scope.setActivePopover = function(payment) {
@@ -508,35 +575,57 @@ define(['app', 'api'], function(app) {
 			}
         };
     }]);
-    app.register.controller('BookletModalController', ['$scope', '$rootScope', '$uibModalInstance', 'api','rectTypes','actType','book','booklets','activeSY',
-	function($scope, $rootScope, $uibModalInstance, api,rectTypes,actType,book,booklets,activeSY) {
+    app.register.controller('BookletModalController', ['$scope', '$rootScope', '$uibModalInstance', 'api','rectTypes','actType','book','booklets','activeSY','hideConf',
+	function($scope, $rootScope, $uibModalInstance, api,rectTypes,actType,book,booklets,activeSY,hideConf) {
         //Get the data entered and push it to booklets.js
+		$scope.Saving = 0;
+		$scope.Disabled = 1;
 		$scope.ActiveSY = activeSY;
 		$scope.ActiveUser = $rootScope.__USER.user;
 		$scope.InitialCtr = book.series_counter;
 		$scope.RectTypes = rectTypes;
 		$scope.ActiveTyp = actType;
 		$scope.Booklets = booklets;
-		$scope.ActiveBook = book;
+		if(book){
+			$scope.ActiveBook = book;
+			$scope.Booklets.push(book);
+		}
 		$scope.Actions = [
 			{id:'byps','desc':'Bypass this time only','class':'glyphicon-random'},
 			{id:'skip','desc':'Skip and update counter','class':'glyphicon-fast-forward'},
 			
 		];
-		$scope.ActiveMark = {id:'byps','desc':'Bypass this time only','class':'glyphicon-random'};
+		if(hideConf){
+			$scope.HiddenAction = true;
+			$scope.ActiveBook = {};
+		}else{
+			$scope.HiddenAction = false;
+			if($scope.Booklets.length<=1)
+				$scope.Booklets.push(book);
+		}
+		if(!$scope.Booklets.length)
+			getBooklet();
+		
+		//$scope.ActiveMark = {id:'byps','desc':'Bypass this time only','class':'glyphicon-random'};
 		
 		
 		$scope.setActiveType = function(typ){
+			
 			$scope.ActiveBook = '';
 			$scope.ActiveTyp = typ;
 			getBooklet();
 		}
 		
         $scope.confirmBooklet = function(book) {
-            console.log($scope.ActiveTyp);
+			$scope.Saving = true;
 			if($scope.ActiveTyp=='OR')
 				checkOr(book);
         };
+		
+		$scope.MarkReceipt = function(act){
+			$scope.Disabled = 0;
+			$scope.ActiveMark = act;
+		}
 		
         //Close modal
 		
@@ -546,7 +635,7 @@ define(['app', 'api'], function(app) {
         };
 		
 		$scope.registerCounter = function(book){
-			console.log(book);
+			$scope.Disabled = 0;
 			$scope.ActiveBook = book;
 			$scope.InitialCtr = book.series_counter;
 		}
@@ -554,7 +643,9 @@ define(['app', 'api'], function(app) {
 		
 		function getBooklet(){
 			var data = {
-				receipt_type:$scope.ActiveTyp
+				receipt_type:$scope.ActiveTyp,
+				status:'ASSGN',
+				limit:'less'
 			}
 			api.GET('booklets', data, function success(response){
 				angular.forEach(response.data, function(book){
@@ -573,22 +664,32 @@ define(['app', 'api'], function(app) {
 				ref_no: 'OR '+book.series_counter
 			}
 			api.GET('ledgers',data, function success(response){
-				alert('Norem');
+				$scope.Saving = false;
+				alert('Receipt number already used.');
 				return;
 			}, function error(response){
 				var yes = confirm('Save series counter?');
 				if(yes){
 					//var data = {series_counter:book.series_counter};
-					if($scope.ActiveMark.id=='byps'){
-						book.InitialCtr = $scope.InitialCtr;
-						book.mark = 'bypass';
-					}else
-						book.mark = 'skip';
-						
+					if($scope.ActiveMark){
+						if($scope.ActiveMark.id=='byps'){
+							book.InitialCtr = $scope.InitialCtr;
+							book.mark = 'bypass';
+						}else
+							book.mark = 'skip';
+					}
+					if(hideConf){
+						$scope.ActiveBook.status = 'ACTIV';
+						var data = {Booklet: $scope.ActiveBook,url_from:'config'}
+						api.POST('booklets',data,function success(response){
+							alert('booklet saved!');
+						});
+					}
 					$uibModalInstance.close($scope.ActiveBook);
 					$rootScope.__MODAL_OPEN = false;
 				
 				}else{
+					
 					return false;
 				}
 			});
@@ -609,4 +710,17 @@ define(['app', 'api'], function(app) {
 
         };
     }]);
+	app.register.controller('DangerModal',['$scope','$rootScope','$timeout','$uibModalInstance','api',function($scope,$rootScope,$timeout,$uibModalInstance,api){
+		$rootScope.__MODAL_OPEN = true;
+        $timeout(function() {
+            $scope.ShowButton = true;
+        }, 333);
+       
+        //Dismiss modal
+        $scope.dismissModal = function() {
+            $rootScope.__MODAL_OPEN = false;
+            $uibModalInstance.dismiss('ok');
+
+        };
+	}]);
 });

@@ -1,5 +1,5 @@
 <div ng-controller="BookletController" ng-init="list()">
-	<button class="btn btn-primary btn-fab bottom right fixed" ng-click="openModal()">
+	<button class="btn btn-primary btn-fab top right fixed" ng-click="openModal()">
 	<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
 	</button>
 	<div class="row">
@@ -33,7 +33,7 @@
 							Click the <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> to cancel.
 						</p>
 					</div>
-					<div class="list-group-item ng-class:{active: booklet.series_counter === Booklet.series_counter}" ng-hide="DataLoading" ng-repeat="booklet in Booklets | filter:filterBooklet" ng-click="openBooklet(booklet)">
+					<div class="list-group-item ng-class:{active: booklet.series_counter === ActiveBook.series_counter}" ng-hide="DataLoading" ng-repeat="booklet in Booklets | filter:filterBooklet" ng-click="SetActiveBook(booklet)">
 						<div class="row">
 							<div class="col-md-8">
 								<h4 class="list-group-item-heading" >{{booklet.series_start}} - {{booklet.series_end}}</h4>
@@ -61,7 +61,7 @@
 		<div class="col-md-6">
 			<div class="list-group">
 				<div class="list-group-item list-group-header">
-					<label ng-if="Booklet">{{Booklet.series_counter}}</label>
+					<label ng-if="Booklet">{{ActiveBook.series_counter}}</label>
 					<label ng-if="!Booklet">Booklet Information</label>
 					<div class="pull-right">
 						<div class="btn-group btn-group-xs" uib-dropdown>
@@ -85,39 +85,21 @@
 					<div class="list-group-item" ng-show="hasInfo">
 						<dl class="dl-horizontal">
 								<dt>Status</dt>
-								<dd>{{Booklet.status}}</dd>
+								<dd>{{ActiveBook.status}}</dd>
 								<dt>Cashier</dt>
-								<dd>{{Booklet.cashier}}</dd>
+								<dd>{{ActiveBook.cashier}}</dd>
 								<dt>Series No.</dt>
-								<dd>{{Booklet.series_start}} - {{Booklet.series_end}}</dd>
+								<dd>{{ActiveBook.series_start}} - {{ActiveBook.series_end}}</dd>
 								<dt>Current Series No.</dt>
-								<dd>{{Booklet.series_counter}}</dd>
+								<dd>{{ActiveBook.series_counter}}</dd>
 						</dl>
 					</div>
 					<div class="list-group-item list-group-header" ng-show="hasInfo">
 						<h5>Transactions</h5>
 					</div>
 					<div class="list-group-item" ng-show="hasInfo">
-						<table class="table table-condensed table-bordered">
-							<thead>
-								<tr>
-									<th class="text-center">Series</th>
-									<th class="text-center">Details</th>
-									<th class="text-center">Amount</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr ng-repeat="transaction in Booklet.transactions">
-									<td>{{transaction.series}}</td>
-									<td>
-									<span ng-if="transaction.transactions.length">{{transaction.transactions[0].id}} 
-									<span ng-if="transaction.transactions.length > 1">and {{transaction.transactions.length - 1}} more</span>
-									</span>
-									</td>
-									<td><div class="amount peso total">{{transaction.amount | currency}}</div></td>
-								</tr> 
-							</tbody>
-						</table>
+						<a-pager meta="Meta" on-navigate="gotoPage" style="margin-bottom:10px;" class="pull-right"></a-pager>
+						<a-table headers="TranxHeaders" props="TranxProps" data="Transactions" ></a-table>
 					</div>
 					<div class="list-group-item" ng-show="hasNoInfo">
 						<div class="well">
@@ -127,54 +109,56 @@
 				</div>
 			</div>
 		</div>
-		<script type="text/ng-template" id="myModalContent.html">
-			<div class="modal-header">
-				<h3 class="modal-title">Booklet Information</h3>
-			</div>
-			<div class="modal-body">
-				<div class="row">
-					<div class="col-md-12">
-						<div class="form-group">
-							Series No.
-						</div>						
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-md-4">
-						<div class="form-group">
-							<input type="number" placeholder="Series Start" class="form-control" ng-model="seriesStart" ng-blur="setSeriesCounter(seriesStart)"/>
+		<a-modal id="AddBooklet" title="Booklet Information" >
+			<a-modal-body>
+				<a-row>
+					<a-col>
+						<label for="">Cashier</label>
+						<select name="" id="" class="form-control" ng-options="cash as cash.employee_name for cash  in Cashiers" 
+								ng-model="Cash" ng-change="assign(Cash)">
+								<option value="" > Unassigned</option>
+						</select>
+					</a-col>
+				</a-row>
+				<a-row style="margin-top:10px; ">
+					<!-- <a-col size="3" >
+						<label for="">Booklet No.</label>
+						<input type="number" class="form-control" ng-model="book.booklet_number"  />
+					</a-col>
+					<a-col size="3" >
+						<label for="">Start</label>
+						<input type="number" class="form-control" ng-model="book.series_start" ng-change="change(book.series_start)" />
+					</a-col>
+					<a-col size="3" >
+						<label for="">End</label>
+						<input type="number" class="form-control" ng-model="book.series_end" min="{{book.series_start}}" />
+					</a-col>
+					<a-col size="3" >
+						<label for="">Counter</label>
+						<div class="input-group">
+							<input type="number" class="form-control" ng-model="ctr" disabled />
+							<div class="input-group-btn">
+								<button class="btn btn-success" ng-click="addBooklet(book)">
+									<span class="glyphicon glyphicon-plus"></span>
+								</button>
+							</div>
 						</div>
-					</div>
-					<div class="col-md-4">
-						<div class="form-group">
-							<input type="number" placeholder="Series End" class="form-control" ng-model="seriesEnd"/>
-						</div>
-					</div>
-					<div class="col-md-4">
-						<div class="form-group">
-							<input type="number" placeholder="Series Counter" class="form-control" ng-model="seriesCounter"/>
-						</div>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-md-12">
-						<div class="form-group">
-							Cashier.
-						</div>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-md-12">
-						<div class="form-group">
-							<input type="text" placeholder="Cashier" class="form-control" ng-model="cashier"/>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="modal-footer">
-				<button class="btn btn-primary" type="button" ng-click="confirmBooklet()">Confirm</button>
-				<button class="btn btn-default pull-left" type="button" ng-click="cancelBooklet()">Cancel</button>
-			</div>
-		</script>
+					</a-col> -->
+					<a-col style="margin-top:20px;">
+						<m-table-edit headers="Headers" props="Props" data="BookDetails" inputs="inputs" ng-model="book" on-edit-save="applyEdit" ></m-table-edit>
+					</a-col>
+				</a-row> 
+				<!-- <a-row ng-show="BookDetails.length" style="margin-top: 20px;">
+					<a-col>
+						<a-table headers="Headers" props="Props" data="BookDetails" ></a-table>
+					</a-col>
+				</a-row> -->
+			</a-modal-body>
+			<a-modal-footer>
+				<button class="btn btn-default pull-left" ng-click="Cancel()" >Cancel</button>
+				<button class="btn btn-primary" ng-disabled="!book.length" ng-click="SaveBooklet()" ng-show="!Saving" >Confirm</button>
+				<button class="btn btn-primary" disabled ng-show="Saving" >Saving...</button>
+			</a-modal-footer>
+		</a-modal>
 	</div>
 </div>

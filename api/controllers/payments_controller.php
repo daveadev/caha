@@ -9,6 +9,7 @@ class PaymentsController extends AppController {
 		$student = $this->data['Student'];
 		$transactions = $this->data['Transaction'];
 		$booklet = $this->data['Booklet'];
+		//pr($booklet); exit();
 		$account_id = $student['id'];
 		$ESP =  $this->data['Cashier']['esp'];
 		$TOTAL_DUE =  $this->data['Cashier']['total_due'];
@@ -53,7 +54,7 @@ class PaymentsController extends AppController {
 				$booklet['series_counter'] = $series;
 			}
 		}else
-			$booklet['status'] = 'INACTV';
+			$booklet['status'] = 'CONSM';
 		
 		
 		//pr($booklet); exit();
@@ -69,6 +70,7 @@ class PaymentsController extends AppController {
 		$transac_data = array(
 							'type'=>'payment',
 							'status'=>'fulfilled',
+							'booklet_id'=>$booklet['id'],
 							'ref_no'=>$curr_refNo,
 							'esp' => $ESP,
 							'amount'=> $TOTAL_DUE,
@@ -76,6 +78,9 @@ class PaymentsController extends AppController {
 							'transac_time'=>$time,
 							'cashier'=>$USERNAME,
 							'account_id'=>$account_id);
+		//pr($transac_data); 
+		//pr($booklet); 
+		//exit();
 		$this->Transaction->saveAll($transac_data);
 		
 		$transac_id = $this->Transaction->id;
@@ -298,7 +303,6 @@ class PaymentsController extends AppController {
 		}
 		
 		
-		
 		$DataCollection = array(
 			'TransactionPayment'=>$transac_payments,
 			'TransactionDetail'=>$transac_details,
@@ -324,6 +328,8 @@ class PaymentsController extends AppController {
 			}
 		}
 		$this->data['Payment'] = array('transaction_id'=>$transac_id);
+		if($booklet['status'] == 'CONSM')
+			$this->data['Payment'] = array('transaction_id'=>$transac_id,'booklet'=>'Consumed');
 		$this->set(compact('payments'));
 		//exit();
 		/*

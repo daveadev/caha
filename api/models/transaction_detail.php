@@ -11,6 +11,13 @@ class TransactionDetail extends AppModel {
 			'fields' => '',
 			'order' => ''
 		),
+		'Booklet' => array(
+			'className' => 'Booklet',
+			'foreignKey' => 'booklet_id',
+			'conditions' => '',
+			'fields' => '',
+			'order' => ''
+		),
 		'CashierCollection' => array(
 			'className' => 'CashierCollection',
 			'foreignKey' => 'transaction_id',

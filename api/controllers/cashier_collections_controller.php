@@ -2,10 +2,10 @@
 class CashierCollectionsController extends AppController {
 
 	var $name = 'CashierCollections';
-	var $uses = array('CashierCollection','Section','Student','Account','AccountHistory','Transaction','TransactionDetail');
+	var $uses = array('CashierCollection','Section','Student','Account','AccountHistory','Transaction','TransactionDetail','Booklet');
 	
 	function index() {
-		$this->paginate['CashierCollection']['contain'] = array('Student','Account','TransactionDetail');
+		$this->paginate['CashierCollection']['contain'] = array('Student','Account','TransactionDetail','Booklet');
 		
 		$type = $_GET['type'];
 		if(!isset($_GET['cashr'])){
@@ -49,10 +49,30 @@ class CashierCollectionsController extends AppController {
 			$limit = $this->paginate['CashierCollection']['limit'];
 			$cnt = $limit!=999999?($page-1)*$limit+1:1;
 			//pr($collections); exit();
+			$booklets = array();
 			foreach($collections as $i=>$col){
 				//pr($col);
 				$st = $col['Student'];
 				$cl = $col['CashierCollection'];
+				$acct = $col['Account'];
+				$book = $col['Booklet'];
+				$booknum = $book['booklet_number'];
+				if(!isset($booklets[$booknum])){
+					$booklets[$booknum] = array(
+						'booklet_no'=>$booknum,
+						'ref_nos'=>array(),
+						'amount'=>$cl['amount'],
+					);
+					$ref = explode(" ",$cl['ref_no']);
+					$ref = $ref[1];
+					$booklets[$booknum]['ref_nos'][0]=$ref;
+				}else{
+					$ref = explode(" ",$cl['ref_no']);
+					$ref = $ref[1];
+					array_push($booklets[$booknum]['ref_nos'],$ref);
+					$booklets[$booknum]['amount'] += $cl['amount'];
+				}
+				//pr($booklets);
 				$cl['cnt'] =  $cnt;
 				$status = $col['Account']['subsidy_status'];
 				$status = $status=='REGXX'?'REG':substr($status,-3);
@@ -82,14 +102,21 @@ class CashierCollectionsController extends AppController {
 				unset($cl['transac_time']);
 				unset($cl['id']);
 				unset($cl['account_id']);
-
+				$cl['total_due'] = $acct['assessment_total'];
+				$cl['total_paid'] = $acct['payment_total'];
+				$cl['balance'] = $acct['outstanding_balance'];
 				$collections[$i] = $cl;
 				$cnt++;
 			}
-			//pr($collections);
+			foreach($booklets as $i=>$b){
+				$b['series_start'] = min($b['ref_nos']);
+				$b['series_end'] = max($b['ref_nos']);
+				$booklets[$i] = $b;
+			}
+			//pr($booklets);
 		}
 		//exit();
-		$collections = array('collections'=>$collections,'total'=>$total_collections);
+		$collections = array('collections'=>$collections,'total'=>$total_collections,'booklets'=>$booklets);
 		$cashierCollections = array(array('CashierCollection'=>$collections));
 		//pr($collections); exit();
 		//pr($collections);
