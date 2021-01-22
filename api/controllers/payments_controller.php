@@ -70,6 +70,7 @@ class PaymentsController extends AppController {
 		$transac_data = array(
 							'type'=>'payment',
 							'status'=>'fulfilled',
+							'booklet_id'=>$booklet['id'],
 							'ref_no'=>$curr_refNo,
 							'esp' => $ESP,
 							'amount'=> $TOTAL_DUE,
@@ -77,6 +78,9 @@ class PaymentsController extends AppController {
 							'transac_time'=>$time,
 							'cashier'=>$USERNAME,
 							'account_id'=>$account_id);
+		//pr($transac_data); 
+		//pr($booklet); 
+		//exit();
 		$this->Transaction->saveAll($transac_data);
 		
 		$transac_id = $this->Transaction->id;
@@ -297,7 +301,6 @@ class PaymentsController extends AppController {
 			}
 			$Account['rounding_off'] = $Account['total_payment']-$round_off;
 		}
-		
 		
 		
 		$DataCollection = array(
