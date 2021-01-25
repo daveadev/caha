@@ -71,6 +71,10 @@
 			"/daily_remittance",
 			array("controller"=>"reports","action"=>"daily_remittance")
 	);
+	Router::connect(
+			"/balance_sheet",
+			array("controller"=>"reports","action"=>"balance_sheet")
+	);
 	
 	
 	
