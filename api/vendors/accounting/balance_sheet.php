@@ -58,8 +58,7 @@ class BalanceSheet extends Formsheet{
 		$this->rightText(30,$y,$amount,'','');
 		$this->rightText(38,$y,$amount,'','');
 		$this->drawLine($y+0.3,'h',array(23,15));
-		
-		
+			
 		$y+=1.5;
 		$this->leftText(0,$y,'Receivable from enrollees','','');
 		$this->rightText(38,$y++,$amount,'','');
@@ -80,7 +79,6 @@ class BalanceSheet extends Formsheet{
 		$this->rightText(38,$y,$amount,'','b');
 		$this->drawLine($y+0.3,'h',array(31,7));
 		$this->drawLine($y+0.5,'h',array(31,7));
-
 
 		//LIABILITIES
 		$y+=1.5;
@@ -111,10 +109,6 @@ class BalanceSheet extends Formsheet{
 		$this->rightText(38,$y,$amount,'','b');
 		$this->drawLine($y+0.3,'h',array(31,7));
 
-	
-	
-		
-	
 		//STOCKHOLDERS\' EQUITY
 		$y+=1.5;
 		$this->GRID['font_size']=10;
@@ -157,12 +151,10 @@ class BalanceSheet extends Formsheet{
 		$this->drawLine($y+0.3,'h',array(31,7));
 		$this->drawLine($y+0.5,'h',array(31,7));
 
-		
-		
-	
-		
+
+		$this->GRID['font_size']=7;
+		$this->leftText(-1,53,'Date & Time Printed: '.date("M d,Y h:i:s A"),'','');
 	}
-	
 }
 ?>
 	
