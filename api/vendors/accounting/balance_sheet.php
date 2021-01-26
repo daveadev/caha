@@ -26,7 +26,7 @@ class BalanceSheet extends Formsheet{
 			'rows'=> 4,	
 		);
 		$this->section($metrics);
-		$amount = '999,999.00';
+		$amount = '99,999.99';
 		$y=0;
 		$this->GRID['font_size']=12;
 		$this->centerText(0,$y++,'BALANCE SHEET',38,'b');
