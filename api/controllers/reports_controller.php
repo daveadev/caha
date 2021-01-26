@@ -144,4 +144,73 @@ class ReportsController extends AppController{
 		$data = array();
 		$this->set(compact('data'));
 	}
+	
+	function income_statement(){
+		/*$expenses = array(
+			array(
+				'name'=>'13th Month Pay'
+				'amount'=>'999,999.00'
+			),array(
+				'name'=>'Salaries & Wages'
+				'amount'=>'999,999.00'
+			),array(
+				'name'=>'SSS Premium Expense'
+				'amount'=>'999,999.00'
+			),array(
+				'name'=>'HDMF Premium Expense'
+				'amount'=>'999,999.00'
+			),array(
+				'name'=>'PHIC Premium Expense'
+				'amount'=>'999,999.00'
+			),array(
+				'name'=>'Training Expense'
+				'amount'=>'999,999.00'
+			),array(
+				'name'=>'Teachers Uniform'
+				'amount'=>'999,999.00'
+			),array(
+				'name'=>'Light & Water Expense'
+				'amount'=>'999,999.00'
+			),array(
+				'name'=>'Security Services'
+				'amount'=>'999,999.00'
+			),array(
+				'name'=>'Office Supplies Expense'
+				'amount'=>'999,999.00'
+			),array(
+				'name'=>'Computer Supplies Expense'
+				'amount'=>'999,999.00'
+			),array(
+				'name'=>'Repair & Maintenance'
+				'amount'=>'999,999.00'
+			),array(
+				'name'=>''
+				'amount'=>'999,999.00'
+			)
+			
+			
+			Sanitation Expense
+			Meal Expense
+			Taxes & License
+			Transportation & Travelling
+			Representation
+			Professional Fee
+		Honorarium
+		Demolition Expense
+		Miscellaneous Expense
+		Interest Expense
+		Foundation Day Expense
+		Telephone & Internet
+
+		*/
+		
+		
+		
+		
+		
+		
+		$data = array();
+
+		$this->set(compact('data'));
+	}
 }

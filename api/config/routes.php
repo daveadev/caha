@@ -75,6 +75,10 @@
 			"/balance_sheet",
 			array("controller"=>"reports","action"=>"balance_sheet")
 	);
+	Router::connect(
+			"/income_statement",
+			array("controller"=>"reports","action"=>"income_statement")
+	);
 	
 	
 	
