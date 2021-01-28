@@ -13,7 +13,7 @@ define(function() {
 	TEST_ERROR:false,
 	MAX_IDLE: (function(){
 		var isLocal = window.location.origin.indexOf("localhost")!==-1;
-		var mins =  isLocal?15:5;
+		var mins =  isLocal?15:15;
 		var maxIdle = 1000 * 60 * mins;  
 		return maxIdle;
 	})(),
