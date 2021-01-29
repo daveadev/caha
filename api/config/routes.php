@@ -79,6 +79,10 @@
 			"/income_statement",
 			array("controller"=>"reports","action"=>"income_statement")
 	);
+	Router::connect(
+			"/student_registration_form",
+			array("controller"=>"reports","action"=>"student_registration_form")
+	);
 	
 	
 	

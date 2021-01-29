@@ -213,4 +213,9 @@ class ReportsController extends AppController{
 
 		$this->set(compact('data'));
 	}
+	
+	function student_registration_form(){
+		$data = array();
+		$this->set(compact('data'));
+	}
 }
