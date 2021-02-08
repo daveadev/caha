@@ -38,6 +38,19 @@ class TransactionType extends AppModel {
 			'finderQuery' => '',
 			'counterQuery' => ''
 		),
+		'AssessmentPaysched' => array(
+			'className' => 'AssessmentPaysched',
+			'foreignKey' => 'transaction_type_id',
+			'dependent' => false,
+			'conditions' => '',
+			'fields' => '',
+			'order' => '',
+			'limit' => '',
+			'offset' => '',
+			'exclusive' => '',
+			'finderQuery' => '',
+			'counterQuery' => ''
+		),
 	);
 	
 	function beforeFind($queryData){
@@ -70,6 +83,7 @@ class TransactionType extends AppModel {
 		if(isset($queryData['conditions'][0])):
 			$transacDate = date('Y-m-d',time());
 			
+			
 			$queryData['joins']= array(
 						
 					array(
@@ -83,19 +97,99 @@ class TransactionType extends AppModel {
 								//'AccountSchedule.due_date <='=> $transacDate
 		                    )
 		                ),
+						
 	                );
 			$queryData['group'] = array('TransactionType.id');
+			
+			
+			$ASM = $this->AssessmentPaysched->Assessment;
+			$ASM->recursive=-1;
+			$assessment = $ASM->findByStudentId($delimiter);
+			//Check if assessment is available
+			if($assessment):
+				$queryData['joins']=array();
+				$AID =  $assessment['Assessment']['id'];
+				$this->hasMany['AssessmentPaysched']['conditions'] = array('AssessmentPaysched.assessment_id'=>$AID);
+				$SEM_DB = $ASM->getDataSource()->config['database'];
+				
+				// Join assessments and assessment_payscheds from SEM dbConfig
+				$JASM = array(
+		                    'table' => $SEM_DB.'.assessments', 
+		                    'alias' => 'Assessment',
+		                    'type' => 'LEFT',
+		                    'conditions' => array(
+		                        'Assessment.id '=>$AID
+		                    )
+		                );
+						
+				array_push($queryData['joins'],$JASM);
+				$JASP = array(
+		                    'table' => $SEM_DB.'.assessment_payscheds', 
+		                    'alias' => 'AssessmentPaysched',
+		                    'type' => 'LEFT',
+		                    'conditions' => array(
+		                        'AssessmentPaysched.assessment_id '=>$AID,
+		                        'AssessmentPaysched.transaction_type_id = TransactionType.id',
+		                        'AssessmentPaysched.status !='=> 'PAID'
+		                    )
+		                );
+				array_push($queryData['joins'],$JASP);
+				
+				// Update virtual fields to display IP and Full Payment 
+				$VFLDS = array(
+					'token'=>"
+					CASE `TransactionType`.`id`  WHEN 'FULLP' THEN
+					MD5(CONCAT(Assessment.created,'/',Assessment.assessment_total) )
+					ELSE
+					MD5(GROUP_CONCAT(AssessmentPaysched.due_date,'/',AssessmentPaysched.due_amount))END",
+					'amounts'=>"CASE `TransactionType`.`id`  WHEN 'FULLP' THEN CONCAT(Assessment.created,'/',Assessment.assessment_total) 
+					ELSE 
+					GROUP_CONCAT(AssessmentPaysched.due_date,'/',AssessmentPaysched.due_amount ORDER BY AssessmentPaysched.order) END ",
+					'description'=>"CASE `TransactionType`.`id`  WHEN 'FULLP' THEN 'Total Assessment' ELSE   GROUP_CONCAT(AssessmentPaysched.bill_month ORDER BY AssessmentPaysched.order) END ",
+					'amount'=> " SUM(
+						  IF(
+							`AssessmentPaysched`.`transaction_type_id` = 'INIPY' ,
+							`AssessmentPaysched`.`due_amount`,
+							IF (
+							  `AssessmentPaysched`.`transaction_type_id` = 'SBQPY' ,
+							  `AssessmentPaysched`.`due_amount` ,
+							 IF (
+							  `TransactionType`.`id` = 'FULLP' ,
+							  `Assessment`.`assessment_total` ,
+							  `TransactionType`.`default_amount` 
+							)
+							)
+						  )
+					)"
+					);
+					$this->virtualFields =  $VFLDS;
+				
+			endif;
+			
 			$conditions= array('OR'=>array(
 					array('TransactionType.type'=>'active'),
 					array('TransactionType.type'=>'reactive','AccountSchedule.id'),
 					array('TransactionType.type'=>'passive','AccountSchedule.id'=>null)
 					));
+			if($assessment):
+				// Filter transactions IP, Full and Old Accounts only
+				$conditions= array('OR'=>array(
+					array('TransactionType.type'=>'active'),
+					array('TransactionType.type'=>'reactive','AssessmentPaysched.id','TransactionType.id'=>'INIPY'),
+					array('TransactionType.type'=>'passive','AssessmentPaysched.id'=>null)
+					));
+					
+			endif;
 			//pr(array_keys($queryData['conditions'][0])); exit();
 			$key = array_keys($queryData['conditions'][0]);
 			if(in_array('TransactionType.type',$key))
 				$conditions = array('TransactionType.type'=>'AR');
 			array_push($queryData['conditions'],$conditions);
 			$queryData['order']=array('AccountSchedule.id'=>'desc','AccountSchedule.order'=>'asc');
+			if($assessment):
+				// Adjust order 
+				$queryData['order']=array('AssessmentPaysched.id'=>'desc','AssessmentPaysched.order'=>'asc');
+			endif;
 		else:
 			$this->virtualFields['token'] ='null';
 			$this->virtualFields['amount'] =0;
