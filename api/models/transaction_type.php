@@ -169,7 +169,7 @@ class TransactionType extends AppModel {
 			$conditions= array('OR'=>array(
 					array('TransactionType.type'=>'active'),
 					array('TransactionType.type'=>'reactive','AccountSchedule.id'),
-					array('TransactionType.type'=>'passive','AccountSchedule.id'=>null)
+					array('TransactionType.type'=>'passive','AccountSchedule.id'=>null,'TransactionType.id !='=>'FULLP')
 					));
 			if($assessment):
 				// Filter transactions IP, Full and Old Accounts only
