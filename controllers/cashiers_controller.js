@@ -66,7 +66,7 @@ define(['app', 'api'], function(app) {
 					getCashierId();
 				else
 					getAll();
-				$scope.RectTypes = ['OR','AR'];
+				$scope.RectTypes = ['OR','AR','A2O'];
 				$scope.ActiveTyp = 'OR';
             };
             
@@ -349,6 +349,7 @@ define(['app', 'api'], function(app) {
 				if(!$scope.ActiveBooklet)
 					$scope.Disabled = 1;
                 $scope.SelectedStudent = student;
+                $scope.ActiveTyp = 'OR';
             };
 
             $scope.setSelecetedPayee = function(payee){
@@ -361,6 +362,7 @@ define(['app', 'api'], function(app) {
             $scope.confirmPayee = function(){
             	$scope.isPayeeConfirmed = true;
             	$scope.Disabled = 0;
+            	$scope.ActiveTyp = 'A2O';
             }
             //Take the value if it is true or false
             $scope.toggleSelectPayment = function(id) {
