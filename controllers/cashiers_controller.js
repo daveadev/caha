@@ -18,6 +18,8 @@ define(['app', 'api'], function(app) {
 			
             //Initialize components
             $scope.initCashier = function() {
+				$scope.SearchWord = '';
+				$scope.CheckPayment = false;
 				$scope.Consumed = 0;
 				$scope.ActiveUser = $rootScope.__USER.user;
 				console.log($scope.ActiveUser);
@@ -275,6 +277,7 @@ define(['app', 'api'], function(app) {
 					if('CHCK' in $scope.SelectedPayments){
 						if($scope.SelectedPayments['CHCK']){
 							$scope.TotalChange = 0;
+							$scope.CheckPayment = true;
 						}
 					}
 					
@@ -287,6 +290,8 @@ define(['app', 'api'], function(app) {
 								pay.amount = pay.amount-$scope.TotalChange;
 						});
 					}
+					
+					
                     var cashierObj = {
                         esp:$scope.ActiveSY,
                         total_due:$scope.TotalDue,

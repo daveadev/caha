@@ -322,14 +322,16 @@
 									</tr>
 									<tr ng-show="ActiveTransactions.length" ng-repeat="transaction in ActiveTransactions">
 										<td class="text-left">{{transaction.name}}</td>
-										<td><div class="amount" ng-class="{peso:$first}">{{transaction.amount | currency}}</div></td>
+										<td ng-show="!CheckPayment"><div class="amount" ng-class="{peso:$first}">{{transaction.amount | currency}}</div></td>
+										<td ng-show="CheckPayment"><div class="amount" ng-class="{peso:$first}">{{TotalPaid | currency}}</div></td>
 									</tr>
 								</tbody>
 								<tfoot>
 									<tfoot>
 										<tr>
 											<td><b>Total</b></td>
-											<td><div class="amount peso"><b>{{TotalDue | currency}}</b></div></td>
+											<td ng-show="!CheckPayment"><div class="amount peso"><b>{{TotalDue | currency}}</b></div></td>
+											<td ng-show="CheckPayment"><div class="amount peso"><b>{{TotalPaid | currency}}</b></div></td>
 										</tr>
 									</tfoot>
 									<tr>

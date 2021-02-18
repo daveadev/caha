@@ -25,8 +25,8 @@ class PaymentsController extends AppController {
 		$total_payment = 0;
 		$today = date("Y-m-d");
 		$time = date("h:i:s");
-		/* pr($this->data);
-		exit(); */
+		//pr($this->data);
+		//exit();
 		// Legder
 		// booklet =  $this->Booklet->find('first');
 		// series_no =  $booklet['Booklet']['receipt_type'] .' '. $booklet['Booklet']['series_counter'];
@@ -57,7 +57,9 @@ class PaymentsController extends AppController {
 			$booklet['status'] = 'CONSM';
 		
 		
-		//pr($booklet); exit();
+		//pr($transactions); 
+		//pr($this->data); 
+		//exit();
 		$transac_payments = array();
 		$ledger_accounts = array();
 		$account_transac = array();
@@ -65,7 +67,12 @@ class PaymentsController extends AppController {
 		$transac_details = array();
 		$payment_modes = array();
 		
-		
+		$t_payment = 0;
+		foreach($this->data['Payment'] as $i=>$t){
+			$t_payment += $t['amount'];
+			if($t['id']=='CHCK')
+				$CHECK = true;
+		}
 		// For transactions table
 		$transac_data = array(
 							'type'=>'payment',
@@ -78,6 +85,8 @@ class PaymentsController extends AppController {
 							'transac_time'=>$time,
 							'cashier'=>$USERNAME,
 							'account_id'=>$account_id);
+		if(isset($CHECK))
+			$transac_data['amount']=$t_payment;
 		//pr($transac_data); 
 		//pr($booklet); 
 		//exit();
@@ -102,11 +111,6 @@ class PaymentsController extends AppController {
 		}
 		$account_total = $Account['discount_amount']+$Account['payment_total']+$total_payment;
 		
-		/* pr($transactions);
-		pr($payments);
-		pr($account_total);
-		pr($total_payment); */
-		
 		
 		// for Ledgers and Account transactions
 		$transac_payment = $total_payment;
@@ -118,7 +122,10 @@ class PaymentsController extends AppController {
 				$payment = $trnx['amount'];
 				$transac_payment -=$payment;
 			}
-			$payment_to_date += $payment;
+			if(isset($CHECK))
+				$payment_to_date += $total_payment;
+			else
+				$payment_to_date += $payment;
 			
 			
 			//Save to ledger
@@ -181,7 +188,7 @@ class PaymentsController extends AppController {
 				if($trnx['id']!=='OLDAC'){
 					$history['total_due']=$Account['assessment_total'];
 					$history['total_paid']=$payment_to_date;
-					$history['balance']=$Account['outstanding_balance']-$payment;
+					$history['balance']=$Account['assessment_total']-$payment_to_date;
 					$Account['outstanding_balance'] = $Account['assessment_total']-$payment_to_date;
 					$Account['payment_total'] = $payment_to_date;
 				}
@@ -203,13 +210,14 @@ class PaymentsController extends AppController {
 			
 			// save to account transactions
 			$acct_transac =  array('account_id'=>$account_id,'transaction_type_id'=>$trnx['id'],'ref_no'=>$curr_refNo,'amount'=>$payment);
-			
+			if(isset($CHECK))
+				$acct_transac['amount'] = $total_payment;
 			// save to transaction details
 			$td = array(
 				'transaction_id'=>$transac_id,
 				'transaction_type_id'=>$trnx['id'],
 				'details'=>$detail,
-				'amount'=>$payment
+				'amount'=>$total_payment
 			);
 			if($trnx['type']=='AR'){
 				$td['details'] = $trnx['details'];
