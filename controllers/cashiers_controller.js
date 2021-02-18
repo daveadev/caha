@@ -10,7 +10,7 @@ define(['app', 'api'], function(app) {
             });
             //Steps in Nav-pills
             $scope.Steps = [
-                { id: 1, title: "Student", description: "Select Student" },
+                { id: 1, title: "Payee", description: "Select Payee" },
                 { id: 2, title: "Transaction", description: "Select Transactions" },
                 { id: 3, title: "Payment", description: "Select Payment Methods" },
                 { id: 4, title: "Confirmation", description: "Confirmation" }
@@ -68,7 +68,7 @@ define(['app', 'api'], function(app) {
 					getCashierId();
 				else
 					getAll();
-				$scope.RectTypes = ['OR','AR'];
+				$scope.RectTypes = ['OR','AR','A2O'];
 				$scope.ActiveTyp = 'OR';
             };
             
@@ -354,7 +354,21 @@ define(['app', 'api'], function(app) {
 				if(!$scope.ActiveBooklet)
 					$scope.Disabled = 1;
                 $scope.SelectedStudent = student;
+                $scope.ActiveTyp = 'OR';
             };
+
+            $scope.setSelecetedPayee = function(payee){
+            	$scope.SelectedPayee=payee;
+            	$scope.isPayeeConfirmed =false;
+            	$scope.Disabled = 1;
+            	$scope.OtherPayeeName = null;
+            }
+
+            $scope.confirmPayee = function(){
+            	$scope.isPayeeConfirmed = true;
+            	$scope.Disabled = 0;
+            	$scope.ActiveTyp = 'A2O';
+            }
             //Take the value if it is true or false
             $scope.toggleSelectPayment = function(id) {
 				$scope.SelectedPayments[id] = !$scope.SelectedPayments[id];
