@@ -144,11 +144,11 @@
 			</button>
 			<div class="list-group" ng-show="ActiveStep===1">
 				<div class="list-group-item list-group-header">
-					<label>Student</label>
+					<label>Payee</label>
 				</div>
 				<div class="list-group-canvas list-group-search-results">
 					<div class="list-group-item list-group-header">
-						<h5>Select Student</h5>
+						<h5>Select Payee</h5>
 					</div>
 					<div class="list-group-item text-center" ng-if="!Students.length">
 						<div class="preloader-message">Loading...</div>
@@ -159,12 +159,32 @@
 						<p class="list-group-item-text">
 						<span>{{student.sno}}</span> | <span>{{student.year_level}}</span></p>
 					</div>
+					<div class="list-group-item ng-class:{active:SelectedPayee=='OTHR'}" ng-click="setSelecetedPayee('OTHR')">
+						<h4 class="list-group-item-heading">Others</h4>
+						<p class="list-group-item-text">
+							<span ng-show="!isPayeeConfirmed">Transact other than students.</span>
+							<span ng-show="isPayeeConfirmed">Transact to {{OtherPayeeName}}.</span>
+						</p>
+					</div>
 				</div>
 				<div class="list-group-item list-group-search-box">
-					<div class="input-group"> 
+					<div class="input-group" ng-show="SelectedPayee!=='OTHR'"> 
 						<div class="input-group-btn"><button class="btn btn-default" ng-click="SearchStudent()"><span class="glyphicon glyphicon-search"></span></button></div>
-						<input type="text" class="form-control" placeholder="Search Student" focus="ActiveStep==1&&!__SIDEBAR_OPEN" ng-model="SearchWord"/>
+						<input type="text" class="form-control" placeholder='Search Student or type "Others"' focus="ActiveStep==1&&!__SIDEBAR_OPEN" ng-model="SearchWord"/>
 						<div class="input-group-btn"><button class="btn btn-default" ng-click="ClearSearch()" ng-show="Search"><span class="glyphicon glyphicon-remove"></span></button></div>
+					</div>
+					<div class="input-group" ng-show="SelectedPayee==='OTHR'"> 
+						<div class="input-group-btn">
+							<button class="btn btn-default" ng-click="confirmPayee()" ng-disabled="isPayeeConfirmed" ng-class="{'btn-default':!OtherPayeeName,'btn-success':OtherPayeeName}">
+								<span class="glyphicon glyphicon-ok"></span>
+							</button>
+						</div>
+						<input type="text" class="form-control" focus="ActiveStep==1&&SelectedPayee==='OTHR'&&!__SIDEBAR_OPEN"  ng-disabled="isPayeeConfirmed"  placeholder="Enter Payee Name" ng-model="OtherPayeeName"/>
+						<div class="input-group-btn">
+							<button class="btn btn-default" ng-click="setSelecetedPayee(null)">
+								<span class="glyphicon glyphicon-remove"></span>
+							</button>
+						</div>
 					</div>
 				</div>
 			</div>
