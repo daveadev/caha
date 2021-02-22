@@ -27,7 +27,7 @@
 					</div>
 				</div>
 				<div class="list-group-canvas">
-					<div class="list-group-item" ng-show="hasStudentInfo">
+					<div class="list-group-item" ng-show="ActiveStep>1">
 						<div class="row">
 							<div class="col-md-6">
 								<dl>
@@ -36,7 +36,8 @@
 									<br />
 									<dt>Date</dt>{{Today | date:'dd MMM yyyy'}}
 									<dt>Account</dt>
-									<dd>{{ActiveStudent.sno}} | {{ActiveStudent.name}}</dd>
+									<dd ng-show="!isPayeeConfirmed">{{ActiveStudent.sno}} | {{ActiveStudent.name}}</dd>
+									<dd ng-show="isPayeeConfirmed">{{ActiveStudent.name}}</dd>
 								</dl>
 							</div>
 							<div class="col-md-6">
@@ -67,7 +68,7 @@
 							<thead>
 								<tr>
 									<th class="text-center">Transaction</td>
-									<th class="text-center" ng-show="ActiveTyp=='AR'">Quantity</th>
+									<th class="text-center" ng-show="ActiveTyp!=='OR'">Quantity</th>
 									<th class="text-center">Amount</td>
 								</tr>
 							</thead>
@@ -77,15 +78,15 @@
 								</tr>
 								<tr ng-show="ActiveTransactions.length" ng-repeat="transaction in ActiveTransactions">
 									<td>{{transaction.name}}</td>
-									<td ng-show="ActiveTyp=='AR'" class="text-center">{{transaction.qty}} <span ng-show="!transaction.qty">1</span></td>
+									<td ng-show="ActiveTyp!=='OR'" class="text-center">{{transaction.qty}} <span ng-show="!transaction.qty">1</span></td>
 									<td><div class="amount" ng-class="{peso:$first}">{{transaction.amount | currency}}</div></td>
 								</tr>
 							</tbody>
 							<tfoot>
 								<tr>
 									<td><b>Total</b></td>
-									<td ng-show="ActiveTyp!='AR'"><div class="amount peso"><b>{{TotalDue | currency}}</b></div></td>
-									<td colspan="2" ng-show="ActiveTyp=='AR'"><div class="amount peso"><b>{{TotalDue | currency}}</b></div></td>
+									<td ng-show="ActiveTyp=='OR'"><div class="amount peso"><b>{{TotalDue | currency}}</b></div></td>
+									<td colspan="2" ng-show="ActiveTyp!=='OR'"><div class="amount peso"><b>{{TotalDue | currency}}</b></div></td>
 								</tr>
 							</tfoot>
 						</table>
@@ -121,7 +122,7 @@
 							</tfoot>
 						</table>
 					</div>
-					<div class="list-group-item" ng-show="!hasInfo">
+					<div class="list-group-item" ng-show="ActiveStep==1">
 						<div class="empty-state">
 							<div class="well">
 								<div class="empty-state-icon">
@@ -206,9 +207,10 @@
 						</ul>
 					</div>
 					<div class="list-group-item" 
-						ng-repeat="transaction_type in TransactionTypes | filter:filterTransaction">
+						ng-repeat="transaction_type in TransactionTypes | filter:filterTransaction" ng-hide="ActiveTyp=='A2O'&&transaction_type.id!=='OTHRS'">
 						<div class="row">
-							<div ng-class="{'col-md-7':ActiveTyp=='OR','col-md-5':ActiveTyp=='AR'&&transaction_type.is_quantity, 'col-md-7':transaction_type.is_quantity==0}" ng-click="toggleSelectTransaction(transaction_type.id,$index)" >
+							<div ng-class="{'col-md-7':ActiveTyp!=='AR','col-md-5':ActiveTyp!=='OR'&&transaction_type.is_quantity, 'col-md-7':transaction_type.is_quantity==0}" 
+								ng-click="toggleSelectTransaction(transaction_type.id,$index)">
 								<div class="checkbox checkbox-lg">
 									<label >
 										<input type="checkbox" ng-model="SelectedTransactions[transaction_type.id]">
@@ -227,12 +229,12 @@
 							<div class="col-md-1" ng-show="transaction_type.is_quantity&&SelectedTransactions[transaction_type.id]">
 								<p style="margin-top:20px">x</p>
 							</div>
-							<div ng-class="{'col-md-5':ActiveTyp=='OR','col-md-4':ActiveTyp=='AR'&&transaction_type.is_quantity, 'col-md-5':'!'+transaction_type.is_quantity}" ng-show="SelectedTransactions[transaction_type.id]">
+							<div ng-class="{'col-md-5':ActiveTyp!=='AR','col-md-4':ActiveTyp!=='OR'&&transaction_type.is_quantity, 'col-md-5':'!'+transaction_type.is_quantity}" ng-show="SelectedTransactions[transaction_type.id]">
 								<div class="input-group input-amount">
 									<span class="input-group-addon">₱</span>
 									<input type="number" class="form-control" ng-model="transaction_type.amount" min="0"autoselect focus="FocusTransaction[transaction_type.id]" ng-disabled="!transaction_type.is_specify&&ActiveTyp!='OR'" />
 								</div>
-								<div class="help-text pull-right" ng-show="SelectedTransactions[transaction_type.id]&&transaction_type.is_quantity&&ActiveTyp=='AR'" >Total: {{transaction_type.amount*transaction_type.qty | currency}}</div>
+								<div class="help-text pull-right" ng-show="SelectedTransactions[transaction_type.id]&&transaction_type.is_quantity&&ActiveTyp!=='OR'" >Total: {{transaction_type.amount*transaction_type.qty | currency}}</div>
 							</div>
 							
 						</div>
@@ -325,15 +327,17 @@
 										<th  class="text-left">OR {{ActiveBooklet.series_counter}}</th>
 									</tr>
 									<tr>
-										<td  class="text-left">SNO : {{ActiveStudent.sno}}</td>
+										<td ng-show="ActiveTyp!=='A2O'" class="text-left">SNO : {{ActiveStudent.sno}}</td>
+										<td ng-show="ActiveTyp=='A2O'" class="text-left">SNO : N/A</td>
 										<td  class="text-left">Date : {{Today | date:'dd MMM yyyy'}}</td>
 									</tr>
 									<tr>
-										<td colspan="2"  class="text-left">Student: {{ActiveStudent.name}}</td>
+										<td ng-show="ActiveTyp!=='A2O'" colspan="2"  class="text-left">Student: {{ActiveStudent.name}}</td>
+										<td ng-show="ActiveTyp=='A2O'" colspan="2"  class="text-left">Payee: {{ActiveStudent.name}}</td>
 									</tr>
 									<tr>
 										<td  class="text-left">Payment for:  {{ActiveSYShort}} -  {{ActiveSYShort+1}}</td>
-										<td  class="text-left">Year/Section: {{ActiveStudent.year_level}}  {{ActiveStudent.section}}</td>
+										<td  class="text-left">Year/Section: {{ActiveStudent.year_level}}  {{ActiveStudent.section}} <span ng-show="ActiveTyp=='A2O'">N/A</span></td>
 									</tr>
 								</thead>
 								<tbody>
@@ -342,8 +346,8 @@
 									</tr>
 									<tr ng-show="ActiveTransactions.length" ng-repeat="transaction in ActiveTransactions">
 										<td class="text-left">{{transaction.name}}</td>
-										<td ng-show="!CheckPayment"><div class="amount" ng-class="{peso:$first}">{{transaction.amount | currency}}</div></td>
-										<td ng-show="CheckPayment"><div class="amount" ng-class="{peso:$first}">{{TotalPaid | currency}}</div></td>
+										<td ng-show="!CheckPayment"><span ng-show="transaction.is_quantity">{{transaction.qty}} * </span> <div class="amount" ng-class="{peso:$first}"> {{transaction.amount | currency}}</div></td>
+										<td ng-show="CheckPayment"><span ng-show="transaction.is_quantity">{{transaction.qty}} * </span><div class="amount" ng-class="{peso:$first}">{{TotalPaid | currency}}</div></td>
 									</tr>
 								</tbody>
 								<tfoot>

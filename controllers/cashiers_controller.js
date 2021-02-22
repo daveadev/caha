@@ -199,6 +199,10 @@ define(['app', 'api'], function(app) {
                     //Pass value of student information
 					$scope.Disabled = 1;
                     $scope.ActiveStudent = $scope.SelectedStudent;
+					if($scope.isPayeeConfirmed){
+						$scope.ActiveStudent = {'name':$scope.OtherPayeeName};
+						$scope.OtherPayeeName = '';
+					}
 					if($scope.ActiveTyp=='OR')
 						getOr();
 					else
@@ -231,7 +235,7 @@ define(['app', 'api'], function(app) {
 							if(transactionType.is_quantity&&!transactionType.is_specify){
 								transaction.details = transactionType.qty+'x'+transaction.amount;
 							}
-							if($scope.ActiveTyp=='AR')
+							if($scope.ActiveTyp!=='OR')
 								$scope.TotalDue = $scope.TotalDue + (transaction.amount*transactionType.qty);
 							else
 								$scope.TotalDue = $scope.TotalDue + transaction.amount;
@@ -303,6 +307,9 @@ define(['app', 'api'], function(app) {
 						transactions:$scope.ActiveTransactions,
                         cashier:cashierObj,
                     };
+					console.log($scope.Payment);
+					if($scope.ActiveTyp=='A2O')
+						$scope.Payment.type = {type:'A2O'};
                     $scope.TransactionId = null;
                     $scope.CashierSaving = true;
 					//console.log($scope.Payment); return;
