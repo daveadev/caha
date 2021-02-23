@@ -230,7 +230,8 @@ define(['app', 'api'], function(app) {
                         };
                         if ($scope.SelectedTransactions[transactionType.id]) {
 							if(transactionType.is_quantity&&transactionType.is_specify){
-								transaction.details = transactionType.desc+'_'+transactionType.qty+'x'+transaction.amount;
+								transaction.details = transactionType.desc+'_'+transactionType.qty+'x'+transaction.amount;	
+								transaction.desc = transactionType.desc;
 							}
 							if(transactionType.is_quantity&&!transactionType.is_specify){
 								transaction.details = transactionType.qty+'x'+transaction.amount;
@@ -284,7 +285,7 @@ define(['app', 'api'], function(app) {
 							$scope.CheckPayment = true;
 						}
 					}
-					
+					console.log($scope.ActiveTransactions);
                 };
                 if ($scope.ActiveStep === 4) {
                     //Push the gathered info to payments.js
@@ -486,7 +487,10 @@ define(['app', 'api'], function(app) {
                     resolve:{
                         TransactionId:function(){
                             return $scope.TransactionId
-                        }
+                        },
+						rectTyp:function(){
+							return $scope.ActiveTyp
+						}
                     }
                 });
                 modalInstance.result.then(function() {
@@ -722,7 +726,8 @@ define(['app', 'api'], function(app) {
 		}
 		
     }]);
-    app.register.controller('SuccessModalController', ['$scope', '$rootScope', '$timeout', '$uibModalInstance', 'api', 'TransactionId',function($scope, $rootScope, $timeout, $uibModalInstance, api,TransactionId) {
+    app.register.controller('SuccessModalController', ['$scope', '$rootScope', '$timeout', '$uibModalInstance', 'api', 'TransactionId','rectTyp',
+	function($scope, $rootScope, $timeout, $uibModalInstance, api,TransactionId,rectTyp) {
         $rootScope.__MODAL_OPEN = true;
         $timeout(function() {
             $scope.ShowButton = true;

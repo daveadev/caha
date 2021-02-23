@@ -37,10 +37,7 @@ class ReportsController extends AppController{
 	
 	function receipt(){
 		//$trnxId = 1;//FOR SAMPLE OR DATAA
-		if(!isset($_POST['TransactionId']))
-			$trnxId = 2344;
-		else
-			$trnxId = $_POST['TransactionId'];//1
+		$trnxId = $_POST['TransactionId'];//1
 		$trnx = $this->Transaction->findById($trnxId);
 		//pr($trnx); exit();
 		$refNo = $trnx['Transaction']['ref_no'];
@@ -50,22 +47,22 @@ class ReportsController extends AppController{
 		$esp = $trnx['Transaction']['esp'];
 		$syShort = (int)substr($esp, 2,2);
 		$syFor = $syShort.'-'.($syShort+1);
-		//pr($trnx); exit();
+		
 		$trnDate = $trnx['Transaction']['transac_date'];
 		$trnDate =  date('d M Y',strtotime($trnDate));
 		
 		$acctId =  $trnx['Account']['id'];
 		$this->Account->recursive =0;
 		$account = $this->Account->findById($acctId);
-		$student =  $account['Student']['class_name'];
-		$sno =  $account['Student']['sno'];
-		$sectionId  =  $account['Student']['section_id'];
-		$sectObj = $this->Section->findById($sectionId);
-		$yearLevel = $sectObj['YearLevel']['name'];
-		$section = $sectObj['Section']['name'];
-
+		if($account['Student']){
+			$student =  $account['Student']['class_name'];
+			$sno =  $account['Student']['sno'];
+			$sectionId  =  $account['Student']['section_id'];
+			$sectObj = $this->Section->findById($sectionId);
+			$yearLevel = $sectObj['YearLevel']['name'];
+			$section = $sectObj['Section']['name'];
+		}
 		$trnxTypes = $this->TransactionType->find('list');
-		
 		$trnxDtls = array();
 
 		foreach($trnx['TransactionDetail'] as $dtl){
@@ -75,20 +72,35 @@ class ReportsController extends AppController{
 			array_push($trnxDtls,$dtlObj);
 		}
 		$cashier = $trnx['Transaction']['cashier'];
-
-		$data = array(
-			'ref_no'=>$refNo,
-			'transac_date'=>$trnDate,
-			'student'=>$student,
-			'sno'=>$sno,
-			'year_level'=>$yearLevel,
-			'section'=>$section,
-			'sy'=>$syFor,
-			'transac_details'=> $trnxDtls,
-			'total_paid'=>$totalPaid,
-			'cashier'=>$cashier,
-			'verify_sign'=>'1A2khsfdso1sa'
-		);
+		if(isset($sno)){
+			$data = array(
+				'ref_no'=>$refNo,
+				'transac_date'=>$trnDate,
+				'student'=>$student,
+				'sno'=>$sno,
+				'year_level'=>$yearLevel,
+				'section'=>$section,
+				'sy'=>$syFor,
+				'transac_details'=> $trnxDtls,
+				'total_paid'=>$totalPaid,
+				'cashier'=>$cashier,
+				'verify_sign'=>'1A2khsfdso1sa'
+			);
+		}else{
+			$data = array(
+				'ref_no'=>$refNo,
+				'transac_date'=>$trnDate,
+				'student'=>$account['Account']['account_details'],
+				'sno'=>'',
+				'year_level'=>'',
+				'section'=>'',
+				'sy'=>$syFor,
+				'transac_details'=> $trnxDtls,
+				'total_paid'=>$totalPaid,
+				'cashier'=>$cashier,
+				'verify_sign'=>'1A2khsfdso1sa'
+			);
+		}
 		$data['verify_sign'] = md5(json_encode($data));
 		
 		$this->set(compact('data'));

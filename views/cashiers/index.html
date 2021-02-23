@@ -207,7 +207,7 @@
 						</ul>
 					</div>
 					<div class="list-group-item" 
-						ng-repeat="transaction_type in TransactionTypes | filter:filterTransaction" ng-hide="ActiveTyp=='A2O'&&transaction_type.id!=='OTHRS'">
+						ng-repeat="transaction_type in TransactionTypes | filter:filterTransaction" >
 						<div class="row">
 							<div ng-class="{'col-md-7':ActiveTyp!=='AR','col-md-5':ActiveTyp!=='OR'&&transaction_type.is_quantity, 'col-md-7':transaction_type.is_quantity==0}" 
 								ng-click="toggleSelectTransaction(transaction_type.id,$index)">
@@ -345,7 +345,7 @@
 										<td colspan="2" class="text-left">Details</td>
 									</tr>
 									<tr ng-show="ActiveTransactions.length" ng-repeat="transaction in ActiveTransactions">
-										<td class="text-left">{{transaction.name}}</td>
+										<td class="text-left">{{transaction.name}} <span ng-show="transaction.id=='OTHRS'">: {{transaction.desc}}</span></td>
 										<td ng-show="!CheckPayment"><span ng-show="transaction.is_quantity">{{transaction.qty}} * </span> <div class="amount" ng-class="{peso:$first}"> {{transaction.amount | currency}}</div></td>
 										<td ng-show="CheckPayment"><span ng-show="transaction.is_quantity">{{transaction.qty}} * </span><div class="amount" ng-class="{peso:$first}">{{TotalPaid | currency}}</div></td>
 									</tr>

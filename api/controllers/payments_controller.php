@@ -345,7 +345,6 @@ class PaymentsController extends AppController {
 		$time = date("h:i:s");
 		$booklet = $this->checkBooklet($data);
 		$n = 0;
-		//pr($data); exit();
 		do{
 			$n2 = str_pad($n+1, 5, 0, STR_PAD_LEFT);
 			$result = $this->Account->find('all',array('recursive'=>0,'conditions'=>array('Account.id'=>'LSO'.$n2)));
@@ -358,6 +357,7 @@ class PaymentsController extends AppController {
 						'status'=>'fulfilled',
 						'booklet_id'=>$booklet['id'],
 						'ref_no'=>'OR '.$booklet['series_counter'],
+						'account_details'=>$data['Student']['name'],
 						'esp' => $data['Cashier']['esp'],
 						'amount'=> $data['Cashier']['total_due'],
 						'transac_date'=>$today,
@@ -366,6 +366,20 @@ class PaymentsController extends AppController {
 						'account_id'=>$account_id);
 		$this->Transaction->saveAll($transac_data);
 		$transac_id = $this->Transaction->id;
+		
+		$acct_data = array(
+			'id'=>$account_id,
+			'account_type'=>'others',
+			'account_details'=>$data['Student']['name'],
+			'assessment_total'=> $data['Cashier']['total_due'],
+			'subsidy_status'=>'REGXX',
+			'discount_amount'=>0,
+			'payment_total'=>$data['Cashier']['total_due'],
+			'outstanding_balance'=>0,
+			'rounding_off'=>0,
+		);
+		
+		$this->Account->saveAll($acct_data);
 		
 		$tr_details = array();
 		
