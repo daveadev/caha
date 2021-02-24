@@ -207,7 +207,7 @@
 						</ul>
 					</div>
 					<div class="list-group-item" 
-						ng-repeat="transaction_type in TransactionTypes | filter:filterTransaction" >
+						ng-repeat="transaction_type in TransactionTypes | filter:filterTransaction" ng-hide="ActiveTyp=='A2O'&&transaction_type.id!=='OTHRS'&&!ActiveStudent.id" >
 						<div class="row">
 							<div ng-class="{'col-md-7':ActiveTyp!=='AR','col-md-5':ActiveTyp!=='OR'&&transaction_type.is_quantity, 'col-md-7':transaction_type.is_quantity==0}" 
 								ng-click="toggleSelectTransaction(transaction_type.id,$index)">
@@ -242,10 +242,6 @@
 							<div class="col-md-5">
 								<input type="text" class="form-control" ng-model="transaction_type.desc" placeholder="specify" ng-show="transaction_type.is_specify&&SelectedTransactions[transaction_type.id]" >
 								
-								<!-- <div class="input-group" ng-show="transaction_type.is_quantity&&SelectedTransactions[transaction_type.id]" >
-									<span class="input-group-addon" id="basic-addon1">Quantity: </span>
-									<input type="number" class="form-control" placeholder="quantity" aria-describedby="basic-addon1" ng-model="qty" ng-change="CountQty(qty,transaction_type.id)">
-								</div> -->
 							</div>
 						</div>
 					</div>

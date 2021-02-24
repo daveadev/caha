@@ -11,23 +11,27 @@ class AccountsController extends AppController {
 			$yrLevels = $this->Account->Student->YearLevel->find('list',array('fields'=>array('id','description')));
 			$sections = $this->Account->Student->YearLevel->Section->find('list',array('fields'=>array('id','description')));
 			foreach($accounts as $i =>$acc){
-				//pr($acc);
 				$stud =  $acc['Student'];
-				$yrlvId =  $acc['Student']['year_level_id'];
-				$sectId =  $acc['Student']['section_id'];
-				$yearLevel = "";
-				$section = "";
-				if(isset($yrLevels[$yrlvId]))
-					$yearLevel = $yrLevels[$yrlvId];
-				if(isset($sections[$sectId]))
-					$section = $sections[$sectId];
-
-				$acc['Account']['name'] =$stud['full_name'];
+				//pr($stud);
+				if(isset($stud['sno'])){
+					$yrlvId =  $acc['Student']['year_level_id'];
+					$sectId =  $acc['Student']['section_id'];
+					$yearLevel = "";
+					$section = "";
+				
+					if(isset($yrLevels[$yrlvId]))
+						$yearLevel = $yrLevels[$yrlvId];
+					if(isset($sections[$sectId]))
+						$section = $sections[$sectId];
+				
+					$acc['Account']['name'] =$stud['full_name'];
+					$acc['Account']['sno'] =$stud['sno'];
+					
+					$acc['Account']['year_level'] =$yearLevel;
+					$acc['Account']['section'] =$section;
+				}
 				$acc['Account']['account_no'] =$acc['Account']['id'];
-				$acc['Account']['sno'] =$stud['sno'];
-
-				$acc['Account']['year_level'] =$yearLevel;
-				$acc['Account']['section'] =$section;
+				//pr($acc); exit();
 				//$acc['department_id'] = $stud['department_id'];
 				$accounts[$i]=$acc;
 			}

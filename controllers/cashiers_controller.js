@@ -116,7 +116,7 @@ define(['app', 'api'], function(app) {
 				$scope.TransactionTypes = '';
 				$scope.ActiveBooklet = '';
 				getBooklet();
-				if(typ=='AR')
+				if(typ!=='OR')
 					getAr();
 				else
 					getOr();
@@ -366,12 +366,28 @@ define(['app', 'api'], function(app) {
             };
 
             $scope.setSelecetedPayee = function(payee){
+				$scope.SelectedStudent = '';
+				$scope.Students = [];
+				getOthers();
             	$scope.SelectedPayee=payee;
             	$scope.isPayeeConfirmed =false;
             	$scope.Disabled = 1;
             	$scope.OtherPayeeName = null;
             }
-
+			
+			function getOthers(){
+				var data = {account_type:'others'};
+				api.GET('accounts',data, function success(response){
+					angular.forEach(response.data, function(acct){
+						acct.name = acct.account_details;
+						acct.sno = 'No sno'
+						acct.year_level = 'No level'
+					});
+					$scope.Students = response.data;
+					console.log($scope.Students);
+				});
+			}
+			
             $scope.confirmPayee = function(){
             	$scope.isPayeeConfirmed = true;
             	$scope.Disabled = 0;
