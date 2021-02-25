@@ -358,6 +358,7 @@ define(['app', 'api'], function(app) {
 			}
                 //Set the selected student 
             $scope.setSelecetedStudent = function(student) {
+				$scope.SelectedPayee='';
 				$scope.Disabled = 0;
 				if(!$scope.ActiveBooklet)
 					$scope.Disabled = 1;
@@ -366,6 +367,7 @@ define(['app', 'api'], function(app) {
             };
 
             $scope.setSelecetedPayee = function(payee){
+				$scope.SearchWord = '';
 				$scope.SelectedStudent = '';
 				$scope.Students = [];
 				getOthers();
