@@ -2,12 +2,17 @@
 class PaymentsController extends AppController {
 
 	var $name = 'Payments';
-	var $uses = array('Account','Ledger','Transaction','Booklet','AccountSchedule','AccountFee','TransactionPayment','TransactionDetail','AccountHistory','AccountTransaction');
+	var $uses = array('Account','Ledger','Transaction','Booklet','AccountSchedule','AccountFee','TransactionPayment','TransactionDetail','AccountHistory','AccountTransaction','Reservation');
 	
 	function add() {
 		$payments =  $this->data['Payment'];
-		if(isset($this->data['Type'])){
-			$this->SaveOthers($this->data);
+		$accountType=$this->data['Student']['account_type'];
+		if($accountType!='student'){
+			if($accountType=='inquiry'){
+				$this->SaveInquiry($this->data);
+			}else{
+				$this->SaveOthers($this->data);
+			}
 		}else{
 			$student = $this->data['Student'];
 			$transactions = $this->data['Transaction'];
@@ -123,8 +128,8 @@ class PaymentsController extends AppController {
 					$payment_to_date += $total_payment;
 				else
 					$payment_to_date += $payment;
-				
-				
+				// Save to reservation
+
 				//Save to ledger
 				if($trnx['type']!=='AR'){
 					$ledgerItem =  array(
@@ -390,6 +395,93 @@ class PaymentsController extends AppController {
 				'details'=>$trnx['name'],
 				'amount'=>$trnx['amount']
 			);
+			array_push($tr_details,$td);
+		}
+		
+		$tr_payments = array();
+		
+		foreach($data['Payment'] as $i=>$pay){
+			$tp = array('transaction_id'=>$transac_id,'payment_method_id'=>$pay['id'],'amount'=>$pay['amount']);
+			if($pay['id']!=='CASH'){
+				$tp['valid_on']=$pay['date'];
+				$tp['details']=$pay['bank'];
+				$isCharge = $pay['bank'];
+			}
+			else
+				$tp['details']='Cash';
+			array_push($tr_payments,$tp);
+		}
+		
+		$DataCollection = array(
+			'TransactionPayment'=>$tr_payments,
+			'TransactionDetail'=>$tr_details,
+		);
+		//pr($DataCollection); exit();
+		foreach($DataCollection as $model=>$collection){
+			if($collection){
+				if($this->$model->saveAll($collection)){
+					$this->Session->setFlash(__('The '. $model .' has been saved', true));
+				}
+				else{
+					$this->Session->setFlash(__('Error saving '.$model, true));
+					break;
+				}
+			}
+		}
+		
+		$this->data['Payment'] = array('transaction_id'=>$transac_id);
+		if($booklet['status'] == 'CONSM')
+			$this->data['Payment'] = array('transaction_id'=>$transac_id,'booklet'=>'Consumed');
+		$this->set(compact('payments'));
+	}
+
+	function SaveInquiry($data){
+		$account_id = $data['Student']['id'];
+		$today = date("Y-m-d");
+		$time = date("h:i:s");
+		$booklet = $this->checkBooklet($data);
+		$docType = $this->data['Type']['type'];
+		$refNoType =  $docType;
+		if($docType=='A2O'){
+			$refNoType =  'OR';
+		}
+		$transac_data = array(
+						'type'=>'payment',
+						'status'=>'fulfilled',
+						'booklet_id'=>$booklet['id'],
+						'ref_no'=>$refNoType.' '.$booklet['series_counter'],
+						'account_details'=>$data['Student']['name'],
+						'esp' => $data['Cashier']['esp'],
+						'amount'=> $data['Cashier']['total_due'],
+						'transac_date'=>$today,
+						'transac_time'=>$time,
+						'cashier'=>$this->Auth->user()['User']['username'],
+						'account_id'=>$account_id);
+		$this->Transaction->saveAll($transac_data);
+		$transac_id = $this->Transaction->id;
+		
+		
+		$tr_details = array();
+		
+		foreach($data['Transaction'] as $i=>$trnx){
+			$td = array(
+				'transaction_id'=>$transac_id,
+				'transaction_type_id'=>$trnx['id'],
+				'details'=>$trnx['name'],
+				'amount'=>$trnx['amount']
+			);
+
+			if($trnx['id']=='RSRVE'){
+				$nextESP = $data['Cashier']['esp']+1;
+				$rsrveObj =  array(
+					'account_id'=>$account_id,
+					'esp'=>$nextESP,
+					'ref_no'=>$transac_data['ref_no'],
+					'amount'=>$trnx['amount'],
+					'transac_date'=>$today
+				);
+				$this->Reservation->save($rsrveObj);
+			}
 			array_push($tr_details,$td);
 		}
 		
