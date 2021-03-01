@@ -139,7 +139,14 @@ class Account extends AppModel {
 			
 				if(in_array($search[1],$keys)){
 					$val = array_values($cond);
-					$students = $this->Student->findByName($val[1]);
+					$account_type = 'student';
+					if(isset($_GET['account_type'])){
+						$account_type = $_GET['account_type'];
+					}
+					if($account_type=='student')
+						$students = $this->Student->findByName($val[1]);
+					else if($account_type=='inquiry')
+						$students = $this->Inquiry->findByName($val[1]);
 					$student_ids= array_keys($students);
 					unset($cond['Account.first_name LIKE']);
 					unset($cond['Account.middle_name LIKE']);
