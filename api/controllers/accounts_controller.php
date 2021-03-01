@@ -10,8 +10,10 @@ class AccountsController extends AppController {
 		if($this->isAPIRequest()){
 			$yrLevels = $this->Account->Student->YearLevel->find('list',array('fields'=>array('id','description')));
 			$sections = $this->Account->Student->YearLevel->Section->find('list',array('fields'=>array('id','description')));
+
 			foreach($accounts as $i =>$acc){
 				$stud =  $acc['Student'];
+				$inqu =  $acc['Inquiry'];
 				//pr($stud);
 				if(isset($stud['sno'])){
 					$yrlvId =  $acc['Student']['year_level_id'];
@@ -29,7 +31,22 @@ class AccountsController extends AppController {
 					
 					$acc['Account']['year_level'] =$yearLevel;
 					$acc['Account']['section'] =$section;
+				}else if($inqu){
+					$yrlvId =  $acc['Inquiry']['year_level_id'];
+					$yearLevel = "";
+					$section = "";
+				
+					if(isset($yrLevels[$yrlvId]))
+						$yearLevel = $yrLevels[$yrlvId];
+					
+				
+					$acc['Account']['name'] =$inqu['full_name'];
+					$acc['Account']['sno'] =$acc['Account']['id'];
+					
+					$acc['Account']['year_level'] =$yearLevel;
+					$acc['Account']['section'] =$section;
 				}
+
 				$acc['Account']['account_no'] =$acc['Account']['id'];
 				//pr($acc); exit();
 				//$acc['department_id'] = $stud['department_id'];

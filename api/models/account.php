@@ -26,6 +26,26 @@ class Account extends AppModel {
 			'finderQuery' => '',
 			'counterQuery' => ''
 		),
+		'Inquiry' => array(
+			'className' => 'Inquiry',
+			'foreignKey' => 'id',
+			'dependent' => false,
+			'conditions' => '',
+			'fields' => array(
+				'Inquiry.id',
+				'Inquiry.gender',
+				'Inquiry.short_name',
+				'Inquiry.full_name',
+				'Inquiry.class_name',
+				'Inquiry.year_level_id',
+			),
+			'order' => '',
+			'limit' => '',
+			'offset' => '',
+			'exclusive' => '',
+			'finderQuery' => '',
+			'counterQuery' => ''
+		),
 	);
 	var $hasMany = array(
 		'AccountAdjustment' => array(
