@@ -145,11 +145,19 @@
 			</button>
 			<div class="list-group" ng-show="ActiveStep===1">
 				<div class="list-group-item list-group-header">
-					<label>Payee</label>
+					<label>Payor</label>
 				</div>
 				<div class="list-group-canvas list-group-search-results">
 					<div class="list-group-item list-group-header">
-						<h5>Select Payee</h5>
+						<h5>Select Payor</h5>
+						<ul class="nav nav-pills">
+							<li ng-repeat="typ in StudTypes" 
+								ng-click="setActiveStudType(typ)"
+								ng-class="{active:typ==ActiveStudTyp}"
+								>
+								<a>{{typ}}</a>
+							</li>
+						</ul>
 					</div>
 					<div class="list-group-item text-center" ng-if="!Students.length">
 						<div class="preloader-message">Loading...</div>

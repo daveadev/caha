@@ -10,7 +10,7 @@ define(['app', 'api'], function(app) {
             });
             //Steps in Nav-pills
             $scope.Steps = [
-                { id: 1, title: "Payee", description: "Select Payee" },
+                { id: 1, title: "Payor", description: "Select Payor" },
                 { id: 2, title: "Transaction", description: "Select Transactions" },
                 { id: 3, title: "Payment", description: "Select Payment Methods" },
                 { id: 4, title: "Confirmation", description: "Confirmation" }
@@ -48,6 +48,12 @@ define(['app', 'api'], function(app) {
                 $scope.FocusPayment = {};
                 $scope.FocusTransaction = {};
 				$scope.PopoverDetails.is_open = false;
+
+				$scope.RectTypes = ['OR','AR','A2O'];
+				$scope.StudTypes = ['Old','New'];
+				$scope.ActiveTyp = 'OR';
+				$scope.ActiveStudTyp = ['Old'];
+
                 $scope.$watch('hasStudentInfo', updateHasInfo);
                 $scope.$watch('hasTransactionInfo', updateHasInfo);
                 $scope.$watch('hasPaymentInfo', updateHasInfo);
@@ -68,8 +74,7 @@ define(['app', 'api'], function(app) {
 					getCashierId();
 				else
 					getAll();
-				$scope.RectTypes = ['OR','AR','A2O'];
-				$scope.ActiveTyp = 'OR';
+				
             };
             
 			function getCashierId(){
@@ -82,27 +87,19 @@ define(['app', 'api'], function(app) {
 			$scope.SearchStudent = function(){
 				$scope.Search = 1;
 				$scope.Students = '';
-				var data = {
+				var filter = {
 					keyword:$scope.SearchWord,
 					fields:['first_name','middle_name','last_name','id'],
 					limit:'less'
 				}
-				var success = function(response){
-					$scope.Students = response.data;
-				}
-				var error = function(response){
-					
-				}
-				api.GET('accounts',data,success,error);
+				requestStudents(filter);
 			}
 			
 			$scope.ClearSearch = function(){
 				$scope.Search = 0;
 				$scope.SearchWord = '';
 				$scope.Students = '';
-				api.GET('accounts', function success(response) {
-					$scope.Students = response.data;
-				});
+				requestStudents();
 			}
 			
 			$scope.PrintSoa = function(){
@@ -122,7 +119,10 @@ define(['app', 'api'], function(app) {
 					getOr();
 				$scope.ActiveTyp = typ;
 			}
-			
+			$scope.setActiveStudType = function(type){
+				$scope.ActiveStudTyp = type;
+				requestStudents();
+			}
             //Get BookletID
 			function getAll(){
 				var filter = {status:'ACTIV'}
@@ -136,10 +136,8 @@ define(['app', 'api'], function(app) {
 				}); 
 
 				//Get students.js
-				var data = {account_type:'student'}
-				api.GET('accounts', function success(response) {
-					$scope.Students = response.data;
-				});
+				requestStudents();
+				
 				//Get transaction_types.js
 				//Get payment_methods.js
 				api.GET('payment_methods', function success(response) {
@@ -147,6 +145,14 @@ define(['app', 'api'], function(app) {
 				});
 			}
 			
+			function requestStudents(filter){
+				filter =filter||{};
+				filter.account_type = $scope.ActiveStudTyp=='Old'?'student':'inquiry'; 
+				console.log(filter);
+				api.GET('accounts', filter,function success(response) {
+					$scope.Students = response.data;
+				});
+			}
 			function getAssigendBooks(){
 				var data = {
 					status:'ASSGN',
