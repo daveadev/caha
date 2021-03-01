@@ -52,7 +52,7 @@ define(['app', 'api'], function(app) {
 				$scope.RectTypes = ['OR','AR','A2O'];
 				$scope.StudTypes = ['Old','New'];
 				$scope.ActiveTyp = 'OR';
-				$scope.ActiveStudTyp = ['Old'];
+				$scope.ActiveStudTyp = 'Old';
 
                 $scope.$watch('hasStudentInfo', updateHasInfo);
                 $scope.$watch('hasTransactionInfo', updateHasInfo);
@@ -206,7 +206,7 @@ define(['app', 'api'], function(app) {
 					$scope.Disabled = 1;
                     $scope.ActiveStudent = $scope.SelectedStudent;
 					if($scope.isPayeeConfirmed){
-						$scope.ActiveStudent = {'name':$scope.OtherPayeeName};
+						$scope.ActiveStudent = {'name':$scope.OtherPayeeName,'account_type':'others'};
 						$scope.OtherPayeeName = '';
 					}
 					if($scope.ActiveTyp=='OR')
@@ -224,6 +224,7 @@ define(['app', 'api'], function(app) {
                     $scope.TotalDue = 0;
                     for (var index in $scope.TransactionTypes) {
                         var transactionType = $scope.TransactionTypes[index];
+
                         var transaction = {
                             id: transactionType.id,
                             amount: transactionType.amount,
@@ -242,10 +243,15 @@ define(['app', 'api'], function(app) {
 							if(transactionType.is_quantity&&!transactionType.is_specify){
 								transaction.details = transactionType.qty+'x'+transaction.amount;
 							}
-							if($scope.ActiveTyp!=='OR')
-								$scope.TotalDue = $scope.TotalDue + (transaction.amount*transactionType.qty);
-							else
+							if($scope.ActiveTyp!=='OR'){
+								var amountDue =  transaction.amount;
+								if(transactionType.qty)
+									amountDue =  transaction.amount * transactionType.qty
+								$scope.TotalDue = $scope.TotalDue + amountDue;
+							}
+							else{
 								$scope.TotalDue = $scope.TotalDue + transaction.amount;
+							}
                             $scope.ActiveTransactions.push(transaction);
                         };
                     };
@@ -369,7 +375,7 @@ define(['app', 'api'], function(app) {
 				if(!$scope.ActiveBooklet)
 					$scope.Disabled = 1;
                 $scope.SelectedStudent = student;
-                $scope.ActiveTyp = 'OR';
+                $scope.ActiveTyp = $scope.ActiveStudTyp=='Old'?'OR':'A2O';
             };
 
             $scope.setSelecetedPayee = function(payee){
