@@ -206,9 +206,13 @@ define(['app', 'api'], function(app) {
 					$scope.Disabled = 1;
                     $scope.ActiveStudent = $scope.SelectedStudent;
 					if($scope.isPayeeConfirmed){
-						$scope.ActiveStudent = {'name':$scope.OtherPayeeName,'account_type':'others'};
+						if(!$scope.ActiveStudent.id)
+							$scope.ActiveStudent = {'name':$scope.OtherPayeeName,'account_type':'others'};
+						else
+							$scope.ActiveStudent.name = $scope.ActiveStudent.account_details;
 						$scope.OtherPayeeName = '';
 					}
+					
 					if($scope.ActiveTyp=='OR')
 						getOr();
 					else
@@ -322,7 +326,7 @@ define(['app', 'api'], function(app) {
                     };
 					console.log($scope.Payment);
 					if($scope.ActiveTyp=='A2O')
-						$scope.Payment.type = {type:'A2O'};
+						$scope.Payment.type = {type:'A2O',};
                     $scope.TransactionId = null;
                     $scope.CashierSaving = true;
 					//console.log($scope.Payment); return;
@@ -390,6 +394,8 @@ define(['app', 'api'], function(app) {
             }
 			
 			function getOthers(){
+				
+				$scope.NoOthers = false;
 				var data = {account_type:'others'};
 				api.GET('accounts',data, function success(response){
 					angular.forEach(response.data, function(acct){
@@ -397,12 +403,18 @@ define(['app', 'api'], function(app) {
 						acct.sno = 'No sno'
 						acct.year_level = 'No level'
 					});
-					$scope.Students = response.data;
+					$scope.Others = response.data;
 					console.log($scope.Students);
+				},function error(response){
+					$scope.NoOthers = true;
 				});
 			}
 			
-            $scope.confirmPayee = function(){
+            $scope.confirmPayee = function(acct){
+				if(acct){
+					$scope.SelectedStudent = acct;
+					$scope.SelectedPayee = '';
+				}
             	$scope.isPayeeConfirmed = true;
             	$scope.Disabled = 0;
             	$scope.ActiveTyp = 'A2O';

@@ -7,7 +7,8 @@ class PaymentsController extends AppController {
 	function add() {
 		$payments =  $this->data['Payment'];
 		$accountType=$this->data['Student']['account_type'];
-		if($accountType!='student'){
+		//pr($this->data); exit();
+		if(isset($this->data['Type'])){
 			if($accountType=='inquiry'){
 				$this->SaveInquiry($this->data);
 			}else{
@@ -350,41 +351,61 @@ class PaymentsController extends AppController {
 		$time = date("h:i:s");
 		$booklet = $this->checkBooklet($data);
 		$n = 0;
-		do{
-			$n2 = str_pad($n+1, 5, 0, STR_PAD_LEFT);
-			$result = $this->Account->find('all',array('recursive'=>0,'conditions'=>array('Account.id'=>'LSO'.$n2)));
-			$n++;
+		//pr($data); exit();
+		if(isset($data['Student']['id'])){
+			if($data['Student']['account_type']=='others'){
+				$account = $data['Student'];
+				$account['payment_total'] += $data['Cashier']['total_due'];
+				$account_id = $data['Student']['id'];
+				$this->Account->save($account);
+			}else{
+				$res['account_id'] = $data['Student']['id'];
+				$res['esp'] = $data['Cashier']['esp']+1;
+				$res['ref_no'] = 'OR '.$booklet['series_counter'];
+				$res['amount'] = $data['Cashier']['total_due'];
+				$res['transac_date'] = $today;
+				$this->Reservation->save($res);
+				$account_id = $data['Student']['id'];
+			}
 		}
-		while(!empty($result));
-		$account_id = 'LSO'.$n2;
-		$transac_data = array(
-						'type'=>'payment',
-						'status'=>'fulfilled',
-						'booklet_id'=>$booklet['id'],
-						'ref_no'=>'OR '.$booklet['series_counter'],
-						'account_details'=>$data['Student']['name'],
-						'esp' => $data['Cashier']['esp'],
-						'amount'=> $data['Cashier']['total_due'],
-						'transac_date'=>$today,
-						'transac_time'=>$time,
-						'cashier'=>$this->Auth->user()['User']['username'],
-						'account_id'=>$account_id);
-		$this->Transaction->saveAll($transac_data);
-		$transac_id = $this->Transaction->id;
-		
-		$acct_data = array(
-			'id'=>$account_id,
-			'account_type'=>'others',
-			'account_details'=>$data['Student']['name'],
-			'assessment_total'=> $data['Cashier']['total_due'],
-			'subsidy_status'=>'REGXX',
-			'discount_amount'=>0,
-			'payment_total'=>$data['Cashier']['total_due'],
-			'outstanding_balance'=>0,
-			'rounding_off'=>0,
-		);
-		
-		$this->Account->saveAll($acct_data);
+		else{
+			do{
+				$n2 = str_pad($n+1, 5, 0, STR_PAD_LEFT);
+				$result = $this->Account->find('all',array('recursive'=>0,'conditions'=>array('Account.id'=>'LSO'.$n2)));
+				$n++;
+			}
+			while(!empty($result));
+			$account_id = 'LSO'.$n2;
+			$acct_data = array(
+				'id'=>$account_id,
+				'account_type'=>'others',
+				'account_details'=>$data['Student']['name'],
+				'assessment_total'=> 0,
+				'subsidy_status'=>'REGXX',
+				'discount_amount'=>0,
+				'payment_total'=>$data['Cashier']['total_due'],
+				'outstanding_balance'=>0,
+				'rounding_off'=>0,
+			);
+			
+			$this->Account->saveAll($acct_data);
+		}
+			$transac_data = array(
+							'type'=>'payment',
+							'status'=>'fulfilled',
+							'booklet_id'=>$booklet['id'],
+							'ref_no'=>'OR '.$booklet['series_counter'],
+							'account_details'=>$data['Student']['name'],
+							'esp' => $data['Cashier']['esp'],
+							'amount'=> $data['Cashier']['total_due'],
+							'transac_date'=>$today,
+							'transac_time'=>$time,
+							'cashier'=>$this->Auth->user()['User']['username'],
+							'account_id'=>$account_id);
+			$this->Transaction->saveAll($transac_data);
+			$transac_id = $this->Transaction->id;
+			
+			
 		
 		$tr_details = array();
 		
@@ -392,7 +413,7 @@ class PaymentsController extends AppController {
 			$td = array(
 				'transaction_id'=>$transac_id,
 				'transaction_type_id'=>$trnx['id'],
-				'details'=>$trnx['name'],
+				'details'=>$data['Cashier']['total_due'],
 				'amount'=>$trnx['amount']
 			);
 			array_push($tr_details,$td);
@@ -415,6 +436,7 @@ class PaymentsController extends AppController {
 		$DataCollection = array(
 			'TransactionPayment'=>$tr_payments,
 			'TransactionDetail'=>$tr_details,
+			'Booklet'=>$booklet,
 		);
 		//pr($DataCollection); exit();
 		foreach($DataCollection as $model=>$collection){
@@ -502,6 +524,7 @@ class PaymentsController extends AppController {
 		$DataCollection = array(
 			'TransactionPayment'=>$tr_payments,
 			'TransactionDetail'=>$tr_details,
+			'Booklet'=>$booklet,
 		);
 		//pr($DataCollection); exit();
 		foreach($DataCollection as $model=>$collection){
@@ -521,9 +544,12 @@ class PaymentsController extends AppController {
 			$this->data['Payment'] = array('transaction_id'=>$transac_id,'booklet'=>'Consumed');
 		$this->set(compact('payments'));
 	}
+
+	
 	
 	function checkBooklet($data){
 		$booklet = $data['Booklet'];
+		//pr($booklet);
 		if($booklet['series_counter']<$booklet['series_end']){
 			if(isset($booklet['mark'])){
 				if($booklet['mark']=='bypass'){
@@ -531,7 +557,7 @@ class PaymentsController extends AppController {
 				}else{
 					$series=$booklet['series_counter']+1;
 					do{
-					$result = $this->Ledger->find('first',array('recursive'=>0,'conditions'=>array('Ledger.ref_no'=>'OR '.$series)));
+						$result = $this->Ledger->find('first',array('recursive'=>0,'conditions'=>array('Ledger.ref_no'=>'OR '.$series)));
 						$series++;
 					}while(!empty($result));
 					$series--;
@@ -540,11 +566,12 @@ class PaymentsController extends AppController {
 			}else{
 				$series=$booklet['series_counter']+1;
 				do{
-				$result = $this->Ledger->find('first',array('recursive'=>0,'conditions'=>array('Ledger.ref_no'=>'OR '.$series)));
+					$result = $this->Ledger->find('first',array('recursive'=>0,'conditions'=>array('Ledger.ref_no'=>'OR '.$series)));
 					$series++;
 				}while(!empty($result));
 				$series--;
 				$booklet['series_counter'] = $series;
+				//pr($series);
 			}
 		}else
 			$booklet['status'] = 'CONSM';

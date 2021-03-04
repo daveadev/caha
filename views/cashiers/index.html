@@ -159,7 +159,7 @@
 							</li>
 						</ul>
 					</div>
-					<div class="list-group-item text-center" ng-if="!Students.length">
+					<div class="list-group-item text-center" ng-if="(!Students.length&&!Others.length)&&!NoOthers">
 						<div class="preloader-message">Loading...</div>
 						<div class="loader"></div>
 					</div>
@@ -174,6 +174,11 @@
 							<span ng-show="!isPayeeConfirmed">Transact other than students.</span>
 							<span ng-show="isPayeeConfirmed">Transact to {{OtherPayeeName}}.</span>
 						</p>
+					</div>
+					<div class="list-group-item ng-class:{active:student.id===SelectedStudent.id}" ng-repeat="student in Others | filter:{name:SearchWord}" ng-click="confirmPayee(student)">
+						<h4 class="list-group-item-heading">{{student.name}}</h4>
+						<p class="list-group-item-text"></p>
+						<span>{{student.sno}}</span> | <span>{{student.year_level}}</span></p>
 					</div>
 				</div>
 				<div class="list-group-item list-group-search-box">
@@ -215,7 +220,7 @@
 						</ul>
 					</div>
 					<div class="list-group-item" 
-						ng-repeat="transaction_type in TransactionTypes | filter:filterTransaction" ng-hide="ActiveTyp=='A2O'&&transaction_type.id!=='OTHRS'&&!ActiveStudent.id" >
+						ng-repeat="transaction_type in TransactionTypes | filter:filterTransaction" ng-hide="ActiveTyp=='A2O'&&transaction_type.id!=='OTHRS'&&isPayeeConfirmed" >
 						<div class="row">
 							<div ng-class="{'col-md-7':ActiveTyp!=='AR','col-md-5':ActiveTyp!=='OR'&&transaction_type.is_quantity, 'col-md-7':transaction_type.is_quantity==0}" 
 								ng-click="toggleSelectTransaction(transaction_type.id,$index)">
