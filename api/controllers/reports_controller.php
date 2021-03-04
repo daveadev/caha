@@ -45,8 +45,6 @@ class ReportsController extends AppController{
 		$totalPaid =  number_format($totalPaid,2,'.',',');
 
 		$esp = $trnx['Transaction']['esp'];
-		$syShort = (int)substr($esp, 2,2);
-		$syFor = $syShort.'-'.($syShort+1);
 		
 		$trnDate = $trnx['Transaction']['transac_date'];
 		$trnDate =  date('d M Y',strtotime($trnDate));
@@ -62,6 +60,14 @@ class ReportsController extends AppController{
 			$yearLevel = $sectObj['YearLevel']['name'];
 			$section = $sectObj['Section']['name'];
 		}
+		if($account['Inquiry']){
+			$student =  $account['Inquiry']['class_name'];
+			$sno =  $account['Inquiry']['id'];
+			$yearLvId  =  $account['Inquiry']['year_level_id'];
+			$yrlvObj = $this->Section->YearLevel->findById($yearLvId);
+			$yearLevel = $yrlvObj['YearLevel']['name'];
+			$section = ' ';
+		}
 		$trnxTypes = $this->TransactionType->find('list');
 		$trnxDtls = array();
 
@@ -69,8 +75,14 @@ class ReportsController extends AppController{
 			$item = $trnxTypes[$dtl['transaction_type_id']];
 			$amount= number_format($dtl['amount'],2,'.',',');
 			$dtlObj = array('item'=>$item,'amount'=>$amount);
+			if($dtl['transaction_type_id']=='RSRVE'):
+				$esp = $esp+1;
+				
+			endif;
 			array_push($trnxDtls,$dtlObj);
 		}
+		$syShort = (int)substr($esp, 2,2);
+		$syFor = $syShort.'-'.($syShort+1);
 		$cashier = $trnx['Transaction']['cashier'];
 		if(isset($sno)){
 			$data = array(
