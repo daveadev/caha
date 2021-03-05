@@ -182,11 +182,21 @@ define(['app', 'api'], function(app) {
 					type:'AR'
 				};
 				api.GET('transaction_types',data, function success(response){
-					angular.forEach(response.data,function(res){
+					var RFIndex=0;
+					angular.forEach(response.data,function(res,ind){
 						if(res.is_quantity)
 							res.qty = 1;
+						if(res.id=='RSRVE')
+							RFIndex = ind;
 					})
-					$scope.TransactionTypes = response.data;
+					var TrnxTypes = response.data;
+					//Bubble to top RF for New students
+					if($scope.ActiveStudTyp=='New'){
+						var RFTrnx =  TrnxTypes[RFIndex];
+						TrnxTypes.splice(RFIndex,1);
+						TrnxTypes.unshift(RFTrnx);
+					}
+					$scope.TransactionTypes = TrnxTypes;
 				});
 			}
 			function getOr(){
