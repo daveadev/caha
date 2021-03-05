@@ -413,8 +413,8 @@ class PaymentsController extends AppController {
 			$td = array(
 				'transaction_id'=>$transac_id,
 				'transaction_type_id'=>$trnx['id'],
-				'details'=>$data['Cashier']['total_due'],
-				'amount'=>$trnx['amount']
+				'details'=>$trnx['details'],
+				'amount'=>$data['Cashier']['total_due']
 			);
 			array_push($tr_details,$td);
 		}
@@ -432,7 +432,7 @@ class PaymentsController extends AppController {
 				$tp['details']='Cash';
 			array_push($tr_payments,$tp);
 		}
-		
+		$booklet['series_counter']++;
 		$DataCollection = array(
 			'TransactionPayment'=>$tr_payments,
 			'TransactionDetail'=>$tr_details,
@@ -520,7 +520,7 @@ class PaymentsController extends AppController {
 				$tp['details']='Cash';
 			array_push($tr_payments,$tp);
 		}
-		
+		$booklet['series_counter']++;
 		$DataCollection = array(
 			'TransactionPayment'=>$tr_payments,
 			'TransactionDetail'=>$tr_details,
@@ -564,7 +564,7 @@ class PaymentsController extends AppController {
 					$booklet['series_counter'] = $series;
 				}
 			}else{
-				$series=$booklet['series_counter']+1;
+				$series=$booklet['series_counter'];
 				do{
 					$result = $this->Ledger->find('first',array('recursive'=>0,'conditions'=>array('Ledger.ref_no'=>'OR '.$series)));
 					$series++;
