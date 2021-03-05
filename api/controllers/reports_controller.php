@@ -72,13 +72,17 @@ class ReportsController extends AppController{
 		$trnxDtls = array();
 
 		foreach($trnx['TransactionDetail'] as $dtl){
+			//pr($dtl);
 			$item = $trnxTypes[$dtl['transaction_type_id']];
+			if($dtl['transaction_type_id']=='OTHRS')
+				$item = $dtl['details'];
 			$amount= number_format($dtl['amount'],2,'.',',');
 			$dtlObj = array('item'=>$item,'amount'=>$amount);
 			if($dtl['transaction_type_id']=='RSRVE'):
 				$esp = $esp+1;
 				
 			endif;
+			//pr($dtlObj); exit();
 			array_push($trnxDtls,$dtlObj);
 		}
 		$syShort = (int)substr($esp, 2,2);
