@@ -17,7 +17,7 @@ define(function() {
 		var maxIdle = 1000 * 60 * mins;  
 		return maxIdle;
 	})(),
-	SESS_INTERVAL: 1000 * 30, // 30 secs.
+	SESS_INTERVAL: 1000 * 30 * 10, // 10 mins.
 	COOKIE_EXPIRY: 90*60*1000 ,// 1 hr 30 mins. 
 	HTTP_CONF: {timeout:1000*10},
 	API_URL:'api/',

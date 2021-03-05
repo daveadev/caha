@@ -516,7 +516,7 @@ define(['app', 'api'], function(app) {
 					if($scope.Consumed){
 						$scope.initCashier();
 					}else{
-						$scope.ActiveTyp = book.receipt_type;
+						$scope.ActiveTyp = book.type;
 						console.log(book);
 						if($scope.ActiveTyp=='OR')
 							getOr();
@@ -767,7 +767,8 @@ define(['app', 'api'], function(app) {
 							alert('booklet saved!');
 						});
 					}
-					$uibModalInstance.close($scope.ActiveBook);
+					$scope.ActiveBook.type = $scope.ActiveTyp
+					$uibModalInstance.close($scope.ActiveBook,);
 					$rootScope.__MODAL_OPEN = false;
 				
 				}else{

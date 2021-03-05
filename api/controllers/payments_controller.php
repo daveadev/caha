@@ -349,7 +349,7 @@ class PaymentsController extends AppController {
 	function SaveOthers($data){
 		$today = date("Y-m-d");
 		$time = date("h:i:s");
-		$booklet = $this->checkBooklet($data);
+		$booklet = $data['Booklet'];
 		$n = 0;
 		//pr($data); exit();
 		if(isset($data['Student']['id'])){
@@ -432,6 +432,7 @@ class PaymentsController extends AppController {
 				$tp['details']='Cash';
 			array_push($tr_payments,$tp);
 		}
+		$booklet = $this->checkBooklet($data);
 		$booklet['series_counter']++;
 		$DataCollection = array(
 			'TransactionPayment'=>$tr_payments,
@@ -461,7 +462,8 @@ class PaymentsController extends AppController {
 		$account_id = $data['Student']['id'];
 		$today = date("Y-m-d");
 		$time = date("h:i:s");
-		$booklet = $this->checkBooklet($data);
+		$booklet = $data['Booklet'];
+		
 		$docType = $this->data['Type']['type'];
 		$refNoType =  $docType;
 		if($docType=='A2O'){
@@ -520,7 +522,7 @@ class PaymentsController extends AppController {
 				$tp['details']='Cash';
 			array_push($tr_payments,$tp);
 		}
-		$booklet['series_counter']++;
+		$booklet = $this->checkBooklet($data);
 		$DataCollection = array(
 			'TransactionPayment'=>$tr_payments,
 			'TransactionDetail'=>$tr_details,
@@ -549,7 +551,7 @@ class PaymentsController extends AppController {
 	
 	function checkBooklet($data){
 		$booklet = $data['Booklet'];
-		//pr($booklet);
+		//pr($booklet); exit();
 		if($booklet['series_counter']<$booklet['series_end']){
 			if(isset($booklet['mark'])){
 				if($booklet['mark']=='bypass'){
@@ -564,7 +566,7 @@ class PaymentsController extends AppController {
 					$booklet['series_counter'] = $series;
 				}
 			}else{
-				$series=$booklet['series_counter'];
+				$series=$booklet['series_counter']+1;
 				do{
 					$result = $this->Ledger->find('first',array('recursive'=>0,'conditions'=>array('Ledger.ref_no'=>'OR '.$series)));
 					$series++;
