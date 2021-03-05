@@ -690,7 +690,7 @@ define(['app', 'api'], function(app) {
 		
         $scope.confirmBooklet = function(book) {
 			$scope.Saving = true;
-			if($scope.ActiveTyp=='OR')
+			if($scope.ActiveTyp!=='AR')
 				checkOr(book);
         };
 		
@@ -735,7 +735,7 @@ define(['app', 'api'], function(app) {
 			var data = {
 				ref_no: 'OR '+book.series_counter
 			}
-			api.GET('ledgers',data, function success(response){
+			api.GET('transactions',data, function success(response){
 				$scope.Saving = false;
 				alert('Receipt number already used.');
 				return;
