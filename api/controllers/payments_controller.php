@@ -410,12 +410,16 @@ class PaymentsController extends AppController {
 		$tr_details = array();
 		
 		foreach($data['Transaction'] as $i=>$trnx){
+			
 			$td = array(
 				'transaction_id'=>$transac_id,
 				'transaction_type_id'=>$trnx['id'],
-				'details'=>$trnx['details'],
 				'amount'=>$data['Cashier']['total_due']
 			);
+			if(isset($trnx['details']))
+				$td['details'] = $trnx['details'];
+			else
+				$td['details'] = $trnx['name'];
 			array_push($tr_details,$td);
 		}
 		
