@@ -4,30 +4,46 @@ class CashierCollectionsController extends AppController {
 	var $name = 'CashierCollections';
 	var $uses = array('CashierCollection','Section','Student','Account','AccountHistory','Transaction','TransactionDetail','Booklet');
 	
-	function index() {
-		$this->paginate['CashierCollection']['contain'] = array('Student','Account','TransactionDetail','Booklet');
+	function index() {/* 
+		if($_GET['type']!=='OR')
+			$this->CashierCollection->$useTable = 'transactions'; */
+		$this->paginate['CashierCollection']['contain'] = array('Student','Account','Booklet');
+		
 		
 		$type = $_GET['type'];
+		$typ=$type;
+		if($type=='A2O')
+			$typ='OR';
+		//pr($type);
 		if(!isset($_GET['cashr'])){
 			$start = $_GET['from'];
 			$end = $_GET['to'];
-			$conds =  array('Transaction.ref_no LIKE'=> $type.'%','and'=>array('transac_date <='=>$end,'transac_date >='=>$start));
+			$conds =  array('CashierCollection.ref_no LIKE'=> $typ.'%','and'=>array('transac_date <='=>$end,'transac_date >='=>$start));
+			if($type!=='OR'){
+				$this->paginate['CashierCollection']['contain'] = array('Student','Account','TransactionDetail','Booklet');
+				//$conds =  array('Transaction.ref_no LIKE'=> $typ.'%','and'=>array('transac_date <='=>$end,'transac_date >='=>$start));
+			}
 		}else{
 			$date = $_GET['date'];
-			$conds =  array('Transaction.ref_no LIKE'=> $type.'%','transac_date'=>$date);
+			$conds =  array('CashierCollection.ref_no LIKE'=> $typ.'%','transac_date'=>$date);
+			if($type!=='OR'){
+				$this->paginate['CashierCollection']['contain'] = array('Student','Account','TransactionDetail','Booklet');
+				//$conds =  array('Transaction.ref_no LIKE'=> $typ.'%','transac_date'=>$date);
+			}
 		}
-		//pr($start);
+		//pr($this->paginate()); exit();
 		//$conds =  array('AccountHistory.ref_no LIKE'=> $type.'%','flag'=>'-','and'=>array('transac_date <='=>$end,'transac_date >='=>$start));
 		$collections = $this->paginate();
 
 		$sections = $this->Section->find('all',array('recursive'=>1));
-		$total = $this->Transaction->find('all',array('conditions'=>$conds));
+		$total = $this->AccountHistory->find('all',array('conditions'=>$conds));
+		if($type!=='OR')
+			$total = $this->Transaction->find('all',array('conditions'=>$conds));
 		$total_collections = 0;
 		foreach($total as $i=>$amount){
-			$total_collections += $amount['Transaction']['amount'];
+			$total_collections += $amount['AccountHistory']['amount'];
 		}
-		//pr($total_collections);
-		//exit();
+		
 		
 		$list = array();
 		foreach($sections as $i=>$sec){
@@ -54,6 +70,7 @@ class CashierCollectionsController extends AppController {
 				//pr($col);
 				$st = $col['Student'];
 				$cl = $col['CashierCollection'];
+				//pr($cl); exit();
 				$acct = $col['Account'];
 				$book = $col['Booklet'];
 				$booknum = $book['booklet_number'];
@@ -95,16 +112,16 @@ class CashierCollectionsController extends AppController {
 					$cl['level'] = '-';
 					$cl['section'] = 'CODE:'.$sec_ref;
 				endif;
-				$cl['particulars'] = $col['TransactionDetail'][0]['details'];
+				$cl['particulars'] = $cl['details'];
 				$cl['date'] =  date('d M Y',strtotime($cl['transac_date']));
 				unset($cl['details']);
 				unset($cl['transac_date']);
 				unset($cl['transac_time']);
 				unset($cl['id']);
 				unset($cl['account_id']);
-				$cl['total_due'] = $acct['assessment_total'];
-				$cl['total_paid'] = $acct['payment_total'];
-				$cl['balance'] = $acct['outstanding_balance'];
+				$cl['total_due'] = $cl['total_paid'];
+				$cl['total_paid'] = $cl['total_due'];
+				$cl['balance'] = $cl['balance'];
 				$collections[$i] = $cl;
 				$cnt++;
 			}

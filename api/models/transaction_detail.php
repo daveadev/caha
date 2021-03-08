@@ -24,6 +24,7 @@ class TransactionDetail extends AppModel {
 			'conditions' => '',
 			'fields' => '',
 			'order' => ''
-		)
+		),
+		
 	);
 }

@@ -1,7 +1,7 @@
 <?php
 class CashierCollection extends AppModel {
 	var $name = 'CashierCollection';
-	var $useTable = 'transactions';
+	var $useTable = 'account_histories';
 	var $order = 'transac_date,ref_no asc';
 	var $recursive = 2;
 	var $actsAs = array('Containable');
@@ -30,6 +30,7 @@ class CashierCollection extends AppModel {
 			'fields' => array(
 				'Account.id',
 				'Account.subsidy_status',
+				'Account.account_type',
 				'Account.discount_amount',
 				'Account.assessment_total',
 				'Account.payment_total',
@@ -45,22 +46,22 @@ class CashierCollection extends AppModel {
 			'order' => ''
 		),
 	);
+	
 	var $hasMany = array(
 		'TransactionDetail' => array(
 			'className' => 'TransactionDetail',
 			'foreignKey' => 'transaction_id',
 			'dependent' => false,
-			'conditions' => '',
 			'fields' => '',
-			'order' => '',
-			'limit' => '',
-			'offset' => '',
-			'exclusive' => '',
-			'finderQuery' => '',
-			'counterQuery' => ''
-		)
+			'order' => ''
+		),
 	);
 	
+	/* function __construct($table){
+		$this->useTable = 'transactions';
+		parent::__construct();
+	}
+	 */
 	function beforeFind($queryData){
 		//pr($queryData); exit();
 		if($conds=$queryData['conditions']){
@@ -70,6 +71,7 @@ class CashierCollection extends AppModel {
 				$to = 'CashierCollection.to';
 				$type = 'CashierCollection.type';
 				$date = 'CashierCollection.date';
+				
 				if(isset($cond[$from])){
 					$start =$cond[$from];
 					unset($cond[$from]);
@@ -79,7 +81,11 @@ class CashierCollection extends AppModel {
 					unset($cond[$to]);
 				}
 				if(isset($cond[$type])){
-					$typ = $cond[$type];
+					$typ = $cond[$type];/* 
+					if($typ!=='OR')
+						$this->$useTable = 'transactions'; */
+					if($typ=='A2O')
+						$typ='OR';
 					unset($cond[$type]);
 				}
 				if(isset($cond[$date])){
@@ -96,5 +102,5 @@ class CashierCollection extends AppModel {
 		}
 		//pr($queryData); exit();
 		return $queryData;
-	} 
+	}
 }
