@@ -3,7 +3,7 @@ class CashierCollection extends AppModel {
 	var $name = 'CashierCollection';
 	var $useTable = 'account_histories';
 	var $order = 'transac_date,ref_no asc';
-	var $recursive = 2;
+	var $recursive = 1;
 	var $actsAs = array('Containable');
 	
 	var $belongsTo = array(
@@ -57,11 +57,13 @@ class CashierCollection extends AppModel {
 		),
 	);
 	
-	/* function __construct($table){
-		$this->useTable = 'transactions';
+	 function __construct($table){
+
+	 	if($_GET['type']!=='OR')
+			$this->useTable = 'transactions';
 		parent::__construct();
 	}
-	 */
+	
 	function beforeFind($queryData){
 		//pr($queryData); exit();
 		if($conds=$queryData['conditions']){

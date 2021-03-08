@@ -4,9 +4,10 @@ class CashierCollectionsController extends AppController {
 	var $name = 'CashierCollections';
 	var $uses = array('CashierCollection','Section','Student','Account','AccountHistory','Transaction','TransactionDetail','Booklet');
 	
-	function index() {/* 
-		if($_GET['type']!=='OR')
-			$this->CashierCollection->$useTable = 'transactions'; */
+	function index() {
+		
+		
+		pr($this->paginate());exit;
 		$this->paginate['CashierCollection']['contain'] = array('Student','Account','Booklet');
 		
 		
@@ -34,11 +35,18 @@ class CashierCollectionsController extends AppController {
 		//pr($this->paginate()); exit();
 		//$conds =  array('AccountHistory.ref_no LIKE'=> $type.'%','flag'=>'-','and'=>array('transac_date <='=>$end,'transac_date >='=>$start));
 		$collections = $this->paginate();
-
+		
 		$sections = $this->Section->find('all',array('recursive'=>1));
-		$total = $this->AccountHistory->find('all',array('conditions'=>$conds));
-		if($type!=='OR')
-			$total = $this->Transaction->find('all',array('conditions'=>$conds));
+
+		// Get running total from AccountHistory if OR otherwise use Transaction
+		switch($type){
+			case 'OR':
+				$total = $this->AccountHistory->find('all',array('conditions'=>$conds));
+			default:
+				$total = $this->Transaction->find('all',array('conditions'=>$conds));
+			break;
+		}
+		
 		$total_collections = 0;
 		foreach($total as $i=>$amount){
 			$total_collections += $amount['AccountHistory']['amount'];
