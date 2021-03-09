@@ -22,6 +22,13 @@ class Inquiry extends AppModel {
 			'fields' => array('id','name','description'),
 			'order' => ''
 		),
+		'CashierCollection' => array(
+			'className' => 'CashierCollection',
+			'foreignKey' => 'account_id',
+			'conditions' => '',
+			'fields' => '',
+			'order' => ''
+		),
 		
 	);
 	function findByName($name){

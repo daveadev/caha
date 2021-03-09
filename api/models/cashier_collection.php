@@ -1,7 +1,7 @@
 <?php
 class CashierCollection extends AppModel {
 	var $name = 'CashierCollection';
-	var $useTable = 'account_histories';
+	var $useTable = 'transactions';
 	var $order = 'transac_date,ref_no asc';
 	var $recursive = 1;
 	var $actsAs = array('Containable');
@@ -38,11 +38,30 @@ class CashierCollection extends AppModel {
 			),
 			'order' => ''
 		),
+		'Inquiry' => array(
+			'className' => 'Inquiry',
+			'foreignKey' => 'account_id',
+			'conditions' => '',
+			'fields' => array('Inquiry.full_name'),
+			'order' => ''
+		),
 		'Booklet' => array(
 			'className' => 'Booklet',
 			'foreignKey' => 'booklet_id',
 			'conditions' => '',
-			'fields' => '',
+			'fields' =>array('Booklet.id','Booklet.booklet_number'),
+			'order' => ''
+		),
+		'AccountHistory' => array(
+			'className' => 'AccountHistory',
+			'foreignKey' => '',
+			'dependent' => false,
+			'conditions'=>array('AccountHistory.ref_no = CashierCollection.ref_no'),
+			'fields' => array(
+								'AccountHistory.total_due',
+								'AccountHistory.total_paid',
+								'AccountHistory.balance',
+								'AccountHistory.amount'),
 			'order' => ''
 		),
 	);
@@ -55,14 +74,15 @@ class CashierCollection extends AppModel {
 			'fields' => '',
 			'order' => ''
 		),
+		
 	);
 	
-	 function __construct($table){
+	/*  function __construct($table){
 
 	 	if($_GET['type']!=='OR')
 			$this->useTable = 'transactions';
 		parent::__construct();
-	}
+	} */
 	
 	function beforeFind($queryData){
 		//pr($queryData); exit();
@@ -96,9 +116,9 @@ class CashierCollection extends AppModel {
 				}
 			}
 			if(!isset($dates))
-				$conds = array('CashierCollection.ref_no LIKE'=> $typ.'%','and'=>array('transac_date <='=>$end,'transac_date >='=>$start));
+				$conds = array('CashierCollection.ref_no LIKE'=> $typ.'%','and'=>array('CashierCollection.transac_date <='=>$end,'CashierCollection.transac_date >='=>$start));
 			else
-				$conds = array('CashierCollection.ref_no LIKE'=> $typ.'%','transac_date'=>$dates);
+				$conds = array('CashierCollection.ref_no LIKE'=> $typ.'%','CashierCollection.transac_date'=>$dates);
 			
 			$queryData['conditions']=$conds;
 		}

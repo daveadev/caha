@@ -6,9 +6,8 @@ class CashierCollectionsController extends AppController {
 	
 	function index() {
 		
-		
-		pr($this->paginate());exit;
-		$this->paginate['CashierCollection']['contain'] = array('Student','Account','Booklet');
+		$this->paginate['CashierCollection']['contain'] = array('Student','Account','Booklet','AccountHistory','TransactionDetail','Inquiry');
+		//pr($this->paginate()); exit;
 		
 		
 		$type = $_GET['type'];
@@ -19,14 +18,14 @@ class CashierCollectionsController extends AppController {
 		if(!isset($_GET['cashr'])){
 			$start = $_GET['from'];
 			$end = $_GET['to'];
-			$conds =  array('CashierCollection.ref_no LIKE'=> $typ.'%','and'=>array('transac_date <='=>$end,'transac_date >='=>$start));
+			$conds =  array('Transaction.ref_no LIKE'=> $typ.'%','and'=>array('transac_date <='=>$end,'transac_date >='=>$start));
 			if($type!=='OR'){
 				$this->paginate['CashierCollection']['contain'] = array('Student','Account','TransactionDetail','Booklet');
 				//$conds =  array('Transaction.ref_no LIKE'=> $typ.'%','and'=>array('transac_date <='=>$end,'transac_date >='=>$start));
 			}
 		}else{
 			$date = $_GET['date'];
-			$conds =  array('CashierCollection.ref_no LIKE'=> $typ.'%','transac_date'=>$date);
+			$conds =  array('Transaction.ref_no LIKE'=> $typ.'%','transac_date'=>$date);
 			if($type!=='OR'){
 				$this->paginate['CashierCollection']['contain'] = array('Student','Account','TransactionDetail','Booklet');
 				//$conds =  array('Transaction.ref_no LIKE'=> $typ.'%','transac_date'=>$date);
@@ -40,7 +39,7 @@ class CashierCollectionsController extends AppController {
 
 		// Get running total from AccountHistory if OR otherwise use Transaction
 		switch($type){
-			case 'OR':
+			case 'AR':
 				$total = $this->AccountHistory->find('all',array('conditions'=>$conds));
 			default:
 				$total = $this->Transaction->find('all',array('conditions'=>$conds));
@@ -49,7 +48,9 @@ class CashierCollectionsController extends AppController {
 		
 		$total_collections = 0;
 		foreach($total as $i=>$amount){
-			$total_collections += $amount['AccountHistory']['amount'];
+			$total_collections += $amount['Transaction']['amount'];
+			if($type=='AR')
+				$total_collections += $amount['AccountHistory']['amount'];
 		}
 		
 		
@@ -78,7 +79,7 @@ class CashierCollectionsController extends AppController {
 				//pr($col);
 				$st = $col['Student'];
 				$cl = $col['CashierCollection'];
-				//pr($cl); exit();
+				//pr($col); 
 				$acct = $col['Account'];
 				$book = $col['Booklet'];
 				$booknum = $book['booklet_number'];
@@ -101,37 +102,65 @@ class CashierCollectionsController extends AppController {
 				$cl['cnt'] =  $cnt;
 				$status = $col['Account']['subsidy_status'];
 				$status = $status=='REGXX'?'REG':substr($status,-3);
-				if(isset($st['full_name'])):
-				$cl['received_from'] = $st['class_name'];
-				$cl['sno'] = $st['sno'];
-				$cl['status'] = $status;
-				$yl_ref = $st['year_level_id'];
-				$sec_ref = $st['section_id'];
-				else:
+				
+				if($acct['account_type']=='student'){
+					$cl['received_from'] = $st['class_name'];
+					$cl['sno'] = $st['sno'];
+					$cl['status'] = $status;
+					$yl_ref = $st['year_level_id'];
+					$sec_ref = $st['section_id'];
+				}else{
 					$cl['date'] ='-';
 					$cl['received_from'] ='-';
 					$cl['sno'] ='-';
 					$cl['status'] ='-';
-				endif;
-				if(isset($list[$yl_ref][$sec_ref])):
-				$cl['level'] = $list[$yl_ref][$sec_ref]['yl'];
-				$cl['section'] = $list[$yl_ref][$sec_ref]['name'];
-				else:
-					$cl['level'] = '-';
-					$cl['section'] = 'CODE:'.$sec_ref;
-				endif;
-				$cl['particulars'] = $cl['details'];
+					
+				}
+				if(isset($yl_ref)){
+					if(isset($list[$yl_ref][$sec_ref])):
+						$cl['level'] = $list[$yl_ref][$sec_ref]['yl'];
+						$cl['section'] = $list[$yl_ref][$sec_ref]['name'];
+					else:
+						$cl['level'] = '-';
+						$cl['section'] = 'CODE:'.$sec_ref;
+					endif;
+				}
+				//pr($yl_ref); exit();
+				if(isset($col['TransactionDetail'][0]))
+					$cl['particulars'] = $col['TransactionDetail'][0]['details'];
+				else
+					$cl['particulars'] = $cl['details'];
 				$cl['date'] =  date('d M Y',strtotime($cl['transac_date']));
 				unset($cl['details']);
 				unset($cl['transac_date']);
 				unset($cl['transac_time']);
 				unset($cl['id']);
 				unset($cl['account_id']);
-				$cl['total_due'] = $cl['total_paid'];
-				$cl['total_paid'] = $cl['total_due'];
-				$cl['balance'] = $cl['balance'];
+				if(isset($col['AccountHistory']['id'])){
+					$cl['total_due'] = $col['AccountHistory']['total_paid'];
+					$cl['total_paid'] = $col['AccountHistory']['total_due'];
+					$cl['balance'] = $col['AccountHistory']['balance'];
+				}else{
+					$cl['total_due'] = 'N/A';
+					$cl['total_paid'] = 'N/A';
+					$cl['balance'] = 'N/A';
+					$cl['level'] = 'N/A';
+					$cl['section'] = 'N/A';
+					
+					if($acct['account_type']=='inquiry'){
+						$cl['status']='New';
+						$cl['received_from'] = $col['Inquiry']['full_name'];
+					}
+					if($acct['account_type']=='others'){
+						$cl['status']='Others';
+						$cl['received_from'] =$acct['account_details'];
+					}
+					if($acct['account_type']=='student')
+						$cl['received_from'] = $st['full_name'];
+				}
 				$collections[$i] = $cl;
 				$cnt++;
+				
 			}
 			foreach($booklets as $i=>$b){
 				$b['series_start'] = min($b['ref_nos']);

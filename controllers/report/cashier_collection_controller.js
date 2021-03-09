@@ -6,7 +6,7 @@ define(['app','api','atomic/bomb'],function(app){
 		$scope = this;
 		$scope.init = function(){
 			$rootScope.__MODULE_NAME = 'Cashier Collection';
-			$scope.Options = ['OR','AR','A2O']
+			$scope.Options = ['OR','AR']
 			$scope.ActiveOpt = 'OR';
 			$scope.CHeaders = ['cnt','Sno','Received from','Level','Section','Status','Date','Particular','Ref no',{label:'Amount',class:'amount total'}];
 			$scope.Headers = ['cnt','Sno','Received from','Level','Section','Status','Date','Particular','Ref no',{label:'Amount',class:'amount total'},{label:'Total Due',class:'amount total'},{label:'Total Paid',class:'amount total'},{label:'Balance',class:'amount total'},];
