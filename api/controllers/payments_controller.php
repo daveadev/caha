@@ -27,7 +27,7 @@ class PaymentsController extends AppController {
 
 			$acc = $this->Account->find('first',array('recursive'=>0,'conditions'=>array('id'=>$account_id)));
 			$Account = $acc['Account'];
-			$payment_to_date = $Account['payment_total']+$Account['discount_amount'];
+			$payment_to_date = $Account['payment_total'];
 			$curr_refNo = $booklet['receipt_type']. ' ' .$booklet['series_counter'];
 			$total_payment = 0;
 			$today = date("Y-m-d");
@@ -112,8 +112,10 @@ class PaymentsController extends AppController {
 				array_push($transac_payments,$tp);
 				$total_payment += $pay['amount'];
 			}
-			$account_total = $Account['discount_amount']+$Account['payment_total']+$total_payment;
+			$account_total = $Account['discount_amount']+$total_payment;
 			
+			
+			//exit();
 			
 			// for Ledgers and Account transactions
 			$transac_payment = $total_payment;
@@ -190,9 +192,9 @@ class PaymentsController extends AppController {
 					);
 					if($trnx['id']!=='OLDAC'){
 						$history['total_due']=$Account['assessment_total'];
-						$history['total_paid']=$payment_to_date;
-						$history['balance']=$Account['assessment_total']-$payment_to_date;
-						$Account['outstanding_balance'] = $Account['assessment_total']-$payment_to_date;
+						$history['total_paid']=$payment_to_date+$Account['discount_amount'];
+						$history['balance']=($Account['assessment_total']-$Account['discount_amount'])-$payment_to_date;
+						$Account['outstanding_balance'] = ($Account['assessment_total']-$Account['discount_amount'])-$payment_to_date;
 						$Account['payment_total'] = $payment_to_date;
 					}
 				}else{
@@ -239,7 +241,6 @@ class PaymentsController extends AppController {
 					$total_payment -= $trnx['amount'];
 				
 			}
-			
 			
 			// for account payment schedule
 			$sched_payment = $total_payment;
