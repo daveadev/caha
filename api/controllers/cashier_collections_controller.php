@@ -112,7 +112,7 @@ class CashierCollectionsController extends AppController {
 				}else{
 					$cl['date'] ='-';
 					$cl['received_from'] ='-';
-					$cl['sno'] ='-';
+					$cl['sno'] ='N/A';
 					$cl['status'] ='-';
 					
 				}
