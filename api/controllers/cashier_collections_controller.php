@@ -112,7 +112,7 @@ class CashierCollectionsController extends AppController {
 				}else{
 					$cl['date'] ='-';
 					$cl['received_from'] ='-';
-					$cl['sno'] ='N/A';
+					$cl['sno'] =$acct['id'];
 					$cl['status'] ='-';
 					
 				}
@@ -125,11 +125,12 @@ class CashierCollectionsController extends AppController {
 						$cl['section'] = 'CODE:'.$sec_ref;
 					endif;
 				}
-				//pr($yl_ref); exit();
+				
 				if(isset($col['TransactionDetail'][0]))
 					$cl['particulars'] = $col['TransactionDetail'][0]['details'];
 				else
 					$cl['particulars'] = $cl['details'];
+				//pr($col); 
 				$cl['date'] =  date('d M Y',strtotime($cl['transac_date']));
 				unset($cl['details']);
 				unset($cl['transac_date']);

@@ -421,6 +421,7 @@ class PaymentsController extends AppController {
 				$td['details'] = $trnx['details'];
 			else
 				$td['details'] = $trnx['name'];
+			pr($td); exit();
 			array_push($tr_details,$td);
 		}
 		
@@ -499,7 +500,7 @@ class PaymentsController extends AppController {
 				'details'=>$trnx['name'],
 				'amount'=>$trnx['amount']
 			);
-
+			
 			if($trnx['id']=='RSRVE'){
 				$nextESP = $data['Cashier']['esp']+1;
 				$rsrveObj =  array(
