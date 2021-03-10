@@ -146,11 +146,15 @@ define(['app', 'api'], function(app) {
 			}
 			
 			function requestStudents(filter){
+				$scope.IsLoading = true;
 				filter =filter||{};
 				filter.account_type = $scope.ActiveStudTyp=='Old'?'student':'inquiry'; 
 				console.log(filter);
 				api.GET('accounts', filter,function success(response) {
+					$scope.IsLoading = false;
 					$scope.Students = response.data;
+				}, function error(response){
+					
 				});
 			}
 			function getAssigendBooks(){

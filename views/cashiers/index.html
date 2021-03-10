@@ -159,7 +159,7 @@
 							</li>
 						</ul>
 					</div>
-					<div class="list-group-item text-center" ng-if="(!Students.length&&!Others.length)&&!NoOthers">
+					<div class="list-group-item text-center" ng-if="(!Students.length&&!Others.length)&&!NoOthers&&IsLoading">
 						<div class="preloader-message">Loading...</div>
 						<div class="loader"></div>
 					</div>
@@ -168,7 +168,7 @@
 						<p class="list-group-item-text">
 						<span>{{student.sno}}</span> | <span>{{student.year_level}}</span></p>
 					</div>
-					<div class="list-group-item ng-class:{active:SelectedPayee=='OTHR'}" ng-click="setSelecetedPayee('OTHR')">
+					<div class="list-group-item ng-class:{active:SelectedPayee=='OTHR'}" ng-click="setSelecetedPayee('OTHR')" ng-show="!Search">
 						<h4 class="list-group-item-heading">Others</h4>
 						<p class="list-group-item-text">
 							<span ng-show="!isPayeeConfirmed">Transact other than students.</span>
@@ -179,6 +179,14 @@
 						<h4 class="list-group-item-heading">{{student.name}}</h4>
 						<p class="list-group-item-text"></p>
 						<span>{{student.sno}}</span> | <span>{{student.year_level}}</span></p>
+					</div>
+					<div class="empty-state" ng-if="!Students.length&&Search&&!IsLoading">
+						<div class="well">
+							<div class="empty-state-icon text-center">
+								<i class="glyphicon glyphicon-exclamation-sign"></i>
+							</div>
+							<h4>No Student found!</h4>
+						</div>
 					</div>
 				</div>
 				<div class="list-group-item list-group-search-box">
