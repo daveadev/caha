@@ -75,8 +75,11 @@ class OfficialReceipt extends Formsheet{
 			$this->rightText(20,$y,$itm['amount'],'','');
 			$y++;
 		}
-		
-		
+		//pr($data); exit();
+		if(isset($data['check_details'])){
+			$this->rightText(15,$y,'','','');
+			$this->rightText(15,$y,$data['check_details'],'','');
+		}
 		
 		//Total
 		$this->rightText(20,26.3,$data['total_paid'],'','');

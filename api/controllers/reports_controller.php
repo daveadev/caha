@@ -36,7 +36,7 @@ class ReportsController extends AppController{
 	}
 	
 	function receipt(){
-		//$trnxId = 1;//FOR SAMPLE OR DATAA
+		//$trnxId = 2536;//FOR SAMPLE OR DATAA
 		$trnxId = $_POST['TransactionId'];//1
 		$trnx = $this->Transaction->findById($trnxId);
 		//pr($trnx); exit();
@@ -70,7 +70,9 @@ class ReportsController extends AppController{
 		}
 		$trnxTypes = $this->TransactionType->find('list');
 		$trnxDtls = array();
-
+		
+		
+		
 		foreach($trnx['TransactionDetail'] as $dtl){
 			//pr($dtl);
 			$item = $trnxTypes[$dtl['transaction_type_id']];
@@ -85,6 +87,8 @@ class ReportsController extends AppController{
 			//pr($dtlObj); exit();
 			array_push($trnxDtls,$dtlObj);
 		}
+		
+		//pr($data); exit();
 		$syShort = (int)substr($esp, 2,2);
 		$syFor = $syShort.'-'.($syShort+1);
 		$cashier = $trnx['Transaction']['cashier'];
@@ -118,7 +122,10 @@ class ReportsController extends AppController{
 			);
 		}
 		$data['verify_sign'] = md5(json_encode($data));
-		
+		foreach($trnx['TransactionPayment'] as $payment){
+			if($payment['payment_method_id']=='CHCK')
+				$data['check_details'] = $payment['details'] .' / '. date("d-M-Y", strtotime($payment['valid_on']));
+		}
 		$this->set(compact('data'));
 	}
 	
