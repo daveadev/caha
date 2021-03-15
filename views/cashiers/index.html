@@ -34,7 +34,7 @@
 									<label>Series No.</label>
 									<dd><h3 class="amount pull-left" style="width:40%; text-align: left; margin-top:0">{{ActiveBooklet.series_counter}}</h3> <button class="btn btn-default" ng-click="displaySettings()">CHANGE</button></dd> 
 									<br />
-									<dt>Date</dt>{{Today | date:'dd MMM yyyy'}}
+									<dt>Date</dt>{{Today | date:'dd MMM yyyy'}}   <button class="btn btn-default" style="margin-left:15px;" ng-click="changeDate()" ng-show="Bypass" >CHANGE</button>
 									<dt>Account</dt>
 									<dd ng-show="!isPayeeConfirmed">{{ActiveStudent.sno}} | {{ActiveStudent.name}}</dd>
 									<dd ng-show="isPayeeConfirmed">{{ActiveStudent.name}}</dd>
@@ -505,5 +505,19 @@
 			<form action="api/receipt" method="POST" target="_blank" id="PrintReceipt">
 				<input type="hidden" name="TransactionId" value="{{TransactionId}}"/>
 			</form>
+		</script>
+		<script type="text/ng-template" id="changeDate.html">
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-md-12">
+						<label for="">Date</label>
+						<input type="date" class="form-control" ng-model="Today" max="{{maxDate | date:'yyyy-MM-dd'}}" />
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button class="btn btn-default pull-left" ng-click="Cancel()">Cancel</button>
+				<button class="btn btn-primary pull-right" ng-click="Confirm()" >Confirm</button>
+			</div>
 		</script>
 </div>

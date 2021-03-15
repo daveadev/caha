@@ -30,10 +30,10 @@ class PaymentsController extends AppController {
 			$payment_to_date = $Account['payment_total'];
 			$curr_refNo = $booklet['receipt_type']. ' ' .$booklet['series_counter'];
 			$total_payment = 0;
-			$today = date("Y-m-d");
+			$today =  date("Y-m-d", strtotime($this->data['Cashier']['date']));
 			$time = date("h:i:s");
-			
-			
+			//pr($this->data);
+			//pr($today); exit();
 			
 			if($booklet['series_counter']<$booklet['series_end']){
 				if(isset($booklet['mark'])){
@@ -192,6 +192,7 @@ class PaymentsController extends AppController {
 					);
 					if($trnx['id']!=='OLDAC'){
 						$history['total_due']=$Account['assessment_total'];
+						
 						$history['total_paid']=$payment_to_date+$Account['discount_amount'];
 						$history['balance']=($Account['assessment_total']-$Account['discount_amount'])-$payment_to_date;
 						$Account['outstanding_balance'] = ($Account['assessment_total']-$Account['discount_amount'])-$payment_to_date;

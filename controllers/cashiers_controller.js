@@ -3,7 +3,10 @@ define(['app', 'api'], function(app) {
     app.register.controller('CashierController', ['$log', '$scope', '$rootScope', '$uibModal', 'api', function($log, $scope, $rootScope, $uibModal, api) {
         $scope.index = function() {
             $rootScope.__MODULE_NAME = 'Cashiers';
-
+			if($rootScope.__USER.user.user_type=='offcr'){
+				$rootScope.__MODULE_NAME = 'Cashiers Backlog';
+				$scope.Bypass = true;
+			}
             $rootScope.$watch('_APP',function(app){
                 if(app)
                     $scope.initCashier();
@@ -330,6 +333,7 @@ define(['app', 'api'], function(app) {
                     var cashierObj = {
                         esp:$scope.ActiveSY,
                         total_due:$scope.TotalDue,
+						date:$scope.Today
                     }
                     $scope.Payment = {
 						student: $scope.ActiveStudent,
@@ -659,6 +663,23 @@ define(['app', 'api'], function(app) {
                 }
                 $scope.CurrentChange = (cash + noncash) - $scope.TotalDue;
 			}
+			
+			$scope.changeDate = function(){
+				
+				var modalInstance = $uibModal.open({
+                    animation: true,
+                    size: 'sm',
+                    templateUrl: 'changeDate.html',
+                    controller: 'ChangeDate',
+                   
+                });
+                modalInstance.result.then(function(date) {
+					console.log(date);
+					$scope.Today = date;
+                }, function(source) {
+					//console.log(source)
+                });
+			}
         };
     }]);
     app.register.controller('BookletModalController', ['$scope', '$rootScope', '$uibModalInstance', 'api','rectTypes','actType','book','booklets','activeSY','hideConf',
@@ -797,6 +818,21 @@ define(['app', 'api'], function(app) {
             $uibModalInstance.dismiss('ok');
 
         };
+    }]);
+	app.register.controller('ChangeDate', ['$scope', '$rootScope', '$timeout', '$uibModalInstance', 'api',
+	function($scope, $rootScope, $timeout, $uibModalInstance, api) {
+		$scope.Today = new Date();
+		$scope.maxDate = new Date();
+		console.log($scope.Today);
+		$scope.Confirm = function(){
+			if($scope.Today<$scope.maxDate)
+				$uibModalInstance.close($scope.Today);
+			else
+				alert('Invalid date!');
+		}
+		$scope.Cancel = function(){
+			$uibModalInstance.dismiss();
+		}
     }]);
 	app.register.controller('DangerModal',['$scope','$rootScope','$timeout','$uibModalInstance','api',function($scope,$rootScope,$timeout,$uibModalInstance,api){
 		$rootScope.__MODAL_OPEN = true;

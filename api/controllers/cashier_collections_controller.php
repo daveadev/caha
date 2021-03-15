@@ -138,8 +138,8 @@ class CashierCollectionsController extends AppController {
 				unset($cl['id']);
 				unset($cl['account_id']);
 				if(isset($col['AccountHistory']['id'])){
-					$cl['total_due'] = $col['AccountHistory']['total_paid'];
-					$cl['total_paid'] = $col['AccountHistory']['total_due'];
+					$cl['total_due'] = $col['AccountHistory']['total_due'];
+					$cl['total_paid'] = $col['AccountHistory']['total_paid'];
 					$cl['balance'] = $col['AccountHistory']['balance'];
 				}else{
 					$cl['total_due'] = 'N/A';
