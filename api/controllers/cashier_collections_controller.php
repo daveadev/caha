@@ -2,11 +2,11 @@
 class CashierCollectionsController extends AppController {
 
 	var $name = 'CashierCollections';
-	var $uses = array('CashierCollection','Section','Student','Account','AccountHistory','Transaction','TransactionDetail','Booklet');
+	var $uses = array('CashierCollection','Section','Student','Account','AccountHistory','Transaction','TransactionDetail','Booklet','TransactionPayment');
 	
 	function index() {
 		
-		$this->paginate['CashierCollection']['contain'] = array('Student','Account','Booklet','AccountHistory','TransactionDetail','Inquiry');
+		$this->paginate['CashierCollection']['contain'] = array('Student','Account','Booklet','AccountHistory','TransactionDetail','Inquiry','TransactionPayment');
 		//pr($this->paginate()); exit;
 		
 		
@@ -130,7 +130,8 @@ class CashierCollectionsController extends AppController {
 					$cl['particulars'] = $col['TransactionDetail'][0]['details'];
 				else
 					$cl['particulars'] = $cl['details'];
-				//pr($col); 
+				if($col['TransactionPayment'][0]['payment_method_id']!=='CASH')
+					$cl['payment']=$col['TransactionPayment'][0]['details'] . ' / ' . $col['TransactionPayment'][0]['valid_on'];
 				$cl['date'] =  date('d M Y',strtotime($cl['transac_date']));
 				unset($cl['details']);
 				unset($cl['transac_date']);

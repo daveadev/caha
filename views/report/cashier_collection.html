@@ -166,6 +166,9 @@
 			<a-navtab ng-model="CS.ActiveTab" options="CS.Tabs" ></a-navtab>
 			<a-row ng-show="CS.ActiveTab==1" >
 				<a-col>
+					<a-navtab ng-model="CS.ActiveTab1" options="CS.Tabss" ></a-navtab>
+				</a-col>
+				<a-col ng-show="CS.ActiveTab1==1">
 					<h4 class="pull-right"> Diff. <span class="amount total peso">{{CS.Total - CS.Collections.total | currency }}</span></h4>
 					<table class="table table-bordered table-condensed">
 						<thead>
@@ -187,6 +190,28 @@
 						<tfoot>
 							<tr>
 								<td colspan="2">Total</td>
+								<td class="amount total">{{CS.Total | currency}}</td>
+							</tr>
+						</tfoot>
+					</table>
+				</a-col>
+				<a-col ng-show="CS.ActiveTab1==2">
+					<table class="table table-bordered table-condensed">
+						<thead>
+							<tr>
+								<th>Check Details</th>
+								<th>Amount</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr ng-repeat="non in CS.CashierData.data[0].collections | filter:{payment:'!!'}">
+								<td>{{non.payment}}</td>
+								<td class="amount total">{{non.amount | currency}}</td>
+							</tr>
+						</tbody>
+						<tfoot>
+							<tr>
+								<td>Total</td>
 								<td class="amount total">{{CS.Total | currency}}</td>
 							</tr>
 						</tfoot>

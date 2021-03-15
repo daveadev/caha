@@ -13,7 +13,9 @@ define(['app','api','atomic/bomb'],function(app){
 			$scope.CProps = ['cnt','sno','received_from','level','section','status','date','particulars','ref_no','amount'];
 			$scope.Props = ['cnt','sno','received_from','level','section','status','date','particulars','ref_no','amount','total_due','total_paid','balance'];
 			$scope.Tabs = [{id:1,name:'Breakdown'},{id:2,name:'Booklets'}];
+			$scope.Tabss = [{id:1,name:'Cash'},{id:2,name:'Non-cash'}];
 			$scope.ActiveTab = 1;
+			$scope.ActiveTab1 = 1;
 			$scope.Dinominations = [
 				{denomination:1000.00,quantity:0},
 				{denomination:500.00,quantity:0},
@@ -85,6 +87,10 @@ define(['app','api','atomic/bomb'],function(app){
 			angular.forEach($scope.Remittance.breakdown, function(d){
 				d.amount = d.denomination*d.quantity;
 				$scope.Total += d.amount;
+			});
+			angular.forEach($scope.CashierData.data[0].collections, function(trx){
+				if(trx.payment)
+					$scope.Total += trx.amount;
 			});
 		}
 		
@@ -159,6 +165,7 @@ define(['app','api','atomic/bomb'],function(app){
 			api.GET('cashier_collections',data, function success(response){
 				var print = {data:response.data};
 				$scope.CashierData =  print;
+				console.log($scope.CashierData);
 			});
 		}
 		

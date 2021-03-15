@@ -695,7 +695,7 @@ define(['app', 'api'], function(app) {
 		$scope.Booklets = booklets;
 		
 		if(book){
-			$scope.ActiveBook = book;
+			$scope.ActiveBook = angular.copy(book);
 			$scope.Booklets.push(book);
 		}
 		$scope.Actions = [

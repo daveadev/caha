@@ -74,6 +74,13 @@ class CashierCollection extends AppModel {
 			'fields' => '',
 			'order' => ''
 		),
+		'TransactionPayment' => array(
+			'className' => 'TransactionPayment',
+			'foreignKey' => 'transaction_id',
+			'dependent' => false,
+			'fields' => '',
+			'order' => ''
+		),
 		
 	);
 	
