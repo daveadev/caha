@@ -428,7 +428,7 @@
 						<label for="">Counter</label>
 						<div class="input-group input-amount">
 							<span class="input-group-addon">{{ActiveTyp}} #</span>
-							<input type="number" class="form-control" ng-model="ActiveBook.series_counter" min="{{ActiveBook.series_start}}" ng-disabled="HiddenAction" />
+							<input type="number" class="form-control" ng-model="ActiveBook.series_counter" min="{{ActiveBook.series_start}}" ng-change="ChangeCnt()" max="{{ActiveBook.series_end}}" ng-disabled="HiddenAction" />
 						</div>
 					</div>
 					<div class="col-md-12 " style="margin-top:10px;" ng-hide="HiddenAction">

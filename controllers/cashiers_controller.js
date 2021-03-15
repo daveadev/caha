@@ -693,6 +693,7 @@ define(['app', 'api'], function(app) {
 		$scope.RectTypes = rectTypes;
 		$scope.ActiveTyp = actType;
 		$scope.Booklets = booklets;
+		
 		if(book){
 			$scope.ActiveBook = book;
 			$scope.Booklets.push(book);
@@ -702,6 +703,7 @@ define(['app', 'api'], function(app) {
 			{id:'skip','desc':'Skip and update counter','class':'glyphicon-fast-forward'},
 			
 		];
+		$scope.ActiveMark = {id:'byps','desc':'Bypass this time only','class':'glyphicon-random'};
 		if(hideConf){
 			$scope.HiddenAction = true;
 			$scope.ActiveBook = {};
@@ -714,7 +716,9 @@ define(['app', 'api'], function(app) {
 			getBooklet();
 		
 		//$scope.ActiveMark = {id:'byps','desc':'Bypass this time only','class':'glyphicon-random'};
-		
+		$scope.ChangeCnt = function(){
+			$scope.Disabled = 0;
+		}
 		
 		$scope.setActiveType = function(typ){
 			
@@ -724,6 +728,12 @@ define(['app', 'api'], function(app) {
 		}
 		
         $scope.confirmBooklet = function(book) {
+			
+			if(!book.series_counter){
+				console.log('Counter greater than booklet series end!');
+				alert('Counter greater than booklet series end!');
+				return;
+			}
 			$scope.Saving = true;
 			if($scope.ActiveTyp!=='AR')
 				checkOr(book);
