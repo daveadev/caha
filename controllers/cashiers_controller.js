@@ -94,7 +94,7 @@ define(['app', 'api'], function(app) {
 				else{
 					$scope.changeDate = true;
 					var today = new Date();
-					$scope.yesterday =  today.setDate($scope.Today.getDate()-1);
+					$scope.yesterday =  new Date(today.setDate($scope.Today.getDate()-1));
 				}
 			}
 			
@@ -368,10 +368,16 @@ define(['app', 'api'], function(app) {
 					console.log($scope.ActiveTransactions);
                 };
                 if ($scope.ActiveStep === 4) {
+					console.log($scope.yesterday); 
+					console.log($scope.Today); 
 					
+					//return;
 					if(!$scope.changeDate)
 						$scope.Today = new Date();
-					
+					else{
+						if(!$scope.Today)
+							$scope.Today = $scope.yesterday;
+					}
                     //Push the gathered info to payments.js
 					if($scope.TotalPaid>$scope.TotalDue){
 						angular.forEach($scope.ActivePayments,function(pay){

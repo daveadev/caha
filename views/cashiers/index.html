@@ -49,7 +49,7 @@
 									<span ng-if="!Bypass">{{Today | date:'dd MMM yyyy'}}</span>
 									<div class="row"  ng-if="Bypass">
 										<div class="col-md-8">
-											<input type="date" class="form-control" ng-model="Today" ng-change="regDate(Today)" ng-disabled="!changeDate" />
+											<input type="date" class="form-control" ng-model="Today" ng-change='regDate(Today)'  max="{{ yesterday | date: 'yyyy-MM-dd'}}" ng-disabled="!changeDate" />
 										</div>
 										<div class="col-md-2">
 											<button class="btn btn-default" ng-click="OfficerControl('date')">CHANGE</button>
