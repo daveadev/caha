@@ -19,6 +19,13 @@ class Remittance extends AppModel {
 			'fields' => '',
 			'order' => ''
 		),
+		'RemittanceNoncash' => array(
+			'className' => 'RemittanceNoncash',
+			'foreignKey' => 'remittance_id',
+			'conditions' => '',
+			'fields' => '',
+			'order' => ''
+		),
 	);
 	
 

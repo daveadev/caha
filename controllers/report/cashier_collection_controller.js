@@ -84,14 +84,19 @@ define(['app','api','atomic/bomb'],function(app){
 		
 		$scope.ComputeTotal = function(){
 			$scope.Total = 0;
+			$scope.TotalNon = 0;
 			angular.forEach($scope.Remittance.breakdown, function(d){
 				d.amount = d.denomination*d.quantity;
 				$scope.Total += d.amount;
 			});
 			angular.forEach($scope.CashierData.data[0].collections, function(trx){
 				if(trx.payment)
-					$scope.Total += trx.amount;
+					$scope.TotalNon += trx.amount;
 			});
+		}
+		
+		$scope.setActiveTab = function(type){
+			$scope.ActiveTab1 = type.id;
 		}
 		
 		$scope.SaveNPrint = function(){
@@ -104,7 +109,20 @@ define(['app','api','atomic/bomb'],function(app){
 				data.details.push(d)
 			});
 			data.booklets = $scope.Booklet;
+			var noncash = [];
+			angular.forEach($scope.CashierData.data[0].collections,function(non){
+				if(non.payment){
+					var a = {};
+					a.check_date = non.check_date;
+					a.bank_details = non.payment;
+					a.OR = non.ref_no;
+					a.amount = non.amount;
+					noncash.push(a);
+				}
+			});
+			data.noncash = noncash;
 			//$scope.Remittance.booklet[0].amount = $scope.Total;
+			//console.log(data); return;
 			var success = function(response){
 				aModal.close("RemitModal");
 				$scope.PrintRemit();

@@ -130,8 +130,10 @@ class CashierCollectionsController extends AppController {
 					$cl['particulars'] = $col['TransactionDetail'][0]['details'];
 				else
 					$cl['particulars'] = $cl['details'];
-				if($col['TransactionPayment'][0]['payment_method_id']!=='CASH')
-					$cl['payment']=$col['TransactionPayment'][0]['details'] . ' / ' . $col['TransactionPayment'][0]['valid_on'];
+				if($col['TransactionPayment'][0]['payment_method_id']!=='CASH'){
+					$cl['payment'] = $col['TransactionPayment'][0]['details'];
+					$cl['check_date'] = $col['TransactionPayment'][0]['valid_on'];
+				}
 				$cl['date'] =  date('d M Y',strtotime($cl['transac_date']));
 				unset($cl['details']);
 				unset($cl['transac_date']);

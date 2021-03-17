@@ -166,10 +166,18 @@
 			<a-navtab ng-model="CS.ActiveTab" options="CS.Tabs" ></a-navtab>
 			<a-row ng-show="CS.ActiveTab==1" >
 				<a-col>
-					<a-navtab ng-model="CS.ActiveTab1" options="CS.Tabss" ></a-navtab>
+					<!-- <a-navtab ng-model="CS.ActiveTab1" options="CS.Tabss" ></a-navtab> -->
+					<ul class="nav nav-pills" style="margin-bottom:20px;">
+						<li ng-repeat="typ in CS.Tabss" 
+							ng-click="CS.setActiveTab(typ)"
+							ng-class="{active:typ.id==CS.ActiveTab1}"
+							>
+							<a>{{typ.name}}</a>
+						</li>
+					</ul>
 				</a-col>
 				<a-col ng-show="CS.ActiveTab1==1">
-					<h4 class="pull-right"> Diff. <span class="amount total peso">{{CS.Total - CS.Collections.total | currency }}</span></h4>
+					<h4 class="pull-right"> Diff. <span class="amount total peso">{{CS.Total+CS.TotalNon - CS.Collections.total | currency }}</span></h4>
 					<table class="table table-bordered table-condensed">
 						<thead>
 							<tr>
@@ -199,20 +207,24 @@
 					<table class="table table-bordered table-condensed">
 						<thead>
 							<tr>
+								<th>OR</th>
+								<th>Check Date</th>
 								<th>Check Details</th>
 								<th>Amount</th>
 							</tr>
 						</thead>
 						<tbody>
 							<tr ng-repeat="non in CS.CashierData.data[0].collections | filter:{payment:'!!'}">
+								<td>{{non.ref_no}}</td>
+								<td>{{non.check_date}}</td>
 								<td>{{non.payment}}</td>
 								<td class="amount total">{{non.amount | currency}}</td>
 							</tr>
 						</tbody>
 						<tfoot>
 							<tr>
-								<td>Total</td>
-								<td class="amount total">{{CS.Total | currency}}</td>
+								<td colspan="3">Total</td>
+								<td class="amount total">{{CS.TotalNon | currency}}</td>
 							</tr>
 						</tfoot>
 					</table>
@@ -251,8 +263,8 @@
 		</a-modal-body>
 		<a-modal-footer>
 			<button class="btn btn-default pull-left" ng-click="CS.Cancel()">Cancel</button>
-			<button class="btn btn-primary" ng-disabled="CS.Total!==CS.Collections.total" ng-click="CS.SaveNPrint()" ng-show="!CS.Remitted">Confirm</button>
-			<button class="btn btn-primary" ng-disabled="CS.Total!==CS.Collections.total" ng-click="CS.PrintRemit()" ng-show="CS.Remitted">Print</button>
+			<button class="btn btn-primary" ng-disabled="CS.Total+CS.TotalNon!==CS.Collections.total" ng-click="CS.SaveNPrint()" ng-show="!CS.Remitted">Confirm</button>
+			<button class="btn btn-primary" ng-disabled="CS.Total+CS.TotalNon!==CS.Collections.total" ng-click="CS.PrintRemit()" ng-show="CS.Remitted">Print</button>
 		</a-modal-footer>
 	</a-modal>
 	<form id="PrintRemittance" action="api/daily_remittance" method="POST" target="_blank">

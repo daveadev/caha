@@ -2,7 +2,7 @@
 class RemittancesController extends AppController {
 
 	var $name = 'Remittances';
-	var $uses = array('Remittance','RemittanceBreakdown','RemittanceBooklet');
+	var $uses = array('Remittance','RemittanceBreakdown','RemittanceBooklet','RemittanceNoncash');
 
 	function index() {
 		$this->Remittance->recursive = 0;
@@ -16,11 +16,15 @@ class RemittancesController extends AppController {
 				$rem['total_collection'] = $r['Remittance']['total_collection'];
 				$rem['breakdown'] = array();
 				$rem['booklets'] = array();
+				$rem['noncash'] = array();
 				foreach($r['RemittanceBreakdown'] as $a=>$rb){
 					array_push($rem['breakdown'],$rb);
 				}
 				foreach($r['RemittanceBooklet'] as $a=>$rb){
 					array_push($rem['booklets'],$rb);
+				}
+				foreach($r['RemittanceNoncash'] as $a=>$rb){
+					array_push($rem['noncash'],$rb);
 				}
 				$remittances[$i]['Remittance'] = $rem;
 			}
@@ -47,6 +51,7 @@ class RemittancesController extends AppController {
 				$last = $this->Remittance->id;
 				$details = $this->data['Remittance']['details'];
 				$booklets = $this->data['Remittance']['booklets'];
+				$noncash = $this->data['Remittance']['noncash'];
 				foreach($details as $i=>$d){
 					$d['remittance_id'] = $last;
 					$details[$i] = $d;
@@ -55,8 +60,13 @@ class RemittancesController extends AppController {
 					$d['remittance_id'] = $last;
 					$booklets[$i] = $d;
 				}
+				foreach($noncash as $i=>$d){
+					$d['remittance_id'] = $last;
+					$noncash[$i] = $d;
+				}
 				$this->RemittanceBreakdown->saveAll($details);
 				$this->RemittanceBooklet->saveAll($booklets);
+				$this->RemittanceNoncash->saveAll($noncash);
 				//pr($details);
 				$this->Session->setFlash(__('The Remittance has been saved', true));
 				$this->redirect(array('action' => 'index'));
