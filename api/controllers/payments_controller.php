@@ -33,7 +33,7 @@ class PaymentsController extends AppController {
 			$today =  date("Y-m-d", strtotime($this->data['Cashier']['date']));
 			$time = date("h:i:s");
 			//pr($this->data);
-			//pr($today); exit();
+			//pr($this->data); exit();
 			
 			if($booklet['series_counter']<$booklet['series_end']){
 				if(isset($booklet['mark'])){

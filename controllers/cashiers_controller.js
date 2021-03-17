@@ -26,7 +26,6 @@ define(['app', 'api'], function(app) {
 				$scope.Consumed = 0;
 				$scope.ActiveUser = $rootScope.__USER.user;
 				$scope.Today = new Date();
-				
                 $scope.ActiveSY  = $rootScope._APP.ACTIVE_SY;
                 $scope.ActiveSYShort = parseInt($scope.ActiveSY.toString().substr(2,2));
 				$scope.Disabled = 1;
@@ -51,6 +50,7 @@ define(['app', 'api'], function(app) {
                 $scope.FocusPayment = {};
                 $scope.FocusTransaction = {};
 				$scope.PopoverDetails.is_open = false;
+				$scope.changeDate = false;
 
 				$scope.RectTypes = ['OR','AR','A2O'];
 				$scope.StudTypes = ['Old','New'];
@@ -87,6 +87,48 @@ define(['app', 'api'], function(app) {
 					getAll();
 				});
 			}
+			
+			$scope.OfficerControl = function(type){
+				if(type=='OR')
+					checkOr($scope.ActiveBooklet);
+				else{
+					$scope.changeDate = true;
+					var today = new Date();
+					$scope.yesterday =  today.setDate($scope.Today.getDate()-1);
+				}
+			}
+			
+			$scope.regDate = function(d){
+				//console.log()
+				if(d>$scope.yesterday){
+					alert("Cant allow present to future date"); 
+					$scope.Today = $scope.yesterday;
+					return;
+				}
+				$scope.Today = d;
+			}
+			
+			function checkOr(book){
+				//console.log(book); return;
+				var data = {
+					ref_no: 'OR '+book.series_counter
+				}
+				api.GET('transactions',data, function success(response){
+					$scope.Saving = false;
+					alert('Receipt number already used.');
+					return;
+				}, function error(response){
+					var yes = confirm('Save series counter?');
+					if(yes){
+						book.InitialCtr = $scope.InitialCtr;
+						book.mark = 'bypass';
+						$scope.ActiveBook = book;
+					}else{
+						return false;
+					}
+				});
+			}
+			
 			$scope.SearchStudent = function(){
 				$scope.Search = 1;
 				$scope.Students = '';
@@ -131,6 +173,7 @@ define(['app', 'api'], function(app) {
 				var filter = {status:'ACTIV'}
 				api.GET('booklets',filter, function success(response) {
 					$scope.ActiveBooklet = response.data[0];
+					$scope.InitialCtr = $scope.ActiveBooklet.series_counter;
 					getAssigendBooks();
 					//$scope.openDanger();
 				}, function error(response){
@@ -182,6 +225,7 @@ define(['app', 'api'], function(app) {
 				var data = {receipt_type:typ,status:'ACTIV'};
 				api.GET('booklets',data, function success(response){
 					$scope.ActiveBooklet = response.data[0];
+				
 				});
 			}
 			
@@ -221,10 +265,7 @@ define(['app', 'api'], function(app) {
             $scope.nextStep = function() {
                 if ($scope.ActiveStep === 1) {
                     //Pass value of student information
-					if($scope.Bypass){
-						var yest = new Date();
-						$scope.yesterday =  new Date(yest.setDate($scope.Today.getDate()-1));
-					}
+					
 					$scope.Disabled = 1;
                     $scope.ActiveStudent = $scope.SelectedStudent;
 					if($scope.isPayeeConfirmed){
@@ -327,8 +368,10 @@ define(['app', 'api'], function(app) {
 					console.log($scope.ActiveTransactions);
                 };
                 if ($scope.ActiveStep === 4) {
-					if(!$scope.ChangeDate)
+					
+					if(!$scope.changeDate)
 						$scope.Today = new Date();
+					
                     //Push the gathered info to payments.js
 					if($scope.TotalPaid>$scope.TotalDue){
 						angular.forEach($scope.ActivePayments,function(pay){
