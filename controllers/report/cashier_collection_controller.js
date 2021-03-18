@@ -67,7 +67,7 @@ define(['app','api','atomic/bomb'],function(app){
 			document.getElementById('PrintCashierCollection').submit();
 		}
 		$scope.PrintRemit = function(){
-			
+			console.log($scope.Remittance);
 			document.getElementById('PrintRemittance').submit();
 		}
 		
@@ -122,7 +122,7 @@ define(['app','api','atomic/bomb'],function(app){
 			});
 			data.noncash = noncash;
 			//$scope.Remittance.booklet[0].amount = $scope.Total;
-			//console.log(data); return;
+			console.log(data); //return;
 			var success = function(response){
 				aModal.close("RemitModal");
 				$scope.PrintRemit();
@@ -206,6 +206,7 @@ define(['app','api','atomic/bomb'],function(app){
 			data.remittance_date = $filter('date')(new Date($scope.cash_date),'yyyy-MM-dd');
 			
 			api.GET('remittances',data, function success(response){
+				console.log(response.data);
 				$scope.Remittance = {};
 				$scope.Remittance.breakdown = response.data[0].breakdown;
 				$scope.Remittance.doctype = $scope.ActiveOpt;
@@ -215,6 +216,7 @@ define(['app','api','atomic/bomb'],function(app){
 					$scope.Total += rem.amount;
 				});
 				$scope.Remittance.booklet = response.data[0].booklets;
+				$scope.Remittance.noncash = response.data[0].noncash;
 				$scope.Remitted = true;
 				console.log($scope.Remittance.booklet);
 			},function error(response){
