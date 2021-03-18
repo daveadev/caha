@@ -422,7 +422,7 @@ class PaymentsController extends AppController {
 				$td['details'] = $trnx['details'];
 			else
 				$td['details'] = $trnx['name'];
-			pr($td); exit();
+			//pr($td); exit();
 			array_push($tr_details,$td);
 		}
 		

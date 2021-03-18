@@ -365,13 +365,10 @@ define(['app', 'api'], function(app) {
 							$scope.CheckPayment = true;
 						}
 					}
-					console.log($scope.ActiveTransactions);
+					
                 };
                 if ($scope.ActiveStep === 4) {
-					console.log($scope.yesterday); 
-					console.log($scope.Today); 
 					
-					//return;
 					if(!$scope.changeDate)
 						$scope.Today = new Date();
 					else{
@@ -399,7 +396,7 @@ define(['app', 'api'], function(app) {
 						transactions:$scope.ActiveTransactions,
                         cashier:cashierObj,
                     };
-					console.log($scope.Payment);
+					//console.log($scope.Payment);
 					if($scope.ActiveTyp=='A2O')
 						$scope.Payment.type = {type:'A2O',};
                     $scope.TransactionId = null;
