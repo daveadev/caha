@@ -35,26 +35,10 @@
 									<dd>
 										<h3 ng-show="!Bypass" class="amount pull-left" style="width:40%; text-align: left; margin-top:0">{{ActiveBooklet.series_counter}}</h3>
 										<button ng-show="!Bypass" class="btn btn-default" ng-click="displaySettings()">CHANGE</button>
-										<div class="row" ng-show="Bypass">
-											<div class="col-md-8">
-												<input type="number" class="form-control" ng-model="ActiveBooklet.series_counter" min="{{ActiveBooklet.series_start}}" max="{{ActiveBooklet.series_end}}" />
-											</div>
-											<div class="col-md-4">
-												<button class="btn btn-default" ng-click="OfficerControl('OR')" >CHANGE</button>
-											</div>
-										</div>
 									</dd> 
 									<br />
 									<dt>Date:</dt>
 									<span ng-if="!Bypass">{{Today | date:'dd MMM yyyy'}}</span>
-									<div class="row"  ng-if="Bypass">
-										<div class="col-md-8">
-											<input type="date" class="form-control" ng-model="Today" ng-change='regDate(Today)'  max="{{ yesterday | date: 'yyyy-MM-dd'}}" ng-disabled="!changeDate" />
-										</div>
-										<div class="col-md-2">
-											<button class="btn btn-default" ng-click="OfficerControl('date')">CHANGE</button>
-										</div>
-									</div>
 									
 									<dt>Account</dt>
 									<dd ng-show="!isPayeeConfirmed">{{ActiveStudent.sno}} | {{ActiveStudent.name}}</dd>

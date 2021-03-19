@@ -1,6 +1,7 @@
 "use strict";
 define(['app', 'api'], function(app) {
-    app.register.controller('CashierController', ['$log', '$scope', '$rootScope', '$uibModal', 'api', function($log, $scope, $rootScope, $uibModal, api) {
+    app.register.controller('CashierController', ['$log', '$scope', '$rootScope', '$uibModal', 'api','$filter', 
+	function($log, $scope, $rootScope, $uibModal, api,$filter) {
         $scope.index = function() {
             $rootScope.__MODULE_NAME = 'Cashiers';
 			if($rootScope.__USER.user.user_type=='offcr'){
@@ -21,6 +22,7 @@ define(['app', 'api'], function(app) {
 			
             //Initialize components
             $scope.initCashier = function() {
+				$scope.EditMode = false;
 				$scope.SearchWord = '';
 				$scope.CheckPayment = false;
 				$scope.Consumed = 0;
@@ -88,24 +90,32 @@ define(['app', 'api'], function(app) {
 				});
 			}
 			
+			$scope.EnableChange = function(){
+				$scope.EditMode = true;
+			}
+			
 			$scope.OfficerControl = function(type){
-				if(type=='OR')
+				if(type=='OR'){
 					checkOr($scope.ActiveBooklet);
-				else{
+				}else{
+					
 					$scope.changeDate = true;
 					var today = new Date();
-					$scope.yesterday =  new Date(today.setDate($scope.Today.getDate()-1));
+					var yesterday = new Date(today);
+					yesterday.setDate(yesterday.getDate()-1)
+					$scope.yesterday = yesterday;
+					$scope.yesterdayFilter = $filter('date')(yesterday, 'yyyy-MM-dd');
 				}
 			}
 			
 			$scope.regDate = function(d){
-				//console.log()
-				if(d>$scope.yesterday){
-					alert("Cant allow present to future date"); 
-					$scope.Today = $scope.yesterday;
-					return;
-				}
+				console.log(d);
 				$scope.Today = d;
+				$scope.changeDate = false;
+				if(!d)
+					$scope.Today = $scope.yesterday;
+				console.log($scope.Today);
+				
 			}
 			
 			function checkOr(book){
@@ -123,6 +133,7 @@ define(['app', 'api'], function(app) {
 						book.InitialCtr = $scope.InitialCtr;
 						book.mark = 'bypass';
 						$scope.ActiveBook = book;
+						$scope.EditMode = false;
 					}else{
 						return false;
 					}
