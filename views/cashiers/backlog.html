@@ -45,8 +45,8 @@
 										</div>
 									</dd> 
 									<br />
-									<dt>Date:</dt>{{Today}}
-									<div class="row"  ng-if="Bypass">
+									<dt>Date:</dt>
+									<div class="row"  ng-show="Bypass">
 										<div class="col-md-8">
 											<h3 ng-show="!changeDate" style="margin-top: 0;">{{Today | date:'dd MMM yyyy'}}</h3>
 											<input type="date" class="form-control" ng-show="changeDate" ng-model="Today" max="{{ yesterdayFilter }}" />

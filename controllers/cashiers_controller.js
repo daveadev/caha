@@ -28,6 +28,16 @@ define(['app', 'api'], function(app) {
 				$scope.Consumed = 0;
 				$scope.ActiveUser = $rootScope.__USER.user;
 				$scope.Today = new Date();
+				
+				// Initialize default date to yesterday 
+				if($scope.Bypass){
+					var yesterday = new Date();
+						yesterday.setDate(yesterday.getDate()-1);
+					$scope.yesterday = yesterday;
+					$scope.yesterdayFilter = $filter('date')(yesterday, 'yyyy-MM-dd');
+					
+					$scope.Today =  new Date(yesterday);
+				}
                 $scope.ActiveSY  = $rootScope._APP.ACTIVE_SY;
                 $scope.ActiveSYShort = parseInt($scope.ActiveSY.toString().substr(2,2));
 				$scope.Disabled = 1;
@@ -100,21 +110,14 @@ define(['app', 'api'], function(app) {
 				}else{
 					
 					$scope.changeDate = true;
-					var today = new Date();
-					var yesterday = new Date(today);
-					yesterday.setDate(yesterday.getDate()-1)
-					$scope.yesterday = yesterday;
-					$scope.yesterdayFilter = $filter('date')(yesterday, 'yyyy-MM-dd');
 				}
 			}
 			
 			$scope.regDate = function(d){
-				console.log(d);
-				$scope.Today = d;
 				$scope.changeDate = false;
-				if(!d)
-					$scope.Today = $scope.yesterday;
-				console.log($scope.Today);
+				if($scope.Today==undefined){
+					$scope.Today =  angular.copy($scope.yesterday);
+				}
 				
 			}
 			
