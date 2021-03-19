@@ -80,8 +80,8 @@ define(['app','api','atomic/bomb'],function(app){
 			}); */
 			//$scope.Remittance.noncash = noncash;
 			if(data)
-				$scope.Remittance = angular.copy(data);
-			console.log($scope.Remittance);
+				$scope.PrintRemittanceData = angular.copy(data);
+			//console.log($scope.Remittance);
 			document.getElementById('PrintRemittance').submit();
 		}
 		
