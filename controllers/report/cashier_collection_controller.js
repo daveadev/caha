@@ -67,21 +67,7 @@ define(['app','api','atomic/bomb'],function(app){
 			document.getElementById('PrintCashierCollection').submit();
 		}
 		$scope.PrintRemit = function(data){
-			/* var noncash = [];
-			angular.forEach($scope.CashierData.data[0].collections, function(item){
-				if(item.payment){
-					var a = {};
-					a.check_date = item.check_date;
-					a.bank_details = item.payment;
-					a.OR = item.ref_no;
-					a.amount = item.amount;
-					noncash.push(a);
-				}
-			}); */
-			//$scope.Remittance.noncash = noncash;
-			if(data)
-				$scope.PrintRemittanceData = angular.copy(data);
-			//console.log($scope.Remittance);
+			
 			document.getElementById('PrintRemittance').submit();
 		}
 		
@@ -135,11 +121,17 @@ define(['app','api','atomic/bomb'],function(app){
 				}
 			});
 			data.noncash = noncash;
-			//$scope.Remittance.booklet[0].amount = $scope.Total;
+			
 			console.log(data); //return;
 			var success = function(response){
 				aModal.close("RemitModal");
-				$scope.PrintRemit(data);
+					
+				data.date = data.remittance_date;
+				data.booklet = data.booklets;
+				data.doctype = $scope.ActiveOpt;
+				data.breakdown = data.details;
+				$scope.PrintRemittanceData = data;
+				$scope.PrintRemit();
 				getRemittance();
 			}
 			var error = function(response){
@@ -232,14 +224,26 @@ define(['app','api','atomic/bomb'],function(app){
 				$scope.Remittance.booklet = response.data[0].booklets;
 				$scope.Remittance.noncash = response.data[0].noncash;
 				$scope.Remitted = true;
-				console.log($scope.Remittance.booklet);
+				$scope.PrintRemittanceData = $scope.Remittance;
 			},function error(response){
 				$scope.Remittance = {};
 				$scope.Remittance.breakdown = $scope.Dinominations;
 				$scope.Remittance.booklet = $scope.Booklet;
 				$scope.Remittance.date = data.remittance_date;
 				$scope.Remittance.doctype = $scope.ActiveOpt;
-				
+				$scope.PrintRemittanceData = $scope.Remittance;
+				var noncash = [];
+				angular.forEach($scope.CashierData.data[0].collections,function(non){
+					if(non.payment){
+						var a = {};
+						a.check_date = non.check_date;
+						a.bank_details = non.payment;
+						a.OR = non.ref_no;
+						a.amount = non.amount;
+						noncash.push(a);
+					}
+				});
+				$scope.PrintRemittanceData.noncash = noncash;
 				$scope.Remitted = false;
 			});
 		}
