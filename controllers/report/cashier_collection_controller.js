@@ -66,7 +66,21 @@ define(['app','api','atomic/bomb'],function(app){
 		$scope.PrintData = function(){
 			document.getElementById('PrintCashierCollection').submit();
 		}
-		$scope.PrintRemit = function(){
+		$scope.PrintRemit = function(data){
+			/* var noncash = [];
+			angular.forEach($scope.CashierData.data[0].collections, function(item){
+				if(item.payment){
+					var a = {};
+					a.check_date = item.check_date;
+					a.bank_details = item.payment;
+					a.OR = item.ref_no;
+					a.amount = item.amount;
+					noncash.push(a);
+				}
+			}); */
+			//$scope.Remittance.noncash = noncash;
+			if(data)
+				$scope.Remittance = angular.copy(data);
 			console.log($scope.Remittance);
 			document.getElementById('PrintRemittance').submit();
 		}
@@ -125,7 +139,7 @@ define(['app','api','atomic/bomb'],function(app){
 			console.log(data); //return;
 			var success = function(response){
 				aModal.close("RemitModal");
-				$scope.PrintRemit();
+				$scope.PrintRemit(data);
 				getRemittance();
 			}
 			var error = function(response){
@@ -225,6 +239,7 @@ define(['app','api','atomic/bomb'],function(app){
 				$scope.Remittance.booklet = $scope.Booklet;
 				$scope.Remittance.date = data.remittance_date;
 				$scope.Remittance.doctype = $scope.ActiveOpt;
+				
 				$scope.Remitted = false;
 			});
 		}
