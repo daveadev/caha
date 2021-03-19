@@ -1,0 +1,532 @@
+<style type="text/css">
+	.input-amount{
+		padding-top: 1.4rem;
+	}
+</style>
+<div ng-controller="CashierController" ng-init="index()">
+	<div class="row">
+		<div class="col-md-12">
+			<ul class="nav nav-pills nav-wizard">
+				<li ng-class="{active:ActiveStep===step.id}" ng-repeat="step in Steps" ng-click="updateStep(step)">
+					<div ng-if="!$first" class="nav-wedge"></div>
+					<a data-toggle="tab"><span class="badge">{{step.id}}</span> {{step.description}}</a>
+					<div ng-if="!$last" class="nav-arrow"></div>
+				</li>
+			</ul>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-6">
+			<div class="list-group">
+				<div class="list-group-item list-group-header">
+					<label class="">Summary</label>
+					<div class="pull-right">
+					<button class="btn btn-xs btn-success" uib-popover-template="'accountInfoBox.html'" popover-append-to-body="true" popover-placement="bottom" ng-disabled="!ActiveStudent.id"> <span class="glyphicon glyphicon-user" aria-hidden="true"></span> Student Account</button>
+					<button class="btn btn-xs btn-danger" ng-click="initCashier()" ng-disabled="ActiveStep==1"> Clear</button>
+					<button class="btn btn-xs btn-info" ng-click="displaySettings()"> <span class="glyphicon glyphicon-cog"></span> Series Config</button>
+					</div>
+				</div>
+				<div class="list-group-canvas">
+					<div class="list-group-item" ng-show="ActiveStep>1">
+						<div class="row">
+							<div class="col-md-6">
+								<dl>
+									<label>Series No.</label>
+									<dd>
+										<div class="row" ng-show="Bypass">
+											<div class="col-md-8">
+												<h3 class="total amount" ng-show="!EditMode" style="margin-top: 0;">{{ActiveBooklet.series_counter}}</h3>
+												<input ng-show="EditMode" type="number" class="form-control" ng-model="ActiveBooklet.series_counter" min="{{ActiveBooklet.series_start}}" max="{{ActiveBooklet.series_end}}" />
+											</div>
+											<div class="col-md-4">
+												<button class="btn btn-default" ng-show="!EditMode" ng-click="EnableChange()" >CHANGE</button>
+												<button class="btn btn-primary" ng-show="EditMode" ng-click="OfficerControl('OR')">CONFIRM</button>
+											</div>
+										</div>
+									</dd> 
+									<br />
+									<dt>Date:</dt>{{Today}}
+									<div class="row"  ng-if="Bypass">
+										<div class="col-md-8">
+											<h3 ng-show="!changeDate" style="margin-top: 0;">{{Today | date:'dd MMM yyyy'}}</h3>
+											<input type="date" class="form-control" ng-show="changeDate" ng-model="Today" max="{{ yesterdayFilter }}" />
+										</div>
+										<div class="col-md-2">
+											<button class="btn btn-default" ng-show="!changeDate" ng-click="OfficerControl('date')">CHANGE</button>
+											<button class="btn btn-primary" ng-show="changeDate" ng-click="regDate(Today)">CONFIRM</button>
+										</div>
+									</div>
+									
+									<dt>Account</dt>
+									<dd ng-show="!isPayeeConfirmed">{{ActiveStudent.sno}} | {{ActiveStudent.name}}</dd>
+									<dd ng-show="isPayeeConfirmed">{{ActiveStudent.name}}</dd>
+								</dl>
+							</div>
+							<div class="col-md-6">
+								<div class="row">
+									<div class="col-md-12 amount amount-total">
+										<label>Total</label>
+										<h3><div class="amount total peso">{{TotalDue | currency}}</div></h3>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-6 amount amount-total">
+										<label>Received</label>
+										<h3><div class="amount">{{TotalPaid | currency}}</div></h3>
+									</div>
+									<div class="col-md-6 amount amount-total">
+										<label>Change</label>
+										<h3><div class="amount" ng-class="{credit:TotalChange>0,debit:TotalChange<0}">{{TotalChange | currency}}</div></h3>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="list-group-item list-group-header" ng-show="ActiveStep>2">
+						<h5>Details</h5>
+					</div>
+					<div class="list-group-item" ng-show="ActiveStep>2">
+						<table class="table table-condensed table-bordered">
+							<thead>
+								<tr>
+									<th class="text-center">Transaction</td>
+									<th class="text-center" ng-show="ActiveTyp!=='OR'">Quantity</th>
+									<th class="text-center">Amount</td>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ng-show="!ActiveTransactions.length">
+									<td class="text-center" colspan="2">No Transaction</td>
+								</tr>
+								<tr ng-show="ActiveTransactions.length" ng-repeat="transaction in ActiveTransactions">
+									<td>{{transaction.name}}</td>
+									<td ng-show="ActiveTyp!=='OR'" class="text-center">{{transaction.qty}} <span ng-show="!transaction.qty">1</span></td>
+									<td><div class="amount" ng-class="{peso:$first}">{{transaction.amount | currency}}</div></td>
+								</tr>
+							</tbody>
+							<tfoot>
+								<tr>
+									<td><b>Total</b></td>
+									<td ng-show="ActiveTyp=='OR'"><div class="amount peso"><b>{{TotalDue | currency}}</b></div></td>
+									<td colspan="2" ng-show="ActiveTyp!=='OR'"><div class="amount peso"><b>{{TotalDue | currency}}</b></div></td>
+								</tr>
+							</tfoot>
+						</table>
+					</div>
+					<div class="list-group-item list-group-header" ng-show="ActiveStep>3">
+						<h5>Payment</h5>
+					</div>
+					<div class="list-group-item" ng-show="ActiveStep>3">
+						<table class="table table-condensed table-bordered">
+							<thead>
+								<tr>
+									<th class="text-center">Method</td>
+									<th class="text-center">Details</td>
+									<th class="text-center">Amount</td>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ng-if="!ActivePayments.length">
+									<td class="text-center" colspan="3">No Transaction</td>
+								</tr ng-if="ActivePayments.length">
+								<tr ng-repeat="payment in Payments | filter:filterIncludedPayments">
+									<td colspan="{{payment.id=='CASH'? 2: 1}}">{{payment.name}}</td>
+									<td ng-if="payment.id!='CASH'">{{SelectedPaymentDetails[payment.id].bank}}|{{SelectedPaymentDetails[payment.id].ref_no}}|{{SelectedPaymentDetails[payment.id].date | date:'mediumDate'}}</td>
+									<td><div class="amount" ng-class="{peso:$first}">{{payment.amount | currency}}</div></td>
+								</tr>
+							</tbody>
+							<tfoot>
+								<tr>
+									<td><b>Total</b></td>
+									<th>&nbsp</td>
+									<td><div class="amount peso"><b>{{TotalPaid | currency}}</b></div></td>
+								</tr>
+							</tfoot>
+						</table>
+					</div>
+					<div class="list-group-item" ng-show="ActiveStep==1">
+						<div class="empty-state">
+							<div class="well">
+								<div class="empty-state-icon">
+									&#x20b1;
+								</div>
+								<h4>No transaction yet!</h4>
+								<p class="empty-state-message">Choose a student and transact.</p>
+							</div>
+							<div class="empty-state-help alert alert-info"> 
+								<span class="empty-state-action-icon glyphicon glyphicon-chevron-right"></span> Click to proceed, after completing each step.
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-6">
+			<button class="btn btn-primary btn-fab top right" ng-click="nextStep()" ng-disabled="CashierSaving||Disabled">
+			<span class="glyphicon " ng-class="{'glyphicon-chevron-right':ActiveStep!=4,'glyphicon-ok': ActiveStep===4}" aria-hidden="true"></span>
+			</button>
+			<div class="list-group" ng-show="ActiveStep===1">
+				<div class="list-group-item list-group-header">
+					<label>Payor</label>
+				</div>
+				<div class="list-group-canvas list-group-search-results">
+					<div class="list-group-item list-group-header">
+						<h5>Select Payor</h5>
+						<ul class="nav nav-pills">
+							<li ng-repeat="typ in StudTypes" 
+								ng-click="setActiveStudType(typ)"
+								ng-class="{active:typ==ActiveStudTyp}"
+								>
+								<a>{{typ}}</a>
+							</li>
+						</ul>
+					</div>
+					<div class="list-group-item text-center" ng-if="(!Students.length&&!Others.length)&&!NoOthers&&IsLoading">
+						<div class="preloader-message">Loading...</div>
+						<div class="loader"></div>
+					</div>
+					<div class="list-group-item ng-class:{active:student.id===SelectedStudent.id}" ng-repeat="student in Students | filter:{name:SearchWord}" ng-click="setSelecetedStudent(student)">
+						<h4 class="list-group-item-heading">{{student.name}}</h4>
+						<p class="list-group-item-text">
+						<span>{{student.sno}}</span> | <span>{{student.year_level}}</span></p>
+					</div>
+					<div class="list-group-item ng-class:{active:SelectedPayee=='OTHR'}" ng-click="setSelecetedPayee('OTHR')" ng-show="!Search">
+						<h4 class="list-group-item-heading">Others</h4>
+						<p class="list-group-item-text">
+							<span ng-show="!isPayeeConfirmed">Transact other than students.</span>
+							<span ng-show="isPayeeConfirmed">Transact to {{OtherPayeeName}}.</span>
+						</p>
+					</div>
+					<div class="list-group-item ng-class:{active:student.id===SelectedStudent.id}" ng-repeat="student in Others | filter:{name:SearchWord}" ng-click="confirmPayee(student)">
+						<h4 class="list-group-item-heading">{{student.name}}</h4>
+						<p class="list-group-item-text"></p>
+						<span>{{student.sno}}</span> | <span>{{student.year_level}}</span></p>
+					</div>
+					<div class="empty-state" ng-if="!Students.length&&Search&&!IsLoading">
+						<div class="well">
+							<div class="empty-state-icon text-center">
+								<i class="glyphicon glyphicon-exclamation-sign"></i>
+							</div>
+							<h4>No Student found!</h4>
+						</div>
+					</div>
+				</div>
+				<div class="list-group-item list-group-search-box">
+					<div class="input-group" ng-show="SelectedPayee!=='OTHR'"> 
+						<div class="input-group-btn"><button class="btn btn-default" ng-click="SearchStudent()"><span class="glyphicon glyphicon-search"></span></button></div>
+						<input type="text" class="form-control" placeholder='Search Student or type "Others"' focus="ActiveStep==1&&!__SIDEBAR_OPEN" ng-model="SearchWord"/>
+						<div class="input-group-btn"><button class="btn btn-default" ng-click="ClearSearch()" ng-show="Search"><span class="glyphicon glyphicon-remove"></span></button></div>
+					</div>
+					<div class="input-group" ng-show="SelectedPayee==='OTHR'"> 
+						<div class="input-group-btn">
+							<button class="btn btn-default" ng-click="confirmPayee()" ng-disabled="isPayeeConfirmed" ng-class="{'btn-default':!OtherPayeeName,'btn-success':OtherPayeeName}">
+								<span class="glyphicon glyphicon-ok"></span>
+							</button>
+						</div>
+						<input type="text" class="form-control" focus="ActiveStep==1&&SelectedPayee==='OTHR'&&!__SIDEBAR_OPEN"  ng-disabled="isPayeeConfirmed"  placeholder="Enter Payee Name" ng-model="OtherPayeeName"/>
+						<div class="input-group-btn">
+							<button class="btn btn-default" ng-click="setSelecetedPayee(null)">
+								<span class="glyphicon glyphicon-remove"></span>
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="list-group" ng-show="ActiveStep===2">
+				<div class="list-group-item list-group-header">
+					<button class="btn btn-xs btn-warning" ng-click="prevStep()"> <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span></button>
+					<label for="">Transaction</label>
+				</div>
+				<div class="list-group-canvas list-group-search-results">
+					<div class="list-group-item list-group-header">
+						<h5>Select Transactions</h5>
+						<ul class="nav nav-pills">
+							<li ng-repeat="typ in RectTypes" 
+								ng-click="setActiveTyp(typ)"
+								ng-class="{active:typ==ActiveTyp}"
+								>
+								<a>{{typ}}</a>
+							</li>
+						</ul>
+					</div>
+					<div class="list-group-item" 
+						ng-repeat="transaction_type in TransactionTypes | filter:filterTransaction" ng-hide="ActiveTyp=='A2O'&&transaction_type.id!=='OTHRS'&&isPayeeConfirmed" >
+						<div class="row">
+							<div ng-class="{'col-md-7':ActiveTyp!=='AR','col-md-5':ActiveTyp!=='OR'&&transaction_type.is_quantity, 'col-md-7':transaction_type.is_quantity==0}" 
+								ng-click="toggleSelectTransaction(transaction_type.id,$index)">
+								<div class="checkbox checkbox-lg">
+									<label >
+										<input type="checkbox" ng-model="SelectedTransactions[transaction_type.id]">
+										<span class="cr"><i class="cr-icon glyphicon glyphicon-ok"></i></span>
+									</label>
+									<div class="description">
+										<h4 class="list-group-item-heading">{{transaction_type.name}}</h4>
+										<p ng-if="transaction_type.description" class="list-group-item-text">Payment for {{transaction_type.description}}</p>
+										<p ng-if="!transaction_type.description"  class="list-group-item-text"> &nbsp;</p>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-2" ng-show="transaction_type.is_quantity&&SelectedTransactions[transaction_type.id]" >
+								<input style="margin-top:13px;" type="number" class="form-control" placeholder="quantity" min="1" ng-model="transaction_type.qty" ng-change="CountQty(transaction_type.qty,transaction_type.id)">
+							</div>
+							<div class="col-md-1" ng-show="transaction_type.is_quantity&&SelectedTransactions[transaction_type.id]">
+								<p style="margin-top:20px">x</p>
+							</div>
+							<div ng-class="{'col-md-5':ActiveTyp!=='AR','col-md-4':ActiveTyp!=='OR'&&transaction_type.is_quantity, 'col-md-5':'!'+transaction_type.is_quantity}" ng-show="SelectedTransactions[transaction_type.id]">
+								<div class="input-group input-amount">
+									<span class="input-group-addon">₱</span>
+									<input type="number" class="form-control" ng-model="transaction_type.amount" min="0"autoselect focus="FocusTransaction[transaction_type.id]" ng-disabled="!transaction_type.is_specify&&ActiveTyp!='OR'" />
+								</div>
+								<div class="help-text pull-right" ng-show="SelectedTransactions[transaction_type.id]&&transaction_type.is_quantity&&ActiveTyp!=='OR'" >Total: {{transaction_type.amount*transaction_type.qty | currency}}</div>
+							</div>
+							
+						</div>
+						<div class="row">
+							<div class="col-md-5">
+								<input type="text" class="form-control" ng-model="transaction_type.desc" placeholder="specify" ng-show="transaction_type.is_specify&&SelectedTransactions[transaction_type.id]" >
+								
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="list-group-item list-group-search-box">
+					<div class="input-group"> 
+						<div class="input-group-btn"><button class="btn btn-default"><span class="glyphicon glyphicon-search"></span></button></div>
+						<input type="text" class="form-control" placeholder="Search" ng-model="searchTransaction"/>
+						<div class="input-group-btn"><button class="btn btn-default" ng-click="clearSearchTransaction()"><span class="glyphicon glyphicon-remove"></span></button></div>
+					</div>
+				</div>
+			</div>			
+			<div class="list-group" ng-show="ActiveStep===3">
+				<div class="list-group-item list-group-header">
+					<button class="btn btn-xs btn-warning" ng-click="prevStep()"> <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span></button>
+					<label for="">Payment</label>
+				</div>
+				<div class="list-group-canvas">
+					<div class="list-group-item list-group-header">
+						<h5>Select Payment Method</h5>
+					</div>
+					<div class="list-group-item" ng-repeat="payment in Payments">
+						<div class="row">
+							<div class="col-md-7"  ng-click="toggleSelectPayment(payment.id)">
+								<div class="checkbox checkbox-lg">
+									<label >
+									<input type="checkbox" ng-model="SelectedPayments[payment.id]">
+										<span class="cr" ><i class="cr-icon glyphicon glyphicon-ok"></i></span>
+									</label>
+									<div class="description">
+										<h4 class="list-group-item-heading">{{payment.name}}</h4>
+										<p class="list-group-item-text">
+											<div>{{!payment.description?'&nbsp;':payment.description}}</div>
+										</p>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-5" ng-show="SelectedPayments[payment.id]">
+								<div class="input-group input-amount col-md-10 col-md-push-1">
+									<span class="input-group-addon">₱</span>
+									<input type="number" class="form-control" ng-model="payment.amount" min="0" ng-change="updateCurrentChange()" autoselect focus="FocusPayment[payment.id]"/>
+									<div class="input-group-btn" ng-if="payment.id!='CASH'">
+										<button class="btn btn-default" pop-title="{{payment.name+' details'}}" uib-popover-template="'paymentDetailsBox.html'" popover-append-to-body="true" pop-placement="top"  popover-is-open="shouldOpen[payment.id]" ng-click="setActivePopover(payment)">
+											<span class="glyphicon glyphicon-{{payment.icon}}"></span>
+										</button>
+									</div>
+								</div>
+								<div class="help-text" ng-if="payment.id=='CASH' && SelectedPayments[payment.id]">
+									Change: {{CurrentChange | currency}}
+								</div>
+								<div class="help-text" ng-if="payment.id!='CASH' && isEmpty(SelectedPaymentDetails[payment.id])">
+								  <button class="btn btn-xs btn-default" disabled><span class="glyphicon glyphicon-{{payment.icon}}"></span></button> Click for {{payment.name}} details.
+								 </div>
+								 <div class="help-text" ng-if="payment.id!='CASH' && !isEmpty(SelectedPaymentDetails[payment.id])">
+								  Details: {{SelectedPaymentDetails[payment.id].bank}} {{SelectedPaymentDetails[payment.id].ref_no}} {{SelectedPaymentDetails[payment.id].date | date:'mediumDate'}}
+								 </div>
+							</div>
+						</div>
+					</div>
+				</div>				
+			</div>
+			<div class="list-group" ng-show="ActiveStep===4">
+				<div class="list-group-item list-group-header">
+					<button class="btn btn-xs btn-warning" ng-click="prevStep()"> <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span></button>
+					<label for="">Confirmation</label>
+				</div>
+				<div class="list-group-canvas">
+					<div class="list-group-item">
+						<div class="empty-state"  ng-hide="CashierSaving">
+							<div class="well">
+								<h4> <i class="glyphicon glyphicon-print"></i> Receipt Preview</h4>
+								<p class="empty-state-message">
+									<span class="glyphicon glyphicon-ok"></span> Click to confirm.
+								</p>
+								<table class="table table-bordered table-condensed">
+								<thead>
+									<tr>
+										<td></td>
+										<th  class="text-left">OR {{ActiveBooklet.series_counter}}</th>
+									</tr>
+									<tr>
+										<td ng-show="ActiveTyp!=='A2O'" class="text-left">SNO : {{ActiveStudent.sno}}</td>
+										<td ng-show="ActiveTyp=='A2O'" class="text-left">SNO : N/A</td>
+										<td  class="text-left">Date : {{Today | date:'dd MMM yyyy'}}</td>
+									</tr>
+									<tr>
+										<td ng-show="ActiveTyp!=='A2O'" colspan="2"  class="text-left">Student: {{ActiveStudent.name}}</td>
+										<td ng-show="ActiveTyp=='A2O'" colspan="2"  class="text-left">Payee: {{ActiveStudent.name}}</td>
+									</tr>
+									<tr>
+										<td  class="text-left">Payment for:  {{ActiveSYShort}} -  {{ActiveSYShort+1}}</td>
+										<td  class="text-left">Year/Section: {{ActiveStudent.year_level}}  {{ActiveStudent.section}} <span ng-show="ActiveTyp=='A2O'">N/A</span></td>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td colspan="2" class="text-left">Details</td>
+									</tr>
+									<tr ng-show="ActiveTransactions.length" ng-repeat="transaction in ActiveTransactions">
+										<td class="text-left">{{transaction.name}} <span ng-show="transaction.id=='OTHRS'">: {{transaction.desc}}</span></td>
+										<td ng-show="!CheckPayment"><span ng-show="transaction.is_quantity">{{transaction.qty}} * </span> <div class="amount" ng-class="{peso:$first}"> {{transaction.amount | currency}}</div></td>
+										<td ng-show="CheckPayment"><span ng-show="transaction.is_quantity">{{transaction.qty}} * </span><div class="amount" ng-class="{peso:$first}">{{TotalPaid | currency}}</div></td>
+									</tr>
+								</tbody>
+								<tfoot>
+									<tfoot>
+										<tr>
+											<td><b>Total</b></td>
+											<td ng-show="!CheckPayment"><div class="amount peso"><b>{{TotalDue | currency}}</b></div></td>
+											<td ng-show="CheckPayment"><div class="amount peso"><b>{{TotalPaid | currency}}</b></div></td>
+										</tr>
+									</tfoot>
+									<tr>
+										<td></td>
+										<td>Cashier</td>
+									</tr>
+								</tfoot>
+								
+							</table>
+							</div>
+							<!--
+							<div class="empty-state-help alert alert-info"> 
+								<span class="empty-state-action-icon glyphicon glyphicon-ok"></span> Click to confirm.
+							</div>
+							-->
+							
+						</div>
+						<div class="empty-state" ng-show="CashierSaving">
+							<div class="well">
+								<div class="empty-state-icon">
+									<i class="glyphicon glyphicon-floppy-disk"></i>
+								</div>
+								<h4>Saving...</h4>
+								<p class="empty-state-message">Please wait for awhile.</p>
+							</div>
+							<div class="loader fade in" ng-hide="__MODAL_OPEN"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script type="text/ng-template" id="bookletModal.html">
+			<div class="modal-header">
+				<h3 class="modal-title">Cashier Config</h3>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-md-4">
+						<label for="">Doc Type</label> <br />
+						<div class="btn-group" role="group" aria-label="Doc Type">
+							<button type="button" class="btn btn-default" ng-click="setActiveType(typ)"
+								ng-repeat="typ in RectTypes" ng-class="{'btn-primary':ActiveTyp==typ}">{{typ}}
+							</button>
+						</div>
+					</div>
+					<div class="col-md-8">
+						<label for="">Series</label>
+						<select name="" id="" class="form-control" ng-change="registerCounter(ActiveBook)" 
+							ng-options="book as book.label for book in Booklets" ng-model="ActiveBook" ></select>
+					</div>
+					<div class="col-md-12" style="margin-top:10px;">
+						<label for="">Counter</label>
+						<div class="input-group input-amount">
+							<span class="input-group-addon">{{ActiveTyp}} #</span>
+							<input type="number" class="form-control" ng-model="ActiveBook.series_counter" min="{{ActiveBook.series_start}}" ng-change="ChangeCnt()" max="{{ActiveBook.series_end}}" ng-disabled="HiddenAction" />
+						</div>
+					</div>
+					<div class="col-md-12 " style="margin-top:10px;" ng-hide="HiddenAction">
+						<label for="">Confirmation</label>
+						<div class="btn-group" role="group" aria-label="Conf" style="width: 100%">
+							<button type="button" class="btn btn-lg btn-default" ng-click="MarkReceipt(act)" ng-class="{'btn-primary':ActiveMark.id==act.id}"
+								ng-repeat="act in Actions" style="width:50%;" >
+								<span class="pull-left glyphicon {{act.class}}"></span> {{act.desc}}
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button class="btn btn-default pull-left" type="button" ng-click="cancelBooklet()" >Cancel</button>
+				<button class="btn btn-primary" type="button" ng-click="confirmBooklet(ActiveBook)" ng-show="!Saving" ng-disabled="!ActiveBook||Disabled">Confirm</button>
+				<button class="btn btn-primary" type="button" ng-show="Saving" disabled >Saving...</button>
+			</div>
+		</script>
+		<script type="text/ng-template" id="accountInfoBox.html">
+			<dl>
+				<dt>Account</dt>
+				<dd>{{ActiveStudent.name}}</dd>
+				<dt>Balance</dt>
+				<dd><span class="amount total peso">{{ActiveStudent.outstanding_balance | currency}}</span></dd>
+			</dl>
+			<button class="btn btn-primary btn-sm form-control" style="margin-bottom:5px" ng-click="PrintSoa()" >
+				View SOA
+			</button><br />
+			<form action="api/soa?account_id=" method="POST" target="_blank" id="PrintSoa">
+				
+			</form>
+			<!-- <button class="btn btn-default btn-sm form-control">View Pay Sched</button> -->
+		</script>
+		<script type="text/ng-template" id="paymentDetailsBox.html">
+			<button class="btn btn-xs btn-danger btn-dismiss" ng-click="closePop($event)"><span class="glyphicon glyphicon-remove"></span></button>
+			<dl>
+				<dt ng-if="ActivePaymentMethod.id!='CHRG'">Bank</dt>
+				<dd ng-if="ActivePaymentMethod.id!='CHRG'"><input ng-model="PopoverDetails.bank" type="text" class="form-control input-sm" placeholder="Issuing Bank"/></dd>
+				<dt ng-show="ActivePaymentMethod.id=='CHCK'">Check No</dt>
+				<dt ng-show="ActivePaymentMethod.id=='CHRG'">LGU Voucher No</dt>
+				<dd>
+					<input ng-model="PopoverDetails.ref_no" type="text" class="form-control input-sm" placeholder="{{ActivePaymentMethod.name}}  number" ng-show="ActivePaymentMethod.id=='CHCK'" />
+					<input ng-model="PopoverDetails.ref_no" type="text" class="form-control input-sm" placeholder="ch number" ng-show="ActivePaymentMethod.id=='CHRG'" />
+				</dd>
+				<dt>{{ActivePaymentMethod.name}} Date</dt>
+				<dd ng-if="ActivePaymentMethod.id=='CARD'"><input ng-model="PopoverDetails.date" type="text" class="form-control input-sm" placeholder="{{ActivePaymentMethod.name}} expiry" /></dd>
+				<dd ng-if="ActivePaymentMethod.id!='CARD'"><input ng-model="PopoverDetails.date" type="date" class="form-control input-sm" placeholder="{{ActivePaymentMethod.name}} date" /></dd>
+			</dl>
+			<button class="btn btn-sm btn-block btn-primary" ng-click="savePopoverDetails(ActivePaymentMethod.id)" ng-disabled="!PopoverDetails.date||!PopoverDetails.ref_no" >Confirm</button>
+		</script>
+		<script type="text/ng-template" id="successModal.html">
+			<div class="modal-body text-center">
+				<button class="btn btn-success btn-fab btn-fab-drop" ng-class="{show:ShowButton}"><span class="glyphicon glyphicon-ok"></span></button>
+				<h1>Success</h1>
+				<p>Payment accepted.</p>
+			</div>
+			<div class="modal-footer">
+				<button class="btn btn-success btn-block" type="button" ng-click="dismissModal()">OK</button>
+			</div>
+			<form action="api/receipt" method="POST" target="_blank" id="PrintReceipt">
+				<input type="hidden" name="TransactionId" value="{{TransactionId}}"/>
+			</form>
+		</script>
+		<script type="text/ng-template" id="dangerModal.html">
+			<div class="modal-body text-center">
+				<button class="btn btn-danger btn-fab btn-fab-drop" ng-class="{show:ShowButton}"><span class="glyphicon glyphicon-exclamation-sign"></span></button>
+				<h1>Warning</h1>
+				<p>Booklet consumed, please select booklet.</p>
+			</div>
+			<div class="modal-footer">
+				<button class="btn btn-danger btn-block" type="button" ng-click="dismissModal()">Select New Booklet</button>
+			</div>
+			<form action="api/receipt" method="POST" target="_blank" id="PrintReceipt">
+				<input type="hidden" name="TransactionId" value="{{TransactionId}}"/>
+			</form>
+		</script>
+		
+</div>
