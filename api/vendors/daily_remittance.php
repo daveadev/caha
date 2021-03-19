@@ -41,9 +41,9 @@ class DailyRemittance extends Formsheet{
 	function booklet($booklet,$doctype){
 		$this->showLines = !true;
 		$metrics = array(
-			'base_x'=> 0.5,
+			'base_x'=> 0.25,
 			'base_y'=> 1.2,
-			'width'=> 6,
+			'width'=> 4,
 			'height'=> 6,
 			'cols'=> 14,
 			'rows'=> 30,	
@@ -69,6 +69,8 @@ class DailyRemittance extends Formsheet{
 		$this->centerText(11,$y,'Amount',3,'');
 		
 		//data
+		
+		$this->GRID['font_size']=8;
 		$y=2.7;
 		foreach($booklet as $d){
 			$this->leftText(0.2,$y,$d['booklet_no'],'','');
@@ -86,9 +88,9 @@ class DailyRemittance extends Formsheet{
 	function cash_breakdown($breakdown){
 		$this->showLines = !true;
 		$metrics = array(
-			'base_x'=> 6.7,
+			'base_x'=> 4.5,
 			'base_y'=> 1.2,
-			'width'=> 3.8,
+			'width'=> 2.5,
 			'height'=> 2.8,
 			'cols'=> 9,
 			'rows'=> 15,	
@@ -103,13 +105,14 @@ class DailyRemittance extends Formsheet{
 		$this->drawLine(9,'v',array(15,1));
 		$this->drawLine(16,'h',array(4,5));
 		$this->drawMultipleLines(2,14,1,'h');
-		$this->centerText(0,-0.3,'CASH BREAKDOWN',9,'');
+		$this->leftText(0.2,-0.3,'CASH BREAKDOWN','','');
 		$y = 1.2;
 		$this->centerText(0,$y,'Denomination',4,'');
 		$this->centerText(4,$y,'Qty',2,'');
 		$this->centerText(6,$y,'Amount',3,'');
 		
 		//data
+		$this->GRID['font_size']=8;
 		$y=2.7;
 		$total = 0;
 		foreach($breakdown as $d){
@@ -124,6 +127,64 @@ class DailyRemittance extends Formsheet{
 		$y = 15.8;
 		$this->rightText(5.8,$y,'Total','','b');
 		$this->rightText(8.9,$y,number_format($total,2),'','b');
+		
+		$y=24.8;
+		$this->leftText(0,$y,'Prepared:','','');
+		$this->drawLine($y+0.2,'h',array(3,5));
+		$this->centerText(3,$y,'',5,'');
+		$this->centerText(3,$y+1,'Cashier',5,'');
+		$y+=4;
+		$this->leftText(0,$y,'Received:','','');
+		$this->drawLine($y+0.2,'h',array(3,5));
+		$this->centerText(3,$y,'Signature Over Printed Name',5,'');
+		$this->centerText(3,$y+1,'Finance',5,'');
+	}
+	
+	function non_cash_breakdown($breakdown){
+		$this->showLines = !true;
+		$metrics = array(
+			'base_x'=> 7.2,
+			'base_y'=> 1.2,
+			'width'=> 3.5,
+			'height'=> 2.8,
+			'cols'=> 12,
+			'rows'=> 15,	
+		);
+		$this->section($metrics);
+		$y=1;
+		$this->GRID['font_size']=9;
+		
+		$this->drawBox(0,0,12,15);
+		$this->drawLine(3,'v',array(0,15));
+		$this->drawLine(6,'v',array(0,16));
+		$this->drawLine(9,'v',array(0,16));
+		$this->drawLine(12,'v',array(15,1));
+		$this->drawLine(16,'h',array(6,6));
+		$this->drawMultipleLines(2,14,1,'h');
+		$this->leftText(0.2,-0.3,'NON-CASH BREAKDOWN','','');
+		$y = 1.2;
+		$this->centerText(0,$y,'OR No.',3,'');
+		$this->centerText(3,$y,'Check Date',3,'');
+		$this->centerText(6,$y,'Details',3,'');
+		$this->centerText(9,$y,'amount',3,'');
+		
+		//data
+		$y=2.7;
+		$total = 0;
+		$this->GRID['font_size']=8;
+		foreach($breakdown as $d){
+			$this->leftText(0.2,$y,$d['OR'],'','');
+			$this->centerText(3,$y,date('M d, Y',strtotime($d['check_date'])),3,'');
+			$this->centerText(6,$y,$d['bank_details'],3,'');
+			$this->rightText(11.9,$y,number_format($d['amount'],2),'','');
+			$total+=$d['amount'];
+			$y++;
+			
+		}
+		
+		$y = 15.8;
+		$this->rightText(8.8,$y,'Total','','b');
+		$this->rightText(11.9,$y,number_format($total,2),'','b');
 		
 		$y=24.8;
 		$this->leftText(0,$y,'Prepared:','','');
