@@ -5,7 +5,25 @@ class TransactionsController extends AppController {
 
 	function index() {
 		$this->Transaction->recursive = 0;
-		$this->set('transactions', $this->paginate());
+		$transacs = $this->paginate();
+		if($this->isAPIRequest()){
+			foreach($transacs as $i=>$t){
+				//pr($t);
+				$details = array();
+				foreach($t['TransactionDetail'] as $x=>$d){
+					array_push($details,$d);
+				}
+				$t['Transaction']['details'] = $details;
+				if(isset($t['Student']['full_name'])){
+					$t['Transaction']['name'] = $t['Student']['full_name'];
+					$t['Transaction']['sno'] = $t['Student']['sno'];
+					
+				}else
+					$t['Transaction']['name'] = $t['Inquiry']['full_name'];
+				$transacs[$i]['Transaction'] = $t['Transaction'];
+			}
+		}
+		$this->set('transactions', $transacs);
 	}
 
 	function view($id = null) {

@@ -1,0 +1,170 @@
+<div ng-controller="ReceiptsController as RS" ng-init="RS.init()">
+	<a-module>
+		<a-container>
+			<a-header is-main="true">
+				<a-row>
+					<a-col size="6">
+						<h4>Receipts</h4>
+					</a-col>
+					<a-col size="6">
+						<o-dropdown-filter ng-model="RS.Active" show-section="false" show-sem="false" show-period="false" class="pull-right" >
+						</o-dropdown-filter>
+					</a-col>
+				</a-row>
+			</a-header>
+			<a-header>
+				<a-row>
+					<a-col size="4">
+						<ul class="nav nav-pills">
+							<li ng-repeat="opt in RS.Options" 
+							ng-click="RS.setActOption(opt)" 
+							ng-class="{active:RS.ActiveOpt===(opt)}">
+								<a>{{opt}}</a>
+							</li>
+						</ul>
+					</a-col>
+					<a-col size="3" style="margin-left: 80px;margin-top:4px;margin-right: -35px;" ng-show="RS.ActiveUser.user_type!='cashr'">
+						<div class="input-group">
+							<span class="input-group-addon">From: </span>
+							<input type="date" class="input-md form-control" ng-disabled="RS.Collections"
+							ng-change="RS.ChangeDate()" ng-model="RS.date_from"  />
+						</div>
+					</a-col>
+					<a-col size="3" style="margin-right: -60px;margin-top:4px;margin-left: 15px;" ng-show="RS.ActiveUser.user_type!='cashr'">
+						<div class="input-group">
+							<span class="input-group-addon">To: </span>
+							<input type="date" class="input-md form-control" min="{{RS.date_from | date:'yyyy-MM-dd'}}" 
+							ng-disabled="RS.Collections" ng-change="RS.ChangeDate()" ng-model="RS.date_to" />
+						</div>
+					</a-col>
+					<a-col size="3" ng-show="RS.ActiveUser.user_type=='cashr'"></a-col>
+					<a-col size="3" style="margin-top:4px;" ng-show="RS.ActiveUser.user_type=='cashr'">
+						<div class="input-group">
+							<span class="input-group-addon">Date:</span>
+							<input type="date" class="form-control input-md" ng-model="RS.cash_date" ng-disabled="RS.Collections" />
+						</div>
+					</a-col>
+					<a-col size="2" align="right" style="margin-top:4px;">
+						<button class="btn btn-default" ng-click="RS.Clear()" ng-disabled="(!RS.date_from||!RS.date_to)&&!RS.cash_date" >Clear</button>
+						<button class="btn btn-primary" ng-click="RS.LoadReport()" ng-disabled="(!RS.date_from||!RS.date_to)&&!RS.cash_date" ng-show="!RS.Collections.collections.length">Load</button>
+						<button class="btn btn-primary" ng-disabled="(!RS.date_from||!RS.date_to)&&!RS.cash_date" ng-show="RS.Collections.collections.length" ng-click="RS.PrintData()" >Print</button>
+					</a-col>
+				</a-row>
+			</a-header>
+			<a-canvas>
+				<a-content ng-show="RS.Receipts">
+					
+					<a-row>
+						<a-col size="6">
+							<h4 ng-show="RS.ActiveUser.user_type!='cashr'" for="">Collections from {{RS.date_from | date:'dd MMM yyyy'}} - {{RS.date_to | date:'dd MMM yyyy'}}</h4>
+							<h4 ng-show="RS.ActiveUser.user_type=='cashr'" for="">Collections for {{RS.cash_date| date:'dd MMM yyyy'}}</h4>
+							
+						</a-col>
+						<a-col size="6">
+							<a-pager class="pull-right" meta="RS.Meta" on-navigate="RS.gotoPage"></a-pager>
+							<button class="btn btn-primary pull-right" ng-click="RS.openModal()" ng-show="RS.ActiveUser.user_type=='cashr'" ng-if="!RS.Remitted" >REMIT</button>
+							<button class="btn btn-primary pull-right" ng-click="RS.openModal()" ng-show="RS.ActiveUser.user_type=='cashr'" ng-if="RS.Remitted" >VIEW REMITTANCE</button>
+						</a-col>
+					</a-row>
+					<a-row>
+						<a-col ng-if="RS.ActiveUser.user_type!=='cashr'">
+							<a-table headers="RS.Headers" props="RS.Props" data="RS.Receipts" on-row-click="RS.openModal" ng-model="RS.ActiveReceipt" ></a-table>
+						</a-col>
+					</a-row>
+				</a-content>
+				<a-content ng-show="!RS.Receipts" style="height: 100%">
+					<div class="empty-state">
+						<div class="well">
+							<div class="empty-state-icon text-center">
+								<i class="glyphicon glyphicon-calendar"></i>
+							</div>
+							<h4>Select date range then load.</h4>
+						</div>
+					</div>
+				</a-content>
+				<a-content ng-show="RS.NoReceipts" style="height: 100%">
+					<div class="empty-state">
+						<div class="well">
+							<div class="empty-state-icon text-center">
+								<i class="glyphicon glyphicon-exclamation-sign"></i>
+							</div>
+							<h4>No Collections found!</h4>
+						</div>
+					</div>
+				</a-content>
+				<a-content ng-show="!RS.Receipts&&RS.Loading" style="height: 100%">
+					<div class="empty-state">
+						<div class="well text-center">
+							<div class="empty-state-icon text-center">
+								<i class="glyphicon glyphicon-refresh spin"></i>
+							</div>
+							<h4>Loading Transactions...</h4>
+						</div>
+					</div>
+				</a-content>
+				<form id="PrintCashierCollection" action="api/cashier_daily_collections" method="POST" target="_blank">
+					<input type="hidden" value="{{RS.CashierData}}" name="Cashier" />
+				</form>
+			</a-canvas>
+		</a-container>
+	</a-module>
+	<a-modal id="ReceiptModal" title="Receipt">
+		<a-modal-body>
+			<a-row>
+				<a-col size="6">
+					<label for="">Receipt No.</label>
+					<h3>{{RS.ActiveReceipt.ref_no}}</h3>
+				</a-col>
+				<a-col size="6" style="text-align: right;">
+					<label>Total</label>
+					<h3 class="total amount peso">{{RS.ActiveReceipt.amount}}</h3>
+				</a-col>
+			</a-row>
+			<a-row>
+				<a-col size="6">
+					<label for="">Payee</label>
+					<h4>{{RS.ActiveReceipt.sno}} - {{RS.ActiveReceipt.name}}</h4>
+				</a-col>
+				<a-col size="6" style="text-align: right;" >
+					<label>Transac Date / SY </label>
+					<h4>{{RS.ActiveReceipt.transac_date | date:'dd MMM yyyy'}}</h4>
+					<h4>SY {{RS.ActiveSY}} - {{RS.ActiveSY+1}}</h4>
+				</a-col>
+			</a-row>
+			<a-row>
+				<a-col>
+					<table class="table table-bordered table-condensed">
+						<thead>
+							<tr>
+								<th>Details</th>
+								<th>Amount</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr ng-repeat="d in RS.ActiveReceipt.details">
+								<td>{{d.details}}</td>
+								<td class="amount total">{{d.amount}}</td>
+							</tr>
+						</tbody>
+						<tfoot>
+							<tr>
+								<td>Total</td>
+								<td class="total amount peso">{{RS.ActiveReceipt.amount}}</td>
+							</tr>
+						</tfoot>
+					</table>
+				</a-col>
+			</a-row>
+			
+		</a-modal-body>
+		<a-modal-footer>
+			<button class="btn btn-default pull-left" ng-click="RS.Cancel()" >Close</button>
+			<button class="btn btn-primary pull-right" ng-click="RS.Reprint()" >Reprint</button>
+			<button class="btn btn-danger pull-right" ng-click="" >Cancel</button>
+			
+		</a-modal-footer>
+	</a-modal>
+	<form action="api/receipt" method="POST" target="_blank" id="PrintReceipt">
+		<input type="hidden" name="TransactionId" value="{{RS.ActiveReceipt.id}}"/>
+	</form>
+</div>
