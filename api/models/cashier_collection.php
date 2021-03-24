@@ -2,7 +2,7 @@
 class CashierCollection extends AppModel {
 	var $name = 'CashierCollection';
 	var $useTable = 'transactions';
-	var $order = 'transac_date,ref_no asc';
+	var $order = "CAST(REGEXP_REPLACE(CashierCollection.ref_no,'OR|XOR|AR','') AS UNSIGNED ) ASC";
 	var $recursive = 1;
 	var $actsAs = array('Containable');
 	
@@ -110,11 +110,7 @@ class CashierCollection extends AppModel {
 					unset($cond[$to]);
 				}
 				if(isset($cond[$type])){
-					$typ = $cond[$type];/* 
-					if($typ!=='OR')
-						$this->$useTable = 'transactions'; */
-					if($typ=='A2O')
-						$typ='OR';
+					$typ = $cond[$type];
 					unset($cond[$type]);
 				}
 				if(isset($cond[$date])){
@@ -123,9 +119,9 @@ class CashierCollection extends AppModel {
 				}
 			}
 			if(!isset($dates))
-				$conds = array('CashierCollection.ref_no LIKE'=> $typ.'%','and'=>array('CashierCollection.transac_date <='=>$end,'CashierCollection.transac_date >='=>$start));
+				$conds = array('CashierCollection.ref_no LIKE'=>'%'. $typ.'%','and'=>array('CashierCollection.transac_date <='=>$end,'CashierCollection.transac_date >='=>$start));
 			else
-				$conds = array('CashierCollection.ref_no LIKE'=> $typ.'%','CashierCollection.transac_date'=>$dates);
+				$conds = array('CashierCollection.ref_no LIKE'=> '%'.$typ.'%','CashierCollection.transac_date'=>$dates);
 			
 			$queryData['conditions']=$conds;
 		}

@@ -2,6 +2,7 @@
 class TransactionsController extends AppController {
 
 	var $name = 'Transactions';
+	var $uses = array('Transaction','TransactionDetail','AccountHistory','AccountSchedule','Ledger','Account','AccountFee');
 
 	function index() {
 		$this->Transaction->recursive = 0;
@@ -37,11 +38,92 @@ class TransactionsController extends AppController {
 	function add() {
 		if (!empty($this->data)) {
 			$this->Transaction->create();
-			if ($this->Transaction->save($this->data)) {
-				$this->Session->setFlash(__('The transaction has been saved', true));
-				$this->redirect(array('action' => 'index'));
-			} else {
-				$this->Session->setFlash(__('The transaction could not be saved. Please, try again.', true));
+			$transac = $this->data['Transaction'];
+			if($transac['action']=='cancel'){
+				$time = date("h:i:s");
+				$transac = $transac['transac'];
+				$transac['id'] = '';
+				$transac['status'] = 'cancelled';
+				$ref_no = $transac['ref_no'];
+				$amount = (double)str_replace(",","",$transac['amount']);
+				
+				$transac['ref_no'] = 'X'.$transac['ref_no'];
+				$transac['amount'] = '-'.$transac['amount'];
+				$transac['transac_time'] = $time;
+				
+				//Save to Transactions
+				$this->Transaction->saveAll($transac);
+				
+				$transac_id = $this->Transaction->id;
+				$transac_dtl = array();
+				$transac_dtl['transaction_id'] = $transac_id;
+				$transac_dtl['transaction_type_id'] = 'REVRS';
+				$transac_dtl['details'] = 'Reversal for '. $ref_no;
+				$transac_dtl['amount'] = $transac['amount'];
+				
+				//Save to Transaction Detail
+				$this->TransactionDetail->saveAll($transac_dtl);
+				
+				$account = $this->Account->find('first',array('recursive'=>0,'conditions'=>array('id'=>$transac['account_id'])));
+				$account = $account['Account'];
+				$account['outstanding_balance'] -= $transac['amount'];
+				$account['payment_total'] += $transac['amount'];
+				
+				//Update Account
+				$this->Account->saveAll($account);
+				
+				$acct_history = $transac;
+				$acct_history['balance'] = $account['outstanding_balance']; 
+				$acct_history['total_paid'] = $account['payment_total']; 
+				$acct_history['total_paid'] = $account['payment_total']; 
+				$acct_history['flag'] ='-'; 
+				
+				$sched = $this->AccountSchedule->find('all',array('recursive'=>-1,'order'=>'AccountSchedule.order DESC','conditions'=>array('AccountSchedule.account_id'=>$transac['account_id'])));
+				$total = $amount;
+				$schedules = array();
+				foreach($sched as $i=>$sch){
+					$sc = $sch['AccountSchedule'];
+					if($sc['paid_amount']>0){
+						if($amount>0){
+							if($amount>$sc['paid_amount'])
+								$sc['paid_amount']=0;
+							else
+								$sc['paid_amount']-=$amount;
+							$sc['paid_date']=null;
+							$sc['status']='NONE';
+							//$this->AccountSchedule->saveAll($sc);
+							array_push($schedules,$sc);
+							$amount-=$sc['due_amount'];
+							
+						}else
+							break;
+					}else
+						continue;
+				}
+				$this->AccountSchedule->saveAll($schedules);
+				//$sched = $sched['AccountSchedule'];
+				
+				$ledger = $transac;
+				$ledger['type'] = '+';
+				$ledger['amount'] = $total;
+				$ledger['details'] = $transac_dtl['details'];
+				//pr($ledger); exit();
+				$success = $this->Ledger->save($ledger);
+				if($success){
+					$this->Session->setFlash(__('The transaction has been saved', true));
+					$this->redirect(array('action' => 'index'));
+				} else {
+					$this->Session->setFlash(__('The transaction could not be saved. Please, try again.', true));
+				}
+				
+			}
+			else{
+				if ($this->Transaction->save($transac)) {
+					$this->Session->setFlash(__('The transaction has been saved', true));
+					$this->redirect(array('action' => 'index'));
+				} else {
+					$this->Session->setFlash(__('The transaction could not be saved. Please, try again.', true));
+				}
 			}
 		}
 		$accounts = $this->Transaction->Account->find('list');

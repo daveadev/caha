@@ -18,14 +18,14 @@ class CashierCollectionsController extends AppController {
 		if(!isset($_GET['cashr'])){
 			$start = $_GET['from'];
 			$end = $_GET['to'];
-			$conds =  array('Transaction.ref_no LIKE'=> $typ.'%','and'=>array('transac_date <='=>$end,'transac_date >='=>$start));
+			$conds =  array('Transaction.ref_no LIKE'=> '%'.$typ.'%','and'=>array('transac_date <='=>$end,'transac_date >='=>$start));
 			if($type!=='OR'){
 				$this->paginate['CashierCollection']['contain'] = array('Student','Account','TransactionDetail','Booklet');
 				//$conds =  array('Transaction.ref_no LIKE'=> $typ.'%','and'=>array('transac_date <='=>$end,'transac_date >='=>$start));
 			}
 		}else{
 			$date = $_GET['date'];
-			$conds =  array('Transaction.ref_no LIKE'=> $typ.'%','transac_date'=>$date);
+			$conds =  array('Transaction.ref_no LIKE'=> '%'.$typ.'%','transac_date'=>$date);
 			if($type!=='OR'){
 				$this->paginate['CashierCollection']['contain'] = array('Student','Account','TransactionDetail','Booklet');
 				//$conds =  array('Transaction.ref_no LIKE'=> $typ.'%','transac_date'=>$date);
@@ -130,9 +130,11 @@ class CashierCollectionsController extends AppController {
 					$cl['particulars'] = $col['TransactionDetail'][0]['details'];
 				else
 					$cl['particulars'] = $cl['details'];
-				if($col['TransactionPayment'][0]['payment_method_id']!=='CASH'){
-					$cl['payment'] = $col['TransactionPayment'][0]['details'];
-					$cl['check_date'] = $col['TransactionPayment'][0]['valid_on'];
+				if(isset($col['TransactionPayment'][0])){
+					if($col['TransactionPayment'][0]['payment_method_id']!=='CASH'){
+						$cl['payment'] = $col['TransactionPayment'][0]['details'];
+						$cl['check_date'] = $col['TransactionPayment'][0]['valid_on'];
+					}
 				}
 				$cl['date'] =  date('d M Y',strtotime($cl['transac_date']));
 				unset($cl['details']);

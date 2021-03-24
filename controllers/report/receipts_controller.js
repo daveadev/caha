@@ -10,27 +10,17 @@ define(['app','api','atomic/bomb'],function(app){
 			$scope.ActiveOpt = 'OR';
 			$scope.Headers = ['OR','Transact Date','Student',{label:'Amount',class:'amount total'},'Status'];
 			$scope.Props = ['ref_no','transac_date','name','amount','status'];
-			$scope.Tabs = [{id:1,name:'Breakdown'},{id:2,name:'Booklets'}];
-			$scope.Tabss = [{id:1,name:'Cash'},{id:2,name:'Non-cash'}];
+			$scope.Reasons = [
+				{id:'PRNERR', label:'Printer Error'},
+				{id:'ENCERR', label:'Encoding Error'},
+				{id:'SYSERR', label:'System Error'},
+			];
 			$scope.ActiveTab = 1;
 			$scope.ActiveTab1 = 1;
 			$scope.Loading = 1;
 			$scope.NoReceipts = 0;
-			$scope.Dinominations = [
-				{denomination:1000.00,quantity:0},
-				{denomination:500.00,quantity:0},
-				{denomination:200.00,quantity:0},
-				{denomination:100.00,quantity:0},
-				{denomination:50.00,quantity:0},
-				{denomination:20.00,quantity:0},
-				{denomination:10.00,quantity:0},
-				{denomination:5.00,quantity:0},
-				{denomination:1.00,quantity:0},
-				{denomination:0.50,quantity:0},
-				{denomination:0.25,quantity:0},
-				{denomination:0.05,quantity:0},
-				{denomination:0.01,quantity:0},
-			];
+			$scope.Today = $filter('date')(new Date(),'yyyy-MM-dd');
+			console.log($scope.Today);
 			$scope.ActiveUser = $rootScope.__USER.user;
 			
 			
@@ -54,6 +44,7 @@ define(['app','api','atomic/bomb'],function(app){
 		}
 		
 		$scope.gotoPage = function(page){
+			$scope.ActivePage = page;
 			getOrs(page)
 		}
 		
@@ -61,12 +52,54 @@ define(['app','api','atomic/bomb'],function(app){
 			aModal.open("ReceiptModal");
 		}
 		
-		$scope.Cancel = function(){
+		$scope.ConfirmCancellation = function(){
+			$scope.EnableCancel = 0;
+			$scope.Saving = 0;
 			aModal.close("ReceiptModal");
+			var OR = $scope.ActiveReceipt.ref_no.split(" ");
+			OR = OR[1];
+			var amount = $scope.ActiveReceipt.amount.toString().replace(',','');
+			amount = amount.split(".");
+			console.log(parseInt(amount[1]));
+			if(!parseInt(amount[1]))
+				amount = amount[0];
+			else
+				amount=amount[0]+'.'+amount[1];
+			console.log(amount);
+			var date = $scope.ActiveReceipt.transac_date.split("-");
+			date = date[2]+date[1]+date[0]
+			$scope.validation = OR+' '+amount+' '+date;
+			aModal.open("CancelModal");
+		}
+		
+		$scope.Cancel = function(modal){
+			aModal.close(modal);
 		}
 		
 		$scope.Reprint = function(){
 			document.getElementById('PrintReceipt').submit();
+		}
+		
+		$scope.Validate = function(){
+			//console.log($scope.Validation+'x');
+			//console.log($scope.validation+'x');
+			//console.log($scope.Reason);
+			if($scope.validation===$scope.Validation){
+				$scope.EnableCancel = 1;
+			}
+		}
+		
+		$scope.CancelConfirmed = function(){
+			$scope.Saving = 1;
+			var data = {
+				action:'cancel',
+				transac:$scope.ActiveReceipt
+			}
+			api.POST('transactions',data, function success(response){
+				$scope.Saving = 0;
+				aModal.close("CancelModal");
+				getOrs($scope.ActivePage);
+			});
 		}
 		
 		function getOrs(page){

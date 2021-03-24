@@ -175,12 +175,11 @@ define(['app','api','atomic/bomb'],function(app){
 						col.total_paid = $filter('currency')(col.total_paid);
 					}
 				});
-				if(!$scope.Collections.total)
-					$scope.NoCollections = 1;
+				
 				$scope.Meta = response.meta;
 				if($scope.Meta.page==1) getForPrinting(data);
 			},function error(response){
-				
+				$scope.NoCollections = 1;
 			});
 		}
 		

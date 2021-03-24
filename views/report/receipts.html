@@ -158,10 +158,36 @@
 			
 		</a-modal-body>
 		<a-modal-footer>
-			<button class="btn btn-default pull-left" ng-click="RS.Cancel()" >Close</button>
+			<button class="btn btn-default pull-left" ng-click="RS.Cancel('ReceiptModal')" >Close</button>
 			<button class="btn btn-primary pull-right" ng-click="RS.Reprint()" >Reprint</button>
-			<button class="btn btn-danger pull-right" ng-click="" >Cancel</button>
+			<button class="btn btn-danger pull-right" ng-click="RS.ConfirmCancellation()" ng-show="RS.ActiveReceipt.transac_date==RS.Today" >Cancel</button>
 			
+		</a-modal-footer>
+	</a-modal>
+	<a-modal id="CancelModal" title="Confirm Cancellation" >
+		<a-modal-body>
+			<label>Warning!</label>
+			You are about to cancel <strong>{{RS.ActiveReceipt.ref_no}}</strong> amounting to <strong>{{RS.ActiveReceipt.amount}}</strong>.
+			<a-row>
+				<a-col style="margin-bottom: 10px;">
+					<select name="" id="" class="form-control" ng-options="reason.id as reason.label for reason in RS.Reasons" ng-model="RS.Reason" >
+						<option value="">Select reason for cancellation</option>
+					</select>
+				</a-col>
+				<a-col style="margin-bottom: 30px;">
+					<input type="text" class="form-control input-lg" placeholder="Enter Confirmation" ng-change="RS.Validate()" ng-model="RS.Validation" />
+				</a-col>
+				<a-col>
+					Please enter the confirmation using the following format: <br />
+					&lt;Receipt No w/o the receipt type&gt; &lt;space&gt; &lt;amount&gt; &lt;space&gt; &lt;Transaction Date ddmmyyyy&gt; <br />
+					Ex: <strong>5555 2500.50 01012021</strong>
+				</a-col>
+			</a-row>
+		</a-modal-body>
+		<a-modal-footer>
+			<button class="btn btn-default pull-left" ng-click="RS.Cancel('CancelModal')" >Close</button>
+			<button class="btn btn-danger pull-right" ng-show="!RS.Saving" ng-disabled="!RS.EnableCancel||!RS.Reason" ng-click="RS.CancelConfirmed()" >Confirm Cancellation</button>
+			<button class="btn btn-danger pull-right" disabled ng-show="RS.Saving" >Cencelling OR...</button>
 		</a-modal-footer>
 	</a-modal>
 	<form action="api/receipt" method="POST" target="_blank" id="PrintReceipt">
