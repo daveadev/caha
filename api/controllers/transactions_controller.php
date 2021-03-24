@@ -48,7 +48,7 @@ class TransactionsController extends AppController {
 				$amount = (double)str_replace(",","",$transac['amount']);
 				
 				$transac['ref_no'] = 'X'.$transac['ref_no'];
-				$transac['amount'] = '-'.$transac['amount'];
+				$transac['amount'] = '-'.$amount;
 				$transac['transac_time'] = $time;
 				
 				//Save to Transactions
@@ -59,15 +59,15 @@ class TransactionsController extends AppController {
 				$transac_dtl['transaction_id'] = $transac_id;
 				$transac_dtl['transaction_type_id'] = 'REVRS';
 				$transac_dtl['details'] = 'Reversal for '. $ref_no;
-				$transac_dtl['amount'] = $transac['amount'];
+				$transac_dtl['amount'] = '-'.$amount;
 				
 				//Save to Transaction Detail
 				$this->TransactionDetail->saveAll($transac_dtl);
 				
 				$account = $this->Account->find('first',array('recursive'=>0,'conditions'=>array('id'=>$transac['account_id'])));
 				$account = $account['Account'];
-				$account['outstanding_balance'] -= $transac['amount'];
-				$account['payment_total'] += $transac['amount'];
+				$account['outstanding_balance'] += $amount;
+				$account['payment_total'] -= $amount;
 				
 				//Update Account
 				$this->Account->saveAll($account);
@@ -77,6 +77,9 @@ class TransactionsController extends AppController {
 				$acct_history['total_paid'] = $account['payment_total']; 
 				$acct_history['total_paid'] = $account['payment_total']; 
 				$acct_history['flag'] ='-'; 
+				$acct_history['details'] =$transac_dtl['details']; 
+				
+				$this->AccountHistory->saveAll($acct_history);
 				
 				$sched = $this->AccountSchedule->find('all',array('recursive'=>-1,'order'=>'AccountSchedule.order DESC','conditions'=>array('AccountSchedule.account_id'=>$transac['account_id'])));
 				$total = $amount;
