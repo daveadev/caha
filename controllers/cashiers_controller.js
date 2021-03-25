@@ -126,7 +126,7 @@ define(['app', 'api'], function(app) {
 				var data = {
 					ref_no: 'OR '+book.series_counter
 				}
-				api.GET('transactions',data, function success(response){
+				api.GET('validateors',data, function success(response){
 					$scope.Saving = false;
 					alert('Receipt number already used.');
 					return;
@@ -169,9 +169,13 @@ define(['app', 'api'], function(app) {
 			}
 			
 			$scope.setActiveTyp = function(typ){
+				console.log($scope.ActiveBooklet);
 				$scope.TransactionTypes = '';
-				$scope.ActiveBooklet = '';
-				getBooklet();
+				if(!$scope.ActiveBooklet.mark){
+					$scope.ActiveBooklet = '';
+					getBooklet();
+					
+				}
 				if(typ!=='OR')
 					getAr();
 				else
@@ -749,7 +753,7 @@ define(['app', 'api'], function(app) {
 		$scope.RectTypes = rectTypes;
 		$scope.ActiveTyp = actType;
 		$scope.Booklets = booklets;
-		console.log(booklets);
+		//console.log(booklets);
 		if(book){
 			$scope.ActiveBook = angular.copy(book);
 			$scope.Booklets.push(book);
@@ -836,9 +840,10 @@ define(['app', 'api'], function(app) {
 			var data = {
 				ref_no: 'OR '+book.series_counter
 			}
-			api.GET('transactions',data, function success(response){
-				$scope.Saving = false;
+			api.GET('validateors',data, function success(response){
 				alert('Receipt number already used.');
+				console.log('Receipt number already used.');
+				$scope.Saving = false;
 				return;
 			}, function error(response){
 				var yes = confirm('Save series counter?');

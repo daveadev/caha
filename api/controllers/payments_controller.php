@@ -530,6 +530,7 @@ class PaymentsController extends AppController {
 			array_push($tr_payments,$tp);
 		}
 		$booklet = $this->checkBooklet($data);
+		$booklet['series_counter']++;
 		$DataCollection = array(
 			'TransactionPayment'=>$tr_payments,
 			'TransactionDetail'=>$tr_details,
@@ -566,7 +567,7 @@ class PaymentsController extends AppController {
 				}else{
 					$series=$booklet['series_counter']+1;
 					do{
-						$result = $this->Ledger->find('first',array('recursive'=>0,'conditions'=>array('Ledger.ref_no'=>'OR '.$series)));
+					$result = $this->Ledger->find('first',array('recursive'=>0,'conditions'=>array('Ledger.ref_no'=>'OR '.$series)));
 						$series++;
 					}while(!empty($result));
 					$series--;
@@ -575,12 +576,11 @@ class PaymentsController extends AppController {
 			}else{
 				$series=$booklet['series_counter']+1;
 				do{
-					$result = $this->Ledger->find('first',array('recursive'=>0,'conditions'=>array('Ledger.ref_no'=>'OR '.$series)));
+				$result = $this->Ledger->find('first',array('recursive'=>0,'conditions'=>array('Ledger.ref_no'=>'OR '.$series)));
 					$series++;
 				}while(!empty($result));
 				$series--;
 				$booklet['series_counter'] = $series;
-				//pr($series);
 			}
 		}else
 			$booklet['status'] = 'CONSM';

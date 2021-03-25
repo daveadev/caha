@@ -74,14 +74,18 @@ class Transaction extends AppModel {
 
 	function beforeFind($queryData){
 		//pr($queryData); exit();
+		if(!isset($queryData['conditions']['Transaction.id'])){
+			
 		if($conds=$queryData['conditions']){
 			foreach($conds as $i=>$cond){
 				//$url = 'Transaction.url_from';
-				if($i=='OR%'||$i=='AR')
-					$url='receipts';
+				if($cond==='%OR%'){
+					$receipts=true;
+				}
 				
 			}
-			if(isset($url)){
+			
+			if(!isset($receipts)){
 				foreach($conds as $i=>$cond){
 					//$type = 'Transaction.type';
 					$from = 'Transaction.from';
@@ -107,13 +111,17 @@ class Transaction extends AppModel {
 						unset($cond[$date]);
 					}
 				}
-				//if($url=='coll')
-				$conds = array('Transaction.ref_no LIKE'=> $typ.'%','and'=>array('Transaction.transac_date <='=>$end,'Transaction.transac_date >='=>$start));
+				
+			$conds = array('Transaction.ref_no LIKE'=> $typ.'%','and'=>array('Transaction.transac_date <='=>$end,'Transaction.transac_date >='=>$start));
+				
 			}
-			
+			//exit();
 			$queryData['conditions']=$conds;
 		}
 		//pr($queryData); exit();
 		return $queryData;
 	}
+	}
+	
+	
 }
