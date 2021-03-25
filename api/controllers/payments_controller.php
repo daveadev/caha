@@ -440,7 +440,7 @@ class PaymentsController extends AppController {
 			array_push($tr_payments,$tp);
 		}
 		$booklet = $this->checkBooklet($data);
-		$booklet['series_counter']++;
+		//$booklet['series_counter']++;
 		$DataCollection = array(
 			'TransactionPayment'=>$tr_payments,
 			'TransactionDetail'=>$tr_details,
@@ -530,7 +530,7 @@ class PaymentsController extends AppController {
 			array_push($tr_payments,$tp);
 		}
 		$booklet = $this->checkBooklet($data);
-		$booklet['series_counter']++;
+		//$booklet['series_counter']++;
 		$DataCollection = array(
 			'TransactionPayment'=>$tr_payments,
 			'TransactionDetail'=>$tr_details,
