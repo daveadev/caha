@@ -2,7 +2,7 @@
 class CashierCollection extends AppModel {
 	var $name = 'CashierCollection';
 	var $useTable = 'transactions';
-	var $order = "CAST(REGEXP_REPLACE(CashierCollection.ref_no,'OR|XOR|AR','') AS UNSIGNED ) ASC";
+	var $order = "CAST(REGEXP_REPLACE(CashierCollection.ref_no,'OR|XOR|AR','') AS UNSIGNED ) ASC, CashierCollection.id";
 	var $recursive = 1;
 	var $actsAs = array('Containable');
 	

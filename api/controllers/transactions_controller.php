@@ -74,8 +74,8 @@ class TransactionsController extends AppController {
 				
 				$acct_history = $transac;
 				$acct_history['balance'] = $account['outstanding_balance']; 
-				$acct_history['total_paid'] = $account['payment_total']; 
-				$acct_history['total_paid'] = $account['payment_total']; 
+				$acct_history['total_paid'] = $account['discount_amount']+$account['payment_total']; 
+				$acct_history['total_due'] = $account['assessment_total']; 
 				$acct_history['flag'] ='-'; 
 				$acct_history['details'] =$transac_dtl['details']; 
 				
