@@ -82,6 +82,7 @@ class TransactionsController extends AppController {
 				$this->AccountHistory->saveAll($acct_history);
 				
 				$sched = $this->AccountSchedule->find('all',array('recursive'=>-1,'order'=>'AccountSchedule.order DESC','conditions'=>array('AccountSchedule.account_id'=>$transac['account_id'])));
+				
 				$total = $amount;
 				$schedules = array();
 				foreach($sched as $i=>$sch){
@@ -105,6 +106,33 @@ class TransactionsController extends AppController {
 				}
 				$this->AccountSchedule->saveAll($schedules);
 				//$sched = $sched['AccountSchedule'];
+				
+				$fees = $this->AccountFee->find('all',array('recursive'=>0,'conditions'=>array('account_id'=>$account['id'])));
+				$isPaidMisc = false;
+				
+				foreach($fees as $i=>$fee){
+					$fee = $fee['AccountFee'];
+					if($fee['fee_id']=='TUI'&&$fee['paid_amount']>0){
+						$isPaidMisc = true;
+						$fee['paid_amount'] -= $total;
+						$fees[$i]['AccountFee'] = $fee;
+					}
+				}
+				
+				if($isPaidMisc==false){
+					$forFees = $total;
+					foreach($fees as $i=>$fee){
+						$fee = $fee['AccountFee'];
+						if($fee['paid_amount']>0&&$forFees>0){
+							$forFees-=$fee['paid_amount'];
+							$fee['paid_amount'] = 0;
+							$fees[$i] = $fee;
+						}
+					}
+				}
+				//pr($fees); exit();
+				//Update Account Fees
+				$this->AccountFee->saveAll($fees);
 				
 				$ledger = $transac;
 				$ledger['type'] = '+';
