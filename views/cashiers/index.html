@@ -233,7 +233,7 @@
 						</ul>
 					</div>
 					<div class="list-group-item" 
-						ng-repeat="transaction_type in TransactionTypes | filter:filterTransaction" ng-hide="ActiveTyp=='A2O'&&transaction_type.id!=='OTHRS'&&isPayeeConfirmed" >
+						ng-repeat="transaction_type in TransactionTypes | filter:filterTransaction" ng-hide="(ActiveTyp=='A2O'&&transaction_type.id!=='OTHRS'&&isPayeeConfirmed)||(transaction_type.id=='RSRVE'&&HasRes)||(transaction_type.id=='ADVTP'&&!HasRes)" >
 						<div class="row">
 							<div ng-class="{'col-md-7':ActiveTyp!=='AR','col-md-5':ActiveTyp!=='OR'&&transaction_type.is_quantity, 'col-md-7':transaction_type.is_quantity==0}" 
 								ng-click="toggleSelectTransaction(transaction_type.id,$index)">
@@ -258,7 +258,7 @@
 							<div ng-class="{'col-md-5':ActiveTyp!=='AR','col-md-4':ActiveTyp!=='OR'&&transaction_type.is_quantity, 'col-md-5':'!'+transaction_type.is_quantity}" ng-show="SelectedTransactions[transaction_type.id]">
 								<div class="input-group input-amount">
 									<span class="input-group-addon">₱</span>
-									<input type="number" class="form-control" ng-model="transaction_type.amount" min="0"autoselect focus="FocusTransaction[transaction_type.id]" ng-disabled="!transaction_type.is_specify&&ActiveTyp!='OR'" />
+									<input type="number" class="form-control" ng-model="transaction_type.amount" min="0"autoselect focus="FocusTransaction[transaction_type.id]" ng-disabled="(!transaction_type.is_specify&&ActiveTyp!='OR')&&transaction_type.id!=='ADVTP'" />
 								</div>
 								<div class="help-text pull-right" ng-show="SelectedTransactions[transaction_type.id]&&transaction_type.is_quantity&&ActiveTyp!=='OR'" >Total: {{transaction_type.amount*transaction_type.qty | currency}}</div>
 							</div>

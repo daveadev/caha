@@ -63,7 +63,7 @@ define(['app', 'api'], function(app) {
                 $scope.FocusTransaction = {};
 				$scope.PopoverDetails.is_open = false;
 				$scope.changeDate = false;
-
+				$scope.HasRes = false;
 				$scope.RectTypes = ['OR','AR','A2O'];
 				$scope.StudTypes = ['Old','New'];
 				$scope.ActiveTyp = 'OR';
@@ -283,7 +283,11 @@ define(['app', 'api'], function(app) {
             $scope.nextStep = function() {
                 if ($scope.ActiveStep === 1) {
                     //Pass value of student information
-					
+					api.GET('reservations', {account_id:$scope.SelectedStudent.id}, function success(response){
+						$scope.HasRes = true;
+					}, function error(response){
+						$scope.HasRes = false;
+					});
 					$scope.Disabled = 1;
                     $scope.ActiveStudent = $scope.SelectedStudent;
 					if($scope.isPayeeConfirmed){
@@ -548,6 +552,7 @@ define(['app', 'api'], function(app) {
                 var test = keyword.test(transaction.name);
                 return !searchBox || test;
             };
+			
             //Clear search student
             
             //Clear search transaction

@@ -353,7 +353,7 @@ class PaymentsController extends AppController {
 		$time = date("h:i:s");
 		$booklet = $data['Booklet'];
 		$n = 0;
-		//pr($data); exit();
+		pr($data); exit();
 		if(isset($data['Student']['id'])){
 			if($data['Student']['account_type']=='others'){
 				$account = $data['Student'];
@@ -363,6 +363,7 @@ class PaymentsController extends AppController {
 			}else{
 				$res['account_id'] = $data['Student']['id'];
 				$res['esp'] = $data['Cashier']['esp']+1;
+				$res['field_type'] = $data['Transaction'][0]['id'];
 				$res['ref_no'] = 'OR '.$booklet['series_counter'];
 				$res['amount'] = $data['Cashier']['total_due'];
 				$res['transac_date'] = $today;
@@ -502,11 +503,12 @@ class PaymentsController extends AppController {
 				'amount'=>$trnx['amount']
 			);
 			
-			if($trnx['id']=='RSRVE'){
+			if($trnx['id']=='RSRVE'||$trnx['id']=='ADVTP'){
 				$nextESP = $data['Cashier']['esp']+1;
 				$rsrveObj =  array(
 					'account_id'=>$account_id,
 					'esp'=>$nextESP,
+					'field_type'=>$trnx['id'],
 					'ref_no'=>$transac_data['ref_no'],
 					'amount'=>$trnx['amount'],
 					'transac_date'=>$today
