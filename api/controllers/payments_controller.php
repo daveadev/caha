@@ -353,7 +353,7 @@ class PaymentsController extends AppController {
 		$time = date("h:i:s");
 		$booklet = $data['Booklet'];
 		$n = 0;
-		pr($data); exit();
+		//pr($data); exit();
 		if(isset($data['Student']['id'])){
 			if($data['Student']['account_type']=='others'){
 				$account = $data['Student'];
