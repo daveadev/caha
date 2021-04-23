@@ -159,7 +159,7 @@ class CashierCollectionsController extends AppController {
 					}
 					if($acct['account_type']=='others'){
 						$cl['status']='Others';
-						$cl['received_from'] =$acct['account_details'];
+						$cl['received_from'] = $acct['account_details'];
 					}
 					if($acct['account_type']=='student')
 						$cl['received_from'] = $st['full_name'];

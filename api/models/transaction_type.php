@@ -139,10 +139,10 @@ class TransactionType extends AppModel {
 				$VFLDS = array(
 					'token'=>"
 					CASE `TransactionType`.`id`  WHEN 'FULLP' THEN
-					MD5(CONCAT(Assessment.created,'/',Assessment.assessment_total) )
+					MD5(CONCAT(Assessment.created,'/',Assessment.outstanding_balance) )
 					ELSE
 					MD5(GROUP_CONCAT(AssessmentPaysched.due_date,'/',AssessmentPaysched.due_amount))END",
-					'amounts'=>"CASE `TransactionType`.`id`  WHEN 'FULLP' THEN CONCAT(Assessment.created,'/',Assessment.assessment_total) 
+					'amounts'=>"CASE `TransactionType`.`id`  WHEN 'FULLP' THEN CONCAT(Assessment.created,'/',Assessment.outstanding_balance) 
 					ELSE 
 					GROUP_CONCAT(AssessmentPaysched.due_date,'/',AssessmentPaysched.due_amount ORDER BY AssessmentPaysched.order) END ",
 					'description'=>"CASE `TransactionType`.`id`  WHEN 'FULLP' THEN 'Total Assessment' ELSE   GROUP_CONCAT(AssessmentPaysched.bill_month ORDER BY AssessmentPaysched.order) END ",
@@ -155,7 +155,7 @@ class TransactionType extends AppModel {
 							  `AssessmentPaysched`.`due_amount` ,
 							 IF (
 							  `TransactionType`.`id` = 'FULLP' ,
-							  `Assessment`.`assessment_total` ,
+							  `Assessment`.`outstanding_balance` ,
 							  `TransactionType`.`default_amount` 
 							)
 							)
