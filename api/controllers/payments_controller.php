@@ -253,13 +253,14 @@ class PaymentsController extends AppController {
 					$payment_required = $sched['due_amount']-$sched['paid_amount'];
 					if($payment_required<$sched_payment){
 						$sched_payment-=$payment_required;
-						$sched['paid_amount'] = $payment_required;
+						$sched['status'] = 'PAID';
+						$sched['paid_amount'] = $payment_required+$sched['paid_amount'];
 					}else{
-						$sched['paid_amount'] = $sched_payment;
+						$sched['paid_amount'] = $sched_payment+$sched['paid_amount'];
 						$sched_payment = 0;
 					}
 					$sched['paid_date'] = $today;
-					$sched['status'] = 'PAID';
+					
 					array_push($account_schedules,$sched);
 					//pr($sched);
 				}

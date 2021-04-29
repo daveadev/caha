@@ -8,8 +8,7 @@ class TransactionType extends AppModel {
 				'description'=>"GROUP_CONCAT(AccountSchedule.bill_month ORDER BY AccountSchedule.order)",
 				'amount'=> "SUM(
 						IF(
-						AccountSchedule.transaction_type_id='INIPY'
-						AND AccountSchedule.order =1,
+						AccountSchedule.transaction_type_id='INIPY',
 						AccountSchedule.due_amount-AccountSchedule.paid_amount,
 							IF (
 								AccountSchedule.transaction_type_id='SBQPY'
