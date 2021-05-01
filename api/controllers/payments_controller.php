@@ -2,7 +2,7 @@
 class PaymentsController extends AppController {
 
 	var $name = 'Payments';
-	var $uses = array('Account','Ledger','Transaction','Booklet','AccountSchedule','AccountFee','TransactionPayment','TransactionDetail','AccountHistory','AccountTransaction','Reservation');
+	var $uses = array('Account','Ledger','Transaction','Booklet','AccountSchedule','AccountFee','TransactionPayment','TransactionDetail','AccountHistory','AccountTransaction','Reservation','YearLevel');
 	
 	function add() {
 		$payments =  $this->data['Payment'];
@@ -350,6 +350,7 @@ class PaymentsController extends AppController {
 	}
 	
 	function SaveOthers($data){
+		//pr($data); exit();
 		$today = date("Y-m-d");
 		$time = date("h:i:s");
 		$booklet = $data['Booklet'];
@@ -362,6 +363,17 @@ class PaymentsController extends AppController {
 				$account_id = $data['Student']['id'];
 				$this->Account->save($account);
 			}else{
+				$levels = $this->YearLevel->find('all');
+				$lvls = array();
+				foreach($levels as $lvl){
+					array_push($lvls,$lvl['YearLevel']['id']);
+				}
+				foreach($lvls as $i=>$l){
+					if($data['Student']['year_level_id']==$l){
+						$res['year_level_id'] = $lvls[$i+1];
+					}
+				}
+				//pr($res); exit();
 				$res['account_id'] = $data['Student']['id'];
 				$res['esp'] = $data['Cashier']['esp']+1;
 				$res['field_type'] = $data['Transaction'][0]['id'];
@@ -468,6 +480,7 @@ class PaymentsController extends AppController {
 	}
 
 	function SaveInquiry($data){
+		//pr($data); exit();
 		$account_id = $data['Student']['id'];
 		$today = date("Y-m-d");
 		$time = date("h:i:s");

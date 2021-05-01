@@ -30,6 +30,7 @@ class AccountsController extends AppController {
 					$acc['Account']['sno'] =$stud['sno'];
 					
 					$acc['Account']['year_level'] =$yearLevel;
+					$acc['Account']['year_level_id'] =$yrlvId;
 					$acc['Account']['section'] =$section;
 				}else if($inqu){
 					$yrlvId =  $acc['Inquiry']['year_level_id'];
@@ -44,6 +45,7 @@ class AccountsController extends AppController {
 					$acc['Account']['sno'] =$acc['Account']['id'];
 					
 					$acc['Account']['year_level'] =$yearLevel;
+					$acc['Account']['year_level'] =$yrlvId;
 					$acc['Account']['section'] =$section;
 				}
 

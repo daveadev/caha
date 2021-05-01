@@ -290,6 +290,7 @@ define(['app', 'api'], function(app) {
 					});
 					$scope.Disabled = 1;
                     $scope.ActiveStudent = $scope.SelectedStudent;
+					console.log($scope.ActiveStudent);
 					if($scope.isPayeeConfirmed){
 						if(!$scope.ActiveStudent.id)
 							$scope.ActiveStudent = {'name':$scope.OtherPayeeName,'account_type':'others'};
@@ -468,6 +469,7 @@ define(['app', 'api'], function(app) {
 			}
                 //Set the selected student 
             $scope.setSelecetedStudent = function(student) {
+				console.log(student);
 				$scope.SelectedPayee='';
 				$scope.Disabled = 0;
 				if(!$scope.ActiveBooklet)
