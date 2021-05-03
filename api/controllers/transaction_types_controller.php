@@ -26,6 +26,7 @@ class TransactionTypesController extends AppController {
 				// Convert first bill month and current month to year and month
 				$billYrMo =  (int)date("Ym",strtotime($due_dates[0]));
 				$currYrMo = (int)date("Ym",time());
+				$lastYrMo = (int)date("Ym",strtotime($due_dates[count($due_dates)-1]));
 				
 				// Build data of first item
 				$dueDate = $due_dates[0];
@@ -38,7 +39,7 @@ class TransactionTypesController extends AppController {
 					$__description = array();
 					$__amounts = array();
 					// Loop into the applicable month until currYrMo
-					for($j=0,$b=$billYrMo;$b<=$currYrMo;$j++,$b++){
+					for($j=0,$b=$billYrMo;$b<=$currYrMo&&$b<=$lastYrMo;$j++,$b++){
 						$year_checker = str_split($b,4);
 						//pr($year_checker[1]);
 						if($year_checker[1]>12){
