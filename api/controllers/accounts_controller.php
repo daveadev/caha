@@ -14,7 +14,7 @@ class AccountsController extends AppController {
 			foreach($accounts as $i =>$acc){
 				$stud =  $acc['Student'];
 				$inqu =  $acc['Inquiry'];
-				//pr($stud);
+				//pr($acc); exit();
 				if(isset($stud['sno'])){
 					$yrlvId =  $acc['Student']['year_level_id'];
 					$sectId =  $acc['Student']['section_id'];
@@ -32,6 +32,7 @@ class AccountsController extends AppController {
 					$acc['Account']['year_level'] =$yearLevel;
 					$acc['Account']['year_level_id'] =$yrlvId;
 					$acc['Account']['section'] =$section;
+					$acc['Account']['program_id'] =$acc['Student']['program_id'];
 				}else if($inqu){
 					$yrlvId =  $acc['Inquiry']['year_level_id'];
 					$yearLevel = "";
@@ -47,6 +48,7 @@ class AccountsController extends AppController {
 					$acc['Account']['year_level'] =$yearLevel;
 					$acc['Account']['year_level'] =$yrlvId;
 					$acc['Account']['section'] =$section;
+					$acc['Account']['program_id'] =$acc['Inquiry']['program_id'];
 				}
 
 				$acc['Account']['account_no'] =$acc['Account']['id'];

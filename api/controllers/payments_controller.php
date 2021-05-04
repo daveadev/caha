@@ -374,6 +374,10 @@ class PaymentsController extends AppController {
 					}
 				}
 				//pr($res); exit();
+				if($res['year_level_id']=='GY')
+					$res['program_id']='MIXED';
+				if(isset($data['Student']['program_id']))
+					$res['program_id']=$data['Student']['program_id'];
 				$res['account_id'] = $data['Student']['id'];
 				$res['esp'] = $data['Cashier']['esp']+1;
 				$res['field_type'] = $data['Transaction'][0]['id'];
