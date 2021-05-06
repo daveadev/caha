@@ -57,9 +57,10 @@ class CashierDailyCollections extends Formsheet{
 		$this->centerText(0,$y,'#',1,'b');
 		$this->leftText(1,$y,'Student No.','','b');
 		$this->leftText(3.5,$y,'Received From','','b');
-		$this->leftText(11,$y,'Level','','b');
-		$this->leftText(13,$y,'Section','','b');
-		$this->centerText(16,$y,'Status',2,'b');
+		$this->leftText(10,$y,'Level','','b');
+		$this->leftText(11.5,$y,'Section','','b');
+		$this->leftText(14,$y,'Status','','b');
+		$this->centerText(15.5,$y,'Date',2,'b');
 		$this->leftText(18,$y,'Particular','','b');
 		$this->centerText(22,$y,'O.R No.',3,'b');
 		$this->centerText(25,$y,'Amount',3,'b');
@@ -74,6 +75,7 @@ class CashierDailyCollections extends Formsheet{
 		$balance = 0;
 		
 		foreach($data as $d){
+			//pr($d); 
 			$amount+= $d['amount'];
 			$total_due+= $d['total_due'];
 			$total_paid+= $d['total_paid'];
@@ -81,9 +83,10 @@ class CashierDailyCollections extends Formsheet{
 			$this->centerText(0,$y,$d['cnt'],1,'');
 			$this->leftText(1,$y,$d['sno'],'','');
 			$this->leftText(3.5,$y,$d['received_from'],'','');
-			$this->leftText(11,$y,$d['level'],'','');
-			$this->leftText(13,$y,$d['section'],'','');
-			$this->centerText(16,$y,$d['status'],2,'');
+			$this->leftText(10,$y,$d['level'],'','');
+			$this->leftText(11.5,$y,$d['section'],'','');
+			$this->leftText(14,$y,$d['status'],'','');
+			$this->centerText(15.5,$y,$d['date'],2,'');
 			$this->leftText(18,$y,$d['particulars'],'','');
 			$this->centerText(22,$y,$d['ref_no'],3,'');
 			$this->rightText(27.9,$y,number_format($d['amount'],2),'','');
