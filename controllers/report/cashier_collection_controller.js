@@ -1,7 +1,7 @@
 "use strict";
 define(['app','api','atomic/bomb'],function(app){
-	app.register.controller('CashierController',['$scope','$rootScope','api','$filter','aModal',
-	function($scope,$rootScope,api,$filter,aModal){
+	app.register.controller('CashierController',['$scope','$rootScope','api','Atomic','$filter','aModal',
+	function($scope,$rootScope,api,atomic,$filter,aModal){
 		const $selfScope =  $scope;
 		$scope = this;
 		$scope.init = function(){
@@ -35,15 +35,24 @@ define(['app','api','atomic/bomb'],function(app){
 			getTransacs();
 			$scope.ActiveUser = $rootScope.__USER.user;
 			getCashier();
+			$selfScope.$watch("CS.Active",function(active){
+				console.log(active);
+				if(!active) return false;
+				console.log(active);
+				$scope.ActiveSY =  active.sy;
+				if($scope.date_to)
+					getCollections(1);
+			});
 			
 		}
-		$selfScope.$watch("CS.Active",function(active){
+		/* $selfScope.$watch("CS.Active",function(active){
+			console.log(active);
 			if(!active) return false;
 			console.log(active);
 			$scope.ActiveSY =  active.sy;
 			if($scope.date_to)
 				getCollections(1);
-		});
+		}); */
 		$scope.setActOption = function(opt){
 			$scope.ActiveOpt = opt;
 			getCollections(1);
