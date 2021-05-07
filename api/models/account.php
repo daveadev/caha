@@ -39,6 +39,7 @@ class Account extends AppModel {
 				'Inquiry.full_name',
 				'Inquiry.class_name',
 				'Inquiry.year_level_id',
+				'Inquiry.program_id'
 			),
 			'order' => '',
 			'limit' => '',
