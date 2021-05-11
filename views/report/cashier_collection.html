@@ -263,7 +263,7 @@
 		</a-modal-body>
 		<a-modal-footer>
 			<button class="btn btn-default pull-left" ng-click="CS.Cancel()">Cancel</button>
-			<button class="btn btn-primary" ng-disabled="CS.Total+CS.TotalNon!==CS.Collections.total" ng-click="CS.SaveNPrint()" ng-show="!CS.Remitted">Confirm</button>
+			<button class="btn btn-primary" ng-disabled="CS.Total+CS.TotalNon!==CS.Collections.total||CS.Saving" ng-click="CS.SaveNPrint()" ng-show="!CS.Remitted">Confirm</button>
 			<button class="btn btn-primary" ng-disabled="CS.Total+CS.TotalNon!==CS.Collections.total" ng-click="CS.PrintRemit()" ng-show="CS.Remitted">Print</button>
 		</a-modal-footer>
 	</a-modal>

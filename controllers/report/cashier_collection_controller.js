@@ -1,7 +1,7 @@
 "use strict";
 define(['app','api','atomic/bomb'],function(app){
-	app.register.controller('CashierController',['$scope','$rootScope','api','Atomic','$filter','aModal',
-	function($scope,$rootScope,api,atomic,$filter,aModal){
+	app.register.controller('CashierController',['$scope','$rootScope','api','Atomic','$filter','$timeout','aModal',
+	function($scope,$rootScope,api,atomic,$filter,$timeout,aModal){
 		const $selfScope =  $scope;
 		$scope = this;
 		$scope.init = function(){
@@ -73,14 +73,18 @@ define(['app','api','atomic/bomb'],function(app){
 		}
 		
 		$scope.PrintData = function(){
-			document.getElementById('PrintCashierCollection').submit();
+			$timeout(function(){
+				document.getElementById('PrintCashierCollection').submit();
+			},1000);
 		}
 		$scope.PrintRemit = function(data){
-			
-			document.getElementById('PrintRemittance').submit();
+			$timeout(function(){
+				document.getElementById('PrintRemittance').submit();
+			},1000);
 		}
 		
 		$scope.openModal = function(){
+			$scope.Saving = false;
 			$scope.Total = 0;
 			$scope.ComputeTotal();
 			aModal.open("RemitModal");
@@ -109,6 +113,7 @@ define(['app','api','atomic/bomb'],function(app){
 		}
 		
 		$scope.SaveNPrint = function(){
+			$scope.Saving = true;
 			var data = {cashier_id: $scope.ActiveUser.cashier_id};
 			data.remittance_date = $filter('date')(new Date($scope.cash_date),'yyyy-MM-dd');
 			data.total_collection = 0;
@@ -133,15 +138,15 @@ define(['app','api','atomic/bomb'],function(app){
 			
 			console.log(data); //return;
 			var success = function(response){
-				aModal.close("RemitModal");
-					
 				data.date = data.remittance_date;
 				data.booklet = data.booklets;
 				data.doctype = $scope.ActiveOpt;
 				data.breakdown = data.details;
 				$scope.PrintRemittanceData = data;
 				$scope.PrintRemit();
+				aModal.close("RemitModal");
 				getRemittance();
+				$scope.Saving = false;
 			}
 			var error = function(response){
 				
@@ -192,6 +197,8 @@ define(['app','api','atomic/bomb'],function(app){
 			});
 		}
 		
+		
+		//to page add limit per page
 		function getForPrinting(data){
 			data.limit = 'less';
 			api.GET('cashier_collections',data, function success(response){
