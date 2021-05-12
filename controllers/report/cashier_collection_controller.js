@@ -35,6 +35,7 @@ define(['app','api','atomic/bomb'],function(app){
 			getTransacs();
 			$scope.ActiveUser = $rootScope.__USER.user;
 			getCashier();
+			$scope.DataCollection = [];
 			$selfScope.$watch("CS.Active",function(active){
 				console.log(active);
 				if(!active) return false;
@@ -58,6 +59,8 @@ define(['app','api','atomic/bomb'],function(app){
 			getCollections(1);
 		}
 		$scope.LoadReport = function(){
+			$scope.Loading = true;
+			$scope.DataReady = false;
 			getCollections(1);
 			getOrs();
 		}
@@ -177,8 +180,9 @@ define(['app','api','atomic/bomb'],function(app){
 				data.cashr = true;
 			}
 			//data.limit = 'less';
+			getForPrinting(data);
 			api.GET('cashier_collections',data, function success(response){
-				
+				$scope.Loading = false;
 				$scope.NoCollections = 0;
 				$scope.Collections = response.data[0];
 				angular.forEach($scope.Collections.collections, function(col){
@@ -191,7 +195,7 @@ define(['app','api','atomic/bomb'],function(app){
 				});
 				
 				$scope.Meta = response.meta;
-				if($scope.Meta.page==1) getForPrinting(data);
+				//if($scope.Meta.page==1) 
 			},function error(response){
 				$scope.NoCollections = 1;
 			});
@@ -199,12 +203,20 @@ define(['app','api','atomic/bomb'],function(app){
 		
 		
 		//to page add limit per page
-		function getForPrinting(data){
-			data.limit = 'less';
+		function getForPrinting(data,page){
+			data.limit = 50;
+			if(page)
+				data.page = page;
 			api.GET('cashier_collections',data, function success(response){
-				var print = {data:response.data};
-				$scope.CashierData =  print;
-				console.log($scope.CashierData);
+				if(response.meta.next){
+					var page = response.meta.next;
+					$scope.DataCollection = $scope.DataCollection.concat(response.data);
+					getForPrinting(data,page);
+				}else{
+					var print = {data:$scope.DataCollection};
+					$scope.CashierData =  print;
+					$scope.DataReady = true;
+				}
 			});
 		}
 		
