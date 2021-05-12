@@ -65,10 +65,10 @@ define(['app', 'api'], function(app) {
 				$scope.changeDate = false;
 				$scope.HasRes = false;
 				$scope.RectTypes = ['OR','AR','A2O'];
-				$scope.StudTypes = ['Old','New'];
+				$scope.StudTypes = ['Old','New','QR'];
 				$scope.ActiveTyp = 'OR';
 				$scope.ActiveStudTyp = 'Old';
-
+				$scope.PlaceHolder = 'Search Student or type "Others"';
                 $scope.$watch('hasStudentInfo', updateHasInfo);
                 $scope.$watch('hasTransactionInfo', updateHasInfo);
                 $scope.$watch('hasPaymentInfo', updateHasInfo);
@@ -145,20 +145,37 @@ define(['app', 'api'], function(app) {
 			
 			$scope.SearchStudent = function(){
 				$scope.Search = 1;
-				$scope.Students = '';
-				var filter = {
-					keyword:$scope.SearchWord,
-					fields:['first_name','middle_name','last_name','id'],
-					limit:'less'
+				if($scope.ActiveStudTyp!=='QR'){
+					$scope.Students = '';
+					var filter = {
+						keyword:$scope.SearchWord,
+						fields:['first_name','middle_name','last_name','id'],
+						limit:'less'
+					}
+					requestStudents(filter);
+				}else{
+					var data = {
+						keyword:$scope.SearchWord,
+						fields:['id'],
+						limit:'less'
+					}
+					$scope.SearchWord = '';
+					api.GET('assessments',data, function success(response){
+						$scope.Students = response.data;
+					}, function error(response){
+						$scope.SearchWord = '';
+						alert('Invalid QR Code');
+					});
 				}
-				requestStudents(filter);
 			}
 			
 			$scope.ClearSearch = function(){
 				$scope.Search = 0;
 				$scope.SearchWord = '';
 				$scope.Students = '';
-				requestStudents();
+				if($scope.ActiveStudTyp!=='QR')
+					requestStudents();
+				
 			}
 			
 			$scope.PrintSoa = function(){
@@ -183,8 +200,15 @@ define(['app', 'api'], function(app) {
 				$scope.ActiveTyp = typ;
 			}
 			$scope.setActiveStudType = function(type){
+				
+				$scope.Students = '';
 				$scope.ActiveStudTyp = type;
-				requestStudents();
+				if(type!='QR'){
+					requestStudents();
+					$scope.PlaceHolder = 'Search Student or type "Others"';
+				}
+				else
+					$scope.PlaceHolder = 'Search Assessment ID';
 			}
             //Get BookletID
 			function getAll(){
@@ -276,6 +300,10 @@ define(['app', 'api'], function(app) {
 				};
 				api.GET('transaction_types',data, function success(response){
 					$scope.TransactionTypes = response.data;
+					if($scope.ActiveStudTyp=='QR'){
+						$scope.SelectedTransactions = {'INIPY':true};
+						//$scope.nextStep();
+					}
 				});
 			}
 			
@@ -290,7 +318,6 @@ define(['app', 'api'], function(app) {
 					});
 					$scope.Disabled = 1;
                     $scope.ActiveStudent = $scope.SelectedStudent;
-					console.log($scope.ActiveStudent);
 					if($scope.isPayeeConfirmed){
 						if(!$scope.ActiveStudent.id)
 							$scope.ActiveStudent = {'name':$scope.OtherPayeeName,'account_type':'others'};
@@ -299,14 +326,21 @@ define(['app', 'api'], function(app) {
 						$scope.OtherPayeeName = '';
 					}
 					
-					if($scope.ActiveTyp=='OR')
+					if($scope.ActiveStudTyp=='QR'){
+						console.log($scope.TransactionTypes);
+						$scope.ActiveStudent.id=$scope.ActiveStudent.student_id;
 						getOr();
-					else
-						getAr();
+						
+					}else{
+						if($scope.ActiveTyp=='OR')
+							getOr();
+						else
+							getAr();
+					}
 					
                 }
                 if ($scope.ActiveStep === 2) {
-					console.log($scope.Today);
+					console.log($scope.SelectedTransactions);
 					if($scope.TotalPaid>$scope.TotalDue)
 						$scope.Disabled = 0;
 					else
@@ -482,11 +516,15 @@ define(['app', 'api'], function(app) {
 				$scope.SearchWord = '';
 				$scope.SelectedStudent = '';
 				$scope.Students = [];
-				getOthers();
-            	$scope.SelectedPayee=payee;
-            	$scope.isPayeeConfirmed =false;
-            	$scope.Disabled = 1;
-            	$scope.OtherPayeeName = null;
+				if($scope.ActiveStudTyp!=='QR'){
+					getOthers();
+					$scope.SelectedPayee=payee;
+					$scope.isPayeeConfirmed =false;
+					$scope.Disabled = 1;
+					$scope.OtherPayeeName = null;
+				}else{
+					
+				}
             }
 			
 			function getOthers(){
