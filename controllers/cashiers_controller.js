@@ -144,6 +144,7 @@ define(['app', 'api'], function(app) {
 			}
 			
 			$scope.SearchStudent = function(){
+				var message = '';
 				$scope.Search = 1;
 				if($scope.ActiveStudTyp!=='QR'){
 					$scope.Students = '';
@@ -154,18 +155,29 @@ define(['app', 'api'], function(app) {
 					}
 					requestStudents(filter);
 				}else{
-					var data = {
-						keyword:$scope.SearchWord,
-						fields:['id'],
-						limit:'less'
-					}
-					$scope.SearchWord = '';
-					api.GET('assessments',data, function success(response){
-						$scope.Students = response.data;
-					}, function error(response){
+					if($scope.SearchWord.includes('LSA')&&$scope.SearchWord.length==8){
+						var data = {
+							keyword:$scope.SearchWord,
+							fields:['id'],
+							limit:'less'
+						}
 						$scope.SearchWord = '';
-						alert('Invalid QR Code');
-					});
+						api.GET('assessments',data, function success(response){
+							if(response.code==202){
+								message = 'QR Code entered not found!';
+								$scope.openAlertModal(message);
+							}
+							$scope.Students = response.data;
+						}, function error(response){
+							$scope.SearchWord = '';
+							message = 'QR Code entered not found!';
+							
+							$scope.openAlertModal(message);
+						});
+					}else{
+						message = 'Invalid QR Code';
+						$scope.openAlertModal(message);
+					}
 				}
 			}
 			
@@ -701,6 +713,28 @@ define(['app', 'api'], function(app) {
 					//console.log('hideConf');
                 });
             }
+			
+			$scope.openAlertModal = function(message){
+				var modalInstance = $uibModal.open({
+                    animation: true,
+                    size: 'sm',
+                    templateUrl: 'AlertModalController.html',
+                    controller: 'AlertModalController',
+                    resolve:{
+                        message:function(){
+                            return message;
+                        }
+                    }
+                });
+                modalInstance.result.then(function() {
+					
+					//$scope.displaySettings('hideConf');
+                }, function(source) {
+					
+					//console.log('hideConf');
+                });
+			}
+			
             $scope.setActivePopover = function(payment) {
                 $scope.ActivePaymentMethod = angular.copy(payment);
 				console.log($scope.PopoverDetails);
@@ -937,6 +971,23 @@ define(['app', 'api'], function(app) {
     }]);
 	
 	app.register.controller('DangerModal',['$scope','$rootScope','$timeout','$uibModalInstance','api',function($scope,$rootScope,$timeout,$uibModalInstance,api){
+		$rootScope.__MODAL_OPEN = true;
+        $timeout(function() {
+            $scope.ShowButton = true;
+        }, 333);
+       
+        //Dismiss modal
+        $scope.dismissModal = function() {
+            $rootScope.__MODAL_OPEN = false;
+            $uibModalInstance.dismiss('ok');
+
+        };
+	}]);
+	
+	app.register.controller('AlertModalController',['$scope','$rootScope','$timeout','$uibModalInstance','api','message',
+	function($scope,$rootScope,$timeout,$uibModalInstance,api,message){
+		$scope.message = message;
+		console.log('dumaan');
 		$rootScope.__MODAL_OPEN = true;
         $timeout(function() {
             $scope.ShowButton = true;

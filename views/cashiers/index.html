@@ -205,7 +205,7 @@
 				</div>
 				<div class="list-group-item list-group-search-box">
 					<div class="input-group" ng-show="SelectedPayee!=='OTHR'"> 
-						<div class="input-group-btn"><button class="btn btn-default" ng-click="SearchStudent()" ng-disabled="ActiveStudTyp=='QR'&&SearchWord.length<8"><span class="glyphicon glyphicon-search"></span></button></div>
+						<div class="input-group-btn"><button class="btn btn-default" ng-click="SearchStudent()" ><span class="glyphicon glyphicon-search"></span></button></div>
 						<input type="text" class="form-control" placeholder={{PlaceHolder}} focus="ActiveStep==1&&!__SIDEBAR_OPEN" ng-model="SearchWord"/>
 						<div class="input-group-btn"><button class="btn btn-default" ng-click="ClearSearch()" ng-show="Search"><span class="glyphicon glyphicon-remove"></span></button></div>
 					</div>
@@ -519,6 +519,16 @@
 			<form action="api/receipt" method="POST" target="_blank" id="PrintReceipt">
 				<input type="hidden" name="TransactionId" value="{{TransactionId}}"/>
 			</form>
+		</script>
+		<script type="text/ng-template" id="AlertModalController.html">
+			<div class="modal-body text-center">
+				<button class="btn btn-danger btn-fab btn-fab-drop" ng-class="{show:ShowButton}"><span class="glyphicon glyphicon-exclamation-sign"></span></button>
+				<h1>Warning</h1>
+				<p>{{message}}</p>
+			</div>
+			<div class="modal-footer">
+				<button class="btn btn-danger btn-block" type="button" ng-click="dismissModal()">OK</button>
+			</div>
 		</script>
 		
 </div>
