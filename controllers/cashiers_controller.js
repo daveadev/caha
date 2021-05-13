@@ -166,8 +166,15 @@ define(['app', 'api'], function(app) {
 							if(response.code==202){
 								message = 'QR Code entered not found!';
 								$scope.openAlertModal(message);
+							}else{
+								$scope.ActiveStudent=response.data[0];
+								console.log($scope.ActiveStudent);
+								$scope.ActiveTyp = 'OR';
+								$scope.ActiveStudent.id=$scope.ActiveStudent.student_id;
+								getOr();
+								$scope.ActiveStep++;
+								$scope.Disabled = 0;
 							}
-							$scope.Students = response.data;
 						}, function error(response){
 							$scope.SearchWord = '';
 							message = 'QR Code entered not found!';
@@ -340,9 +347,7 @@ define(['app', 'api'], function(app) {
 					
 					if($scope.ActiveStudTyp=='QR'){
 						console.log($scope.TransactionTypes);
-						$scope.ActiveStudent.id=$scope.ActiveStudent.student_id;
 						getOr();
-						
 					}else{
 						if($scope.ActiveTyp=='OR')
 							getOr();
