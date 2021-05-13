@@ -6,12 +6,13 @@ class AssessmentsController extends AppController {
 	function index() {
 		$this->Assessment->recursive = 0;
 		$assessments = $this->paginate();
+		//pr($this->paginate);exit();
 		if($this->isAPIRequest()){
 			$yrLevels = $this->Assessment->Student->YearLevel->find('list',array('fields'=>array('id','description')));
 			$sections = $this->Assessment->Student->YearLevel->Section->find('list',array('fields'=>array('id','description')));
 
 			foreach($assessments as $i=>$a){
-				pr($a);
+				//pr($a);
 				$data = $a['Assessment'];
 				if(isset($a['Student']['sno'])){
 					$stud = $a['Student'];

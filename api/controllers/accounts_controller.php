@@ -6,7 +6,7 @@ class AccountsController extends AppController {
 	function index() {
 		$this->Account->recursive = 0;
 		$accounts =  $this->paginate();
-		
+		//pr($this->paginate); exit();
 		if($this->isAPIRequest()){
 			$yrLevels = $this->Account->Student->YearLevel->find('list',array('fields'=>array('id','description')));
 			$sections = $this->Account->Student->YearLevel->Section->find('list',array('fields'=>array('id','description')));
