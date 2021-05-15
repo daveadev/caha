@@ -44,16 +44,9 @@ define(['app','api','atomic/bomb'],function(app){
 				if($scope.date_to)
 					getCollections(1);
 			});
-			
+			$scope.PrintMeta = {};
 		}
-		/* $selfScope.$watch("CS.Active",function(active){
-			console.log(active);
-			if(!active) return false;
-			console.log(active);
-			$scope.ActiveSY =  active.sy;
-			if($scope.date_to)
-				getCollections(1);
-		}); */
+		
 		$scope.setActOption = function(opt){
 			$scope.ActiveOpt = opt;
 			getCollections(1);
@@ -62,10 +55,13 @@ define(['app','api','atomic/bomb'],function(app){
 			$scope.Loading = true;
 			$scope.DataReady = false;
 			getCollections(1);
-			getOrs();
+			if($scope.ActiveUser.user_type=='cashr')
+				getOrs();
 		}
 		
 		$scope.gotoPage = function(page){
+			$scope.Loading = true;
+			$scope.Collections = '';
 			getCollections(page);
 		}
 		
@@ -180,7 +176,7 @@ define(['app','api','atomic/bomb'],function(app){
 				data.cashr = true;
 			}
 			//data.limit = 'less';
-			getForPrinting(data);
+			//getForPrinting(data);
 			api.GET('cashier_collections',data, function success(response){
 				$scope.Loading = false;
 				$scope.NoCollections = 0;
@@ -195,7 +191,7 @@ define(['app','api','atomic/bomb'],function(app){
 				});
 				
 				$scope.Meta = response.meta;
-				//if($scope.Meta.page==1) 
+				if($scope.Meta.page==1) getForPrinting(data,page)
 			},function error(response){
 				$scope.NoCollections = 1;
 			});
@@ -204,18 +200,24 @@ define(['app','api','atomic/bomb'],function(app){
 		
 		//to page add limit per page
 		function getForPrinting(data,page){
-			data.limit = 50;
+			data.limit = 200;
 			if(page)
 				data.page = page;
 			api.GET('cashier_collections',data, function success(response){
+				$scope.PrintMeta = response.meta;
+				$scope.DataCollection = $scope.DataCollection.concat(response.data[0].collections);					
 				if(response.meta.next){
 					var page = response.meta.next;
-					$scope.DataCollection = $scope.DataCollection.concat(response.data);
 					getForPrinting(data,page);
 				}else{
-					var print = {data:$scope.DataCollection};
+					var col = [{collections:$scope.DataCollection}];
+					var print = {data:col};
 					$scope.CashierData =  print;
 					$scope.DataReady = true;
+					$scope.Collections.total = 0;
+					angular.forEach($scope.DataCollection, function(c){
+						$scope.Collections.total+=c.amount;
+					});
 				}
 			});
 		}
@@ -281,15 +283,15 @@ define(['app','api','atomic/bomb'],function(app){
 				type:$scope.ActiveOpt,
 				limit: "less",
 			}
-			if($scope.ActiveUser.user_type!='cashr'){
+			/* if($scope.ActiveUser.user_type!='cashr'){
 				data.from = $scope.date_from;
 				data.to = $scope.date_to;
 				data.from = $filter('date')(new Date(data.from),'yyyy-MM-dd');
 				data.to = $filter('date')(new Date(data.to),'yyyy-MM-dd');
-			}else{
+			}else{ */
 				data.date = $filter('date')(new Date($scope.cash_date),'yyyy-MM-dd');
 				data.cashr = true;
-			}
+			//}
 			//data.limit = 'less';
 			api.GET('cashier_collections',data, function success(response){
 				console.log(response.data[0]);

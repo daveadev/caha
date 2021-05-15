@@ -48,7 +48,11 @@
 					<a-col size="2" align="right" style="margin-top:4px;">
 						<button class="btn btn-default" ng-click="CS.Clear()" ng-disabled="(!CS.date_from||!CS.date_to)&&!CS.cash_date" >Clear</button>
 						<button class="btn btn-primary" ng-click="CS.LoadReport()" ng-disabled="(!CS.date_from||!CS.date_to)&&!CS.cash_date||CS.Loading" ng-show="!CS.Collections.collections.length">Load</button>
-						<button class="btn btn-primary" ng-disabled="!CS.DataReady" ng-show="CS.Collections.collections.length" ng-click="CS.PrintData()" ><span ng-show="!CS.DataReady" class="glyphicon glyphicon-refresh spin"></span><span ng-show="CS.DataReady">Print</span></button>
+						<button class="btn btn-primary" ng-disabled="!CS.DataReady" ng-show="CS.Collections.collections.length" ng-click="CS.PrintData()" >
+							<span ng-show="!CS.DataReady&&CS.PrintMeta.page">{{CS.PrintMeta.page}} of {{CS.PrintMeta.pages}}</span>
+							<span ng-show="CS.DataReady">Print</span>
+							<span ng-show="!CS.DataReady&&!CS.PrintMeta.page" class="glyphicon glyphicon-refresh spin"></span>
+						</button>
 					</a-col>
 				</a-row>
 			</a-header>
@@ -59,7 +63,8 @@
 						<a-col size="6">
 							<h4 ng-show="CS.ActiveUser.user_type!='cashr'" for="">Collections from {{CS.date_from | date:'dd MMM yyyy'}} - {{CS.date_to | date:'dd MMM yyyy'}}</h4>
 							<h4 ng-show="CS.ActiveUser.user_type=='cashr'" for="">Collections for {{CS.cash_date| date:'dd MMM yyyy'}}</h4>
-							<h4 class="total amount peso pull-left">{{CS.Collections.total | currency}}</h4>
+							<h4 class="total amount peso pull-left" ng-show="CS.Collections.total">{{CS.Collections.total | currency}}</h4>
+							<h4 ng-show="!CS.Collections.total">Computing for total...</h4>
 						</a-col>
 						<a-col size="6">
 							<a-pager class="pull-right" meta="CS.Meta" on-navigate="CS.gotoPage"></a-pager>

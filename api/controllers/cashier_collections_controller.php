@@ -38,7 +38,7 @@ class CashierCollectionsController extends AppController {
 		$sections = $this->Section->find('all',array('recursive'=>1));
 
 		// Get running total from AccountHistory if OR otherwise use Transaction
-		switch($type){
+		/* switch($type){
 			case 'AR':
 				$total = $this->AccountHistory->find('all',array('conditions'=>$conds));
 			default:
@@ -51,7 +51,7 @@ class CashierCollectionsController extends AppController {
 			$total_collections += $amount['Transaction']['amount'];
 			if($type=='AR')
 				$total_collections += $amount['AccountHistory']['amount'];
-		}
+		} */
 		
 		
 		$list = array();
@@ -176,7 +176,7 @@ class CashierCollectionsController extends AppController {
 			//pr($booklets);
 		}
 		//exit();
-		$collections = array('collections'=>$collections,'total'=>$total_collections,'booklets'=>$booklets);
+		$collections = array('collections'=>$collections,'booklets'=>$booklets);
 		$cashierCollections = array(array('CashierCollection'=>$collections));
 		//pr($collections); exit();
 		//pr($collections);
