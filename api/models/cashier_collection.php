@@ -5,8 +5,8 @@ class CashierCollection extends AppModel {
 	var $order = "CAST(STRIP_NON_DIGIT(CashierCollection.ref_no) AS UNSIGNED ) ASC, CashierCollection.id";
 	var $recursive = 1;
 	var $actsAs = array('Containable');
-	var $cacheExpires = '+1 day';
-	var $usePaginationCache = true;
+	//var $cacheExpires = '+1 day';
+	//var $usePaginationCache = true;
 	
 	var $belongsTo = array(
 		'Student' => array(
