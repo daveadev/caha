@@ -61,7 +61,8 @@ define(['app','api','atomic/bomb'],function(app){
 		
 		$scope.gotoPage = function(page){
 			$scope.Loading = true;
-			$scope.Collections = '';
+			$scope.Collections.collections = '';
+			$scope.Collections.booklets = '';
 			getCollections(page);
 		}
 		
@@ -180,7 +181,12 @@ define(['app','api','atomic/bomb'],function(app){
 			api.GET('cashier_collections',data, function success(response){
 				$scope.Loading = false;
 				$scope.NoCollections = 0;
+				
 				$scope.Collections = response.data[0];
+				if($scope.TotalTemp){
+					$scope.Collections.total = $scope.TotalTemp;
+				}
+				
 				angular.forEach($scope.Collections.collections, function(col){
 					col.amount = $filter('currency')(col.amount);
 					if(col.balance!='N/A'){
@@ -191,7 +197,10 @@ define(['app','api','atomic/bomb'],function(app){
 				});
 				
 				$scope.Meta = response.meta;
-				if($scope.Meta.page==1) getForPrinting(data,page)
+				if($scope.Meta.page==1){ 
+					$scope.DataCollection = [];
+					getForPrinting(data,page);
+				}
 			},function error(response){
 				$scope.NoCollections = 1;
 			});
@@ -218,6 +227,7 @@ define(['app','api','atomic/bomb'],function(app){
 					angular.forEach($scope.DataCollection, function(c){
 						$scope.Collections.total+=c.amount;
 					});
+					$scope.TotalTemp = $scope.Collections.total;
 				}
 			});
 		}
