@@ -527,6 +527,7 @@ class PaymentsController extends AppController {
 					'account_id'=>$account_id,
 					'esp'=>$nextESP,
 					'field_type'=>$trnx['id'],
+					'year_level_id'=>$data['Student']['year_level'],
 					'ref_no'=>$transac_data['ref_no'],
 					'amount'=>$trnx['amount'],
 					'transac_date'=>$today
