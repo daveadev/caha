@@ -1,4 +1,3 @@
-# https://stackoverflow.com/questions/287105/mysql-strip-non-numeric-characters-to-compare
 DROP FUNCTION IF EXISTS STRIP_NON_DIGIT;
 DELIMITER $$
 CREATE FUNCTION STRIP_NON_DIGIT(input VARCHAR(255))
