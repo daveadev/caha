@@ -182,7 +182,7 @@
 						<p class="list-group-item-text">
 						<span>{{student.sno}}</span> | <span>{{student.year_level}}</span></p>
 					</div>
-					<div class="list-group-item ng-class:{active:SelectedPayee=='OTHR'}" ng-click="setSelecetedPayee('OTHR')" ng-show="!Search&&ActiveStudTyp!=='QR'">
+					<div class="list-group-item ng-class:{active:SelectedPayee=='OTHR'}" ng-click="setSelecetedPayee('OTHR')" ng-show="!Search&&ActiveStudTyp!=='QR'&&Students.length">
 						<h4 class="list-group-item-heading">Others</h4>
 						<p class="list-group-item-text">
 							<span ng-show="!isPayeeConfirmed">Transact other than students.</span>
@@ -194,7 +194,7 @@
 						<p class="list-group-item-text"></p>
 						<span>{{student.sno}}</span> | <span>{{student.year_level}}</span></p>
 					</div>
-					<div class="empty-state" ng-if="!Students.length&&Search&&!IsLoading&&ActiveStudTyp!='QR'">
+					<div class="empty-state" ng-if="!Students.length&&!IsLoading">
 						<div class="well">
 							<div class="empty-state-icon text-center">
 								<i class="glyphicon glyphicon-exclamation-sign"></i>

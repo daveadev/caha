@@ -262,7 +262,7 @@ define(['app', 'api'], function(app) {
 					$scope.IsLoading = false;
 					$scope.Students = response.data;
 				}, function error(response){
-					
+					$scope.IsLoading = false;
 				});
 			}
 			function getAssigendBooks(){
@@ -312,6 +312,7 @@ define(['app', 'api'], function(app) {
 					$scope.TransactionTypes = TrnxTypes;
 				});
 			}
+			
 			function getOr(){
 				var data = {
 					account_no:$scope.ActiveStudent.id,
@@ -326,17 +327,37 @@ define(['app', 'api'], function(app) {
 				});
 			}
 			
+			function getReservations(){
+				api.GET('reservations', {account_id:$scope.SelectedStudent.id}, function success(response){
+					$scope.HasRes = true;
+				}, function error(response){
+					$scope.HasRes = false;
+				});
+			}
+			
+			function checkOrType(){
+				if($scope.ActiveStudTyp=='QR'){
+					console.log($scope.TransactionTypes);
+					getOr();
+				}else{
+					if($scope.ActiveTyp=='OR')
+						getOr();
+					else
+						getAr();
+				}
+			}
+			
+			
             //Change the step for navigation
             $scope.nextStep = function() {
                 if ($scope.ActiveStep === 1) {
                     //Pass value of student information
-					api.GET('reservations', {account_id:$scope.SelectedStudent.id}, function success(response){
-						$scope.HasRes = true;
-					}, function error(response){
-						$scope.HasRes = false;
-					});
+					
+					
 					$scope.Disabled = 1;
+					getReservations();
                     $scope.ActiveStudent = $scope.SelectedStudent;
+					
 					if($scope.isPayeeConfirmed){
 						if(!$scope.ActiveStudent.id)
 							$scope.ActiveStudent = {'name':$scope.OtherPayeeName,'account_type':'others'};
@@ -344,17 +365,15 @@ define(['app', 'api'], function(app) {
 							$scope.ActiveStudent.name = $scope.ActiveStudent.account_details;
 						$scope.OtherPayeeName = '';
 					}
-					
-					if($scope.ActiveStudTyp=='QR'){
-						console.log($scope.TransactionTypes);
-						getOr();
-					}else{
-						if($scope.ActiveTyp=='OR')
-							getOr();
-						else
-							getAr();
-					}
-					
+					api.GET('assessments',{student_id:$scope.ActiveStudent.id,status:'ACTIV'}, function success(response){
+						 
+						$scope.ActiveAssessment = response.data[0];;
+						$scope.ActiveTyp = 'OR';
+						checkOrType();
+					}, function error(response){
+						checkOrType();
+					});
+					//console.log($scope.ActiveTyp); return;				
                 }
                 if ($scope.ActiveStep === 2) {
 					console.log($scope.SelectedTransactions);
@@ -443,6 +462,7 @@ define(['app', 'api'], function(app) {
                 };
                 if ($scope.ActiveStep === 4) {
 					
+					//return;
 					if(!$scope.changeDate)
 						$scope.Today = new Date();
 					else{
@@ -457,6 +477,7 @@ define(['app', 'api'], function(app) {
 						});
 					}
 					
+					$scope.ActiveAssessment.student_status = $scope.ActiveStudTyp;
 					
                     var cashierObj = {
                         esp:$scope.ActiveSY,
@@ -470,18 +491,25 @@ define(['app', 'api'], function(app) {
 						transactions:$scope.ActiveTransactions,
                         cashier:cashierObj,
                     };
+					
+					if($scope.ActiveAssessment)
+						$scope.Payment.assessment = $scope.ActiveAssessment;
+					
 					//console.log($scope.Payment);
 					if($scope.ActiveTyp=='A2O')
 						$scope.Payment.type = {type:'A2O',};
                     $scope.TransactionId = null;
                     $scope.CashierSaving = true;
-					//console.log($scope.Payment); return;
-                    api.POST('payments', $scope.Payment, function success(response) {
-                        $scope.TransactionId  = response.data.transaction_id;
-						if(response.data.booklet)
-							$scope.Consumed = true;
-                        $scope.openModal();
-                    });
+					if($scope.ActiveStudTyp=='New'&&$scope.ActiveTyp=='OR'){
+						api.GET('inquiries',{id:$scope.ActiveStudent.id}, function success(response){
+							$scope.Payment.stud_info = response.data[0];
+							CompleteTransaction($scope.Payment);
+						}, function error(response){
+							CompleteTransaction($scope.Payment);
+						});
+					}else
+						CompleteTransaction($scope.Payment);
+                    
 
                 };
                 if ($scope.ActiveStep < $scope.Steps.length) {
@@ -489,6 +517,17 @@ define(['app', 'api'], function(app) {
                 }
 
             };
+			
+			function CompleteTransaction(payment){
+				api.POST('payments', payment, function success(response) {
+					$scope.TransactionId  = response.data.transaction_id;
+					if(response.data.booklet)
+						$scope.Consumed = true;
+					$scope.openModal();
+				});
+			}
+			
+			
             //Previous step for navigation
             $scope.prevStep = function() {
                 if ($scope.ActiveStep > 1) {

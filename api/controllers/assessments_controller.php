@@ -12,8 +12,10 @@ class AssessmentsController extends AppController {
 			$sections = $this->Assessment->Student->YearLevel->Section->find('list',array('fields'=>array('id','description')));
 
 			foreach($assessments as $i=>$a){
-				//pr($a);
+				//pr($a); 
 				$data = $a['Assessment'];
+				$fees = array();
+				$sched = array();
 				if(isset($a['Student']['sno'])){
 					$stud = $a['Student'];
 					$data['name'] = $stud['full_name'];
@@ -36,13 +38,33 @@ class AssessmentsController extends AppController {
 				
 				}
 				$data['year_level_id'] = $stud['year_level_id'];
-				$data['section_id'] = $stud['section_id'];
+				if(isset($stud['section_id']))
+					$data['section_id'] = $stud['section_id'];
+				
+				foreach($a['AssessmentFee'] as $fee){
+					array_push($fees,$fee);
+				}
+				
+				foreach($a['AssessmentPaysched'] as $ps){
+					$p['transaction_type_id']=$ps['transaction_type_id'];
+					$p['assessment_id']=$ps['assessment_id'];
+					$p['bill_month']=$ps['bill_month'];
+					$p['due_amount']=$ps['due_amount'];
+					$p['paid_amount']=$ps['paid_amount'];
+					$p['due_date']=$ps['due_date'];
+					$p['paid_date']=$ps['paid_date'];
+					$p['status']=$ps['status'];
+					$p['order']=$ps['order'];
+					array_push($sched,$p);
+				}
+				$data['Fee'] = $fees;
+				$data['Paysched'] = $sched;
 				$assessments[$i]['Assessment'] = $data;
 				
 			}
 			//exit();
 		}
-		
+		//exit();
 		$this->set('assessments', $assessments);
 	}
 

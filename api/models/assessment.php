@@ -2,8 +2,21 @@
 class Assessment extends AppModel {
 	var $name = 'Assessment';
 	var $useDbConfig = 'sem';
-	
+	var $recursive = 2;
 	var $belongsTo = array(
+		'Inquiry' => array(
+			'className' => 'Inquiry',
+			'foreignKey' => false,
+			'dependent' => true,
+			'conditions' => array('Inquiry.id=Assessment.student_id'),
+			'fields' => '',
+			'order' => '',
+			'limit' => '',
+			'offset' => '',
+			'exclusive' => '',
+			'finderQuery' => '',
+			'counterQuery' => ''
+		),
 		'Student' => array(
 			'className' => 'Student',
 			'foreignKey' => 'student_id',
@@ -27,27 +40,36 @@ class Assessment extends AppModel {
 			'finderQuery' => '',
 			'counterQuery' => ''
 		),
-		'Inquiry' => array(
-			'className' => 'Inquiry',
-			'foreignKey' => 'id',
+		
+	);
+	
+	var $hasMany = array(
+		'AssessmentPaysched' => array(
+			'className' => 'AssessmentPaysched',
+			'foreignKey' => 'assessment_id',
 			'dependent' => false,
 			'conditions' => '',
-			'fields' => array(
-				'Inquiry.id',
-				'Inquiry.gender',
-				'Inquiry.short_name',
-				'Inquiry.full_name',
-				'Inquiry.class_name',
-				'Inquiry.year_level_id',
-				'Inquiry.program_id'
-			),
+			'fields' => '',
 			'order' => '',
 			'limit' => '',
 			'offset' => '',
 			'exclusive' => '',
 			'finderQuery' => '',
 			'counterQuery' => ''
-		)
+		),
+		'AssessmentFee' => array(
+			'className' => 'AssessmentFee',
+			'foreignKey' => 'assessment_id',
+			'dependent' => false,
+			'conditions' => '',
+			'fields' => '',
+			'order' => 'order',
+			'limit' => '',
+			'offset' => '',
+			'exclusive' => '',
+			'finderQuery' => '',
+			'counterQuery' => ''
+		),
 	);
 	
 }

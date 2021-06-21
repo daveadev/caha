@@ -51,4 +51,42 @@ class Student extends AppModel {
 		}
 		
 	}
+	
+	function generateSID($school='1A',$dept=null){
+		$prefix = $school.$dept;
+
+		$length = 4;
+		$isTaken = false;
+		
+		$this->recursive=-1;
+		do{
+			$min = pow(10, $length - 1) ;
+			$max = pow(10, $length) - 1;
+			$SID =  $this->luhnify(mt_rand($min, $max));
+			$SID = $prefix.$SID;
+			$isTaken = $this->findById($SID);
+
+		}while($isTaken);
+		return $SID;
+	}
+	protected function luhnify($number) {
+	    $sum = 0;               // Luhn checksum w/o last digit
+	    $even = true;           // Start with an even digit
+	    $n = $number;
+
+	    // Lookup table for the digitsums of 2*$i
+	    $evendig = array(0, 2, 4, 6, 8, 1, 3, 5, 7, 9);
+
+	    while ($n > 0) {
+	        $d = $n % 10;
+	        $sum += ($even) ? $evendig[$d] : $d;
+
+	        $even = !$even;
+	        $n = ($n - $d) / 10;
+	    }
+
+	    $sum = 9*$sum % 10;
+
+	    return 10 * $number + $sum; 
+	}
 }
