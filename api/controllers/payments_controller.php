@@ -217,11 +217,11 @@ class PaymentsController extends AppController {
 					if($trnx['id']!=='OLDAC'){
 						$history['total_due']=$Account['assessment_total'];
 						
-						$history['total_paid']=$payment_to_date+$Account['discount_amount'];
+						$history['total_paid']=$payment_to_date+abs($Account['discount_amount']);
 						$history['balance']=($Account['assessment_total']-$Account['discount_amount'])-$payment_to_date;
-						$Account['outstanding_balance'] = ($Account['assessment_total']-$Account['discount_amount'])-$payment_to_date;
+						$Account['outstanding_balance'] = ($Account['assessment_total']-abs($Account['discount_amount']))-$payment_to_date;
 						$Account['payment_total'] = $payment_to_date;
-						if($Account['old_balance']>0)
+						if(isset($Account['old_balance'])&&$Account['old_balance']>0)
 							$Account['outstanding_balance']+=$Account['old_balance'];
 					}
 				}else{
@@ -343,7 +343,7 @@ class PaymentsController extends AppController {
 					$round_off += $fee['paid_amount'];
 					array_push($account_fees,$fee);
 				}
-				$Account['rounding_off'] = $Account['total_payment']-$round_off;
+				$Account['rounding_off'] = $Account['payment_total']-$round_off;
 			}
 			
 			
@@ -643,15 +643,16 @@ class PaymentsController extends AppController {
 	}
 	
 	function createStudent($all_info){
-		//pr($all_info); exit();
-		if(isset($all_info['StudentInfo']))
-			$data = $all_info['StudentInfo'];
+		//pr($all_info);
+		if(isset($all_info['StudInfo']))
+			$data = $all_info['StudInfo'];
+		//pr($data);
 		$ass = $all_info['Assessment'];
 		$data['status'] = 'NROLD';
 		$ass['status'] = 'NROLD';
 		$assessment_data = $ass;
 		$this->Assessment->saveAll($assessment_data);
-		
+		//pr($data); exit();
 		if($ass['student_status']=='New'){
 			$this->Inquiry->saveAll($data);
 			$hs = array('G7','G8','G9','GX');
