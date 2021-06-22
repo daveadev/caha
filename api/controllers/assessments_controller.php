@@ -38,8 +38,6 @@ class AssessmentsController extends AppController {
 				
 				}
 				$data['year_level_id'] = $stud['year_level_id'];
-				if(isset($stud['section_id']))
-					$data['section_id'] = $stud['section_id'];
 				
 				foreach($a['AssessmentFee'] as $fee){
 					array_push($fees,$fee);

@@ -17,13 +17,14 @@ class PaymentsController extends AppController {
 					'YearLevel',
 					'Student',
 					'Inquiry',
-					'Assessment'
+					'Assessment',
+					'ClasslistBlock'
 				);
 	
 	function add() {
 		$payments =  $this->data['Payment'];
 		$accountType=$this->data['Student']['account_type'];
-		
+		//pr($this->data); exit();
 		if(isset($this->data['Type'])){
 			if($accountType=='inquiry'){
 				$this->SaveInquiry($this->data);
@@ -644,16 +645,21 @@ class PaymentsController extends AppController {
 	
 	function createStudent($all_info){
 		//pr($all_info);
+		$today =  date("Y-m-d", strtotime($this->data['Cashier']['date']));
+		$time = date("h:i:s");
 		if(isset($all_info['StudInfo']))
 			$data = $all_info['StudInfo'];
-		//pr($data);
 		$ass = $all_info['Assessment'];
 		$data['status'] = 'NROLD';
 		$ass['status'] = 'NROLD';
 		$assessment_data = $ass;
+		
+		//update assessment status
 		$this->Assessment->saveAll($assessment_data);
-		//pr($data); exit();
+		$assessment_id = $ass['id'];
 		if($ass['student_status']=='New'){
+			
+			//update inquiry status
 			$this->Inquiry->saveAll($data);
 			$hs = array('G7','G8','G9','GX');
 			if(in_array($data['year_level_id'],$hs))
@@ -662,15 +668,35 @@ class PaymentsController extends AppController {
 				$data['id'] = $this->Student->generateSID('LS','S');
 			
 			$ass['id'] = $data['id'];
+			
+			//save new student to student201 in SER
 			$this->Student->saveAll($data);
 		}else{
+			
+			//if old student, modify data according to assessment
 			$account = $this->Account->findById($ass['student_id']);
 			$account = $account['Account'];
 			$ass['id'] = $ass['student_id'];
-			$ass['outstanding_balance'] += $account['outstanding_balance'];
-			
+			$ass['old_balance'] = $account['outstanding_balance'];
 		}
+		
+		
+		//save to accounts
 		$this->Account->saveAll($ass);
+		
+		//add items to ledgers
+		$tuition = array('account_id'=>$ass['id'],'type'=>'+','transaction_type_id'=>'TUIXN','esp'=>2021,'transac_date'=>$today,'transac_time'=>$time,'ref_no'=>$assessment_id,'details'=>'Tuition and Other Fees','amount'=>$ass['assessment_total']);
+		$this->Ledger->saveAll($tuition);
+		if($ass['subsidy_status']!='REGXX')
+			$discount = array('account_id'=>$ass['id'],'type'=>'-','transaction_type_id'=>$ass['subsidy_status'],'esp'=>2021,'transac_date'=>$today,'transac_time'=>$time,'ref_no'=>$assessment_id,'details'=>'Discount','amount'=>$ass['assessment_total']);
+		
+		
+		//save to classlist blocks
+		$classlist_block = array('student_id'=>$ass['id'],'section_id'=>$ass['section_id'],'esp'=>2021,'status'=>'ACTIV');
+		$this->ClasslistBlock->saveAll($classlist_block);
+		
+		
+		//save account schedule and fees
 		$paysched = array();
 		$fees = array();
 		foreach($ass['Paysched'] as $i=>$ps){
