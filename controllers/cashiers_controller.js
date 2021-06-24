@@ -477,8 +477,6 @@ define(['app', 'api'], function(app) {
 						});
 					}
 					
-					$scope.ActiveAssessment.student_status = $scope.ActiveStudTyp;
-					
                     var cashierObj = {
                         esp:$scope.ActiveSY,
                         total_due:$scope.TotalDue,
@@ -492,10 +490,11 @@ define(['app', 'api'], function(app) {
                         cashier:cashierObj,
                     };
 					
-					if($scope.ActiveAssessment)
+					if($scope.ActiveAssessment){
+						$scope.ActiveAssessment.student_status = $scope.ActiveStudTyp;
 						$scope.Payment.assessment = $scope.ActiveAssessment;
-					
-					//console.log($scope.Payment);
+					}
+					//console.log($scope.Payment); return;
 					if($scope.ActiveTyp=='A2O')
 						$scope.Payment.type = {type:'A2O',};
                     $scope.TransactionId = null;
