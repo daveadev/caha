@@ -144,6 +144,11 @@ class PaymentsController extends AppController {
 
 					if($Account['payment_total']>0)
 						$payment_to_date+=$Account['payment_total'];
+					if(isset($this->data['Reservation'])){
+						foreach($this->data['Reservation'] as $res){
+							$payment_to_date+=$res['amount'];
+						}
+					}
 					
 				}
 				$detail = $trnx['name'];
@@ -305,6 +310,11 @@ class PaymentsController extends AppController {
 			$fee_payment = $total_payment;
 			$total_feePaid = 0;
 			$total_misc = 0;
+			if(isset($this->data['Reservation'])){
+					foreach($this->data['Reservation'] as $res){
+						$fee_payment+=$res['amount'];
+					}
+				}
 			foreach($fees as $i=>$fee){
 				if(isset($fee['AccountFee']))
 					$fee = $fee['AccountFee'];
@@ -313,7 +323,7 @@ class PaymentsController extends AppController {
 					$total_misc += $fee['due_amount'];
 			}
 			
-			if(($total_feePaid+$total_payment)>$total_misc){
+			if(($total_feePaid+$fee_payment)>$total_misc){
 				$Account['rounding_off'] = 0;
 				foreach($fees as $i=>$fee){
 					$fee = $fee['AccountFee'];
@@ -328,7 +338,7 @@ class PaymentsController extends AppController {
 					}else{
 						$fee['paid_amount'] = $fee['due_amount'];
 						if($fee['fee_id']=='TUI')
-							$fee['paid_amount'] = ($total_feePaid+$total_payment)-$total_misc;
+							$fee['paid_amount'] = ($total_feePaid+$fee_payment)-$total_misc;
 						
 					}
 					
@@ -644,7 +654,8 @@ class PaymentsController extends AppController {
 	}
 	
 	function createStudent($all_info){
-		//pr($all_info);
+		
+		//pr($yl[$yindex+1]); exit();
 		$today =  date("Y-m-d", strtotime($this->data['Cashier']['date']));
 		$time = date("h:i:s");
 		if(isset($all_info['StudInfo']))
@@ -657,11 +668,11 @@ class PaymentsController extends AppController {
 		//update assessment status
 		$this->Assessment->saveAll($assessment_data);
 		$assessment_id = $ass['id'];
+		$hs = array('G7','G8','G9','GX');
 		if($ass['student_status']=='New'){
 			
 			//update inquiry status
 			$this->Inquiry->saveAll($data);
-			$hs = array('G7','G8','G9','GX');
 			if(in_array($data['year_level_id'],$hs))
 				$data['id'] = $this->Student->generateSID('LS','J');
 			else
@@ -678,6 +689,10 @@ class PaymentsController extends AppController {
 			$account = $account['Account'];
 			$ass['id'] = $ass['student_id'];
 			$ass['old_balance'] = $account['outstanding_balance'];
+			$yl = array('G7','G8','G9','GX','GY','GZ');
+			$yindex = array_search($all_info['Student']['year_level_id'],$yl);
+			$stud201 = array('id'=>$ass['id'],'year_level_id'=>$yl[$yindex+1],'section_id'=>$ass['section_id']);
+			$this->Student->save($stud201);
 		}
 		
 		
@@ -687,8 +702,22 @@ class PaymentsController extends AppController {
 		//add items to ledgers
 		$tuition = array('account_id'=>$ass['id'],'type'=>'+','transaction_type_id'=>'TUIXN','esp'=>2021,'transac_date'=>$today,'transac_time'=>$time,'ref_no'=>$assessment_id,'details'=>'Tuition and Other Fees','amount'=>$ass['assessment_total']);
 		$this->Ledger->saveAll($tuition);
-		if($ass['subsidy_status']!='REGXX')
-			$discount = array('account_id'=>$ass['id'],'type'=>'-','transaction_type_id'=>$ass['subsidy_status'],'esp'=>2021,'transac_date'=>$today,'transac_time'=>$time,'ref_no'=>$assessment_id,'details'=>'Discount','amount'=>$ass['assessment_total']);
+		if($ass['subsidy_status']!='REGXX'){
+			$discount = array('account_id'=>$ass['id'],'type'=>'-','transaction_type_id'=>$ass['subsidy_status'],'esp'=>2021,'transac_date'=>$today,'transac_time'=>$time,'ref_no'=>$assessment_id,'details'=>'Discount','amount'=>abs($ass['discount_amount']));
+			$this->Ledger->saveAll($discount);
+		}
+		if(isset($all_info['Reservation'])){
+			foreach($all_info['Reservation'] as $res){
+				switch($res['field_type']){
+					case 'RSRVE': $res['details'] = 'Reservation'; break;
+					case 'ADVTP': $res['details'] = 'Advance Payment'; break;
+				}
+				$res['transaction_type_id']=$res['field_type'];
+				$res['type']='-';
+				$res['id'] = null;
+				$this->Ledger->saveAll($res);
+			}
+		}
 		
 		
 		//save to classlist blocks

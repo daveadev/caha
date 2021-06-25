@@ -330,6 +330,7 @@ define(['app', 'api'], function(app) {
 			function getReservations(){
 				api.GET('reservations', {account_id:$scope.SelectedStudent.id}, function success(response){
 					$scope.HasRes = true;
+					$scope.Reservations = response.data;
 				}, function error(response){
 					$scope.HasRes = false;
 				});
@@ -494,6 +495,9 @@ define(['app', 'api'], function(app) {
 						$scope.ActiveAssessment.student_status = $scope.ActiveStudTyp;
 						$scope.Payment.assessment = $scope.ActiveAssessment;
 					}
+					if($scope.HasRes)
+						$scope.Payment.reservations = $scope.Reservations;
+					
 					//console.log($scope.Payment); return;
 					if($scope.ActiveTyp=='A2O')
 						$scope.Payment.type = {type:'A2O',};

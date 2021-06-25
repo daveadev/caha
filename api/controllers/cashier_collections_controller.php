@@ -125,10 +125,11 @@ class CashierCollectionsController extends AppController {
 						$cl['section'] = 'CODE:'.$sec_ref;
 					endif;
 				}
-				
+				$cl['particulars'] = '';
 				if(isset($col['TransactionDetail'][0]))
 					$cl['particulars'] = $col['TransactionDetail'][0]['details'];
-				else
+				
+				else if(isset($cl['details']))
 					$cl['particulars'] = $cl['details'];
 				if(isset($col['TransactionPayment'][0])){
 					if($col['TransactionPayment'][0]['payment_method_id']!=='CASH'){
