@@ -224,7 +224,7 @@ class PaymentsController extends AppController {
 						$history['total_due']=$Account['assessment_total'];
 						
 						$history['total_paid']=$payment_to_date+abs($Account['discount_amount']);
-						$history['balance']=($Account['assessment_total']-$Account['discount_amount'])-$payment_to_date;
+						$history['balance']=($Account['assessment_total']-abs($Account['discount_amount']))-$payment_to_date;
 						$Account['outstanding_balance'] = ($Account['assessment_total']-abs($Account['discount_amount']))-$payment_to_date;
 						$Account['payment_total'] = $payment_to_date;
 						if(isset($Account['old_balance'])&&$Account['old_balance']>0)
@@ -311,10 +311,10 @@ class PaymentsController extends AppController {
 			$total_feePaid = 0;
 			$total_misc = 0;
 			if(isset($this->data['Reservation'])){
-					foreach($this->data['Reservation'] as $res){
-						$fee_payment+=$res['amount'];
-					}
+				foreach($this->data['Reservation'] as $res){
+					$fee_payment+=$res['amount'];
 				}
+			}
 			foreach($fees as $i=>$fee){
 				if(isset($fee['AccountFee']))
 					$fee = $fee['AccountFee'];
@@ -329,7 +329,7 @@ class PaymentsController extends AppController {
 					$fee = $fee['AccountFee'];
 					if($fee['fee_id']=='TUI'&&$fee['paid_amount']>0){
 						if($fee_payment>$fee['due_amount'])
-							$payment = $total_payment-$fee['due_amount'];
+							$payment = $fee_payment-$fee['due_amount'];
 						else{
 							$payment=$fee_payment;
 							$fee_payment = 0;
@@ -350,7 +350,7 @@ class PaymentsController extends AppController {
 					$fee = $fee['AccountFee'];
 					if($fee['fee_id']=='TUI')
 						continue;
-					$fee['paid_amount'] = ($total_feePaid+$total_payment) * $fee['percentage'];
+					$fee['paid_amount'] = ($total_feePaid+$fee_payment) * $fee['percentage'];
 					$round_off += $fee['paid_amount'];
 					array_push($account_fees,$fee);
 				}
