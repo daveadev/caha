@@ -15,6 +15,7 @@ class SOA extends Formsheet{
 	}
 	
 	function ledger($stud,$data,$total_page,$page){
+		$esp = $stud['Student']['esp'];
 		$this->showLines = !true;
 		$metrics = array(
 			'base_x'=> 0.5,
@@ -53,7 +54,7 @@ class SOA extends Formsheet{
 		$this->leftText(30,$y++,date("h:i:s a"),'','');
 		//SY
 		$this->leftText(28,$y,'SY:','','');
-		$this->leftText(30,$y++,'2020 - 2021','','');
+		$this->leftText(30,$y++,$esp . ' - '.($esp+1),'','');
 
 		$y++;
 		$this->centerText(0,$y,'Date',5,'b');

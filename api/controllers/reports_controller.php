@@ -1,7 +1,7 @@
 <?php
 class ReportsController extends AppController{
 	var $name = 'Reports';
-	var $uses = array('Ledger','Account', 'Student','Section','Transaction','TransactionType');
+	var $uses = array('Ledger','Account', 'Student','Section','Transaction','TransactionType','MasterConfig');
 
 	// GET srp/test_soa?account_id=LSJXXXXX
 	function soa(){
@@ -13,12 +13,15 @@ class ReportsController extends AppController{
 			$this->Student->recursive=1;
 			$conditions = array(array('Student.id'=>$account_id));
 			$student = $this->Student->find('first',compact('conditions'));
-			
+			$esp = $this->MasterConfig->find('all',array('recursive'=>-1,'conditions'=>array('MasterConfig.sys_key'=>'ACTIVE_SY')));
+			$esp = $esp[0]['MasterConfig']['sys_value'];
+			//pr($esp); exit();
 			//Student's SOA
 			$data = $this->Ledger->find('all',array(
-				'conditions'=>array('Ledger.account_id'=>$account_id,'Ledger.esp'=>2021),
+				'conditions'=>array('Ledger.account_id'=>$account_id,'Ledger.esp'=>$esp),
 				'order'=>array('Ledger.transac_date','Ledger.id')
 			));
+			$student['Student']['esp'] = $esp;
 			//pr($student);exit;
 			$this->set(compact('data','student'));
 		}else{

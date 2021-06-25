@@ -655,7 +655,7 @@ class PaymentsController extends AppController {
 	
 	function createStudent($all_info){
 		
-		//pr($yl[$yindex+1]); exit();
+		pr($all_info); exit();
 		$today =  date("Y-m-d", strtotime($this->data['Cashier']['date']));
 		$time = date("h:i:s");
 		if(isset($all_info['StudInfo']))
@@ -664,6 +664,7 @@ class PaymentsController extends AppController {
 		$data['status'] = 'NROLD';
 		$ass['status'] = 'NROLD';
 		$assessment_data = $ass;
+		$esp = $all_info['Cashier']['esp'];
 		
 		//update assessment status
 		$this->Assessment->saveAll($assessment_data);
@@ -679,7 +680,7 @@ class PaymentsController extends AppController {
 				$data['id'] = $this->Student->generateSID('LS','S');
 			
 			$ass['id'] = $data['id'];
-			
+			$curr_yearlvl = $data['year_level_id'];
 			//save new student to student201 in SER
 			$this->Student->saveAll($data);
 		}else{
@@ -691,7 +692,8 @@ class PaymentsController extends AppController {
 			$ass['old_balance'] = $account['outstanding_balance'];
 			$yl = array('G7','G8','G9','GX','GY','GZ');
 			$yindex = array_search($all_info['Student']['year_level_id'],$yl);
-			$stud201 = array('id'=>$ass['id'],'year_level_id'=>$yl[$yindex+1],'section_id'=>$ass['section_id']);
+			$curr_yearlvl = $yl[$yindex+1];
+			$stud201 = array('id'=>$ass['id'],'year_level_id'=>$curr_yearlvl,'section_id'=>$ass['section_id']);
 			$this->Student->save($stud201);
 		}
 		
@@ -700,10 +702,10 @@ class PaymentsController extends AppController {
 		$this->Account->saveAll($ass);
 		
 		//add items to ledgers
-		$tuition = array('account_id'=>$ass['id'],'type'=>'+','transaction_type_id'=>'TUIXN','esp'=>2021,'transac_date'=>$today,'transac_time'=>$time,'ref_no'=>$assessment_id,'details'=>'Tuition and Other Fees','amount'=>$ass['assessment_total']);
+		$tuition = array('account_id'=>$ass['id'],'type'=>'+','transaction_type_id'=>'TUIXN','esp'=>$esp,'transac_date'=>$today,'transac_time'=>$time,'ref_no'=>$assessment_id,'details'=>'Tuition and Other Fees','amount'=>$ass['assessment_total']);
 		$this->Ledger->saveAll($tuition);
 		if($ass['subsidy_status']!='REGXX'){
-			$discount = array('account_id'=>$ass['id'],'type'=>'-','transaction_type_id'=>$ass['subsidy_status'],'esp'=>2021,'transac_date'=>$today,'transac_time'=>$time,'ref_no'=>$assessment_id,'details'=>'Discount','amount'=>abs($ass['discount_amount']));
+			$discount = array('account_id'=>$ass['id'],'type'=>'-','transaction_type_id'=>$ass['subsidy_status'],'esp'=>$esp,'transac_date'=>$today,'transac_time'=>$time,'ref_no'=>$assessment_id,'details'=>'Discount','amount'=>abs($ass['discount_amount']));
 			$this->Ledger->saveAll($discount);
 		}
 		if(isset($all_info['Reservation'])){
@@ -721,7 +723,9 @@ class PaymentsController extends AppController {
 		
 		
 		//save to classlist blocks
-		$classlist_block = array('student_id'=>$ass['id'],'section_id'=>$ass['section_id'],'esp'=>2021,'status'=>'ACTIV');
+		if(!in_array($curr_yearlvl,$hs))
+			$esp = $esp+0.1;
+		$classlist_block = array('student_id'=>$ass['id'],'section_id'=>$ass['section_id'],'esp'=>$esp,'status'=>'ACT');
 		$this->ClasslistBlock->saveAll($classlist_block);
 		
 		
