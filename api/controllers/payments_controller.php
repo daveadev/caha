@@ -144,11 +144,11 @@ class PaymentsController extends AppController {
 
 					if($Account['payment_total']>0)
 						$payment_to_date+=$Account['payment_total'];
-					if(isset($this->data['Reservation'])){
+					/* if(isset($this->data['Reservation'])){
 						foreach($this->data['Reservation'] as $res){
 							$payment_to_date+=$res['amount'];
 						}
-					}
+					} */
 					
 				}
 				$detail = $trnx['name'];
@@ -655,7 +655,7 @@ class PaymentsController extends AppController {
 	
 	function createStudent($all_info){
 		
-		pr($all_info); exit();
+		//pr($all_info); exit();
 		$today =  date("Y-m-d", strtotime($this->data['Cashier']['date']));
 		$time = date("h:i:s");
 		if(isset($all_info['StudInfo']))
