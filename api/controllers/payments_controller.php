@@ -423,8 +423,11 @@ class PaymentsController extends AppController {
 					$res['program_id']='MIXED';
 				if(isset($data['Student']['program_id']))
 					$res['program_id']=$data['Student']['program_id'];
+				// TODO: Add to master_config flag  MOD_ESP  to  advance SY
+				$modESP = 0;
+				$nextESP =  $data['Cashier']['esp'] +$modESP; 
 				$res['account_id'] = $data['Student']['id'];
-				$res['esp'] = $data['Cashier']['esp']+1;
+				$res['esp'] = $nextESP;
 				$res['field_type'] = $data['Transaction'][0]['id'];
 				$res['ref_no'] = 'OR '.$booklet['series_counter'];
 				$res['amount'] = $data['Cashier']['total_due'];
@@ -565,7 +568,7 @@ class PaymentsController extends AppController {
 				'details'=>$trnx['name'],
 				'amount'=>$trnx['amount']
 			);
-			// TODO: Add to master_config flag to advance SY
+			// TODO: Add to master_config flag  MOD_ESP  to  advance SY
 
 			$modESP = 0;
 			if($trnx['id']=='RSRVE'||$trnx['id']=='ADVTP'){
