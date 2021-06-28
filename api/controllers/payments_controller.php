@@ -268,8 +268,12 @@ class PaymentsController extends AppController {
 					array_push($ledger_accounts,$ledgerItem);
 				}
 				array_push($transac_details,$td);
-				if($trnx['id']=='OLDAC')
+				if($trnx['id']=='OLDAC'):
 					$total_payment -= $trnx['amount'];
+					$Account['payment_total'] +=$trnx['amount'];
+					$Account['old_balance'] -=$trnx['amount'];
+					$Account['outstanding_balance'] -=$trnx['amount'];
+				endif;
 				if($trnx['type']=='AR')
 					$total_payment -= $trnx['amount'];
 				
