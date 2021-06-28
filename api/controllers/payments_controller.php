@@ -565,9 +565,11 @@ class PaymentsController extends AppController {
 				'details'=>$trnx['name'],
 				'amount'=>$trnx['amount']
 			);
-			
+			// TODO: Add to master_config flag to advance SY
+
+			$modESP = 0;
 			if($trnx['id']=='RSRVE'||$trnx['id']=='ADVTP'){
-				$nextESP = $data['Cashier']['esp']+1;
+				$nextESP = $data['Cashier']['esp']+$modESP;
 				$rsrveObj =  array(
 					'account_id'=>$account_id,
 					'esp'=>$nextESP,
