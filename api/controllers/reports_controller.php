@@ -74,8 +74,8 @@ class ReportsController extends AppController{
 		$trnxTypes = $this->TransactionType->find('list');
 		$trnxDtls = array();
 		
-		
-		
+		// TODO: Add to master_config flag MOD_ESP to advance SY
+		$modESP = 0;
 		foreach($trnx['TransactionDetail'] as $dtl){
 			//pr($dtl);
 			$item = $trnxTypes[$dtl['transaction_type_id']];
@@ -84,7 +84,7 @@ class ReportsController extends AppController{
 			$amount= number_format($dtl['amount'],2,'.',',');
 			$dtlObj = array('item'=>$item,'amount'=>$amount);
 			if($dtl['transaction_type_id']=='RSRVE'):
-				$esp = $esp+1;
+				$esp = $esp+$modESP;
 				
 			endif;
 			//pr($dtlObj); exit();
