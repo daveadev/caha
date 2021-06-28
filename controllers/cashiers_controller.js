@@ -4,7 +4,7 @@ define(['app', 'api'], function(app) {
 	function($log, $scope, $rootScope, $uibModal, api,$filter) {
         $scope.index = function() {
             $rootScope.__MODULE_NAME = 'Cashiers';
-			if($rootScope.__USER.user.user_type=='offcr'){
+			if($rootScope.__USER.user.user_type=='offcr'||$rootScope.__USER.user.user_type=='admin'){
 				$rootScope.__MODULE_NAME = 'Cashiers Backlog';
 				$scope.Bypass = true;
 			}
@@ -304,7 +304,7 @@ define(['app', 'api'], function(app) {
 					})
 					var TrnxTypes = response.data;
 					//Bubble to top RF for New students
-					if($scope.ActiveStudTyp=='New'){
+					if($scope.ActiveStudTyp=='New'||1){
 						var RFTrnx =  TrnxTypes[RFIndex];
 						TrnxTypes.splice(RFIndex,1);
 						TrnxTypes.unshift(RFTrnx);
@@ -353,7 +353,10 @@ define(['app', 'api'], function(app) {
             $scope.nextStep = function() {
                 if ($scope.ActiveStep === 1) {
                     //Pass value of student information
-					
+					if($scope.Bypass){
+						$scope.EnableChange();
+						$scope.OfficerControl('date');
+					}
 					
 					$scope.Disabled = 1;
 					getReservations();
@@ -464,12 +467,15 @@ define(['app', 'api'], function(app) {
                 if ($scope.ActiveStep === 4) {
 					
 					//return;
-					if(!$scope.changeDate)
+					
+					if(!$scope.changeDate && !$scope.Bypass)
 						$scope.Today = new Date();
 					else{
-						if(!$scope.Today)
+						// If Today is undefined && Bypass set today as yesterday
+						if(!$scope.Today && $scope.Bypass)
 							$scope.Today = $scope.yesterday;
 					}
+					
                     //Push the gathered info to payments.js
 					if($scope.TotalPaid>$scope.TotalDue){
 						angular.forEach($scope.ActivePayments,function(pay){
