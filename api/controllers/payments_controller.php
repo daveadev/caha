@@ -145,7 +145,7 @@ class PaymentsController extends AppController {
 			// for Ledgers and Account transactions
 			$transac_payment = $total_payment;
 			foreach($transactions as $trnx){
-				if($trnx['id']=='INIPY'){
+				if($trnx['id']=='INIPY'||$trnx['id']=='FULLP'){
 					$Account = $this->createStudent($this->data);
 					$schedules = $this->AccountSchedule->find('all',array('recursive'=>-1,'conditions'=>array('AccountSchedule.account_id'=>$Account['id'])));
 					$fees = $this->AccountFee->find('all',array('recursive'=>0,'conditions'=>array('account_id'=>$Account['id'])));
