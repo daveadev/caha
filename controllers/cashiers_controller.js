@@ -108,7 +108,6 @@ define(['app', 'api'], function(app) {
 				if(type=='OR'){
 					checkOr($scope.ActiveBooklet);
 				}else{
-					
 					$scope.changeDate = true;
 				}
 			}
@@ -118,7 +117,6 @@ define(['app', 'api'], function(app) {
 				if($scope.Today==undefined){
 					$scope.Today =  angular.copy($scope.yesterday);
 				}
-				
 			}
 			
 			function checkOr(book){
@@ -267,7 +265,7 @@ define(['app', 'api'], function(app) {
 			}
 			function getAssigendBooks(){
 				var data = {
-					status:'ASSGN',
+					status:['ASSGN','ACTIV'],
 					limit:'less'
 				};
 				if($scope.cashier_id)
@@ -380,6 +378,12 @@ define(['app', 'api'], function(app) {
 					//console.log($scope.ActiveTyp); return;				
                 }
                 if ($scope.ActiveStep === 2) {
+					if($scope.Bypass){
+						if($scope.EditMode||$scope.changeDate){
+							alert('Please confirm series number and date!');
+							return;
+						}
+					}
 					console.log($scope.SelectedTransactions);
 					if($scope.TotalPaid>$scope.TotalDue)
 						$scope.Disabled = 0;
@@ -673,7 +677,7 @@ define(['app', 'api'], function(app) {
                 }
                 //Opening the modal
             $scope.displaySettings = function(hideConf) {
-				console.log($scope.Booklets);
+				//console.log($scope.Booklets);
 				if($scope.ActiveBooklet)
 					$scope.ActiveBooklet['label'] = $scope.ActiveBooklet.series_start+' - '+$scope.ActiveBooklet.series_end;
                 var modalInstance = $uibModal.open({
@@ -885,10 +889,9 @@ define(['app', 'api'], function(app) {
 		$scope.RectTypes = rectTypes;
 		$scope.ActiveTyp = actType;
 		$scope.Booklets = booklets;
-		//console.log(booklets);
 		if(book){
-			$scope.ActiveBook = angular.copy(book);
 			$scope.Booklets.push(book);
+			$scope.ActiveBook = angular.copy(book);
 		}
 		$scope.Actions = [
 			{id:'byps','desc':'Bypass this time only','class':'glyphicon-random'},
