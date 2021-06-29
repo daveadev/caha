@@ -32,6 +32,8 @@ class PaymentsController extends AppController {
 				$this->SaveOthers($this->data);
 			}
 		}else{
+
+			// TODO:  Add comment prepare data for payment etc.
 			$student = $this->data['Student'];
 			$transactions = $this->data['Transaction'];
 			$booklet = $this->data['Booklet'];
@@ -51,7 +53,9 @@ class PaymentsController extends AppController {
 			$time = date("h:i:s");
 			//pr($this->data);
 			//pr($this->data); exit();
-			
+
+
+			// TODO: Move to new function BookletUpdating
 			if($booklet['series_counter']<$booklet['series_end']){
 				if(isset($booklet['mark'])){
 					if($booklet['mark']=='bypass'){
@@ -86,6 +90,8 @@ class PaymentsController extends AppController {
 			$transac_details = array();
 			$payment_modes = array();
 			
+
+			// Todo: Move to new function PrepareTransaction
 			$t_payment = 0;
 			foreach($this->data['Payment'] as $i=>$t){
 				$t_payment += $t['amount'];
@@ -113,6 +119,8 @@ class PaymentsController extends AppController {
 			$this->Transaction->saveAll($transac_data);
 			
 			$transac_id = $this->Transaction->id;
+			//TODO: end of PrepareTransaction
+
 			
 			$isCharge = false;
 			// to get the total payment of all payments and save transac payments
