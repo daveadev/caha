@@ -407,6 +407,7 @@ class PaymentsController extends AppController {
 		$today = date("Y-m-d");
 		$time = date("h:i:s");
 		$booklet = $data['Booklet'];
+		$date = $data['Cashier']['date'];
 		$n = 0;
 		//pr($data); exit();
 		if(isset($data['Student']['id'])){
@@ -439,7 +440,7 @@ class PaymentsController extends AppController {
 				$res['field_type'] = $data['Transaction'][0]['id'];
 				$res['ref_no'] = 'OR '.$booklet['series_counter'];
 				$res['amount'] = $data['Cashier']['total_due'];
-				$res['transac_date'] = $today;
+				$res['transac_date'] = $date;
 				$this->Reservation->save($res);
 				$account_id = $data['Student']['id'];
 			}
@@ -474,7 +475,7 @@ class PaymentsController extends AppController {
 							'account_details'=>$data['Student']['name'],
 							'esp' => $data['Cashier']['esp'],
 							'amount'=> $data['Cashier']['total_due'],
-							'transac_date'=>$today,
+							'transac_date'=>$date,
 							'transac_time'=>$time,
 							'cashier'=>$this->Auth->user()['User']['username'],
 							'account_id'=>$account_id);
@@ -545,6 +546,7 @@ class PaymentsController extends AppController {
 		$today = date("Y-m-d");
 		$time = date("h:i:s");
 		$booklet = $data['Booklet'];
+		$date = $data['Cashier']['date'];
 		
 		$docType = $this->data['Type']['type'];
 		$refNoType =  $docType;
@@ -559,7 +561,7 @@ class PaymentsController extends AppController {
 						'account_details'=>$data['Student']['name'],
 						'esp' => $data['Cashier']['esp'],
 						'amount'=> $data['Cashier']['total_due'],
-						'transac_date'=>$today,
+						'transac_date'=>$date,
 						'transac_time'=>$time,
 						'cashier'=>$this->Auth->user()['User']['username'],
 						'account_id'=>$account_id);
@@ -588,7 +590,7 @@ class PaymentsController extends AppController {
 					'year_level_id'=>$data['Student']['year_level'],
 					'ref_no'=>$transac_data['ref_no'],
 					'amount'=>$trnx['amount'],
-					'transac_date'=>$today
+					'transac_date'=>$date
 				);
 				$this->Reservation->save($rsrveObj);
 			}

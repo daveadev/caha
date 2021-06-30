@@ -378,13 +378,12 @@ define(['app', 'api'], function(app) {
 					//console.log($scope.ActiveTyp); return;				
                 }
                 if ($scope.ActiveStep === 2) {
-					if($scope.Bypass){
+					if($scope.ActiveUser.user_type=='offcr'){
 						if($scope.EditMode||$scope.changeDate){
 							alert('Please confirm series number and date!');
 							return;
 						}
 					}
-					console.log($scope.SelectedTransactions);
 					if($scope.TotalPaid>$scope.TotalDue)
 						$scope.Disabled = 0;
 					else
