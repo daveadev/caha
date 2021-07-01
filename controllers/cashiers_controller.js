@@ -134,6 +134,7 @@ define(['app', 'api'], function(app) {
 						book.InitialCtr = $scope.InitialCtr;
 						book.mark = 'bypass';
 						$scope.ActiveBook = book;
+						console.log($scope.ActiveBook);
 						$scope.EditMode = false;
 					}else{
 						return false;
