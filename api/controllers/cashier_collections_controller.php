@@ -102,9 +102,13 @@ class CashierCollectionsController extends AppController {
 				$cl['cnt'] =  $cnt;
 				$status = $col['Account']['subsidy_status'];
 				$status = $status=='REGXX'?'REG':substr($status,-3);
-				
+				//pr($st);
 				if($acct['account_type']=='student'){
-					$cl['received_from'] = $st['class_name'];
+					if(isset($st['class_name']))
+						$cl['received_from'] = $st['class_name'];
+					else
+						$cl['received_from'] = $st['last_name'].', '.$st['first_name'];
+						
 					$cl['sno'] = $st['sno'];
 					$cl['status'] = $status;
 					$yl_ref = $st['year_level_id'];
@@ -116,6 +120,7 @@ class CashierCollectionsController extends AppController {
 					$cl['status'] ='-';
 					
 				}
+				
 				if(isset($yl_ref)){
 					if(isset($list[$yl_ref][$sec_ref])):
 						$cl['level'] = $list[$yl_ref][$sec_ref]['yl'];

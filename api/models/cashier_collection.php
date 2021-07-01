@@ -22,6 +22,9 @@ class CashierCollection extends AppModel {
 				'Student.status',
 				'Student.year_level_id',
 				'Student.section_id',
+				'Student.last_name',
+				'Student.first_name',
+				'Student.middle_name',
 			),
 			'order' => ''
 		),
