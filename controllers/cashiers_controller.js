@@ -4,7 +4,7 @@ define(['app', 'api'], function(app) {
 	function($log, $scope, $rootScope, $uibModal, api,$filter) {
         $scope.index = function() {
             $rootScope.__MODULE_NAME = 'Cashiers';
-			if($rootScope.__USER.user.user_type=='offcr'||$rootScope.__USER.user.user_type=='admin'){
+			if($rootScope.__USER.user.user_type=='money'||$rootScope.__USER.user.user_type=='admin'){
 				$rootScope.__MODULE_NAME = 'Cashiers Backlog';
 				$scope.Bypass = true;
 			}
