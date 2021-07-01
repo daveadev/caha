@@ -47,7 +47,6 @@ class PaymentsController extends AppController {
 			$acc = $this->Account->find('first',array('recursive'=>0,'conditions'=>array('id'=>$account_id)));
 			$Account = $acc['Account'];
 			$payment_to_date = $Account['payment_total'];
-			$curr_refNo = $booklet['receipt_type']. ' ' .$booklet['series_counter'];
 			$total_payment = 0;
 			$today =  date("Y-m-d", strtotime($this->data['Cashier']['date']));
 			$time = date("h:i:s");
@@ -56,32 +55,20 @@ class PaymentsController extends AppController {
 
 
 			// TODO: Move to new function BookletUpdating
-			if($booklet['series_counter']<$booklet['series_end']){
-				if(isset($booklet['mark'])){
-					if($booklet['mark']=='bypass'){
-						$booklet['series_counter']=$booklet['InitialCtr'];
-					}else{
-						$series=$booklet['series_counter']+1;
-						do{
-						$result = $this->Ledger->find('first',array('recursive'=>0,'conditions'=>array('Ledger.ref_no'=>'OR '.$series)));
-							$series++;
-						}while(!empty($result));
-						$series--;
-						$booklet['series_counter'] = $series;
-					}
-				}else{
-					$series=$booklet['series_counter']+1;
-					do{
-					$result = $this->Ledger->find('first',array('recursive'=>0,'conditions'=>array('Ledger.ref_no'=>'OR '.$series)));
-						$series++;
-					}while(!empty($result));
-					$series--;
-					$booklet['series_counter'] = $series;
+			$booklet = $this->checkBooklet($this->data);
+			$curr_refNo = $booklet['receipt_type']. ' ' .$booklet['series_counter'];
+			
+			foreach($transactions as $t){
+				if($t['id']=='INIPY'||$t['id']=='FULLP'){
+					$Account = $this->createStudent($this->data);
+					$schedules = $this->AccountSchedule->find('all',array('recursive'=>-1,'conditions'=>array('AccountSchedule.account_id'=>$Account['id'])));
+					$fees = $this->AccountFee->find('all',array('recursive'=>0,'conditions'=>array('account_id'=>$Account['id'])));
+					$account_id = $Account['id'];
+					if($Account['payment_total']>0)
+						$payment_to_date+=$Account['payment_total'];
 				}
-			}else
-				$booklet['status'] = 'CONSM';
-			
-			
+				
+			}
 			
 			$transac_payments = array();
 			$ledger_accounts = array();
@@ -145,20 +132,7 @@ class PaymentsController extends AppController {
 			// for Ledgers and Account transactions
 			$transac_payment = $total_payment;
 			foreach($transactions as $trnx){
-				if($trnx['id']=='INIPY'||$trnx['id']=='FULLP'){
-					$Account = $this->createStudent($this->data);
-					$schedules = $this->AccountSchedule->find('all',array('recursive'=>-1,'conditions'=>array('AccountSchedule.account_id'=>$Account['id'])));
-					$fees = $this->AccountFee->find('all',array('recursive'=>0,'conditions'=>array('account_id'=>$Account['id'])));
-
-					if($Account['payment_total']>0)
-						$payment_to_date+=$Account['payment_total'];
-					/* if(isset($this->data['Reservation'])){
-						foreach($this->data['Reservation'] as $res){
-							$payment_to_date+=$res['amount'];
-						}
-					} */
-					
-				}
+				
 				$detail = $trnx['name'];
 				$payment = $total_payment;
 				if($trnx['amount']<$total_payment){
@@ -668,13 +642,9 @@ class PaymentsController extends AppController {
 		return $booklet;
 	}
 	
-	function creatNewAccount($acc){
-		
-	}
 	
 	function createStudent($all_info){
 		
-		//pr($all_info); exit();
 		$today =  date("Y-m-d", strtotime($this->data['Cashier']['date']));
 		$time = date("h:i:s");
 		if(isset($all_info['StudInfo']))
@@ -689,10 +659,13 @@ class PaymentsController extends AppController {
 		$this->Assessment->saveAll($assessment_data);
 		$assessment_id = $ass['id'];
 		$hs = array('G7','G8','G9','GX');
+		//pr($data); exit();
 		if($ass['student_status']=='New'){
 			
-			//update inquiry status
+			//update inquiry status and account_type in accounts
 			$this->Inquiry->saveAll($data);
+			$acct = array('id'=>$ass['student_id'],'account_type'=>'enrolled');
+			$this->Account->save($acct);
 			if(in_array($data['year_level_id'],$hs))
 				$data['id'] = $this->Student->generateSID('LS','J');
 			else
@@ -700,6 +673,7 @@ class PaymentsController extends AppController {
 			
 			$ass['id'] = $data['id'];
 			$curr_yearlvl = $data['year_level_id'];
+			$data['section_id'] = $ass['section_id'];
 			//save new student to student201 in SER
 			$this->Student->saveAll($data);
 		}else{
@@ -736,6 +710,7 @@ class PaymentsController extends AppController {
 				$res['transaction_type_id']=$res['field_type'];
 				$res['type']='-';
 				$res['id'] = null;
+				$res['account_id'] = $ass['id'];
 				$this->Ledger->saveAll($res);
 			}
 		}
@@ -763,5 +738,6 @@ class PaymentsController extends AppController {
 		$this->AccountFee->saveAll($fees);
 		return $ass;
 	}
+	
 	
 }

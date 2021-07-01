@@ -55,15 +55,17 @@ class ReportsController extends AppController{
 		$acctId =  $trnx['Account']['id'];
 		$this->Account->recursive =0;
 		$account = $this->Account->findById($acctId);
-		if($account['Student']){
-			$student =  $account['Student']['class_name'];
+		//pr($account);
+		if(isset($account['Student']['id'])){
+			$s =  $account['Student'];
+			$student = $s['last_name']. ', '.$s['first_name']. ' '.$s['middle_name'];
 			$sno =  $account['Student']['sno'];
 			$sectionId  =  $account['Student']['section_id'];
 			$sectObj = $this->Section->findById($sectionId);
 			$yearLevel = $sectObj['YearLevel']['name'];
 			$section = $sectObj['Section']['name'];
 		}
-		if($account['Inquiry']){
+		if(isset($account['Inquiry']['id'])){
 			$student =  $account['Inquiry']['class_name'];
 			$sno =  $account['Inquiry']['id'];
 			$yearLvId  =  $account['Inquiry']['year_level_id'];
@@ -73,7 +75,7 @@ class ReportsController extends AppController{
 		}
 		$trnxTypes = $this->TransactionType->find('list');
 		$trnxDtls = array();
-		
+		//pr($account);
 		// TODO: Add to master_config flag MOD_ESP to advance SY
 		$modESP = 0;
 		foreach($trnx['TransactionDetail'] as $dtl){
@@ -95,7 +97,8 @@ class ReportsController extends AppController{
 		$syShort = (int)substr($esp, 2,2);
 		$syFor = $syShort.'-'.($syShort+1);
 		$cashier = $trnx['Transaction']['cashier'];
-		if(isset($sno)){
+		//pr($student);
+		if(isset($student)){
 			$data = array(
 				'ref_no'=>$refNo,
 				'transac_date'=>$trnDate,
@@ -129,6 +132,7 @@ class ReportsController extends AppController{
 			if($payment['payment_method_id']=='CHCK')
 				$data['check_details'] = $payment['details'] .' / '. date("d-M-Y", strtotime($payment['valid_on']));
 		}
+		//pr($data); exit();
 		$this->set(compact('data'));
 	}
 	
