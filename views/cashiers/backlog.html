@@ -249,6 +249,17 @@
 							</li>
 						</ul>
 					</div>
+					<div class="list-group-item" ng-show="!TransactionTypes.length">
+						<div class="description text-center">
+							<h4 class="list-group-item-heading ">
+								No available Transaction. 
+								
+							</h4>
+							<p class="list-group-item-text">
+								Check other doc type OR, AR or A2O.
+							</p>
+						</div>
+					</div>
 					<div class="list-group-item" 
 						ng-repeat="transaction_type in TransactionTypes | filter:filterTransaction" ng-hide="ActiveTyp=='A2O'&&transaction_type.id!=='OTHRS'&&isPayeeConfirmed" >
 						<div class="row">

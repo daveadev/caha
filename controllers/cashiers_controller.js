@@ -324,11 +324,27 @@ define(['app', 'api'], function(app) {
 					account_no:$scope.ActiveStudent.id,
 					pay:true,
 				};
+				
 				api.GET('transaction_types',data, function success(response){
 					$scope.TransactionTypes = response.data;
 					if($scope.ActiveStudTyp=='QR'){
 						$scope.SelectedTransactions = {'INIPY':true};
 						//$scope.nextStep();
+					}
+					var OAIndex = 0;
+					angular.forEach($scope.TransactionTypes,function(res,ind){
+						
+						if(res.id=='OLDAC')
+							OAIndex = ind;
+						
+					});
+					
+					// Set default amount Old Account from ActiveStudent.old_balance
+					if($scope.ActiveStudent.old_balance > 0){
+						$scope.TransactionTypes[OAIndex].amount =  $scope.ActiveStudent.old_balance;
+					}else{
+						// Remove old account transactions if zero
+						$scope.TransactionTypes.splice(OAIndex,1);
 					}
 				});
 			}
