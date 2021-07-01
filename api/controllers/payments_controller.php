@@ -654,7 +654,8 @@ class PaymentsController extends AppController {
 		$ass['status'] = 'NROLD';
 		$assessment_data = $ass;
 		$esp = $all_info['Cashier']['esp'];
-		
+		if(isset($all_info['Cashier']['date']))
+			$today = $all_info['Cashier']['date'];
 		//update assessment status
 		$this->Assessment->saveAll($assessment_data);
 		$assessment_id = $ass['id'];
