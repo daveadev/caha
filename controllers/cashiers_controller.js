@@ -294,18 +294,26 @@ define(['app', 'api'], function(app) {
 				};
 				api.GET('transaction_types',data, function success(response){
 					var RFIndex=0;
+					var APIndex = 0;
 					angular.forEach(response.data,function(res,ind){
 						if(res.is_quantity)
 							res.qty = 1;
 						if(res.id=='RSRVE')
 							RFIndex = ind;
+						if(res.id=='ADVTP')
+							APIndex = ind;
 					})
 					var TrnxTypes = response.data;
 					//Bubble to top RF for New students
-					if($scope.ActiveStudTyp=='New'||1){
+					if(!$scope.HasRes){
 						var RFTrnx =  TrnxTypes[RFIndex];
 						TrnxTypes.splice(RFIndex,1);
 						TrnxTypes.unshift(RFTrnx);
+					}
+					//Remove ATP and Reservation if student has ActiveAssessment
+					if($scope.ActiveAssessment){
+						TrnxTypes.splice(APIndex,1);
+						TrnxTypes.splice(RFIndex,1);
 					}
 					$scope.TransactionTypes = TrnxTypes;
 				});
@@ -367,6 +375,7 @@ define(['app', 'api'], function(app) {
 							$scope.ActiveStudent.name = $scope.ActiveStudent.account_details;
 						$scope.OtherPayeeName = '';
 					}
+					$scope.ActiveAssessment = undefined;
 					api.GET('assessments',{student_id:$scope.ActiveStudent.id,status:'ACTIV'}, function success(response){
 						 
 						$scope.ActiveAssessment = response.data[0];;
