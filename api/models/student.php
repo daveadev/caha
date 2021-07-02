@@ -56,7 +56,8 @@ class Student extends AppModel {
 		$SNO_PREFIX = sprintf('%d-',$sy);
 		$cond =  array('Student.sno LIKE'=>$SNO_PREFIX.'%');
 		$this->recursive=-1;
-		$stuObj = $this->find('first',array('conditions'=>$cond,'order'=>array('id'=>'desc')));
+		
+		$stuObj = $this->find('first',array('conditions'=>$cond,'order'=>array('sno'=>'desc')));
 
 		if($stuObj)
 			$SNO_SERIES =  (int)(str_replace($SNO_PREFIX, '', $stuObj['Student']['sno']));
