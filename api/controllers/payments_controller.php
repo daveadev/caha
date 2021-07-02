@@ -55,8 +55,8 @@ class PaymentsController extends AppController {
 
 
 			// TODO: Move to new function BookletUpdating
-			$booklet = $this->checkBooklet($this->data);
 			$curr_refNo = $booklet['receipt_type']. ' ' .$booklet['series_counter'];
+			$booklet = $this->checkBooklet($this->data);
 			
 			foreach($transactions as $t){
 				if($t['id']=='INIPY'||$t['id']=='FULLP'){
