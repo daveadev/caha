@@ -672,9 +672,13 @@ class PaymentsController extends AppController {
 			else
 				$data['id'] = $this->Student->generateSID('LS','S');
 			
+			$sy =  floor($esp);
+			$data['sno'] = $this->Student->generateSNO($sy);
+
 			$ass['id'] = $data['id'];
 			$curr_yearlvl = $data['year_level_id'];
 			$data['section_id'] = $ass['section_id'];
+			
 			//save new student to student201 in SER
 			$this->Student->saveAll($data);
 		}else{

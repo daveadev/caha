@@ -51,7 +51,19 @@ class Student extends AppModel {
 		}
 		
 	}
-	
+	function generateSNO($sy){
+		$SNO_SERIES = 1;
+		$SNO_PREFIX = sprintf('%d-',$sy);
+		$cond =  array('Student.sno LIKE'=$SNO_PREFIX.'%');
+		$this->recursive=-1;
+		$stuObj = $this->find('first',array('conditions'=>$cond,'order'=>array('id'=>'desc')));
+
+		if($stuObj)
+			$SNO_SERIES =  (int)(str_replace($SNO_PREFIX, '', $stuObj['Student']['sno']));
+		$SNO = $SNO_PREFIX .str_pad($ID+1, 4, 0, STR_PAD_LEFT);
+		
+		return $SNO;
+	}
 	function generateSID($school='1A',$dept=null){
 		$prefix = $school.$dept;
 
