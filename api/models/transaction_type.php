@@ -103,7 +103,10 @@ class TransactionType extends AppModel {
 			
 			$ASM = $this->AssessmentPaysched->Assessment;
 			$ASM->recursive=-1;
-			$assessment = $ASM->findByStudentId($delimiter);
+			//$assessment = $ASM->findByStudentId($delimiter);
+			$ASMCond =  array('student_id'=>$delimiter, 'status'=>'ACTIV');
+			$assessment = $ASM->find('first',array('conditions'=>$ASMCond));
+
 			//Check if assessment is available
 			if($assessment):
 				$queryData['joins']=array();
@@ -162,6 +165,7 @@ class TransactionType extends AppModel {
 					)"
 					);
 					$this->virtualFields =  $VFLDS;
+			else:
 				
 			endif;
 			
