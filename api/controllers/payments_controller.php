@@ -733,6 +733,8 @@ class PaymentsController extends AppController {
 		$fees = array();
 		foreach($ass['Paysched'] as $i=>$ps){
 			$ps['account_id'] = $ass['id'];
+			if(!$ps['paid_amount'])
+				$ps['paid_amount'] = 0;
 			array_push($paysched,$ps);
 		}
 		foreach($ass['Fee'] as $i=>$f){
