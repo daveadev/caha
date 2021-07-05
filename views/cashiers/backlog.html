@@ -36,7 +36,7 @@
 										<div class="row" ng-show="Bypass">
 											<div class="col-md-8">
 												<h3 class="total amount" ng-show="!EditMode" style="margin-top: 0;">{{ActiveBooklet.series_counter}}</h3>
-												<input ng-show="EditMode" type="number" class="form-control" ng-model="ActiveBooklet.series_counter" />
+												<input ng-show="EditMode" type="number" class="form-control" ng-model="ActiveBooklet.series_counter" max="{{ActiveBooklet.series_end}}" />
 											</div>
 											<div class="col-md-4">
 												<button class="btn btn-default" ng-show="!EditMode" ng-click="EnableChange()" >CHANGE</button>
