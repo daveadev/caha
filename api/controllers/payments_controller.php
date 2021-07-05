@@ -24,22 +24,26 @@ class PaymentsController extends AppController {
 	function add() {
 		$payments =  $this->data['Payment'];
 		$accountType=$this->data['Student']['account_type'];
+		$_DATA =  $this->data;
+
+		$this->logData($_DATA);
+
 		//pr($this->data); exit();
 		if(isset($this->data['Type'])){
 			if($accountType=='inquiry'){
-				$this->SaveInquiry($this->data);
+				$this->SaveInquiry($_DATA);
 			}else{
-				$this->SaveOthers($this->data);
+				$this->SaveOthers($_DATA);
 			}
 		}else{
 
 			// TODO:  Add comment prepare data for payment etc.
-			$student = $this->data['Student'];
-			$transactions = $this->data['Transaction'];
-			$booklet = $this->data['Booklet'];
+			$student = $_DATA['Student'];
+			$transactions = $_DATA['Transaction'];
+			$booklet = $_DATA['Booklet'];
 			$account_id = $student['id'];
-			$ESP =  $this->data['Cashier']['esp'];
-			$TOTAL_DUE =  $this->data['Cashier']['total_due'];
+			$ESP =  $_DATA['Cashier']['esp'];
+			$TOTAL_DUE =  $_DATA['Cashier']['total_due'];
 			$USERNAME =  $this->Auth->user()['User']['username'];
 			$schedules = $this->AccountSchedule->find('all',array('recursive'=>-1,'conditions'=>array('AccountSchedule.account_id'=>$account_id)));
 			$fees = $this->AccountFee->find('all',array('recursive'=>0,'conditions'=>array('account_id'=>$account_id)));
@@ -48,7 +52,7 @@ class PaymentsController extends AppController {
 			$Account = $acc['Account'];
 			$payment_to_date = $Account['payment_total'];
 			$total_payment = 0;
-			$today =  date("Y-m-d", strtotime($this->data['Cashier']['date']));
+			$today =  date("Y-m-d", strtotime($_DATA['Cashier']['date']));
 			$time = date("h:i:s");
 			//pr($this->data);
 			//pr($this->data); exit();
@@ -56,11 +60,11 @@ class PaymentsController extends AppController {
 
 			// TODO: Move to new function BookletUpdating
 			$curr_refNo = $booklet['receipt_type']. ' ' .$booklet['series_counter'];
-			$booklet = $this->checkBooklet($this->data);
+			$booklet = $this->checkBooklet($_DATA);
 			
 			foreach($transactions as $t){
 				if($t['id']=='INIPY'||$t['id']=='FULLP'){
-					$Account = $this->createStudent($this->data);
+					$Account = $this->createStudent($_DATA);
 					$schedules = $this->AccountSchedule->find('all',array('recursive'=>-1,'conditions'=>array('AccountSchedule.account_id'=>$Account['id'])));
 					$fees = $this->AccountFee->find('all',array('recursive'=>0,'conditions'=>array('account_id'=>$Account['id'])));
 					$account_id = $Account['id'];
@@ -296,8 +300,8 @@ class PaymentsController extends AppController {
 			$fee_payment = $total_payment;
 			$total_feePaid = 0;
 			$total_misc = 0;
-			if(isset($this->data['Reservation'])){
-				foreach($this->data['Reservation'] as $res){
+			if(isset($_DATA['Reservation'])){
+				foreach($_DATA['Reservation'] as $res){
 					$fee_payment+=$res['amount'];
 				}
 			}
@@ -664,7 +668,7 @@ class PaymentsController extends AppController {
 		if($ass['student_status']=='New'){
 			
 			//update inquiry status and account_type in accounts
-			$this->Inquiry->saveAll($data);
+			$this->Inquiry->save($data);
 			$acct = array('id'=>$ass['student_id'],'account_type'=>'enrolled');
 			$this->Account->save($acct);
 			if(in_array($data['year_level_id'],$hs))
@@ -680,7 +684,7 @@ class PaymentsController extends AppController {
 			$data['section_id'] = $ass['section_id'];
 			
 			//save new student to student201 in SER
-			$this->Student->saveAll($data);
+			$this->Student->save($data);
 		}else{
 			
 			//if old student, modify data according to assessment
@@ -697,7 +701,7 @@ class PaymentsController extends AppController {
 		
 		
 		//save to accounts
-		$this->Account->saveAll($ass);
+		$this->Account->save($ass);
 		
 		//add items to ledgers
 		$tuition = array('account_id'=>$ass['id'],'type'=>'+','transaction_type_id'=>'TUIXN','esp'=>$esp,'transac_date'=>$today,'transac_time'=>$time,'ref_no'=>$assessment_id,'details'=>'Tuition and Other Fees','amount'=>$ass['assessment_total']);
@@ -746,5 +750,14 @@ class PaymentsController extends AppController {
 		return $ass;
 	}
 	
-	
+	function logData($__DATA){
+		$__DATA['__'] =  date('Y-m-d-h-i-A',time());
+		$__DATA['__USER'] = $this->Auth->user();
+		$_BKLT = $__DATA['Booklet'];
+		$filename = sprintf("%s-%s-%s.txt",$_BKLT['receipt_type'],$_BKLT['series_counter'],$__DATA['__'] );
+		$path = APP.DS.'tmp'.DS.'logs'.DS.'payments'.DS.$filename;
+		
+		$content =  json_encode($__DATA, JSON_PRETTY_PRINT);
+		file_put_contents($path,$content);
+	}
 }
