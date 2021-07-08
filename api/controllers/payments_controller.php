@@ -717,6 +717,8 @@ class PaymentsController extends AppController {
 					case 'ADVTP': $res['details'] = 'Advance Payment'; break;
 				}
 				$res['transaction_type_id']=$res['field_type'];
+				$res['transac_date']=$today;
+				$res['ref_no']=$assessment_id;
 				$res['type']='-';
 				$res['id'] = null;
 				$res['account_id'] = $ass['id'];
