@@ -229,6 +229,9 @@
                     </div>
                 </div>
             </div>
+			<form id="PrintLedger" action="api/reports/dcmemo" method="POST" target="_blank">
+				<input type="hidden" value="{{LedgerEntry}}" name="entry" />
+			</form>
             <div class="modal-footer">
                 <button class="btn btn-defaultm hide" type="button" ng-click="confirmLedger()">Append</button>
                 <button class="btn btn-primary" type="button" ng-click="confirmLedger()" ng-show="!Saving" ng-disabled="!Amount||!Account">Confirm</button>
@@ -237,4 +240,5 @@
             </div>
         </script>
     </div>
+	
 </div>

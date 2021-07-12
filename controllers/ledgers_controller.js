@@ -150,11 +150,12 @@ define(['app', 'api', 'atomic/bomb'], function(app) {
 			else
 				ledgerItem.type = '-';
 			ledgerItem.transac_date = $filter('date')(new Date(ledgerItem.transac_date),'yyyy-MM-dd');
-			
+			$scope.LedgerEntry = ledgerItem;
             //console.log(tDate.getFullYear());
 
             api.POST('ledgers', ledgerItem, function success(response) {
 				$scope.Saving = 0;
+				document.getElementById('PrintLedger').submit();
                 $uibModalInstance.dismiss('confirm');
             });
         };
