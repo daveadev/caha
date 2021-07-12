@@ -11,7 +11,40 @@ class Ledger extends AppModel {
 			'conditions' => '',
 			'fields' => '',
 			'order' => ''
-		)
+		),
+		'Student' => array(
+			'className' => 'Student',
+			'foreignKey' => 'account_id',
+			'dependent' => false,
+			'conditions' => '',
+			'fields' => array(
+				'Student.id',
+				'Student.sno',
+				'Student.gender',
+				'Student.short_name',
+				'Student.full_name',
+				'Student.class_name',
+				'Student.status',
+				'Student.year_level_id',
+				'Student.section_id',
+				'Student.last_name',
+				'Student.first_name',
+				'Student.middle_name',
+			),
+			'order' => '',
+			'limit' => '',
+			'offset' => '',
+			'exclusive' => '',
+			'finderQuery' => '',
+			'counterQuery' => ''
+		),
+		'Inquiry' => array(
+			'className' => 'Inquiry',
+			'foreignKey' => 'account_id',
+			'conditions' => '',
+			'fields' => array('Inquiry.full_name'),
+			'order' => ''
+		),
 	);
 	
 	function beforeFind($queryData){

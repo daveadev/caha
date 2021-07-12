@@ -6,7 +6,24 @@ class LedgersController extends AppController {
 
 	function index() {
 		$this->Ledger->recursive = 0;
-		$this->set('ledgers', $this->paginate());
+		$ledgers = $this->paginate();
+		if($this->isAPIRequest()){
+			foreach($ledgers as $i=>$led){
+				//pr($led);
+				$data = $led['Ledger'];
+				$inq = $led['Inquiry'];
+				if(isset($led['Student']['id'])){
+					$data['account_name'] = $led['Student']['full_name'];
+					$data['account_no'] = $led['Student']['id'];
+				}else{
+					$ledatad['account_no'] = $led['Inquiry']['id'];
+					$data['account_name'] = $inq['first_name'].' '.$inq['last_name'];
+				}
+				$ledgers[$i]['Ledger'] = $data;
+			}
+		}
+		//exit();
+		$this->set('ledgers', $ledgers);
 	}
 
 	function view($id = null) {

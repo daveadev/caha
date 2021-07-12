@@ -1,5 +1,5 @@
-<div ng-controller="LedgerController" ng-init="list()">
-    <button class="btn btn-primary btn-fab bottom right fixed" ng-click="openModal()">
+<div ng-controller="LedgerController as LC" ng-init="LC.list()">
+    <button class="btn btn-primary btn-fab bottom right fixed top" ng-click="LC.openModal()">
 	<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
 	</button>
     <div class="row">
@@ -8,7 +8,7 @@
             <div class="list-group">
                 <div class="list-group-item list-group-header">
                     <div class="btn-group btn-group-sm pull-right" uib-dropdown>
-                        <button class="btn btn-default disabled">{{FirstItem}} - {{LastItem}} of {{TotalItems}}</button>
+                        <button class="btn btn-default disabled">{{LC.FirstItem}} - {{LC.LastItem}} of {{LC.TotalItems}}</button>
                         <button class="btn btn-default" ng-disabled="!PrevPage || DataLoading" ng-click="navigatePage(PrevPage)"><span class="glyphicon glyphicon-chevron-left"></span></button>
                         <button class="btn btn-default" ng-disabled="!NextPage || DataLoading" ng-click="navigatePage(NextPage)"><span class="glyphicon glyphicon-chevron-right"></span></button>
 
@@ -28,33 +28,33 @@
                 </div>
                 <div class="list-group-canvas list-group-search-results">
                     <div class="list-group-item text-center" ng-if="searchLedger">
-                        <h4 class="list-group-item-heading">Search result(s) for <b><i>{{searchLedger}}</i></b>.</h4>
+                        <h4 class="list-group-item-heading">Search result(s) for <b><i>{{LC.searchLedger}}</i></b>.</h4>
                         <p class="list-group-item-text">
                             Click the <span class="glyphicon glyphicon-search" aria-hidden="true"></span> to look further. Click the <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> to cancel.
                         </p>
                     </div>
-                    <div class="list-group-item" ng-hide="DataLoading" ng-class="{active: ledger.id===Ledger.id}" ng-repeat="ledger in Ledgers | filter: filterLedger" ng-click="openLedgerInfo(ledger)">
+                    <div class="list-group-item" ng-hide="LC.DataLoading" ng-class="{active: ledger.id===LC.Ledger.id}" ng-repeat="ledger in LC.Ledgers | filter: LC.filterLedger" ng-click="LC.openLedgerInfo(ledger)">
                         <div class="row">
                             <div class="col-md-6">
                                 <h4 class="list-group-item-heading">{{ledger.details}}</h4>
                                 <p class="list-group-item-text">
-                                    <span ng-if="!ledger.account.account_no.length">No Details</span>
-                                    <span>{{ledger.date }}</span> | <span>{{ledger.account.account_no}}</span></p>
+                                    <span ng-if="!ledger.account_no.length">No Details</span>
+                                    <span>{{ledger.transac_date }}</span> | <span>{{ledger.account_no}}</span></p>
                             </div>
                             <div class="col-md-6">
                                 <h3 class="amount {{ledger.type}}"><span class="flag">{{ledger.type=='debit'?'-':'+'}}</span>{{ledger.amount | currency: 'P'}}</h3>
                             </div>
                         </div>
                     </div>
-                    <div class="list-group-item text-center" ng-if="!Ledgers.length || DataLoading">
+                    <div class="list-group-item text-center" ng-if="!LC.Ledgers.length || LC.DataLoading">
                         Loading...
                     </div>
                 </div>
                 <div class="list-group-item list-group-search-box">
                     <div class="input-group">
-                        <div class="input-group-btn"><button class="btn btn-default" ng-click="confirmSearch()"><span class="glyphicon glyphicon-search"></span></button></div>
-                        <input type="text" class="form-control" placeholder="Search" ng-model="searchLedger" />
-                        <div class="input-group-btn"><button class="btn btn-default" ng-click="clearSearch()"><span class="glyphicon glyphicon-remove"></span></button></div>
+                        <div class="input-group-btn"><button class="btn btn-default" ng-click="LC.confirmSearch()"><span class="glyphicon glyphicon-search"></span></button></div>
+                        <input type="text" class="form-control" placeholder="Search" ng-model="LC.searchLedger" />
+                        <div class="input-group-btn"><button class="btn btn-default" ng-click="LC.clearSearch()"><span class="glyphicon glyphicon-remove"></span></button></div>
                     </div>
                 </div>
             </div>
@@ -62,7 +62,7 @@
         <div class="col-md-6">
             <div class="list-group">
                 <div class="list-group-item list-group-header">
-                    <label ng-if="Ledger">{{Ledger.account.name}}</label>
+                    <label ng-if="Ledger">{{LC.Ledger.account.name}}</label>
                     <label ng-if="!Ledger">Ledger Information</label>
                     <div class="pull-right">
                         <div class="btn-group btn-group-xs " uib-dropdown ng-hide="true">
@@ -70,40 +70,40 @@
 							<span class="glyphicon glyphicon-chevron-down"></span>
 						  </button>
                             <ul class="dropdown-menu pull-right" aria-labelledby="dropdownMenu1">
-                                <li><a ng-click="deleteLedger(Ledger.id)">Delete</a></li>
+                                <li><a ng-click="LC.deleteLedger(LC.Ledger.id)">Delete</a></li>
                             </ul>
                         </div>
-                        <button class="btn btn-xs btn-danger" ng-click="removeLedgerInfo()"> <span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
+                        <button class="btn btn-xs btn-danger" ng-click="LC.removeLedgerInfo()"> <span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
                     </div>
                 </div>
                 <div class="list-group-canvas">
-                    <div class="list-group-item list-group-header" ng-show="hasInfo">
+                    <div class="list-group-item list-group-header" ng-show="LC.hasInfo">
                         <h5>Account Information</h5>
                     </div>
-                    <div class="list-group-item" ng-show="hasInfo">
+                    <div class="list-group-item" ng-show="LC.hasInfo">
                         <dl class="dl-horizontal">
                             <dt>Account No.</dt>
-                            <dd>{{Ledger.account.account_no}}</dd>
+                            <dd>{{LC.Ledger.account_no}}</dd>
                             <dt>Account Name</dt>
-                            <dd>{{Ledger.account.account_name}}</dd>
+                            <dd>{{LC.Ledger.account_name}}</dd>
                         </dl>
                     </div>
-                    <div class="list-group-item list-group-header" ng-show="hasInfo">
+                    <div class="list-group-item list-group-header" ng-show="LC.hasInfo">
                         <h5>Transaction Information</h5>
                     </div>
-                    <div class="list-group-item" ng-show="hasInfo">
+                    <div class="list-group-item" ng-show="LC.hasInfo">
                         <dl class="dl-horizontal">
                             <dt>Date</dt>
-                            <dd>{{Ledger.date}}</dd>
+                            <dd>{{LC.Ledger.transac_date | date:'dd-MMM-yy'}}</dd>
                             <dt>Ref No.</dt>
-                            <dd>{{Ledger.ref_no}}</dd>
+                            <dd>{{LC.Ledger.ref_no}}</dd>
                             <dt>Transaction</dt>
-                            <dd>{{Ledger.details}}</dd>
+                            <dd>{{LC.Ledger.details}}</dd>
                             <dt>Amount</dt>
-                            <dd>{{Ledger.amount}}</dd>
+                            <dd>{{LC.Ledger.amount}}</dd>
                         </dl>
                     </div>
-                    <div class="list-group-item" ng-show="hasNoInfo">
+                    <div class="list-group-item" ng-show="LC.hasNoInfo">
                         <div class="well">
                             <span>No Information</span>
                         </div>
@@ -116,23 +116,18 @@
                 <h3 class="modal-title">Ledger Information</h3>
             </div>
             <div class="modal-body">
-
                 <div class="row">
-                    <div class="col-md-12">
+					<div class="col-md-4">
+						<label for="">School Year</label>
+						<select class="form-control" ng-model="SchoolYear" 
+							ng-options="sy.id as sy.label for sy in SchoolYears">
+						</select>
+					</div>
+                    <div class="col-md-8">
                         <div class="form-group">
-                            <label>Account</label>
-                        </div>
-                    </div>
-
-                </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="form-group">
-                            <simple-typeahead model="Account"  display="name" endpoint="accounts" placeholder="['Account Name','Search Account...']" fields="['name']"></simple-typeahead>
-                            <!--
-                            {{account}}
-                            <input type="text" placeholder="Account Name" class="form-control" ng-model="account" uib-typeahead="account for account.account_no in accounts | filter:$viewValue | limitTo:8" class="form-control" />
-                            -->
+							<label for="">Account</label>
+                            <m-search-student ng-model="Account">
+							</m-search-student>
                         </div>
                     </div>
                 </div>
@@ -156,21 +151,18 @@
                 <div class="row">
                     <div class="col-md-4">
                         <div class="form-group">
-
-
                             <input type="date" placeholder="mm/dd/yyyy" class="form-control" ng-model="date" />
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
                             <!--<input type="text" placeholder="Details" class="form-control" ng-model="details" />-->
-                           
-                            <simple-typeahead model="details" primary-key="id" display="name" endpoint="transaction_types" placeholder="['Transaction Type','Search Type...']" fields="['name']"></simple-typeahead>
-                        </div>
+							<select name="" id="" class="form-control" ng-model="Detail" ng-options="dt as dt.name for dt in Details "></select>
+						</div>
                     </div>
                      <div class="col-md-4">
                         <div class="form-group">
-                            <input type="text" placeholder="Ref No." class="form-control" ng-model="refNo" />
+                            <input type="text" placeholder="Ref No." class="form-control" ng-model="Ref_no" disabled />
                         </div>
                     </div>
                 </div>
@@ -186,9 +178,9 @@
                         <div class="form-group">
                             <div class="input-group input-group-lg">
                                 <span class="input-group-addon">
-									<span ng-if="type">{{type==='credit '?'Credit ':'Debit '}}</span>
+									<span ng-if="type">{{type==='credit '?'Pay ':'Charge '}}</span>
                                 </span>
-                                <input type="number" class="form-control" ng-model="amount" />
+                                <input type="number" class="form-control" ng-model="Amount" ng-disabled="!type" />
                                 <div class="input-group-btn">
                                     <button class="btn btn-default" ng-class="{'btn-success ': type==='credit '}" ng-click="setType('credit ')">
 										<span class="glyphicon glyphicon-plus"></span>
@@ -239,7 +231,8 @@
             </div>
             <div class="modal-footer">
                 <button class="btn btn-defaultm hide" type="button" ng-click="confirmLedger()">Append</button>
-                <button class="btn btn-primary" type="button" ng-click="confirmLedger()">Confirm</button>
+                <button class="btn btn-primary" type="button" ng-click="confirmLedger()" ng-show="!Saving" ng-disabled="!Amount||!Account">Confirm</button>
+                <button class="btn btn-primary" type="button" ng-show="Saving" disabled >Saving...</button>
                 <button class="btn btn-default pull-left" type="button" ng-click="cancelLedger()">Cancel</button>
             </div>
         </script>

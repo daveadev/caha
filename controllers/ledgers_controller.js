@@ -1,10 +1,20 @@
 "use strict";
-define(['app', 'api', 'simple-sheet'], function(app) {
-    app.register.controller('LedgerController', ['$scope', '$rootScope', '$uibModal', 'api', function($scope, $rootScope, $uibModal, api) {
+define(['app', 'api', 'atomic/bomb'], function(app) {
+    app.register.controller('LedgerController', ['$scope', '$rootScope', '$uibModal', 'api', 
+	function($scope, $rootScope, $uibModal, api) {
+		const $selfscope = $scope;
+		$scope = this;
         $scope.list = function() {
             $rootScope.__MODULE_NAME = 'Student Ledgers';
             //Initialize ledger and get ledgers.js
+			$rootScope.$watch('_APP',function(app){
+                if(app){
+					$scope.SchoolYears = app.SCHOOL_YEARS;
+					$scope.initLedgers();
+				}
+            });
             function getLedgers(data) {
+				
                 $scope.DataLoading = true;
                 api.GET('ledgers', data, function success(response) {
                     console.log(response.data);
@@ -21,21 +31,23 @@ define(['app', 'api', 'simple-sheet'], function(app) {
                 });
             }
             $scope.initLedgers = function() {
+				$scope.ActiveSY  = $rootScope._APP.ACTIVE_SY;
                 $scope.hasInfo = false;
                 $scope.hasNoInfo = true;
                 $scope.ActivePage = 1;
                 $scope.NextPage = null;
                 $scope.PrevPage = null;
                 $scope.DataLoading = false;
-                getLedgers({ page: $scope.ActivePage });
+                getLedgers({ page: $scope.ActivePage,esp:$scope.ActiveSY });
             };
-            $scope.initLedgers();
+            
             $scope.navigatePage = function(page) {
                 $scope.ActivePage = page;
                 getLedgers({ page: $scope.ActivePage });
             };
             //Open ledger Information
             $scope.openLedgerInfo = function(ledger) {
+				console.log(ledger);
                 $scope.Ledger = ledger;
                 $scope.hasInfo = true;
                 $scope.hasNoInfo = false;
@@ -71,10 +83,19 @@ define(['app', 'api', 'simple-sheet'], function(app) {
 
             //Open modal
             $scope.openModal = function() {
+				var active = {
+					sy:$scope.ActiveSY,
+					SYs:$scope.SchoolYears,
+				}
                 var modalInstance = $uibModal.open({
                     animation: true,
                     templateUrl: 'myModalContent.html',
                     controller: 'ModalInstanceController',
+					resolve: {
+						active: function(){
+							return active;
+						}
+					}
                 });
                 $rootScope.__MODAL_OPEN = true;
                 modalInstance.result.then(function(selectedItem) {
@@ -90,35 +111,50 @@ define(['app', 'api', 'simple-sheet'], function(app) {
         };
     }]);
 
-    app.register.controller('ModalInstanceController', ['$scope', '$uibModalInstance', 'api', function($scope, $uibModalInstance, api) {
+    app.register.controller('ModalInstanceController', ['$scope', '$uibModalInstance', 'api','active','$filter',
+	function($scope, $uibModalInstance, api, active,$filter) {
         //Gets the data entered in modal and push it to ledgers.js
-        $scope.type = 'credit';
+		$scope.Saving = 0;
+		/* api.GET('transaction_types', {is_ledger:true,limit:'less'}, function success(response){
+			$scope.Details = response.data;
+		}); */
+		$scope.Details = [
+			{id:'ADVTP',name:'Advance Payment'},
+			{id:'RSRVE',name:'Reservation Fee'},
+			{id:'RRVRS',name:'Reservation Reversal'},
+			{id:'BFRWD',name:'Balance Forwarded'},
+			{id:'OLDAC',name:'Old Account'},
+			{id:'FULLP',name:'Full Payment'},
+			{id:'INIPY',name:'Initial Payment'},
+			{id:'SBQPY',name:'Subsequent Payment'},
+		]
+		api.GET('booklets',{status:'ACTIV'}, function success(response){
+			$scope.Ref_no = 'OR '+ response.data[0].series_counter;
+		});
+		$scope.SchoolYears = active.SYs;
+		$scope.SchoolYear = active.sy;
+        //$scope.type = 'credit';
         $scope.confirmLedger = function() {
-            var tDate = $scope.date;
+			$scope.Saving = 1;
+			var ledgerItem = {
+				account_id:$scope.Account.id,
+				transac_date:$scope.date,
+				ref_no:$scope.Ref_no,
+				transaction_type_id:$scope.Detail.id,
+				details:$scope.Detail.name,
+				esp:$scope.SchoolYear,
+				amount:$scope.Amount,
+			}
+			if($scope.type=='credit')
+				ledgerItem.type = '+';
+			else
+				ledgerItem.type = '-';
+			ledgerItem.transac_date = $filter('date')(new Date(ledgerItem.transac_date),'yyyy-MM-dd');
+			
             //console.log(tDate.getFullYear());
 
-            var monthNames = ["January", "February", "March", "April", "May", "June",
-                "July", "August", "September", "October", "November", "December"
-            ];
-            var month = monthNames[tDate.getMonth()]
-            var day = tDate.getDate();
-            var year = tDate.getFullYear();
-            var nDate = month + ' ' + day + ', ' + year;
-            var trnxId=   null;//$scope.details.id || null;
-            var ledger = {
-                account: {
-                    account_no : $scope.Account.id,
-                    account_name: $scope.Account.name,
-                    account_type: "student"
-                },
-                type: $scope.type,
-                date: nDate,
-                ref_no: $scope.refNo,
-                transaction_type_id:trnxId,
-                amount: $scope.amount
-            };
-            console.log(ledger);
-            api.POST('ledgers', ledger, function success(response) {
+            api.POST('ledgers', ledgerItem, function success(response) {
+				$scope.Saving = 0;
                 $uibModalInstance.dismiss('confirm');
             });
         };
