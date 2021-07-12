@@ -119,18 +119,10 @@ define(['app', 'api', 'atomic/bomb'], function(app) {
 			$scope.Details = response.data;
 		}); */
 		$scope.Details = [
-			{id:'ADVTP',name:'Advance Payment'},
-			{id:'RSRVE',name:'Reservation Fee'},
-			{id:'RRVRS',name:'Reservation Reversal'},
-			{id:'BFRWD',name:'Balance Forwarded'},
-			{id:'OLDAC',name:'Old Account'},
-			{id:'FULLP',name:'Full Payment'},
-			{id:'INIPY',name:'Initial Payment'},
-			{id:'SBQPY',name:'Subsequent Payment'},
+			{id:'REFND',name:'Refund'},
+			{id:'SPNSR',name:'Sponsorship'},
+			{id:'OTHRS',name:'Others'},
 		]
-		api.GET('booklets',{status:'ACTIV'}, function success(response){
-			$scope.Ref_no = 'OR '+ response.data[0].series_counter;
-		});
 		$scope.SchoolYears = active.SYs;
 		$scope.SchoolYear = active.sy;
         //$scope.type = 'credit';
@@ -144,6 +136,7 @@ define(['app', 'api', 'atomic/bomb'], function(app) {
 				details:$scope.Detail.name,
 				esp:$scope.SchoolYear,
 				amount:$scope.Amount,
+				notes:$scope.Notes
 			}
 			if($scope.type=='credit')
 				ledgerItem.type = '+';
