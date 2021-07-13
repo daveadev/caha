@@ -73,7 +73,7 @@ class PaymentsController extends AppController {
 				}
 				
 			}
-			
+			//pr($account_id); exit();
 			$transac_payments = array();
 			$ledger_accounts = array();
 			$account_transac = array();
@@ -656,12 +656,13 @@ class PaymentsController extends AppController {
 		$ass = $all_info['Assessment'];
 		$data['status'] = 'NROLD';
 		$ass['status'] = 'NROLD';
-		$assessment_data = $ass;
+		$assessment_data = array('id'=>$ass['id'],'status'=>$ass['status']);
 		$esp = $all_info['Cashier']['esp'];
 		if(isset($all_info['Cashier']['date']))
 			$today = $all_info['Cashier']['date'];
 		//update assessment status
-		$this->Assessment->saveAll($assessment_data);
+		//pr($assessment_data); exit();
+		$this->Assessment->save($assessment_data);
 		$assessment_id = $ass['id'];
 		$hs = array('G7','G8','G9','GX');
 		//pr($data); exit();

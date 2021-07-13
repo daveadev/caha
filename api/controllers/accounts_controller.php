@@ -44,9 +44,10 @@ class AccountsController extends AppController {
 				
 					if(isset($yrLevels[$yrlvId]))
 						$yearLevel = $yrLevels[$yrlvId];
-					
-				
+					//pr($inqu);
 					$acc['Account']['name'] =$inqu['full_name'];
+					if($inqu['full_name']==null)
+						$acc['Account']['name'] = $inqu['first_name'].' '.$inqu['last_name'];
 					$acc['Account']['sno'] =$acc['Account']['id'];
 					
 					$acc['Account']['year_level'] =$yearLevel;

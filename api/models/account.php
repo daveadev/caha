@@ -27,6 +27,8 @@ class Account extends AppModel {
 				'Inquiry.gender',
 				'Inquiry.short_name',
 				'Inquiry.full_name',
+				'Inquiry.first_name',
+				'Inquiry.last_name',
 				'Inquiry.class_name',
 				'Inquiry.year_level_id',
 				'Inquiry.program_id'
