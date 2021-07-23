@@ -27,6 +27,9 @@ class LedgersController extends AppController {
 	}
 
 	function view($id = null) {
+		if($id=='testRefNo'){
+			$this->testRefNo();
+		}
 		if (!$id) {
 			$this->Session->setFlash(__('Invalid ledger', true));
 			$this->redirect(array('action' => 'index'));
@@ -144,6 +147,15 @@ class LedgersController extends AppController {
 		}
 		$this->Session->setFlash(__('Ledger was not deleted', true));
 		$this->redirect(array('action' => 'index'));
+	}
+
+	function testRefNo(){
+		// Refund
+		echo $this->Ledger->generateREFNO(2021,'RFP');
+		echo "<br/>";
+		// Sponsorship
+		echo $this->Ledger->generateREFNO(2020,'SPO');
+		exit;
 	}
 	
 	

@@ -69,4 +69,20 @@ class Ledger extends AppModel {
 		
 		return $queryData;
 	}
+
+	function generateREFNO($sy,$prefix=null){
+		$REFNO_SERIES = 0;
+		$syID =  substr($sy.'', -2);
+		$REFNO_PREFIX = sprintf('%s%d',$prefix,$syID);
+		$cond =  array('Ledger.ref_no LIKE'=>$REFNO_PREFIX.'%');
+		$this->recursive=-1;
+		
+		$ldgrObj = $this->find('first',array('conditions'=>$cond,'order'=>array('ref_no'=>'desc')));
+		
+		if($ldgrObj)
+			$REFNO_SERIES =  (int)(str_replace($REFNO_PREFIX, '', $ldgrObj['Ledger']['ref_no']));
+		$REFNO = $REFNO_PREFIX .str_pad($REFNO_SERIES+1, 4, 0, STR_PAD_LEFT);
+		
+		return $REFNO;
+	}
 }
