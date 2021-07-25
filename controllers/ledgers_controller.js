@@ -115,14 +115,12 @@ define(['app', 'api', 'atomic/bomb'], function(app) {
 	function($scope, $uibModalInstance, api, active,$filter) {
         //Gets the data entered in modal and push it to ledgers.js
 		$scope.Saving = 0;
-		/* api.GET('transaction_types', {is_ledger:true,limit:'less'}, function success(response){
-			$scope.Details = response.data;
-		}); */
+		$scope.type = 'credit';
 		$scope.Details = [
 			{id:'REFND',name:'Refund'},
-			{id:'SPNSR',name:'Sponsorship'},
+			{id:'SPONS',name:'Sponsorship'},
 			{id:'OTHRS',name:'Others'},
-		]
+		];
 		$scope.SchoolYears = active.SYs;
 		$scope.SchoolYear = active.sy;
         //$scope.type = 'credit';
@@ -145,7 +143,7 @@ define(['app', 'api', 'atomic/bomb'], function(app) {
 			ledgerItem.transac_date = $filter('date')(new Date(ledgerItem.transac_date),'yyyy-MM-dd');
 			$scope.LedgerEntry = ledgerItem;
             //console.log(tDate.getFullYear());
-
+			
             api.POST('ledgers', ledgerItem, function success(response) {
 				$scope.Saving = 0;
 				document.getElementById('PrintLedger').submit();

@@ -162,7 +162,7 @@
                     </div>
                      <div class="col-md-4">
                         <div class="form-group">
-                            <input type="text" placeholder="Ref No." class="form-control" ng-model="Ref_no" />
+                            <input type="text" placeholder="{{Detail.id=='OTHRS'?'Reference No.':'Auto'}}" class="form-control" ng-model="Ref_no" ng-disabled="Detail.id!='OTHRS'" />
                         </div>
                     </div>
                 </div>
@@ -178,14 +178,14 @@
                         <div class="form-group">
                             <div class="input-group input-group-lg">
                                 <span class="input-group-addon">
-									<span ng-if="type">{{type==='credit '?'Pay ':'Charge '}}</span>
+									<span ng-if="type">{{type==='credit'?'Charge':'Pay'}}</span>
                                 </span>
                                 <input type="number" class="form-control" ng-model="Amount" ng-disabled="!type" />
                                 <div class="input-group-btn">
-                                    <button class="btn btn-default" ng-class="{'btn-success ': type==='credit '}" ng-click="setType('credit ')">
+                                    <button class="btn btn-default" ng-class="{'btn-success ': type=='credit'}" ng-click="setType('credit')">
 										<span class="glyphicon glyphicon-plus"></span>
 									</button>
-                                    <button class="btn btn-default" ng-class="{'btn-danger ': type==='debit '}" ng-click="setType('debit ')">
+                                    <button class="btn btn-default" ng-class="{'btn-danger ': type=='debit'}" ng-click="setType('debit')">
 										<span class="glyphicon glyphicon-minus"></span>
 									</button>
                                 </div>

@@ -102,6 +102,14 @@ class LedgersController extends AppController {
 				}
 			}
 			else{
+				//pr($this->data); exit();
+				if(!isset($this->data['Ledger']['ref_no'])){
+					$sy = $this->data['Ledger']['esp'];
+					$pref = substr($this->data['Ledger']['transaction_type_id'],0,3);
+					$ref_no = $this->Ledger->generateREFNO($sy,$pref);
+					//pr($ref_no); exit();
+					$this->data['Ledger']['ref_no']=$ref_no;
+				}
 				if ($this->Ledger->save($this->data)) {
 					$this->Session->setFlash(__('The ledger has been saved', true));
 					$this->redirect(array('action' => 'index'));
