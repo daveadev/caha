@@ -7,7 +7,7 @@ class Student extends AppModel {
 	var $virtualFields = array(
 		'name'=>"CONCAT(Student.sno,' - ',Student.first_name,' ',Student.last_name)",
 		'short_name'=>"CONCAT(LEFT(Student.first_name,1),'.',Student.last_name)",
-		'full_name'=>"CONCAT(Student.prefix, Student.first_name,' ',LEFT(Student.middle_name,1),' ',Student.last_name,' ',Student.suffix)",
+		'full_name'=>"CONCAT(Student.first_name,' ',LEFT(Student.middle_name,1),' ',Student.last_name,' ',Student.suffix)",
 		'class_name'=>"UPPER(CONCAT(Student.last_name,', ',Student.prefix, Student.first_name,' ',LEFT(Student.middle_name,1),'. ',Student.suffix))",
 		'print_name'=>"(CONCAT(Student.last_name,', ',Student.prefix, Student.first_name,' ',LEFT(Student.middle_name,1),'. ',Student.suffix))",
 	);

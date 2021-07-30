@@ -125,7 +125,9 @@ define(['app', 'api', 'atomic/bomb'], function(app) {
 		$scope.SchoolYear = active.sy;
         //$scope.type = 'credit';
         $scope.confirmLedger = function() {
+			getSchedules();
 			$scope.Saving = 1;
+			
 			var ledgerItem = {
 				account_id:$scope.Account.id,
 				transac_date:$scope.date,
@@ -150,6 +152,67 @@ define(['app', 'api', 'atomic/bomb'], function(app) {
                 $uibModalInstance.dismiss('confirm');
             });
         };
+		
+		function getSchedules(){
+			api.GET('account_schedules',{account_id:$scope.Account.id,limit:'less'}, function success(response){
+				var amount = angular.copy($scope.Amount);
+				angular.forEach(response.data, function(item){
+					if(item.paid_amount==0&&amount!==0){
+						if(amount>=item.due_amount){
+							item.paid_amount = item.due_amount;
+							item.status = 'PAID';
+							amount-=item.due_amount;
+						}else{
+							item.paid_amount = amount;
+							amount = 0;
+						}
+					}
+				});
+				var scheds = response.data;
+				api.POST('account_schedules',scheds,function success(response){
+					
+				},function error(response){
+					
+				});
+			}, function error(response){
+				$scope.Schedules = '';
+			});
+		}
+		
+		function getFees(){
+			api.GET('account_fees',{account_id:$scope.Account.id,limit:999},function success(response){
+				var total_misc = 0;
+				var total_paid = 0;
+				var amount = angular.copy($scope.Amount);
+				angular.forEach(response.data, function(item){
+					if(item.fee_id!=='TUI'){
+						total_misc+=item.due_amount;
+					}
+				});
+				angular.forEach(response.data, function(item){
+					if(item.fee_id!=='TUI'){
+						total_paid+=item.paid_amount;
+					}
+				});
+				if(total_misc>total_paid){
+					angular.forEach(response.data, function(item){
+						if(item.fee_id!=='TUI'&&item.paid!=item.due_amount&&amount!=0){
+							var diff = item.due_amount-item.paid_amount;
+							item.paid_amount = item.due_amount;
+							amount-=diff;
+						}
+					});
+				}else{
+					angular.forEach(response.data, function(item){
+						if(item.fee_id=='TUI'){
+							item.paid_amount+=amount;
+							amount = 0;
+						}
+					});
+				}
+				
+			});
+		}
 
         //Close modal
         $scope.cancelLedger = function() {

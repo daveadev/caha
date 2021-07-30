@@ -26,7 +26,9 @@ class AccountSchedulesController extends AppController {
 	function add() {
 		if (!empty($this->data)) {
 			$this->AccountSchedule->create();
-			if ($this->AccountSchedule->save($this->data)) {
+			$sched = $this->data['AccountSchedule'];
+			//pr($this->data); exit();
+			if ($this->AccountSchedule->saveAll($sched)) {
 				$this->Session->setFlash(__('The account schedule has been saved', true));
 				$this->redirect(array('action' => 'index'));
 			} else {
