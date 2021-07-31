@@ -62,17 +62,21 @@ class PaymentsController extends AppController {
 			$curr_refNo = $booklet['receipt_type']. ' ' .$booklet['series_counter'];
 			$booklet = $this->checkBooklet($_DATA);
 			
-			foreach($transactions as $t){
-				if($t['id']=='INIPY'||$t['id']=='FULLP'){
-					$Account = $this->createStudent($_DATA);
-					$schedules = $this->AccountSchedule->find('all',array('recursive'=>-1,'conditions'=>array('AccountSchedule.account_id'=>$Account['id'])));
-					$fees = $this->AccountFee->find('all',array('recursive'=>0,'conditions'=>array('account_id'=>$Account['id'])));
-					$account_id = $Account['id'];
-					if($Account['payment_total']>0)
-						$payment_to_date+=$Account['payment_total'];
+			//pr($schedules); 
+			if(!isset($schedules[0])){
+				foreach($transactions as $t){
+					if($t['id']=='INIPY'||$t['id']=='FULLP'){
+						$Account = $this->createStudent($_DATA);
+						$schedules = $this->AccountSchedule->find('all',array('recursive'=>-1,'conditions'=>array('AccountSchedule.account_id'=>$Account['id'])));
+						$fees = $this->AccountFee->find('all',array('recursive'=>0,'conditions'=>array('account_id'=>$Account['id'])));
+						$account_id = $Account['id'];
+						if($Account['payment_total']>0)
+							$payment_to_date+=$Account['payment_total'];
+					}
+					
 				}
-				
 			}
+			
 			//pr($account_id); exit();
 			$transac_payments = array();
 			$ledger_accounts = array();
