@@ -18,7 +18,8 @@ class PaymentsController extends AppController {
 					'Student',
 					'Inquiry',
 					'Assessment',
-					'ClasslistBlock'
+					'ClasslistBlock',
+					'Section'
 				);
 	
 	function add() {
@@ -652,7 +653,11 @@ class PaymentsController extends AppController {
 	
 	
 	function createStudent($all_info){
-		
+		//pr($all_info); 
+		$sec = $this->Section->findById($all_info['Assessment']['section_id']);
+		$program_id = $sec['Section']['program_id'];
+		//pr($program_id);
+		//exit();
 		$today =  date("Y-m-d", strtotime($this->data['Cashier']['date']));
 		$time = date("h:i:s");
 		if(isset($all_info['StudInfo']))
@@ -687,6 +692,7 @@ class PaymentsController extends AppController {
 			$ass['id'] = $data['id'];
 			$curr_yearlvl = $data['year_level_id'];
 			$data['section_id'] = $ass['section_id'];
+			$data['program_id'] = $program_id;
 			
 			//save new student to student201 in SER
 			$this->Student->save($data);
@@ -700,7 +706,7 @@ class PaymentsController extends AppController {
 			$yl = array('G7','G8','G9','GX','GY','GZ');
 			$yindex = array_search($all_info['Student']['year_level_id'],$yl);
 			$curr_yearlvl = $yl[$yindex+1];
-			$stud201 = array('id'=>$ass['id'],'year_level_id'=>$curr_yearlvl,'section_id'=>$ass['section_id']);
+			$stud201 = array('id'=>$ass['id'],'year_level_id'=>$curr_yearlvl,'section_id'=>$ass['section_id'],'program_id'=>$program_id);
 			$this->Student->save($stud201);
 		}
 		
