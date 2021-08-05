@@ -123,9 +123,12 @@ define(['app', 'api', 'atomic/bomb'], function(app) {
 		];
 		$scope.SchoolYears = active.SYs;
 		$scope.SchoolYear = active.sy;
+		$scope.DefaultSY = active.sy;
         //$scope.type = 'credit';
         $scope.confirmLedger = function() {
 			getSchedules();
+			getFees();
+			getAccount();
 			$scope.Saving = 1;
 			
 			var ledgerItem = {
@@ -134,14 +137,17 @@ define(['app', 'api', 'atomic/bomb'], function(app) {
 				ref_no:$scope.Ref_no,
 				transaction_type_id:$scope.Detail.id,
 				details:$scope.Detail.name,
-				esp:$scope.SchoolYear,
+				esp:$scope.DefaultSY,
 				amount:$scope.Amount,
-				notes:$scope.Notes
+				notes:$scope.Notes,
+				sy:$scope.SchoolYear
 			}
 			if($scope.type=='credit')
 				ledgerItem.type = '+';
 			else
 				ledgerItem.type = '-';
+			if($scope.SchoolYear<$scope.DefaultSY)
+				ledgerItem.details = 'SY '+$scope.SchoolYear+' - '+(parseInt($scope.SchoolYear+1))+' '+$scope.Detail.name;
 			ledgerItem.transac_date = $filter('date')(new Date(ledgerItem.transac_date),'yyyy-MM-dd');
 			$scope.LedgerEntry = ledgerItem;
             //console.log(tDate.getFullYear());
@@ -210,7 +216,26 @@ define(['app', 'api', 'atomic/bomb'], function(app) {
 						}
 					});
 				}
-				
+				var fees = response.data;
+				api.POST('account_fees',fees, function success(response){
+					
+				});
+			});
+		}
+		
+		function getAccount(){
+			api.GET('accounts',{id:$scope.Account.id}, function success(response){
+				$scope.ActiveAcc = response.data[0];
+				if($scope.DefaultSY==$scope.SchoolYear&&$scope.ActiveAcc.outstanding_balance>0){
+					$scope.ActiveAcc.outstanding_balance -= $scope.Amount;
+				}
+				if($scope.SchoolYear<$scope.DefaultSY&&$scope.ActiveAcc.old_balance>0){
+					$scope.ActiveAcc.old_balance-=$scope.Amount;
+					$scope.ActiveAcc.outstanding_balance-=$scope.Amount;
+				}
+				api.POST('accounts',$scope.ActiveAcc, function success(response){
+					
+				});
 			});
 		}
 

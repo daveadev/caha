@@ -104,7 +104,7 @@ class LedgersController extends AppController {
 			else{
 				//pr($this->data); exit();
 				if(!isset($this->data['Ledger']['ref_no'])){
-					$sy = $this->data['Ledger']['esp'];
+					$sy = $this->data['Ledger']['sy'];
 					$pref = substr($this->data['Ledger']['transaction_type_id'],0,3);
 					$ref_no = $this->Ledger->generateREFNO($sy,$pref);
 					//pr($ref_no); exit();
