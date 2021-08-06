@@ -291,7 +291,8 @@ define(['app', 'api'], function(app) {
 			
 			function getAr(){
 				var data = {
-					type:'AR'
+					type:'AR',
+					limit:'less'
 				};
 				api.GET('transaction_types',data, function success(response){
 					var RFIndex=0;
