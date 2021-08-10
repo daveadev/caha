@@ -361,8 +361,8 @@ define(['app', 'api'], function(app) {
 			}
 			
 			function checkOrType(){
+				console.log($scope.ActiveTyp);
 				if($scope.ActiveStudTyp=='QR'){
-					console.log($scope.TransactionTypes);
 					getOr();
 				}else{
 					if($scope.ActiveTyp=='OR')
@@ -387,21 +387,25 @@ define(['app', 'api'], function(app) {
                     $scope.ActiveStudent = $scope.SelectedStudent;
 					
 					if($scope.isPayeeConfirmed){
-						if(!$scope.ActiveStudent.id)
+						if(!$scope.ActiveStudent.id){
+							$scope.ActiveTyp='A2O';
 							$scope.ActiveStudent = {'name':$scope.OtherPayeeName,'account_type':'others'};
+						}
 						else
 							$scope.ActiveStudent.name = $scope.ActiveStudent.account_details;
 						$scope.OtherPayeeName = '';
 					}
 					$scope.ActiveAssessment = undefined;
-					api.GET('assessments',{student_id:$scope.ActiveStudent.id,status:'ACTIV'}, function success(response){
-						 
-						$scope.ActiveAssessment = response.data[0];;
-						$scope.ActiveTyp = 'OR';
+					if($scope.ActiveStudent.id){
+						api.GET('assessments',{student_id:$scope.ActiveStudent.id,status:'ACTIV'}, function success(response){
+							$scope.ActiveAssessment = response.data[0];;
+							$scope.ActiveTyp = 'OR';
+							checkOrType();
+						}, function error(response){
+							checkOrType();
+						});
+					}else
 						checkOrType();
-					}, function error(response){
-						checkOrType();
-					});
 					//console.log($scope.ActiveTyp); return;				
                 }
                 if ($scope.ActiveStep === 2) {
