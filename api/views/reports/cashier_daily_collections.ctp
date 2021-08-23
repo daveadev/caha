@@ -10,6 +10,7 @@ $pr= new CashierDailyCollections();
 
 foreach($chunk_data as $dt){
 	$pr->hdr($data['data'][0]);
+	//pr($data); exit();
 	$pr->data($data['data'][0],$dt,$total_page,$i);
 	if(count($chunk_data) != ($i++)){
 		$pr->createSheet();

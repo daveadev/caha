@@ -20,6 +20,7 @@ class CashierDailyCollections extends Formsheet{
 	}
 	
 	function hdr($hdr){
+		
 		$this->showLines = !true;
 		$metrics = array(
 			'base_x'=> 0.25,
@@ -34,7 +35,8 @@ class CashierDailyCollections extends Formsheet{
 		$y=1;
 		$this->leftText(0,$y++,'Lake Shore Educational Institution','','');
 		$this->leftText(0,$y++,'Cashier Daily Collection Report','','');
-		$this->leftText(0,$y++,'School Year: 2020 - 2021','','');
+		$this->leftText(0,$y++,'School Year: 2021-2022','','');
+		
 		//$this->leftText(0,$y++,'Date: '.date('d M Y',strtotime($hdr['date'])),'','');
 	}
 	
