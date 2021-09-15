@@ -675,6 +675,10 @@ class PaymentsController extends AppController {
 		$assessment_id = $ass['id'];
 		$hs = array('G7','G8','G9','GX');
 		//pr($data); exit();
+		
+		$isEnrolled = false; 
+
+
 		if($ass['student_status']=='New'){
 			
 			//update inquiry status and account_type in accounts
@@ -706,8 +710,25 @@ class PaymentsController extends AppController {
 			$yl = array('G7','G8','G9','GX','GY','GZ');
 			$yindex = array_search($all_info['Student']['year_level_id'],$yl);
 			$curr_yearlvl = $yl[$yindex+1];
-			$stud201 = array('id'=>$ass['id'],'year_level_id'=>$curr_yearlvl,'section_id'=>$ass['section_id'],'program_id'=>$program_id);
-			$this->Student->save($stud201);
+			
+			$NROL_ESP =  $esp;
+			if(!in_array($curr_yearlvl,$hs))
+				$NROL_ESP = $esp+0.1;
+
+			// Check for existing CLB records
+			$checkCond = array(
+						array('ClasslistBlock.student_id'=>$ass['id'],
+							'ClasslistBlock.esp'=>$NROL_ESP));
+			$isEnrolled = $this->ClasslistBlock->find('count', array('conditions'=>$checkCond));
+
+			// Update only if not enrolled
+			if(!$isEnrolled):
+				$stud201 = array('id'=>$ass['id'],
+								'year_level_id'=>$curr_yearlvl,
+								'section_id'=>$ass['section_id'],
+								'program_id'=>$program_id);
+				$this->Student->save($stud201);
+			endif;
 		}
 		
 		
@@ -744,11 +765,10 @@ class PaymentsController extends AppController {
 		$classlist_block = array('student_id'=>$ass['id'],
 								'section_id'=>$ass['section_id'],
 								'esp'=>$esp,'status'=>'ACT');
-		// CLB Delete duplicates
-		$delCond = array(array('ClasslistBlock.student_id'=>$ass['id'],'ClasslistBlock.esp'=>$esp));
-		$this->ClasslistBlock->deleteAll($delCond);
+		
 		// CLB Add new record
- 		$this->ClasslistBlock->save($classlist_block);
+		if(!$isEnrolled)
+ 			$this->ClasslistBlock->save($classlist_block);
 		
 		
 		//save account schedule and fees
