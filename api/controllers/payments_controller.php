@@ -737,12 +737,18 @@ class PaymentsController extends AppController {
 			}
 		}
 		
-		
+		// Add Record to CLB upon INIPY or FULPY
 		//save to classlist blocks
 		if(!in_array($curr_yearlvl,$hs))
 			$esp = $esp+0.1;
-		$classlist_block = array('student_id'=>$ass['id'],'section_id'=>$ass['section_id'],'esp'=>$esp,'status'=>'ACT');
-		$this->ClasslistBlock->saveAll($classlist_block);
+		$classlist_block = array('student_id'=>$ass['id'],
+								'section_id'=>$ass['section_id'],
+								'esp'=>$esp,'status'=>'ACT');
+		// CLB Delete duplicates
+		$delCond = array(array('student_id'=>$ass['id'],'esp'=>$esp));
+		$this->ClasslistBlock->deleteAll($delCond);
+		// CLB Add new record
+ 		$this->ClasslistBlock->save($classlist_block);
 		
 		
 		//save account schedule and fees
