@@ -745,7 +745,7 @@ class PaymentsController extends AppController {
 								'section_id'=>$ass['section_id'],
 								'esp'=>$esp,'status'=>'ACT');
 		// CLB Delete duplicates
-		$delCond = array(array('student_id'=>$ass['id'],'esp'=>$esp));
+		$delCond = array(array('ClasslistBlock.student_id'=>$ass['id'],'ClasslistBlock.esp'=>$esp));
 		$this->ClasslistBlock->deleteAll($delCond);
 		// CLB Add new record
  		$this->ClasslistBlock->save($classlist_block);
