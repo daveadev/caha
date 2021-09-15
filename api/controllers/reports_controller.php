@@ -19,7 +19,7 @@ class ReportsController extends AppController{
 			//Student's SOA
 			$data = $this->Ledger->find('all',array(
 				'conditions'=>array('Ledger.account_id'=>$account_id,'Ledger.esp'=>$esp),
-				'order'=>array('Ledger.transac_date','Ledger.transac_time','Ledger.ref_no','Ledger.id')
+				'order'=>array('Ledger.transac_date','Ledger.ref_no','Ledger.id')
 			));
 			$student['Student']['esp'] = $esp;
 			//pr($student);exit;
