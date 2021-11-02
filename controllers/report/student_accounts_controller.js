@@ -1,25 +1,26 @@
 "use strict";
 define(['app','api','atomic/bomb'],function(app){
-	app.register.controller('StudentAccController',['$scope','$rootScope','api','$filter',
-	function($scope,$rootScope,api,$filter){
+	app.register.controller('StudentAccController',['$scope','$rootScope','$timeout','api','$filter',
+	function($scope,$rootScope,$timeout,api,$filter){
 		const $selfScope =  $scope;
 		$scope = this;
 		$scope.init = function(){
 			$rootScope.__MODULE_NAME = 'Student Accounts Collection';
-			$scope.Headers = ['Student','Year Level','Section','Total Fees','Subsidy','Fee Dues','IP Pay','IP Bal','SEP-20 Pay','SEP-20 Bal','OCT-20 Pay','OCT-20 Bal','NOV-20 Pay','NOV-20 Bal','DEC-20 Pay','DEC-20 Bal','JAN-21 Pay','JAN-21 Bal','FEB-21 Pay','FEB-21 Bal','MAR-21 Pay','MAR-21 Bal','APR-21 Pay','APR-21 Bal'];
+			$scope.Headers = ['Total Fees','Subsidy','Fee Dues','Reservation','IP Pay','IP Bal','SEP-21 Pay','SEP-21 Bal','OCT-21 Pay','OCT-21 Bal','NOV-21 Pay','NOV-21 Bal','DEC-21 Pay','DEC-21 Bal','JAN-22 Pay','JAN-22 Bal','FEB-22 Pay','FEB-22 Bal','MAR-22 Pay','MAR-22 Bal','APR-22 Pay','APR-22 Bal','MAY-22 Pay','MAY-22 Bal',' '];
 			$scope.Props = [
-				'student','year_level','section','fee','subsidy','fee_dues','pay1','bal1','pay2','bal2',
+				'reservation','pay1','bal1','pay2','bal2',
 				'pay3','bal3','pay4','bal4','pay5','bal5',
 				'pay6','bal6','pay7','bal7','pay8','bal8',
-				'pay9','bal9'
+				'pay9','bal9','pay10','bal10'
 			];
-			$scope.HHeaders = ['Student','Year Level','Section','Total Fees','Subsidy','Fee Dues','IP Pay','SEP-20 Pay','OCT-20 Pay','NOV-20 Pay','DEC-20 Pay','JAN-21 Pay','FEB-21 Pay','MAR-21 Pay','APR-21 Pay',];
+			$scope.HHeaders = ['Total Fees','Subsidy','Fee Dues','Reservation','IP Pay','SEP-20 Pay','OCT-20 Pay','NOV-20 Pay','DEC-20 Pay','JAN-21 Pay','FEB-21 Pay','MAR-21 Pay','APR-21 Pay','MAY-22 Pay',' '];
 			$scope.HProps = [
-				'student','year_level','section','fee','subsidy','fee_dues','pay1','pay2',
+				'student','year_level','section','fee','subsidy','fee_dues','reservation','pay1','pay2',
 				'pay3','pay4','pay5','pay6','pay7','pay8',
-				'pay9',
+				'pay9','pay10'
 			];
 			$scope.HiddenBal = false;
+			$scope.Loading = 1;
 			getStudentAccountsColl();
 		}
 		
@@ -29,6 +30,8 @@ define(['app','api','atomic/bomb'],function(app){
 		});
 		
 		$scope.gotoPage = function(page){
+			$scope.Loading = 1;
+			$scope.Data = '';
 			getStudentAccountsColl(page);
 		}
 		
@@ -64,15 +67,27 @@ define(['app','api','atomic/bomb'],function(app){
 			}
 		}
 		
+		$scope.printSoa = function(id){
+			console.log(id); 
+			$scope.AccountId = id;
+			$scope.Printed = 1;
+			//document.getElementById('PrintSoa').submit();
+			$timeout(function(){
+				document.getElementById('PrintSoa').submit();
+			},1000);
+			//$scope.ShowDemo = true;
+		}
+		
 		var coll = [];
 		var print = {};
 		function getForPrint(ctr){
 			var data = {
-				limit:50,
+				limit:100,
 				page:ctr
 			}
 			api.GET('student_account_collections', data, function success(response){
 				coll = coll.concat(response.data[0].collections);
+				$scope.Perc = response.meta;
 				if(response.meta.next){
 					ctr++;
 					getForPrint(ctr);
@@ -103,7 +118,7 @@ define(['app','api','atomic/bomb'],function(app){
 				var final_data = buildData(collections);
 				$scope.Meta = response.meta;
 				$scope.Data = final_data;
-
+				$scope.Loading = 0;
 			});
 		}
 		
@@ -111,32 +126,52 @@ define(['app','api','atomic/bomb'],function(app){
 			var update_fields = []; 
 			angular.forEach(data, function(col){
 				var row = {};
+				row['account_id']=col.account_id;
 				row['student'] = col.name;
 				row['year_level']=col.year_level;
 				row['section']=col.section;
 				row['fee'] = $filter('currency')(col.total_fees);
 				row['subsidy'] = $filter('currency')(col.subsidy);
-				row['fee_dues'] = $filter('currency')(col.total_fees-col.subsidy);
-				
+				row['fee_dues'] = $filter('currency')(col.total_fees+col.subsidy);
+				var runningBal = 0;
+				var totalpayment = 0;
+				if(col.hasRes){
+					row['reservation']=1000;
+					runningBal-=1000;
+					totalpayment+=1000;
+				}else
+					row['reservation']=0;
+				if(row.subsidy!=0){
+					runningBal+=row.subsidy;
+					totalpayment += Math.abs(col.subsidy);
+				}
 				
 				if(col.payments.length>2){
 					var ctr = 1;
 					angular.forEach(col.payments, function(sched){
 						row['pay'+ctr]=$filter('currency')(sched.payment);
+						totalpayment += sched.payment;
+						runningBal = col.total_fees - totalpayment;
+						//console.log(totalpayment);
+						//console.log(runningBal);
 						if(!$scope.HiddenBal)
-							row['bal'+ctr]=$filter('currency')(sched.balance);
-						
+							row['bal'+ctr]=$filter('currency')(runningBal);
+						//console.log(col);
 						ctr++;
 					});
 				}else{
 					var ctr = 1;
 					var currbal = 0;
-					for(var i=1;i<=9;i++){
+					for(var i=1;i<=col.payments.length;i++){
 						if(i==1||i==5){
+							if(!col.payments[ctr-1])
+								continue;
+							
+							console.log(col);
 							row['pay'+i]=$filter('currency')(col.payments[ctr-1].payment);
 							if(!$scope.HiddenBal)
 								row['bal'+i]=$filter('currency')(col.payments[ctr-1].balance);
-							//currbal = $filter('currency')(col.payments[ctr-1].balance);
+							currbal = $filter('currency')(col.payments[ctr-1].balance);
 							ctr++;
 						}else{
 							row['pay'+i]=0;

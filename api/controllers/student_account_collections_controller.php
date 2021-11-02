@@ -39,11 +39,18 @@ class StudentAccountCollectionsController extends AppController {
 			//pr($collections);
 			foreach($Accounts as $i=>$account){
 				//pr($account); exit();
+				if(!isset($account['AccountSchedule'][0])){
+					continue;
+					//pr($account); exit();
+				}
+				
+				
 				$cnt=$i+1;
 				if(isset($_GET['page'])&&$_GET['page']!==1)
-					$cnt=(($_GET['page']-1)*10)+$i+1;
+					$cnt=(($_GET['page']-1)*100)+$i+1;
 				//pr($_GET['page']);
 				$st = $account['Student'];
+				
 				if(isset($_GET['account_id']))
 					$acc = $account['Account'];
 				else
@@ -56,11 +63,15 @@ class StudentAccountCollectionsController extends AppController {
 				$accountObj['cnt'] = $cnt;
 				$accountObj['account_id'] = $acc['id'];
 				$accountObj['name'] = $st['full_name'];
+				
 				$accountObj['year_level'] = $list[$yl_ref][$sec_ref]['yl'];
 				$accountObj['section'] = $list[$yl_ref][$sec_ref]['name'];
 				$accountObj['total_fees'] = $acc['assessment_total'];
+				if(!isset($acc['discount_amount']))
+					$acc['discount_amount']=0;
 				$accountObj['subsidy'] = $acc['discount_amount'];
 				$accountObj['fee_dues'] = $acc['assessment_total']-$acc['discount_amount'];
+				$accountObj['hasRes']=false;
 				$accountObj['payments'] = array();
 				$payment = $accountObj['subsidy'];
 				foreach($account['AccountSchedule'] as $sched){
@@ -69,6 +80,10 @@ class StudentAccountCollectionsController extends AppController {
 					$schedObj['payment'] = $sched['paid_amount'];
 					$schedObj['balance'] = $accountObj['total_fees']-$payment;
 					array_push($accountObj['payments'],$schedObj);
+				}
+				foreach($account['Ledger'] as $led){
+					if($led['transaction_type_id']=='RSRVE')
+						$accountObj['hasRes']=true;
 				}
 				array_push($collections, $accountObj);
 			}

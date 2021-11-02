@@ -103,5 +103,18 @@
 			</div>
 		</a>
 	</div>
+	<div class="row">
+		<a href="#/{{mod.link}}" class="col-md-3" ng-repeat="mod in Modules" ng-show="mod.is_child" >
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h1>
+						<i class="{{mod.icon}}"></i>
+						{{mod.name}}
+					</h1>
+					description here
+				</div>
+			</div>
+		</a>
+	</div>
 
 </div>

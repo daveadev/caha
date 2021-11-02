@@ -40,6 +40,19 @@ class StudentAccountCollection extends AppModel {
 			'finderQuery' => '',
 			'counterQuery' => ''
 		),
+		'Ledger' => array(
+			'className' => 'Ledger',
+			'foreignKey' => 'account_id',
+			'dependent' => false,
+			'conditions' => '',
+			'fields' => '',
+			'order' => '',
+			'limit' => '',
+			'offset' => '',
+			'exclusive' => '',
+			'finderQuery' => '',
+			'counterQuery' => ''
+		),
 	);
 	function beforeFind($queryData){
 		//pr($queryData);
@@ -60,7 +73,8 @@ class StudentAccountCollection extends AppModel {
 		}
 		//$order = array("FIELD('G7','G8','G9','GX','GY','GZ')");
 		//$queryData['order']=$order;
-		//pr($queryData); //exit();
+		array_push($queryData['conditions'],array('account_type'=>'student','assessment_total !='=>0));
+		//pr($queryData); exit();
 		return $queryData;
 	} 
 	
