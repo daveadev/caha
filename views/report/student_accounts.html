@@ -58,6 +58,7 @@
 											<td>{{data.subsidy}}</td>
 											<td>{{data.fee_dues}}</td>
 											<td>{{data.reservation}}</td>
+											<td>{{data.advances}}</td>
 											<td>{{data.pay1}}</td>
 											<td>{{data.bal1}}</td>
 											<td>{{data.pay2}}</td>
@@ -85,10 +86,10 @@
 							</div>
 							
 							
-							<div class="input-group" style="margin-top: 20ox;">
-								<div class="input-group-addon" ng-click="SA.Search()"><span class="glyphicon glyphicon-search"></span></div>
+							<div class="input-group" style="margin-top: 20px;">
+								<div class="input-group-addon" ng-click="SA.Search()" style="cursor: pointer;"><span class="glyphicon glyphicon-search"></span></div>
 								<input type="text" class="form-control" id="exampleInputAmount" placeholder="Name" ng-model="SA.SearchWord">
-								<div class="input-group-addon" ng-click="SA.clearSearch()"><span class="glyphicon glyphicon-remove"></span></div>
+								<div class="input-group-addon" ng-click="SA.clearSearch()" style="cursor: pointer;"><span class="glyphicon glyphicon-remove"></span></div>
 							</div>
 							
 						</div>
@@ -113,6 +114,8 @@
 										<td>{{data.fee}}</td>
 										<td>{{data.subsidy}}</td>
 										<td>{{data.fee_dues}}</td>
+										<td>{{data.reservation}}</td>
+										<td>{{data.advances}}</td>
 										<td>{{data.pay1}}</td>
 										<td>{{data.pay2}}</td>
 										<td>{{data.pay3}}</td>

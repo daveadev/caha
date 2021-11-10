@@ -81,9 +81,12 @@ class StudentAccountCollectionsController extends AppController {
 					$schedObj['balance'] = $accountObj['total_fees']-$payment;
 					array_push($accountObj['payments'],$schedObj);
 				}
+				$accountObj['advances']=0;
 				foreach($account['Ledger'] as $led){
 					if($led['transaction_type_id']=='RSRVE')
 						$accountObj['hasRes']=true;
+					if($led['transaction_type_id']=='ADVTP')
+						$accountObj['advances']+=$led['amount'];
 				}
 				array_push($collections, $accountObj);
 			}

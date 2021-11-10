@@ -6,14 +6,14 @@ define(['app','api','atomic/bomb'],function(app){
 		$scope = this;
 		$scope.init = function(){
 			$rootScope.__MODULE_NAME = 'Student Accounts Collection';
-			$scope.Headers = ['Total Fees','Subsidy','Fee Dues','Reservation','IP Pay','IP Bal','SEP-21 Pay','SEP-21 Bal','OCT-21 Pay','OCT-21 Bal','NOV-21 Pay','NOV-21 Bal','DEC-21 Pay','DEC-21 Bal','JAN-22 Pay','JAN-22 Bal','FEB-22 Pay','FEB-22 Bal','MAR-22 Pay','MAR-22 Bal','APR-22 Pay','APR-22 Bal','MAY-22 Pay','MAY-22 Bal',' '];
+			$scope.Headers = ['Total Fees','Subsidy','Fee Dues','Reservation','Advance Payment','IP Pay','IP Bal','SEP-21 Pay','SEP-21 Bal','OCT-21 Pay','OCT-21 Bal','NOV-21 Pay','NOV-21 Bal','DEC-21 Pay','DEC-21 Bal','JAN-22 Pay','JAN-22 Bal','FEB-22 Pay','FEB-22 Bal','MAR-22 Pay','MAR-22 Bal','APR-22 Pay','APR-22 Bal','MAY-22 Pay','MAY-22 Bal',' '];
 			$scope.Props = [
 				'reservation','pay1','bal1','pay2','bal2',
 				'pay3','bal3','pay4','bal4','pay5','bal5',
 				'pay6','bal6','pay7','bal7','pay8','bal8',
 				'pay9','bal9','pay10','bal10'
 			];
-			$scope.HHeaders = ['Total Fees','Subsidy','Fee Dues','Reservation','IP Pay','SEP-20 Pay','OCT-20 Pay','NOV-20 Pay','DEC-20 Pay','JAN-21 Pay','FEB-21 Pay','MAR-21 Pay','APR-21 Pay','MAY-22 Pay',' '];
+			$scope.HHeaders = ['Total Fees','Subsidy','Fee Dues','Reservation','Advance Payment','IP Pay','SEP-20 Pay','OCT-20 Pay','NOV-20 Pay','DEC-20 Pay','JAN-21 Pay','FEB-21 Pay','MAR-21 Pay','APR-21 Pay','MAY-22 Pay',' '];
 			$scope.HProps = [
 				'student','year_level','section','fee','subsidy','fee_dues','reservation','pay1','pay2',
 				'pay3','pay4','pay5','pay6','pay7','pay8',
@@ -161,6 +161,7 @@ define(['app','api','atomic/bomb'],function(app){
 				row['fee'] = $filter('currency')(col.total_fees);
 				row['subsidy'] = $filter('currency')(col.subsidy);
 				row['fee_dues'] = $filter('currency')(col.total_fees+col.subsidy);
+				row['advances'] = $filter('currency')(col.advances);
 				var runningBal = 0;
 				var totalpayment = 0;
 				if(col.hasRes){
@@ -173,7 +174,8 @@ define(['app','api','atomic/bomb'],function(app){
 					runningBal+=row.subsidy;
 					totalpayment += Math.abs(col.subsidy);
 				}
-				
+				runningBal-=col.advances;
+				totalpayment +=col.advances;
 				if(col.payments.length>2){
 					var ctr = 1;
 					angular.forEach(col.payments, function(sched){
