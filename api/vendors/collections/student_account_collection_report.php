@@ -31,7 +31,7 @@ class StudentAccountCollection extends Formsheet{
 		$y=1;
 		$this->leftText(0,$y++,'Lake Shore Educational Institution','','');
 		$this->leftText(0,$y++,'Student Account Collection','','');
-		$this->leftText(0,$y++,'School Year: 2020 - 2021','','');
+		$this->leftText(0,$y++,'School Year: 2021 - 2022','','');
 		$this->leftText(0,$y++,'As of '.date("M d,Y h:i:s A"),'','');
 	}
 	
@@ -49,7 +49,7 @@ class StudentAccountCollection extends Formsheet{
 		$y=1;
 		$this->drawBox(0,0,48,36);
 		$this->drawMultipleLines(2,35,1,'h');
-		$this->drawLine(1,'h',array(24,24));
+		$this->drawLine(1,'h',array(30,18));
 		$this->drawLine(8,'v');
 		$this->drawLine(10,'v');
 		$this->drawLine(15,'v');
@@ -58,7 +58,7 @@ class StudentAccountCollection extends Formsheet{
 		$this->drawLine($x+=$xntrvl,'v');
 		$this->drawLine($x+=$xntrvl,'v');
 		$this->drawLine($x+=$xntrvl,'v');
-		$this->drawLine($x+=$xntrvl,'v',array(1,35));
+		$this->drawLine($x+=$xntrvl,'v');
 		$this->drawLine($x+=$xntrvl,'v');
 		$this->drawLine($x+=$xntrvl,'v',array(1,35));
 		$this->drawLine($x+=$xntrvl,'v');
@@ -75,6 +75,8 @@ class StudentAccountCollection extends Formsheet{
 		$this->centerText($x,$y,'Total Fees',$xntrvl,'b');
 		$this->centerText($x+=$xntrvl,$y,'Subsidy',$xntrvl,'b');
 		$this->centerText($x+=$xntrvl,$y,'Fee Due',$xntrvl,'b');
+		$this->centerText($x+=$xntrvl,$y,'Reservation',$xntrvl,'b');
+		$this->centerText($x+=$xntrvl,$y,'Advances',$xntrvl,'b');
 		$y=1.8;
 		$this->centerText($x+=$xntrvl,$y,'Payment',$xntrvl,'b');
 		$this->centerText($x+=$xntrvl,$y,'Balance',$xntrvl,'b');
@@ -82,15 +84,15 @@ class StudentAccountCollection extends Formsheet{
 		$this->centerText($x+=$xntrvl,$y,'Balance',$xntrvl,'b');
 		$this->centerText($x+=$xntrvl,$y,'Payment',$xntrvl,'b');
 		$this->centerText($x+=$xntrvl,$y,'Balance',$xntrvl,'b');
-		$this->centerText($x+=$xntrvl,$y,'Payment',$xntrvl,'b');
-		$this->centerText($x+=$xntrvl,$y,'Balance',$xntrvl,'b');
+		/* $this->centerText($x+=$xntrvl,$y,'Payment',$xntrvl,'b');
+		$this->centerText($x+=$xntrvl,$y,'Balance',$xntrvl,'b'); */
 		
 		$pb = array_slice($thdr, 6);
-		$x=24;
+		$x=30;
 		$xntrvl=6;
 		$y=0.8;
 		foreach($pb as $k => $col){
-			if($k<8){
+			if($k<6){
 				if ($k % 2 == 0) {
 					$hdr = explode(" ",$col);
 					$hdr = str_replace('-', ' 20', $hdr[0]);
@@ -102,7 +104,7 @@ class StudentAccountCollection extends Formsheet{
 			}
 		}
 		
-		//pr($data);exit;
+		//pr($pb);exit;
 		$y=2.8;
 		foreach($data as $hdrk=>$d){
 			$x=29.9;
@@ -114,14 +116,16 @@ class StudentAccountCollection extends Formsheet{
 			$this->rightText(23.9,$y,$d['fee_dues'],'','');	
 			
 			$x=23.9;
+			$this->rightText($x+=3,$y,$d['reservation'],'','');
+			$this->rightText($x+=3,$y,$d['advances'],'','');
 			$this->rightText($x+=3,$y,$d['pay1'],'','');
 			$this->rightText($x+=3,$y,$d['bal1'],'','');
 			$this->rightText($x+=3,$y,$d['pay2'],'','');
 			$this->rightText($x+=3,$y,$d['bal2'],'','');
 			$this->rightText($x+=3,$y,$d['pay3'],'','');
 			$this->rightText($x+=3,$y,$d['bal3'],'','');
-			$this->rightText($x+=3,$y,$d['pay4'],'','');
-			$this->rightText($x+=3,$y,$d['bal4'],'','');
+			//$this->rightText($x+=3,$y,$d['pay4'],'','');
+			//$this->rightText($x+=3,$y,$d['bal4'],'','');
 			
 			/*
 			$hdrx = 24;
@@ -176,12 +180,16 @@ class StudentAccountCollection extends Formsheet{
 		$this->centerText($x+=$xntrvl,$y,'Balance',$xntrvl,'b');
 		$this->centerText($x+=$xntrvl,$y,'Payment',$xntrvl,'b');
 		$this->centerText($x+=$xntrvl,$y,'Balance',$xntrvl,'b');
+		$this->centerText($x+=$xntrvl,$y,'Payment',$xntrvl,'b');
+		$this->centerText($x+=$xntrvl,$y,'Balance',$xntrvl,'b');
+		$this->centerText($x+=$xntrvl,$y,'Payment',$xntrvl,'b');
+		$this->centerText($x+=$xntrvl,$y,'Balance',$xntrvl,'b');
 		
 		$x=0;
 		$xntrvl=6;
 		$y=0.8;
 		foreach($pb as $k => $col){
-			if ($k < 8) continue;
+			if ($k < 6) continue;
 				if ($k % 2 == 0) {
 					$hdr = explode(" ",$col);
 					$hdr = str_replace('-', ' 20', $hdr[0]);
@@ -192,20 +200,43 @@ class StudentAccountCollection extends Formsheet{
 				}
 		}
 		
-		
+		//pr($hdrk); exit();
 		$y=2.8;
 		foreach($data as $hdrk=>$d){
+			//pr($d); exit();
 			$x=-0.1;
-			$this->rightText($x+=3,$y,$d['pay5'],'','');
-			$this->rightText($x+=3,$y,$d['bal5'],'','');
-			$this->rightText($x+=3,$y,$d['pay6'],'','');
-			$this->rightText($x+=3,$y,$d['bal6'],'','');
-			$this->rightText($x+=3,$y,$d['pay7'],'','');
-			$this->rightText($x+=3,$y,$d['bal7'],'','');
-			$this->rightText($x+=3,$y,$d['pay8'],'','');
-			$this->rightText($x+=3,$y,$d['bal8'],'','');
-			$this->rightText($x+=3,$y,$d['pay9'],'','');
-			$this->rightText($x+=3,$y,$d['bal9'],'','');
+			if(!isset($d['pay5'])){
+				//pr($d); exit();
+				$this->rightText($x+=3,$y,'--','','');
+				$this->rightText($x+=3,$y,'--','','');
+				$this->rightText($x+=3,$y,'--','','');
+				$this->rightText($x+=3,$y,'--','','');
+				$this->rightText($x+=3,$y,'--','','');
+				$this->rightText($x+=3,$y,'--','','');
+				$this->rightText($x+=3,$y,'--','','');
+				$this->rightText($x+=3,$y,'--','','');
+				$this->rightText($x+=3,$y,'--','','');
+				$this->rightText($x+=3,$y,'--','','');
+				$this->rightText($x+=3,$y,'--','','');
+				$this->rightText($x+=3,$y,'--','','');
+				$this->rightText($x+=3,$y,'--','','');
+			}else{
+				$this->rightText($x+=3,$y,$d['pay4'],'','');
+				$this->rightText($x+=3,$y,$d['bal4'],'','');
+				$this->rightText($x+=3,$y,$d['pay5'],'','');
+				$this->rightText($x+=3,$y,$d['bal5'],'','');
+				$this->rightText($x+=3,$y,$d['pay6'],'','');
+				$this->rightText($x+=3,$y,$d['bal6'],'','');
+				$this->rightText($x+=3,$y,$d['pay7'],'','');
+				$this->rightText($x+=3,$y,$d['bal7'],'','');
+				$this->rightText($x+=3,$y,$d['pay8'],'','');
+				$this->rightText($x+=3,$y,$d['bal8'],'','');
+				$this->rightText($x+=3,$y,$d['pay9'],'','');
+				$this->rightText($x+=3,$y,$d['bal9'],'','');
+				$this->rightText($x+=3,$y,$d['pay10'],'','');
+				$this->rightText($x+=3,$y,$d['bal10'],'','');
+			}
+			
 			
 			/* $hdrx=0;
 			foreach($d['payments'] as $k=>$p){

@@ -174,6 +174,7 @@ define(['app','api','atomic/bomb'],function(app){
 					runningBal+=row.subsidy;
 					totalpayment += Math.abs(col.subsidy);
 				}
+				row['reservation'] = $filter('currency')(row.reservation);
 				runningBal-=col.advances;
 				totalpayment +=col.advances;
 				if(col.payments.length>2){
