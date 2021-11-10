@@ -29,6 +29,34 @@ define(['app','api','atomic/bomb'],function(app){
 			$scope.ActiveSY =  active.sy;
 		});
 		
+		$scope.Search = function(){
+			$scope.PageOne = angular.copy($scope.Data);
+			$scope.OrigMeta = angular.copy($scope.Meta);
+			$scope.Data = '';
+			$scope.Loading = 1;
+			var filter = {
+				keyword:$scope.SearchWord,
+				fields:['first_name','middle_name','last_name','id'],
+				limit:'less'
+			}
+			api.GET('student_account_collections', filter, function success(response){
+				var collections = response.data[0].collections;
+				var final_data = buildData(collections);
+				$scope.Meta = response.meta;
+				$scope.Data = final_data;
+				$scope.Loading = 0;
+			});
+		}
+		
+		$scope.clearSearch = function(){
+			$scope.Data = '';
+			$scope.Loading = 1;
+			$scope.SearchWord = '';
+			$scope.Data = $scope.PageOne;
+			$scope.Meta = $scope.OrigMeta;
+			$scope.Loading = 0;
+		}
+		
 		$scope.gotoPage = function(page){
 			$scope.Loading = 1;
 			$scope.Data = '';

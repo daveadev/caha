@@ -58,13 +58,23 @@ class StudentAccountCollection extends AppModel {
 		//pr($queryData);
 		if($conds=$queryData['conditions']){
 			foreach($conds as $i=>$cond){
+				if($i=='OR'){
+					$name = $cond['StudentAccountCollection.first_name LIKE'];
+					unset($conds[$i]);
+					unset($cond[$i]);
+					$studs = $this->Student->findByName($name);
+					$studs = array_keys($studs);
+					$cond = array('StudentAccountCollection.account_id'=>$studs);
+					//pr($studs); exit();
+				}
 				$key = 'StudentAccountCollection.account_id';
 				$id = $cond[$key];
-				//pr($id);
 				if(isset($cond[$key])){
 					unset($cond[$key]);
 					$cond = array('id'=>$id);
 				}
+				
+				
 				$conds[$i]=$cond;
 			}
 			//$conds = array('id'=>$id);
