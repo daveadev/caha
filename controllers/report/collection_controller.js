@@ -171,7 +171,7 @@ define(['app','api','atomic/bomb'],function(app){
 			$scope.Collections = {};
 			var data = {
 				type:$scope.ActiveOpt.id,
-				esp:2020,
+				esp:$scope.ActiveSY,
 				from:$scope.date_from,
 				to:$scope.date_to
 			};

@@ -12,21 +12,37 @@ class CollectionsController extends AppController {
 		
 		$date_diff=strtotime($to)-strtotime($from);
 		$date_diff = round($date_diff / (60 * 60 * 24))+1;
-		//pr($date_diff);
-		//exit();
+		$cut_off = '2021-06-01';
+		//pr($cut_off); exit();
+		
 		$esp = $_GET['esp'];
-		$rcvd = array('INIPY','SBQPY');
+		$rcvd = array('INIPY','SBQPY','FULLP','RSRVE','ADVPT');
 		$total = 'TUIXN';
 		$date_range = array('transac_date <='=>$to,'transac_date >='=>$from);
-		$cond_collect = array('type'=>'-','transaction_type_id'=>$rcvd,'esp'=>$esp,'transac_date <'=>date('Y-m-d',strtotime($from)));
+		$cond_collect = array('type'=>'-','transaction_type_id'=>$rcvd,'esp'=>$esp,'AND'=>array('transac_date <'=>date('Y-m-d',strtotime($from)),'transac_date >='=>date('Y-m-d',strtotime($cut_off))));
+		//pr($cond_collect); exit();
+		$cond_reverse = array('type'=>'+','transaction_type_id'=>'RRVRS','esp'=>$esp,'transac_date <'=>date('Y-m-d',strtotime($from)));
+		$cond_res = array('type'=>'-','transaction_type_id'=>'RSRVE','esp'=>$esp,'transac_date >='=>date('Y-m-d',strtotime($from)));
+		
 		$cond_total = array('type'=>'+','transaction_type_id'=>$total,'esp'=>$esp);
 		$collect_range = array('type'=>'-','transaction_type_id'=>$rcvd,'esp'=>$esp,'and'=>$date_range);
+		$group = array('Ledger.ref_no','Ledger.transaction_type_id');
 		
-		$projected = $this->Ledger->find('all',array('recursive'=>0,'conditions'=>$collect_range));
+		//$cond_collect['account_id'] = 'LSJ88955';
+		//$collect_range['account_id']= 'LSJ88955';
+		$order = array('Ledger.transac_date'=>'ASC');
+		
+		
+		
+		$projected = $this->Ledger->find('all',array('recursive'=>0,'conditions'=>$collect_range,'group'=>$group));
 		$collections = $this->Ledger->find('all',array('recursive'=>0,'conditions'=>$cond_collect));
 		$total = $this->Ledger->find('all',array('recursive'=>0,'conditions'=>$cond_total));
 		
 		
+		
+		//pr($projected);
+		//pr($collections);
+		//exit();
 		$total_rcvbl = 0;
 		$collection_forwarded = 0;
 		$total_subs = 0;
@@ -104,10 +120,8 @@ class CollectionsController extends AppController {
 			}
 			while($mo!=$to[1]);
 		}
-		//pr($to[1]);
-		//pr($mo);
-		//pr($collection_data);
-		//exit();
+		
+		//pr($projected); exit();
 		foreach($projected as $i=>$t){
 			$amount = $t['Ledger']['amount'];
 			$led = $t['Ledger'];
@@ -138,11 +152,9 @@ class CollectionsController extends AppController {
 				if(!isset($collection_data[$mo]))
 					$collection_data[$mo] = 0;
 				$collection_data[$mo] += $amount;
-				//pr($mo);
+				//pr($mo);exit();
 			}
 		}
-		//exit();
-		
 		
 		$collection_range = array();
 		$running_balance = $beginning_balance;
@@ -166,11 +178,7 @@ class CollectionsController extends AppController {
 			array_push($collection_range,$coll);
 			
 		}
-		/* pr($to);
-		pr(date('m'));
-		pr($collection_range);
 		
-		exit() */;
 		
 		$annual_collections = array(
 			'total_receivables'=>$total_rcvbl,
