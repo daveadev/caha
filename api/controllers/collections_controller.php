@@ -62,7 +62,9 @@ class CollectionsController extends AppController {
 			$collection_forwarded += $amount;
 			
 		}
-		$beginning_balance = $total_rcvbl-($collection_forwarded+$total_subs);
+		$beginning_balance = ($total_rcvbl+$total_subs)-$collection_forwarded;
+		//$beginning_balance += $total_subs;
+		//pr($beginning_balance);exit();
 		if($type=='daily'){
 			$date = explode('-',$from);
 			$day = $date[2];

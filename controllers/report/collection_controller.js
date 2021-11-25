@@ -196,7 +196,7 @@ define(['app','api','atomic/bomb'],function(app){
 					if(currMonth==parseInt(data.to.month))
 						$scope.Today = collection[collection.length-1];
 				} */
-				var total_recvbl = collection.total_receivables-collection.total_subsidies;	
+				var total_recvbl = collection.total_receivables+collection.total_subsidies;	
 				collection['cfp'] = (collection.collection_forwarded/total_recvbl)*100;
 				collection['bbp'] = (collection.receivable_balance/total_recvbl)*100;
 				collection['ebp'] = (collection.ending_balance/total_recvbl)*100;
