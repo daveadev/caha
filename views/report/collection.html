@@ -79,13 +79,18 @@
 							</div>
 							<div class="amount amount-total">
 								<label for=""> {{CC.Collections.bbp | number:2}} % Receivable Balance</label>
-
 								<h3>
 									<div class="amount total peso">{{CC.Collections.receivable_balance | currency}}</div>
 								</h3>
 							</div>
 							<div class="amount amount-total">
-								<label for=""> {{CC.Collections.ccp | number:2}} % Total Collected</label>
+								<label for=""> {{CC.Collections.ccp - CC.Collections.cfp | number:2}} % Total Collected Period Covered</label>
+								<h3>
+									<div class="amount total peso">{{CC.Collections.coverage_collected | currency}}</div>
+								</h3>
+							</div>
+							<div class="amount amount-total">
+								<label for=""> {{CC.Collections.ccp | number:2}} % Total Collected to Date</label>
 								<h3>
 									<div class="amount total peso">{{CC.Collections.total_collected | currency}}</div>
 								</h3>
