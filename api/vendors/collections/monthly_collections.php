@@ -75,13 +75,13 @@ class MonthlyCollections extends Formsheet{
 			$y++;
 			//LESS SUBSIDIES & DISCOUNT
 			$this->leftText(3.2,$y,'Less Subsidies & Discount','','');
-			$this->rightText(17,$y,'('.number_format($hdr['total_subsidies'],2).')','','');
+			$this->rightText(17,$y,'('.number_format(abs($hdr['total_subsidies']),2).')','','');
 			$this->SetTextColor(185,185,185);
 			$this->leftText(0,$y+0.4,$dvr.$dvr.$dvr.$dvr,'','');
 			$this->SetTextColor(0,0,0);
 			$y++;
 			//NET RECEIVABLES
-			$netrecievable = $hdr['total_receivables']-$hdr['total_subsidies'];
+			$netrecievable = $hdr['total_receivables']+$hdr['total_subsidies'];
 			$this->leftText(3.2,$y,'Net Receivable','','');
 			$this->rightText(16.9,$y,number_format($netrecievable,2),'','');
 			$this->SetTextColor(185,185,185);
