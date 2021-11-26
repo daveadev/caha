@@ -64,7 +64,7 @@
 							<h4 ng-show="CS.ActiveUser.user_type!='cashr'" for="">Collections from {{CS.date_from | date:'dd MMM yyyy'}} - {{CS.date_to | date:'dd MMM yyyy'}}</h4>
 							<h4 ng-show="CS.ActiveUser.user_type=='cashr'" for="">Collections for {{CS.cash_date| date:'dd MMM yyyy'}}</h4>
 							<h4 class="total amount peso pull-left" ng-show="CS.Collections.total">{{CS.Collections.total | currency}}</h4>
-							<h4 ng-show="!CS.Collections.total">Computing for total...</h4>
+							<h4 ng-show="!CS.Collections.total">Loading {{CS.PrintMeta.page}} of {{CS.PrintMeta.pages}}</h4>
 						</a-col>
 						<a-col size="6">
 							<a-pager class="pull-right" meta="CS.Meta" on-navigate="CS.gotoPage"></a-pager>
