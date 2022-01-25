@@ -1,6 +1,7 @@
 <?php
 class Transaction extends AppModel {
 	var $name = 'Transaction';
+	var $actsAs = array('Containable');
 	//The Associations below have been created with all possible keys, those that are not needed can be removed
 
 	var $belongsTo = array(
@@ -8,7 +9,7 @@ class Transaction extends AppModel {
 			'className' => 'Account',
 			'foreignKey' => 'account_id',
 			'conditions' => '',
-			'fields' => '',
+			'fields' => array('Account.id','Account.account_type','account_details'),
 			'order' => ''
 		),
 		'Student' => array(

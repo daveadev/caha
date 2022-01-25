@@ -6,6 +6,7 @@ class TransactionsController extends AppController {
 
 	function index() {
 		$this->Transaction->recursive = 0;
+		$this->paginate['Transaction']['contain'] = array('Account','Inquiry','Student','TransactionDetail');
 		$transacs = $this->paginate();
 		if($this->isAPIRequest()){
 			foreach($transacs as $i=>$t){
@@ -14,16 +15,23 @@ class TransactionsController extends AppController {
 				foreach($t['TransactionDetail'] as $x=>$d){
 					array_push($details,$d);
 				}
+				$t['Transaction']['account_type'] = $t['Account']['account_type'];
 				$t['Transaction']['details'] = $details;
-				if(isset($t['Student']['full_name'])){
-					$t['Transaction']['name'] = $t['Student']['full_name'];
-					$t['Transaction']['sno'] = $t['Student']['sno'];
-					
-				}else
-					$t['Transaction']['name'] = $t['Inquiry']['full_name'];
+				if($t['Account']['account_type']!=='others'){
+					if(isset($t['Student']['full_name'])){
+						$t['Transaction']['name'] = $t['Student']['full_name'];
+						$t['Transaction']['sno'] = $t['Student']['sno'];
+						
+					}else
+						$t['Transaction']['name'] = $t['Inquiry']['full_name'];
+				}else{
+					$t['Transaction']['name'] = $t['Account']['account_details'];
+				}
+				
 				$transacs[$i]['Transaction'] = $t['Transaction'];
 			}
 		}
+		//exit();
 		$this->set('transactions', $transacs);
 	}
 
@@ -40,6 +48,10 @@ class TransactionsController extends AppController {
 			$this->Transaction->create();
 			$transac = $this->data['Transaction'];
 			if($transac['action']=='cancel'){
+				$isOthers = false;
+				if(isset($transac['transac']['account_type']))
+					$isOthers = true;
+				
 				$time = date("h:i:s");
 				$transac = $transac['transac'];
 				$transac['id'] = '';
@@ -52,7 +64,7 @@ class TransactionsController extends AppController {
 				$transac['transac_time'] = $time;
 				
 				//Save to Transactions
-				$this->Transaction->saveAll($transac);
+				$success = $this->Transaction->saveAll($transac);
 				
 				$transac_id = $this->Transaction->id;
 				$transac_dtl = array();
@@ -70,7 +82,10 @@ class TransactionsController extends AppController {
 				$account['payment_total'] -= $amount;
 				
 				//Update Account
-				$this->Account->saveAll($account);
+				if(!$isOthers)
+					$this->Account->saveAll($account);
+				else
+					$success = $this->Account->saveAll($account);
 				
 				$acct_history = $transac;
 				$acct_history['balance'] = $account['outstanding_balance']; 
@@ -79,7 +94,8 @@ class TransactionsController extends AppController {
 				$acct_history['flag'] ='-'; 
 				$acct_history['details'] =$transac_dtl['details']; 
 				
-				$this->AccountHistory->saveAll($acct_history);
+				if(!$isOthers)
+					$this->AccountHistory->saveAll($acct_history);
 				
 				$sched = $this->AccountSchedule->find('all',array('recursive'=>-1,'order'=>'AccountSchedule.order DESC','conditions'=>array('AccountSchedule.account_id'=>$transac['account_id'])));
 				
@@ -104,7 +120,8 @@ class TransactionsController extends AppController {
 					}else
 						continue;
 				}
-				$this->AccountSchedule->saveAll($schedules);
+				if(!$isOthers)
+					$this->AccountSchedule->saveAll($schedules);
 				//$sched = $sched['AccountSchedule'];
 				
 				$fees = $this->AccountFee->find('all',array('recursive'=>0,'conditions'=>array('account_id'=>$account['id'])));
@@ -130,16 +147,19 @@ class TransactionsController extends AppController {
 						}
 					}
 				}
-				//pr($fees); exit();
+				
 				//Update Account Fees
-				$this->AccountFee->saveAll($fees);
+				if(!$isOthers)
+					$this->AccountFee->saveAll($fees);
 				
 				$ledger = $transac;
 				$ledger['type'] = '+';
 				$ledger['amount'] = $total;
 				$ledger['details'] = $transac_dtl['details'];
 				//pr($ledger); exit();
-				$success = $this->Ledger->save($ledger);
+				if(!$isOthers)
+					$this->Ledger->save($ledger);
+				
 				if($success){
 					$this->Session->setFlash(__('The transaction has been saved', true));
 					$this->redirect(array('action' => 'index'));
