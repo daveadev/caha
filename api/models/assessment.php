@@ -70,6 +70,18 @@ class Assessment extends AppModel {
 			'finderQuery' => '',
 			'counterQuery' => ''
 		),
+		'AssessmentSubject' => array(
+			'className' => 'AssessmentSubject',
+			'foreignKey' => 'assessment_id',
+			'dependent' => false,
+			'conditions' => '',
+			'fields' => '',
+			'limit' => '',
+			'offset' => '',
+			'exclusive' => '',
+			'finderQuery' => '',
+			'counterQuery' => ''
+		),
 	);
 	
 }

@@ -12,7 +12,7 @@ class AssessmentsController extends AppController {
 			$sections = $this->Assessment->Student->YearLevel->Section->find('list',array('fields'=>array('id','description')));
 
 			foreach($assessments as $i=>$a){
-				//pr($a); 
+				//pr($a); exit();
 				$data = $a['Assessment'];
 				$fees = array();
 				$sched = array();
@@ -42,7 +42,7 @@ class AssessmentsController extends AppController {
 				foreach($a['AssessmentFee'] as $fee){
 					array_push($fees,$fee);
 				}
-				
+				$subjects = array();
 				foreach($a['AssessmentPaysched'] as $ps){
 					$p['transaction_type_id']=$ps['transaction_type_id'];
 					$p['assessment_id']=$ps['assessment_id'];
@@ -55,8 +55,14 @@ class AssessmentsController extends AppController {
 					$p['order']=$ps['order'];
 					array_push($sched,$p);
 				}
+				
+				foreach($a['AssessmentSubject'] as $sub){
+					$s = array('section_id'=>$sub['section_id'],'subject_id'=>$sub['subject_id']);
+					array_push($subjects,$s);
+				}
 				$data['Fee'] = $fees;
 				$data['Paysched'] = $sched;
+				$data['Subject'] = $subjects;
 				$assessments[$i]['Assessment'] = $data;
 				
 			}

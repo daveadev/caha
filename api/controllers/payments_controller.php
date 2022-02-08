@@ -19,6 +19,7 @@ class PaymentsController extends AppController {
 					'Inquiry',
 					'Assessment',
 					'ClasslistBlock',
+					'ClasslistIrregular',
 					'Section'
 				);
 	
@@ -653,7 +654,7 @@ class PaymentsController extends AppController {
 	
 	
 	function createStudent($all_info){
-		//pr($all_info); 
+		//pr($all_info); exit();
 		$sec = $this->Section->findById($all_info['Assessment']['section_id']);
 		$program_id = $sec['Section']['program_id'];
 		//pr($program_id);
@@ -770,6 +771,19 @@ class PaymentsController extends AppController {
 		if(!$isEnrolled)
  			$this->ClasslistBlock->save($classlist_block);
 		
+		
+		//Save to Irregular
+		if($ass['account_details']=='Irregular'){
+			foreach($ass['Subject'] as $sub){
+				$irreg = array(
+					'student_id'=>$ass['id'],
+					'section_id'=>$sub['section_id'],
+					'subject_id'=>$sub['subject_id'],
+					'status'=>'TKG',
+					'esp'=>$ass['assessment']['esp']
+				);
+			}
+		}
 		
 		//save account schedule and fees
 		$paysched = array();

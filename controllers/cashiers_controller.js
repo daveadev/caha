@@ -9,8 +9,14 @@ define(['app', 'api'], function(app) {
 				$scope.Bypass = true;
 			}
             $rootScope.$watch('_APP',function(app){
-                if(app)
+				
+                if(app){
                     $scope.initCashier();
+					console.log(app);
+					$scope.ActiveEsp = app.ACTIVE_SY+(app.DEFAULT_.SEMESTER.id/100);
+					$scope.Sem = app.DEFAULT_.SEMESTER.id;
+					console.log($scope.ActiveEsp);
+				}
             });
             //Steps in Nav-pills
             $scope.Steps = [
@@ -28,6 +34,7 @@ define(['app', 'api'], function(app) {
 				$scope.Consumed = 0;
 				$scope.ActiveUser = $rootScope.__USER.user;
 				$scope.Today = new Date();
+				
 				
 				// Initialize default date to yesterday 
 				if($scope.Bypass){
@@ -397,7 +404,7 @@ define(['app', 'api'], function(app) {
 					}
 					$scope.ActiveAssessment = undefined;
 					if($scope.ActiveStudent.id){
-						api.GET('assessments',{student_id:$scope.ActiveStudent.id,status:'ACTIV'}, function success(response){
+						api.GET('assessments',{student_id:$scope.ActiveStudent.id,status:'ACTIV',esp:$scope.ActiveEsp}, function success(response){
 							$scope.ActiveAssessment = response.data[0];;
 							$scope.ActiveTyp = 'OR';
 							checkOrType();
@@ -533,10 +540,18 @@ define(['app', 'api'], function(app) {
 					
 					if($scope.ActiveAssessment){
 						$scope.ActiveAssessment.student_status = $scope.ActiveStudTyp;
+						var id = $scope.ActiveAssessment.student_id;
+						var Esp = 0;
+						if($scope.Sem==25)
+							Esp = $scope.ActiveSY+.1;
+						else
+							Esp = $scope.ActiveSY+.3;
+						$scope.ActiveAssessment.esp = Esp;
 						$scope.Payment.assessment = $scope.ActiveAssessment;
 					}
 					if($scope.HasRes)
 						$scope.Payment.reservations = $scope.Reservations;
+					
 					
 					//console.log($scope.Payment); return;
 					if($scope.ActiveTyp=='A2O')
