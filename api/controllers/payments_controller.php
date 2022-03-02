@@ -655,10 +655,7 @@ class PaymentsController extends AppController {
 	
 	function createStudent($all_info){
 		//pr($all_info); exit();
-		$sec = $this->Section->findById($all_info['Assessment']['section_id']);
-		$program_id = $sec['Section']['program_id'];
-		//pr($program_id);
-		//exit();
+		
 		$today =  date("Y-m-d", strtotime($this->data['Cashier']['date']));
 		$time = date("h:i:s");
 		if(isset($all_info['StudInfo']))
@@ -697,7 +694,8 @@ class PaymentsController extends AppController {
 			$ass['id'] = $data['id'];
 			$curr_yearlvl = $data['year_level_id'];
 			$data['section_id'] = $ass['section_id'];
-			$data['program_id'] = $program_id;
+			
+			$data['program_id'] = $all_info['StudInfo']['program_id'];
 			
 			//save new student to student201 in SER
 			$this->Student->save($data);
@@ -780,7 +778,7 @@ class PaymentsController extends AppController {
 					'section_id'=>$sub['section_id'],
 					'subject_id'=>$sub['subject_id'],
 					'status'=>'TKG',
-					'esp'=>$ass['assessment']['esp']
+					'esp'=>$ass['esp']
 				);
 			}
 		}

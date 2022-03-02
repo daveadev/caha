@@ -37,11 +37,12 @@ class AccountsController extends AppController {
 					$acc['Account']['year_level_id'] =$yrlvId;
 					$acc['Account']['section'] =$section;
 					$acc['Account']['program_id'] =$acc['Student']['program_id'];
+					$acc['Account']['section_id'] =$sectId;
 				}else if($inqu){
 					$yrlvId =  $acc['Inquiry']['year_level_id'];
 					$yearLevel = "";
 					$section = "";
-				
+					//pr($acc); exit();
 					if(isset($yrLevels[$yrlvId]))
 						$yearLevel = $yrLevels[$yrlvId];
 					//pr($inqu);
@@ -58,7 +59,7 @@ class AccountsController extends AppController {
 						pr($acc); */
 					$acc['Account']['program_id'] =$acc['Inquiry']['program_id'];
 				}
-				$acc['Account']['section_id'] =$sectId;
+				//
 				$acc['Account']['account_no'] =$acc['Account']['id'];
 				//pr($acc); exit();
 				//$acc['department_id'] = $stud['department_id'];
