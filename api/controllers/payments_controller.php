@@ -77,6 +77,18 @@ class PaymentsController extends AppController {
 					}
 					
 				}
+			}else{
+				foreach($transactions as $t){
+					if($t['id']=='INIPY'){
+						$Account = $this->createStudent($_DATA);
+						$schedules = $this->AccountSchedule->find('all',array('recursive'=>-1,'conditions'=>array('AccountSchedule.account_id'=>$Account['id'])));
+						$fees = $this->AccountFee->find('all',array('recursive'=>0,'conditions'=>array('account_id'=>$Account['id'])));
+						$account_id = $Account['id'];
+						if($Account['payment_total']>0)
+							$payment_to_date+=$Account['payment_total'];
+					}
+					
+				}
 			}
 			
 			//pr($account_id); exit();
@@ -660,6 +672,10 @@ class PaymentsController extends AppController {
 		$time = date("h:i:s");
 		if(isset($all_info['StudInfo']))
 			$data = $all_info['StudInfo'];
+		
+		$sy = $all_info['Assessment']['esp'];
+		$sy = explode('.',$sy);
+		//pr($sy[1]); exit();
 		$ass = $all_info['Assessment'];
 		$data['status'] = 'NROLD';
 		$ass['status'] = 'NROLD';
@@ -705,11 +721,15 @@ class PaymentsController extends AppController {
 			$account = $this->Account->findById($ass['student_id']);
 			$account = $account['Account'];
 			$ass['id'] = $ass['student_id'];
-			$ass['old_balance'] = $account['outstanding_balance'];
 			$yl = array('G7','G8','G9','GX','GY','GZ');
 			$yindex = array_search($all_info['Student']['year_level_id'],$yl);
-			$curr_yearlvl = $yl[$yindex+1];
-			
+			if($sy[1]!=3){
+				$ass['old_balance'] = $account['outstanding_balance'];
+				$curr_yearlvl = $yl[$yindex+1];
+			}
+			else
+				$curr_yearlvl = $yl[$yindex];
+				
 			$NROL_ESP =  $esp;
 			if(!in_array($curr_yearlvl,$hs))
 				$NROL_ESP = $esp+0.1;
@@ -735,9 +755,15 @@ class PaymentsController extends AppController {
 		$this->Account->save($ass);
 		
 		//add items to ledgers
-		$tuition = array('account_id'=>$ass['id'],'type'=>'+','transaction_type_id'=>'TUIXN','esp'=>$esp,'transac_date'=>$today,'transac_time'=>$time,'ref_no'=>$assessment_id,'details'=>'Tuition and Other Fees','amount'=>$ass['assessment_total']);
+		$isAdjustment = false;
+		if($all_info['Assessment']['account_details']=='Adjust'){
+			$isAdjustment = true;
+			$adjustment = $ass['assessment_total']-$all_info['Student']['assessment_total'];
+			$tuition = array('account_id'=>$ass['id'],'type'=>'+','transaction_type_id'=>'ADJST','esp'=>$esp,'transac_date'=>$today,'transac_time'=>$time,'ref_no'=>$assessment_id,'details'=>'Tuition Adjustment','amount'=>$adjustment);
+		}else
+			$tuition = array('account_id'=>$ass['id'],'type'=>'+','transaction_type_id'=>'TUIXN','esp'=>$esp,'transac_date'=>$today,'transac_time'=>$time,'ref_no'=>$assessment_id,'details'=>'Tuition and Other Fees','amount'=>$ass['assessment_total']);
 		$this->Ledger->saveAll($tuition);
-		if($ass['subsidy_status']!='REGXX'){
+		if($ass['subsidy_status']!='REGXX'&&!$isAdjustment){
 			$discount = array('account_id'=>$ass['id'],'type'=>'-','transaction_type_id'=>$ass['subsidy_status'],'esp'=>$esp,'transac_date'=>$today,'transac_time'=>$time,'ref_no'=>$assessment_id,'details'=>'Discount','amount'=>abs($ass['discount_amount']));
 			$this->Ledger->saveAll($discount);
 		}
@@ -771,7 +797,7 @@ class PaymentsController extends AppController {
 		
 		
 		//Save to Irregular
-		if($ass['account_details']=='Irregular'){
+		if($ass['account_details']=='Irregular'||$ass['account_details']=='Adjust'){
 			foreach($ass['Subject'] as $sub){
 				$irreg = array(
 					'student_id'=>$ass['id'],
@@ -786,17 +812,20 @@ class PaymentsController extends AppController {
 		//save account schedule and fees
 		$paysched = array();
 		$fees = array();
-		foreach($ass['Paysched'] as $i=>$ps){
-			$ps['account_id'] = $ass['id'];
-			if(!$ps['paid_amount'])
-				$ps['paid_amount'] = 0;
-			array_push($paysched,$ps);
+		if(!$isAdjustment){
+			foreach($ass['Paysched'] as $i=>$ps){
+				$ps['account_id'] = $ass['id'];
+				if(!$ps['paid_amount'])
+					$ps['paid_amount'] = 0;
+				array_push($paysched,$ps);
+			}
+			$this->AccountSchedule->saveAll($paysched);
 		}
 		foreach($ass['Fee'] as $i=>$f){
 			$f['account_id'] = $ass['id'];
 			array_push($fees,$f);
 		}
-		$this->AccountSchedule->saveAll($paysched);
+		
 		$this->AccountFee->saveAll($fees);
 		return $ass;
 	}
