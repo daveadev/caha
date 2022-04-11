@@ -1,10 +1,11 @@
 <?php
 class ReportsController extends AppController{
 	var $name = 'Reports';
-	var $uses = array('Ledger','Account', 'Student','Section','Transaction','TransactionType','MasterConfig');
+	var $uses = array('Ledger','Account', 'Student','Section','Transaction','TransactionType','MasterConfig','ClasslistBlock');
 
 	// GET srp/test_soa?account_id=LSJXXXXX
 	function soa(){
+		//pr($_GET); exit();
 		if(isset($_GET['account_id'])){
 			$account_id =  $_GET['account_id'];
 			
@@ -25,7 +26,36 @@ class ReportsController extends AppController{
 			//pr($student);exit;
 			$this->set(compact('data','student'));
 		}else{
-			die('No data available.Contact your system administrator.');
+			$sec_id=$_GET['section_id'];
+			$sy=$_GET['sy'];
+			if($_GET['dept']=='SH'){
+				if($_GET['sem']==45)
+					$esp=.3;
+				else
+					$esp=.1;
+				$sy = intval($sy)+$esp;
+			}
+			$ids = $this->ClasslistBlock->getIds($sec_id,$sy);
+			$batch = array();
+			foreach($ids as $i=>$id){
+				$this->Student->bindModel(array('belongsTo' => array('Section')));
+				$this->Student->recursive=1;
+				$conditions = array(array('Student.id'=>$id));
+				$student = $this->Student->find('first',compact('conditions'));
+				$esp = $this->MasterConfig->find('all',array('recursive'=>-1,'conditions'=>array('MasterConfig.sys_key'=>'ACTIVE_SY')));
+				$esp = $esp[0]['MasterConfig']['sys_value'];
+				$data = $this->Ledger->find('all',array(
+					'conditions'=>array('Ledger.account_id'=>$id,'Ledger.esp'=>$esp),
+					'order'=>array('Ledger.transac_date','Ledger.ref_no','Ledger.id')
+				));
+				$student['Student']['esp'] = $esp;
+				$data['Student'] = $student['Student'];
+				$data['YearLevel'] = $student['YearLevel'];
+				$data['Section'] = $student['Section'];
+				$batch[$i]=$data;
+			}
+			//pr($batch); exit();
+			$this->set(compact('batch'));
 		}
 	}
 	
