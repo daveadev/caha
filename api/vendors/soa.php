@@ -15,6 +15,7 @@ class SOA extends Formsheet{
 	}
 	
 	function ledger($stud,$data,$total_page,$page){
+		//pr($stud);exit();
 		$esp = $stud['Student']['esp'];
 		$this->showLines = !true;
 		$metrics = array(
@@ -66,6 +67,9 @@ class SOA extends Formsheet{
 
 		$y++;
 		$balance = 0;
+		unset($data['Student']);
+		unset($data['YearLevel']);
+		unset($data['Section']);
 		foreach($data as $d){
 			$time = strtotime($d['Ledger']['transac_date']);
 
@@ -94,7 +98,6 @@ class SOA extends Formsheet{
 		
 		$this->GRID['font_size']=8;
 		$this->centerText(0,61,'Page '.$page.' of '.$total_page,38,'');
-		
 	}
 	
 }

@@ -115,9 +115,23 @@ class ClasslistBlock extends AppModel {
 		return $queryData;
 	}
 	
-	/* function findByStudId($sid){
-		$students = $this->find('all',array('conditions'=>array('ClasslistBlock.student_id'=>$sid)));
-		pr($students); exit();
-		return $students;
+	function getIds($secId,$sy){
+		$list = $this->find('all',array(
+									'conditions'=>array('ClasslistBlock.section_id'=>$secId,'ClasslistBlock.esp'=>$sy),
+									//'order'=>array('Student.class_name')
+							));
+		/* usort($list, 'sortByOrder');
+		pr($list); exit(); */
+		$ids = array();
+		foreach($list as $item){
+			array_push($ids,$item['ClasslistBlock']['student_id']);
+		}
+		return $ids;
+	}
+	/* function sortByOrder($a, $b) {
+		return $a['Student']['class_name'] - $b['Student']['class_name'];
 	} */
+
+	
+	
 }
