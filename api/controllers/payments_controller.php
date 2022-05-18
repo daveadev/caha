@@ -429,6 +429,10 @@ class PaymentsController extends AppController {
 				if(isset($data['Student']['program_id']))
 					$res['program_id']=$data['Student']['program_id'];
 				// TODO: Add to master_config flag  MOD_ESP  to  advance SY
+				// Insert master_configs table sys_key = MOD_ESP sys_value =0
+				// Get from $__CONF  = $this->MasterConfig->find('list',...);
+				// Assign to $modEsp  =$__CONF['MOD_ESP'];
+				// Applicable when ESP should be +1 or 0 for SY cut off
 				$modESP = 0;
 				$nextESP =  $data['Cashier']['esp'] +$modESP; 
 				$res['account_id'] = $data['Student']['id'];
