@@ -20,7 +20,8 @@ class PaymentsController extends AppController {
 					'Assessment',
 					'ClasslistBlock',
 					'ClasslistIrregular',
-					'Section'
+					'Section',
+					'MasterConfig'
 				);
 	
 	function add() {
@@ -538,6 +539,8 @@ class PaymentsController extends AppController {
 
 	function SaveInquiry($data){
 		//pr($data); exit();
+		$mod = $this->MasterConfig->find('all',array('conditions'=>array('MasterConfig.id'=>11)));
+		$mod_esp = $mod[0]['MasterConfig']['sys_value'];
 		$account_id = $data['Student']['id'];
 		$today = date("Y-m-d");
 		$time = date("h:i:s");
@@ -576,9 +579,8 @@ class PaymentsController extends AppController {
 			);
 			// TODO: Add to master_config flag  MOD_ESP  to  advance SY
 
-			$modESP = 0;
 			if($trnx['id']=='RSRVE'||$trnx['id']=='ADVTP'){
-				$nextESP = $data['Cashier']['esp']+$modESP;
+				$nextESP = $data['Cashier']['esp']+$mod_esp;
 				$rsrveObj =  array(
 					'account_id'=>$account_id,
 					'esp'=>$nextESP,
