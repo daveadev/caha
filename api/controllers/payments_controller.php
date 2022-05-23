@@ -406,7 +406,10 @@ class PaymentsController extends AppController {
 		$booklet = $data['Booklet'];
 		$date = $data['Cashier']['date'];
 		$n = 0;
-		//pr($data); exit();
+		
+		$mod = $this->MasterConfig->find('all',array('conditions'=>array('MasterConfig.id'=>11)));
+		$mod_esp = $mod[0]['MasterConfig']['sys_value'];
+		
 		if(isset($data['Student']['id'])){
 			if($data['Student']['account_type']=='others'){
 				$account = $data['Student'];
@@ -430,8 +433,8 @@ class PaymentsController extends AppController {
 				if(isset($data['Student']['program_id']))
 					$res['program_id']=$data['Student']['program_id'];
 				// TODO: Add to master_config flag  MOD_ESP  to  advance SY
-				$modESP = 0;
-				$nextESP =  $data['Cashier']['esp'] +$modESP; 
+				
+				$nextESP =  $data['Cashier']['esp'] +$mod_esp; 
 				$res['account_id'] = $data['Student']['id'];
 				$res['esp'] = $nextESP;
 				$res['field_type'] = $data['Transaction'][0]['id'];
