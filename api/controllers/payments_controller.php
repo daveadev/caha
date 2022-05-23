@@ -433,8 +433,10 @@ class PaymentsController extends AppController {
 				if(isset($data['Student']['program_id']))
 					$res['program_id']=$data['Student']['program_id'];
 				// TODO: Add to master_config flag  MOD_ESP  to  advance SY
+
 				
 				$nextESP =  $data['Cashier']['esp'] +$mod_esp; 
+
 				$res['account_id'] = $data['Student']['id'];
 				$res['esp'] = $nextESP;
 				$res['field_type'] = $data['Transaction'][0]['id'];
