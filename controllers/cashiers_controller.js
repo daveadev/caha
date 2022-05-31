@@ -7,15 +7,20 @@ define(['app', 'api'], function(app) {
 			if($rootScope.__USER.user.user_type=='money'||$rootScope.__USER.user.user_type=='admin'){
 				$rootScope.__MODULE_NAME = 'Cashiers Backlog';
 				$scope.Bypass = true;
+				
+			}else{
+				$rootScope.__MODULE_NAME = 'Cashier';
 			}
             $rootScope.$watch('_APP',function(app){
 				
                 if(app){
                     $scope.initCashier();
-					console.log(app);
 					$scope.ActiveEsp = app.ACTIVE_SY+(app.DEFAULT_.SEMESTER.id/100);
 					$scope.Sem = app.DEFAULT_.SEMESTER.id;
 					console.log($scope.ActiveEsp);
+					$scope.ActiveUser = $rootScope.__USER.user;
+					console.log($scope.ActiveUser);
+					
 				}
             });
             //Steps in Nav-pills
@@ -33,6 +38,10 @@ define(['app', 'api'], function(app) {
 				$scope.CheckPayment = false;
 				$scope.Consumed = 0;
 				$scope.ActiveUser = $rootScope.__USER.user;
+				if($scope.ActiveUser.user_type=='cashr')
+					getCashierId();
+				else
+					getAll();
 				$scope.Today = new Date();
 				
 				
@@ -92,10 +101,7 @@ define(['app', 'api'], function(app) {
                 function updateHasInfo() {
                     $scope.hasInfo = $scope.hasStudentInfo || $scope.hasTransactionInfo || $scope.hasPaymentInfo;
                 };
-				if($scope.ActiveUser.user_type=='cashr')
-					getCashierId();
-				else
-					getAll();
+				
 				
             };
             
@@ -238,6 +244,8 @@ define(['app', 'api'], function(app) {
             //Get BookletID
 			function getAll(){
 				var filter = {status:'ACTIV'}
+				if($scope.cashier_id)
+					filter.cashier_id = $scope.cashier_id;
 				api.GET('booklets',filter, function success(response) {
 					$scope.ActiveBooklet = response.data[0];
 					$scope.InitialCtr = $scope.ActiveBooklet.series_counter;
@@ -290,9 +298,10 @@ define(['app', 'api'], function(app) {
 			
 			function getBooklet(typ){
 				var data = {receipt_type:typ,status:'ACTIV'};
+				if($scope.cashier_id)
+					data.cashier_id = $scope.cashier_id;
 				api.GET('booklets',data, function success(response){
 					$scope.ActiveBooklet = response.data[0];
-				
 				});
 			}
 			
