@@ -19,8 +19,9 @@ define(['app', 'api'], function(app) {
 					$scope.Sem = app.DEFAULT_.SEMESTER.id;
 					console.log($scope.ActiveEsp);
 					$scope.ActiveUser = $rootScope.__USER.user;
-					console.log($scope.ActiveUser);
-					
+					api.GET('master_configs',{limit:999}, function success(response){
+						$scope.ModEsp = response.data.MOD_ESP;
+					});
 				}
             });
             //Steps in Nav-pills
@@ -37,6 +38,10 @@ define(['app', 'api'], function(app) {
 				$scope.SearchWord = '';
 				$scope.CheckPayment = false;
 				$scope.Consumed = 0;
+				$scope.RectTypes = ['OR','AR','A2O'];
+				$scope.StudTypes = ['Old','New','QR'];
+				$scope.ActiveTyp = 'OR';
+				$scope.ActiveStudTyp = 'Old';
 				$scope.ActiveUser = $rootScope.__USER.user;
 				if($scope.ActiveUser.user_type=='cashr')
 					getCashierId();
@@ -80,10 +85,6 @@ define(['app', 'api'], function(app) {
 				$scope.PopoverDetails.is_open = false;
 				$scope.changeDate = false;
 				$scope.HasRes = false;
-				$scope.RectTypes = ['OR','AR','A2O'];
-				$scope.StudTypes = ['Old','New','QR'];
-				$scope.ActiveTyp = 'OR';
-				$scope.ActiveStudTyp = 'Old';
 				$scope.PlaceHolder = 'Search Student or type "Others"';
                 $scope.$watch('hasStudentInfo', updateHasInfo);
                 $scope.$watch('hasTransactionInfo', updateHasInfo);
@@ -413,7 +414,7 @@ define(['app', 'api'], function(app) {
 					}
 					$scope.ActiveAssessment = undefined;
 					if($scope.ActiveStudent.id){
-						api.GET('assessments',{student_id:$scope.ActiveStudent.id,status:'ACTIV',esp:$scope.ActiveEsp}, function success(response){
+						api.GET('assessments',{student_id:$scope.ActiveStudent.id,status:'ACTIV',esp:$scope.ActiveEsp+$scope.ModEsp}, function success(response){
 							$scope.ActiveAssessment = response.data[0];;
 							$scope.ActiveTyp = 'OR';
 							checkOrType();

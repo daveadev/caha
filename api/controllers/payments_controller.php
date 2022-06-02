@@ -28,7 +28,6 @@ class PaymentsController extends AppController {
 		$payments =  $this->data['Payment'];
 		$accountType=$this->data['Student']['account_type'];
 		$_DATA =  $this->data;
-
 		$this->logData($_DATA);
 
 		//pr($this->data); exit();
@@ -57,8 +56,8 @@ class PaymentsController extends AppController {
 			$total_payment = 0;
 			$today =  date("Y-m-d", strtotime($_DATA['Cashier']['date']));
 			$time = date("h:i:s");
-			//pr($this->data);
-			//pr($this->data); exit();
+			$mod = $this->MasterConfig->find('all',array('conditions'=>array('MasterConfig.id'=>11)));
+			$mod_esp = $mod[0]['MasterConfig']['sys_value'];
 
 
 			// TODO: Move to new function BookletUpdating
@@ -69,6 +68,8 @@ class PaymentsController extends AppController {
 			if(!isset($schedules[0])){
 				foreach($transactions as $t){
 					if($t['id']=='INIPY'||$t['id']=='FULLP'){
+						$payment_to_date = 0;
+						$ESP+=$mod_esp;
 						$Account = $this->createStudent($_DATA);
 						$schedules = $this->AccountSchedule->find('all',array('recursive'=>-1,'conditions'=>array('AccountSchedule.account_id'=>$Account['id'])));
 						$fees = $this->AccountFee->find('all',array('recursive'=>0,'conditions'=>array('account_id'=>$Account['id'])));
@@ -81,6 +82,8 @@ class PaymentsController extends AppController {
 			}else{
 				foreach($transactions as $t){
 					if($t['id']=='INIPY'){
+						$payment_to_date = 0;
+						$ESP+=$mod_esp;
 						$Account = $this->createStudent($_DATA);
 						$schedules = $this->AccountSchedule->find('all',array('recursive'=>-1,'conditions'=>array('AccountSchedule.account_id'=>$Account['id'])));
 						$fees = $this->AccountFee->find('all',array('recursive'=>0,'conditions'=>array('account_id'=>$Account['id'])));
@@ -679,15 +682,17 @@ class PaymentsController extends AppController {
 		$time = date("h:i:s");
 		if(isset($all_info['StudInfo']))
 			$data = $all_info['StudInfo'];
-		
 		$sy = $all_info['Assessment']['esp'];
 		$sy = explode('.',$sy);
-		//pr($sy[1]); exit();
+		
+		$mod = $this->MasterConfig->find('all',array('conditions'=>array('MasterConfig.id'=>11)));
+		$mod_esp = $mod[0]['MasterConfig']['sys_value'];
+		
 		$ass = $all_info['Assessment'];
 		$data['status'] = 'NROLD';
 		$ass['status'] = 'NROLD';
 		$assessment_data = array('id'=>$ass['id'],'status'=>$ass['status']);
-		$esp = $all_info['Cashier']['esp'];
+		$esp = $all_info['Cashier']['esp']+$mod_esp;
 		if(isset($all_info['Cashier']['date']))
 			$today = $all_info['Cashier']['date'];
 		//update assessment status
@@ -728,6 +733,8 @@ class PaymentsController extends AppController {
 			$account = $this->Account->findById($ass['student_id']);
 			$account = $account['Account'];
 			$ass['id'] = $ass['student_id'];
+			$ass['payment_total'] = 0;
+			$ass['ref_no'] = $all_info['Booklet']['series_counter'];
 			$yl = array('G7','G8','G9','GX','GY','GZ');
 			$yindex = array_search($all_info['Student']['year_level_id'],$yl);
 			if($sy[1]!=3){
@@ -746,7 +753,10 @@ class PaymentsController extends AppController {
 						array('ClasslistBlock.student_id'=>$ass['id'],
 							'ClasslistBlock.esp'=>$NROL_ESP));
 			$isEnrolled = $this->ClasslistBlock->find('count', array('conditions'=>$checkCond));
-
+			if(isset($all_info['StudInfo']))
+				$program_id = $all_info['StudInfo']['program_id'];
+			else
+				$program_id = $all_info['Student']['program_id'];
 			// Update only if not enrolled
 			if(!$isEnrolled):
 				$stud201 = array('id'=>$ass['id'],
@@ -756,8 +766,7 @@ class PaymentsController extends AppController {
 				$this->Student->save($stud201);
 			endif;
 		}
-		
-		
+		//pr($ass); exit();
 		//save to accounts
 		$this->Account->save($ass);
 		

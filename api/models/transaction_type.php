@@ -60,6 +60,7 @@ class TransactionType extends AppModel {
 		return array('TransactionType'=>$this->sanitizeQuery($queryData));
 	}
 	protected function sanitizeQuery($queryData){
+		//pr($queryData); exit();
 		$delimiter = null;
 
 		if(isset($_GET['account_no']))
@@ -104,8 +105,15 @@ class TransactionType extends AppModel {
 			$ASM = $this->AssessmentPaysched->Assessment;
 			$ASM->recursive=-1;
 			//$assessment = $ASM->findByStudentId($delimiter);
+			$assessment = null;
 			$ASMCond =  array('student_id'=>$delimiter, 'status'=>'ACTIV');
-			$assessment = $ASM->find('first',array('conditions'=>$ASMCond));
+			//$assessment = $ASM->find('first',array('conditions'=>$ASMCond));
+			App::import('Model','Account');
+			$ACC  =  new Account();
+			$A = $ACC->findById($delimiter);
+			if($A['Account']['outstanding_balance']<=0):
+				$assessment = $ASM->find('first',array('conditions'=>$ASMCond));
+			endif;
 
 			//Check if assessment is available
 			if($assessment):
