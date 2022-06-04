@@ -46,7 +46,7 @@ class SOA extends Formsheet{
 		$this->leftText(0,$y,'Year/Section:','','');
 		$this->leftText(5,$y++,$stud['YearLevel']['description'].' / '.$stud['Section']['description'],'','');
 		
-		$y=4;
+		$y=5;
 		//DATE
 		$this->leftText(28,$y,'Date:','','');
 		$this->leftText(30,$y++,date("d M Y"),'','');
@@ -58,6 +58,8 @@ class SOA extends Formsheet{
 		$this->leftText(30,$y++,$esp . ' - '.($esp+1),'','');
 
 		$y++;
+		$this->leftText(1,$y,'TUITION','','b');
+		$y++;
 		$this->centerText(0,$y,'Date',5,'b');
 		$this->leftText(6.1,$y,'Ref No.','','b');
 		$this->leftText(11.1,$y,'Descriptions','','b');
@@ -67,33 +69,65 @@ class SOA extends Formsheet{
 
 		$y++;
 		$balance = 0;
+		//pr($data); exit();
 		unset($data['Student']);
 		unset($data['YearLevel']);
 		unset($data['Section']);
 		foreach($data as $d){
-			$time = strtotime($d['Ledger']['transac_date']);
+			if($d['Ledger']['transaction_type_id']!='MODUL'){
+				$time = strtotime($d['Ledger']['transac_date']);
 
-			$newformat = date('d M Y',$time);
+				$newformat = date('d M Y',$time);
 
-			$this->centerText(0,$y,$newformat,5,'');
-			$this->leftText(6.1,$y,$d['Ledger']['ref_no'],'','');
-			$this->leftText(11,$y,$d['Ledger']['details'],'','');
-			
-			if($d['Ledger']['type'] == '+'){
-				$this->rightText(28,$y,number_format($d['Ledger']['amount'],2),'','');
-				$balance+=$d['Ledger']['amount'];
-			}else{
-				//$this->rightText(33,$y,'('.number_format(abs($d['Ledger']['amount']),2).')','','');
-				$this->rightText(33,$y,number_format($d['Ledger']['amount'],2),'','');
-				$balance-=$d['Ledger']['amount'];
+				$this->centerText(0,$y,$newformat,5,'');
+				$this->leftText(6.1,$y,$d['Ledger']['ref_no'],'','');
+				$this->leftText(11,$y,$d['Ledger']['details'],'','');
+				
+				if($d['Ledger']['type'] == '+'){
+					$this->rightText(28,$y,number_format($d['Ledger']['amount'],2),'','');
+					$balance+=$d['Ledger']['amount'];
+				}else{
+					//$this->rightText(33,$y,'('.number_format(abs($d['Ledger']['amount']),2).')','','');
+					$this->rightText(33,$y,number_format($d['Ledger']['amount'],2),'','');
+					$balance-=$d['Ledger']['amount'];
+				}
+				if ($balance < 0){
+					$this->rightText(38,$y,'('.number_format(abs($balance),2).')','','');
+				}else{
+					$this->rightText(38,$y,number_format($balance,2),'','');
+				}
+				$y++;
 			}
-			if ($balance < 0){
-				$this->rightText(38,$y,'('.number_format(abs($balance),2).')','','');
-			}else{
-				$this->rightText(38,$y,number_format($balance,2),'','');
+		}
+		$y+=2;
+		$this->leftText(1,$y,'MODULE','','b');
+		$y++;
+		$module_balance =0;
+		foreach($data as $d){
+			if($d['Ledger']['transaction_type_id']=='MODUL'){
+				$time = strtotime($d['Ledger']['transac_date']);
+
+				$newformat = date('d M Y',$time);
+
+				$this->centerText(0,$y,$newformat,5,'');
+				$this->leftText(6.1,$y,$d['Ledger']['ref_no'],'','');
+				$this->leftText(11,$y,$d['Ledger']['details'],'','');
+				
+				if($d['Ledger']['type'] == '+'){
+					$this->rightText(28,$y,number_format($d['Ledger']['amount'],2),'','');
+					$module_balance+=$d['Ledger']['amount'];
+				}else{
+					//$this->rightText(33,$y,'('.number_format(abs($d['Ledger']['amount']),2).')','','');
+					$this->rightText(33,$y,number_format($d['Ledger']['amount'],2),'','');
+					$module_balance-=$d['Ledger']['amount'];
+				}
+				if ($module_balance < 0){
+					$this->rightText(38,$y,'('.number_format(abs($balance),2).')','','');
+				}else{
+					$this->rightText(38,$y,number_format($module_balance,2),'','');
+				}
+				$y++;
 			}
-			
-			$y++;
 		}
 		
 		$this->GRID['font_size']=8;
