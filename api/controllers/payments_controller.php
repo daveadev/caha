@@ -136,6 +136,7 @@ class PaymentsController extends AppController {
 
 			
 			$isCharge = false;
+			$isModule = false;
 			// to get the total payment of all payments and save transac payments
 			foreach($payments as $i=>$pay){
 				$tp = array('transaction_id'=>$transac_id,'payment_method_id'=>$pay['id'],'amount'=>$pay['amount']);
@@ -153,14 +154,17 @@ class PaymentsController extends AppController {
 			$account_total = $Account['discount_amount']+$total_payment;
 			
 			
-			//exit();
-			
 			// for Ledgers and Account transactions
 			$transac_payment = $total_payment;
 			foreach($transactions as $trnx){
 				
 				$detail = $trnx['name'];
 				$payment = $total_payment;
+				$total_module = 0;
+				if($trnx['id']=='MODUL'){
+					$isModule = true;
+					$Account['module_balance']-=$payment;
+				}
 				if($trnx['amount']<$total_payment){
 					$payment = $trnx['amount'];
 					$transac_payment -=$payment;
@@ -232,9 +236,11 @@ class PaymentsController extends AppController {
 						$history['total_due']=$Account['assessment_total'];
 						
 						$history['total_paid']=$payment_to_date+abs($Account['discount_amount']);
-						$history['balance']=($Account['assessment_total']-abs($Account['discount_amount']))-$payment_to_date;
-						$Account['outstanding_balance'] = ($Account['assessment_total']-abs($Account['discount_amount']))-$payment_to_date;
-						$Account['payment_total'] = $payment_to_date;
+						if(!$isModule){
+							$history['balance']=($Account['assessment_total']-abs($Account['discount_amount']))-$payment_to_date;
+							$Account['outstanding_balance'] = ($Account['assessment_total']-abs($Account['discount_amount']))-$payment_to_date;
+							$Account['payment_total'] = $payment_to_date;
+						}
 						if(isset($Account['old_balance'])&&$Account['old_balance']>0)
 							$Account['outstanding_balance']+=$Account['old_balance'];
 					}
@@ -287,34 +293,33 @@ class PaymentsController extends AppController {
 				
 			}
 			
-			//pr($schedules); exit();
-			
 			// for account payment schedule
-			$sched_payment = $total_payment;
-			//pr($sched_payment); exit();
-			$account_schedules = array();
-			foreach($schedules as $i=>$sched){
-				if(isset($sched['AccountSchedule']))
-					$sched = $sched['AccountSchedule'];
-				if($sched['paid_amount']<$sched['due_amount']){
-					$payment_required = $sched['due_amount']-$sched['paid_amount'];
-					if($payment_required<=$sched_payment){
-						$sched_payment-=$payment_required;
-						$sched['status'] = 'PAID';
-						$sched['paid_amount'] = $payment_required+$sched['paid_amount'];
-					}else{
-						$sched['paid_amount'] = $sched_payment+$sched['paid_amount'];
-						$sched_payment = 0;
-					}
-					$sched['paid_date'] = $today;
-					
-					array_push($account_schedules,$sched);
-					//pr($sched);
-				}
-				if($sched_payment==0)
-					break;
-			}
 			
+			$sched_payment = $total_payment;
+			$account_schedules = array();
+			if(!$isModule){
+				foreach($schedules as $i=>$sched){
+					if(isset($sched['AccountSchedule']))
+						$sched = $sched['AccountSchedule'];
+					if($sched['paid_amount']<$sched['due_amount']){
+						$payment_required = $sched['due_amount']-$sched['paid_amount'];
+						if($payment_required<=$sched_payment){
+							$sched_payment-=$payment_required;
+							$sched['status'] = 'PAID';
+							$sched['paid_amount'] = $payment_required+$sched['paid_amount'];
+						}else{
+							$sched['paid_amount'] = $sched_payment+$sched['paid_amount'];
+							$sched_payment = 0;
+						}
+						$sched['paid_date'] = $today;
+						
+						array_push($account_schedules,$sched);
+						//pr($sched);
+					}
+					if($sched_payment==0)
+						break;
+				}
+			}
 			
 			// For account fees
 			
@@ -322,53 +327,54 @@ class PaymentsController extends AppController {
 			$fee_payment = $total_payment;
 			$total_feePaid = 0;
 			$total_misc = 0;
-			if(isset($_DATA['Reservation'])){
-				foreach($_DATA['Reservation'] as $res){
-					$fee_payment+=$res['amount'];
-				}
-			}
-			foreach($fees as $i=>$fee){
-				if(isset($fee['AccountFee']))
-					$fee = $fee['AccountFee'];
-				$total_feePaid += $fee['paid_amount'];
-				if($fee['fee_id']!='TUI')
-					$total_misc += $fee['due_amount'];
-			}
-			
-			if(($total_feePaid+$fee_payment)>$total_misc){
-				$Account['rounding_off'] = 0;
-				foreach($fees as $i=>$fee){
-					$fee = $fee['AccountFee'];
-					if($fee['fee_id']=='TUI'&&$fee['paid_amount']>0){
-						if($fee_payment>$fee['due_amount'])
-							$payment = $fee_payment-$fee['due_amount'];
-						else{
-							$payment=$fee_payment;
-							$fee_payment = 0;
-						}
-						$fee['paid_amount'] += $payment;
-					}else{
-						$fee['paid_amount'] = $fee['due_amount'];
-						if($fee['fee_id']=='TUI')
-							$fee['paid_amount'] = ($total_feePaid+$fee_payment)-$total_misc;
-						
+			if(!$isModule){
+				if(isset($_DATA['Reservation'])){
+					foreach($_DATA['Reservation'] as $res){
+						$fee_payment+=$res['amount'];
 					}
-					
-					array_push($account_fees,$fee);
 				}
-			}else{
-				$round_off = 0;
 				foreach($fees as $i=>$fee){
-					$fee = $fee['AccountFee'];
-					if($fee['fee_id']=='TUI')
-						continue;
-					$fee['paid_amount'] = ($total_feePaid+$fee_payment) * $fee['percentage'];
-					$round_off += $fee['paid_amount'];
-					array_push($account_fees,$fee);
+					if(isset($fee['AccountFee']))
+						$fee = $fee['AccountFee'];
+					$total_feePaid += $fee['paid_amount'];
+					if($fee['fee_id']!='TUI')
+						$total_misc += $fee['due_amount'];
 				}
-				$Account['rounding_off'] = $Account['payment_total']-$round_off;
+				
+				if(($total_feePaid+$fee_payment)>$total_misc){
+					$Account['rounding_off'] = 0;
+					foreach($fees as $i=>$fee){
+						$fee = $fee['AccountFee'];
+						if($fee['fee_id']=='TUI'&&$fee['paid_amount']>0){
+							if($fee_payment>$fee['due_amount'])
+								$payment = $fee_payment-$fee['due_amount'];
+							else{
+								$payment=$fee_payment;
+								$fee_payment = 0;
+							}
+							$fee['paid_amount'] += $payment;
+						}else{
+							$fee['paid_amount'] = $fee['due_amount'];
+							if($fee['fee_id']=='TUI')
+								$fee['paid_amount'] = ($total_feePaid+$fee_payment)-$total_misc;
+							
+						}
+						
+						array_push($account_fees,$fee);
+					}
+				}else{
+					$round_off = 0;
+					foreach($fees as $i=>$fee){
+						$fee = $fee['AccountFee'];
+						if($fee['fee_id']=='TUI')
+							continue;
+						$fee['paid_amount'] = ($total_feePaid+$fee_payment) * $fee['percentage'];
+						$round_off += $fee['paid_amount'];
+						array_push($account_fees,$fee);
+					}
+					$Account['rounding_off'] = $Account['payment_total']-$round_off;
+				}
 			}
-			
 			
 			$DataCollection = array(
 				'TransactionPayment'=>$transac_payments,
@@ -779,6 +785,8 @@ class PaymentsController extends AppController {
 		}else
 			$tuition = array('account_id'=>$ass['id'],'type'=>'+','transaction_type_id'=>'TUIXN','esp'=>$esp,'transac_date'=>$today,'transac_time'=>$time,'ref_no'=>$assessment_id,'details'=>'Tuition and Other Fees','amount'=>$ass['assessment_total']);
 		$this->Ledger->saveAll($tuition);
+		$module = array('account_id'=>$ass['id'],'type'=>'+','transaction_type_id'=>'MODUL','esp'=>$esp,'transac_date'=>$today,'transac_time'=>$time,'ref_no'=>$assessment_id,'details'=>'Modules & Ebooks','amount'=>$ass['module_balance']);
+		$this->Ledger->saveAll($module);
 		if($ass['subsidy_status']!='REGXX'&&!$isAdjustment){
 			$discount = array('account_id'=>$ass['id'],'type'=>'-','transaction_type_id'=>$ass['subsidy_status'],'esp'=>$esp,'transac_date'=>$today,'transac_time'=>$time,'ref_no'=>$assessment_id,'details'=>'Discount','amount'=>abs($ass['discount_amount']));
 			$this->Ledger->saveAll($discount);
