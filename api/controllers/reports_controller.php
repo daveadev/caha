@@ -1,7 +1,7 @@
 <?php
 class ReportsController extends AppController{
 	var $name = 'Reports';
-	var $uses = array('Ledger','Account', 'Student','Section','Transaction','TransactionType','MasterConfig','ClasslistBlock');
+	var $uses = array('Ledger','Account', 'Student','Section','Transaction','TransactionType','MasterConfig','ClasslistBlock','Assessment');
 
 	// GET srp/test_soa?account_id=LSJXXXXX
 	function soa(){
@@ -14,9 +14,16 @@ class ReportsController extends AppController{
 			$this->Student->recursive=1;
 			$conditions = array(array('Student.id'=>$account_id));
 			$student = $this->Student->find('first',compact('conditions'));
-			$esp = $this->MasterConfig->find('all',array('recursive'=>-1,'conditions'=>array('MasterConfig.sys_key'=>'ACTIVE_SY')));
-			$esp = $esp[0]['MasterConfig']['sys_value'];
-			//pr($esp); exit();
+			$config = $this->MasterConfig->find('all',array());
+			$esp = $config[5]['MasterConfig']['sys_value'];
+			$mod_esp = $config[10]['MasterConfig']['sys_value'];
+			$assessment =  $this->Assessment->find('all',array('recursive'=>-1,'conditions'=>array('Assessment.student_id'=>$account_id,'Assessment.status'=>'NROLD')));
+			if(isset($assessment[0])&&$mod_esp)
+				$esp++;
+			//pr($esp); 
+			//pr($assessment); 
+			//exit();
+			//$esp = 2022;
 			//Student's SOA
 			$data = $this->Ledger->find('all',array(
 				'conditions'=>array('Ledger.account_id'=>$account_id,'Ledger.esp'=>$esp),

@@ -64,7 +64,7 @@ class PaymentsController extends AppController {
 			$curr_refNo = $booklet['receipt_type']. ' ' .$booklet['series_counter'];
 			$booklet = $this->checkBooklet($_DATA);
 			
-			//pr($schedules); 
+			//pr($_DATA); exit();
 			if(!isset($schedules[0])){
 				foreach($transactions as $t){
 					if($t['id']=='INIPY'||$t['id']=='FULLP'){
@@ -188,6 +188,8 @@ class PaymentsController extends AppController {
 						'details'=>$detail,
 						'amount'=>$payment
 					);
+					if($isModule)
+						$ledgerItem['esp']+=$mod_esp;
 				}
 				if($trnx['type']!=='AR'&&$isCharge){
 					

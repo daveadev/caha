@@ -100,7 +100,14 @@ class SOA extends Formsheet{
 			}
 		}
 		$y+=2;
-		$this->leftText(1,$y,'MODULE','','b');
+		$isModule = 0;
+		foreach($data as $d){
+			if($d['Ledger']['transaction_type_id']=='MODUL')
+				$isModule = 1;
+			
+		}
+		if($isModule)
+			$this->leftText(1,$y,'MODULE','','b');
 		$y++;
 		$module_balance =0;
 		foreach($data as $d){
