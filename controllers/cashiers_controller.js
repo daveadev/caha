@@ -369,7 +369,8 @@ define(['app', 'api'], function(app) {
 			}
 			
 			function getReservations(){
-				api.GET('reservations', {account_id:$scope.SelectedStudent.id}, function success(response){
+				//hardcoded ESP for the mean time while testing
+				api.GET('reservations', {account_id:$scope.SelectedStudent.id,esp:2022}, function success(response){
 					$scope.HasRes = true;
 					$scope.Reservations = response.data;
 				}, function error(response){
