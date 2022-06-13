@@ -17,10 +17,18 @@ class ReportsController extends AppController{
 			$config = $this->MasterConfig->find('all',array());
 			$esp = $config[5]['MasterConfig']['sys_value'];
 			$mod_esp = $config[10]['MasterConfig']['sys_value'];
-			$assessment =  $this->Assessment->find('all',array('recursive'=>-1,'conditions'=>array('Assessment.student_id'=>$account_id,'Assessment.status'=>'NROLD')));
-			if(isset($assessment[0])&&$mod_esp)
+			if(in_array($student['Student']['year_level_id'],array('GY','GZ')))
+				$esp_check = $esp+1+.10;
+			else
+				$esp_check = $esp+1;
+			$classlist =  $this->ClasslistBlock->find('all',array('recursive'=>-1,'conditions'=>array('ClasslistBlock.student_id'=>$account_id,'ClasslistBlock.esp'=>$esp_check)));
+			//pr($esp_check);exit();
+			if(isset($classlist[0])&&$mod_esp)
 				$esp++;
-			//pr($esp); 
+			//pr($student); 
+			//pr($esp_check); 
+			//pr($classlist); 
+			//exit();
 			//pr($assessment); 
 			//exit();
 			//$esp = 2022;
