@@ -81,7 +81,7 @@ class PaymentsController extends AppController {
 				}
 			}else{
 				foreach($transactions as $t){
-					if($t['id']=='INIPY'){
+					if($t['id']=='INIPY'||$t['id']=='FULLP'){
 						$payment_to_date = 0;
 						$ESP+=$mod_esp;
 						$Account = $this->createStudent($_DATA);
