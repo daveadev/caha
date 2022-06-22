@@ -41,7 +41,7 @@ class SOA extends Formsheet{
 		//STUDENT NAME
 		$fullname  = $stud['Student']['last_name'].', '.$stud['Student']['first_name'].' '.$stud['Student']['middle_name'];
 		$this->leftText(0,$y,'Student Name:','','');
-		$this->leftText(5,$y++,$fullname,'','');
+		$this->leftText(5,$y++,utf8_decode($fullname),'','');
 		//YEAR/SECTION
 		$this->leftText(0,$y,'Year/Section:','','');
 		$this->leftText(5,$y++,$stud['YearLevel']['description'].' / '.$stud['Section']['description'],'','');

@@ -387,7 +387,8 @@
 										<td ng-show="ActiveTyp=='A2O'" colspan="2"  class="text-left">Payee: {{ActiveStudent.name}}</td>
 									</tr>
 									<tr>
-										<td  class="text-left">Payment for:  {{ActiveSYShort}} -  {{ActiveSYShort+1}}</td>
+										<td  class="text-left" ng-show="!isNextSy&&!ModEsp">Payment for:  {{ActiveSYShort}} -  {{ActiveSYShort+1}}</td>
+										<td  class="text-left" ng-show="IsNextSy&&ModEsp">Payment for:  {{ActiveSYShort+1}} -  {{ActiveSYShort+2}}</td>
 										<td  class="text-left">Year/Section: {{ActiveStudent.year_level}}  {{ActiveStudent.section}} <span ng-show="ActiveTyp=='A2O'">N/A</span></td>
 									</tr>
 								</thead>

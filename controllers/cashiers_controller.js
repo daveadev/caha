@@ -21,6 +21,7 @@ define(['app', 'api'], function(app) {
 					$scope.ActiveUser = $rootScope.__USER.user;
 					api.GET('master_configs',{limit:999}, function success(response){
 						$scope.ModEsp = response.data.MOD_ESP;
+						$scope.IsNextSy = false;
 					});
 				}
             });
@@ -441,7 +442,8 @@ define(['app', 'api'], function(app) {
                     $scope.TotalDue = 0;
                     for (var index in $scope.TransactionTypes) {
                         var transactionType = $scope.TransactionTypes[index];
-
+						
+						
                         var transaction = {
                             id: transactionType.id,
                             amount: transactionType.amount,
@@ -472,7 +474,12 @@ define(['app', 'api'], function(app) {
                             $scope.ActiveTransactions.push(transaction);
                         };
                     };
-					console.log($scope.ActiveTransactions);
+					angular.forEach($scope.ActiveTransactions, function(transac){
+						if(transac.id=='INIPY'||transac.id=='FULLP')
+							$scope.IsNextSy = true;
+					});
+					console.log($scope.IsNextSy);
+					console.log($scope.ModEsp);
                 }
                 if ($scope.ActiveStep === 3) {
                     //Pass value of payment information
