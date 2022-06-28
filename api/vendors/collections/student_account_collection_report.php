@@ -231,6 +231,9 @@ class StudentAccountCollection extends Formsheet{
 				$this->rightText($x+=3,$y,$d['bal7'],'','');
 				$this->rightText($x+=3,$y,$d['pay8'],'','');
 				$this->rightText($x+=3,$y,$d['bal8'],'','');
+				if(!isset($d['pay9'])){
+					continue;
+				}
 				$this->rightText($x+=3,$y,$d['pay9'],'','');
 				$this->rightText($x+=3,$y,$d['bal9'],'','');
 				$this->rightText($x+=3,$y,$d['pay10'],'','');

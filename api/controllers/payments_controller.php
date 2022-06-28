@@ -730,7 +730,7 @@ class PaymentsController extends AppController {
 			$ass['id'] = $data['id'];
 			$curr_yearlvl = $data['year_level_id'];
 			$data['section_id'] = $ass['section_id'];
-			
+			$data['prefix']='';
 			$data['program_id'] = $all_info['StudInfo']['program_id'];
 			
 			//save new student to student201 in SER
