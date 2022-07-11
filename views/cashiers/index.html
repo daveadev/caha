@@ -492,19 +492,20 @@
 		<script type="text/ng-template" id="paymentDetailsBox.html">
 			<button class="btn btn-xs btn-danger btn-dismiss" ng-click="closePop($event)"><span class="glyphicon glyphicon-remove"></span></button>
 			<dl>
-				<dt ng-if="ActivePaymentMethod.id!='CHRG'">Bank</dt>
-				<dd ng-if="ActivePaymentMethod.id!='CHRG'"><input ng-model="PopoverDetails.bank" type="text" class="form-control input-sm" placeholder="Issuing Bank"/></dd>
+				<dt ng-if="ActivePaymentMethod.id=='CHCK'">Bank</dt>
+				<dd ng-if="ActivePaymentMethod.id=='CHCK'"><input ng-model="PopoverDetails.bank" type="text" class="form-control input-sm" placeholder="Issuing Bank"/></dd>
 				<dt ng-show="ActivePaymentMethod.id=='CHCK'">Check No</dt>
-				<dt ng-show="ActivePaymentMethod.id=='CHRG'">LGU Voucher No</dt>
+				<dt ng-show="ActivePaymentMethod.id=='VCHR'">LGU Voucher No</dt>
 				<dd>
 					<input ng-model="PopoverDetails.ref_no" type="text" class="form-control input-sm" placeholder="{{ActivePaymentMethod.name}}  number" ng-show="ActivePaymentMethod.id=='CHCK'" />
-					<input ng-model="PopoverDetails.ref_no" type="text" class="form-control input-sm" placeholder="ch number" ng-show="ActivePaymentMethod.id=='CHRG'" />
+					<input ng-model="PopoverDetails.ref_no" type="text" class="form-control input-sm" placeholder="ch number" ng-show="ActivePaymentMethod.id=='VCHR'" />
 				</dd>
-				<dt>{{ActivePaymentMethod.name}} Date</dt>
-				<dd ng-if="ActivePaymentMethod.id=='CARD'"><input ng-model="PopoverDetails.date" type="text" class="form-control input-sm" placeholder="{{ActivePaymentMethod.name}} expiry" /></dd>
-				<dd ng-if="ActivePaymentMethod.id!='CARD'"><input ng-model="PopoverDetails.date" type="date" class="form-control input-sm" placeholder="{{ActivePaymentMethod.name}} date" /></dd>
+				<dt ng-show="ActivePaymentMethod.id=='CHCK'">{{ActivePaymentMethod.name}} Date</dt>
+				<dd ng-if="ActivePaymentMethod.id=='CHCK'"><input ng-model="PopoverDetails.date" type="text" class="form-control input-sm" placeholder="{{ActivePaymentMethod.name}} expiry" /></dd>
+				<!-- <dd ng-if="ActivePaymentMethod.id!='CARD'"><input ng-model="PopoverDetails.date" type="date" class="form-control input-sm" placeholder="{{ActivePaymentMethod.name}} date" /></dd> -->
 			</dl>
-			<button class="btn btn-sm btn-block btn-primary" ng-click="savePopoverDetails(ActivePaymentMethod.id)" ng-disabled="!PopoverDetails.date||!PopoverDetails.ref_no" >Confirm</button>
+			<button ng-if="ActivePaymentMethod.id=='CHCK'" class="btn btn-sm btn-block btn-primary" ng-click="savePopoverDetails(ActivePaymentMethod.id)" ng-disabled="!PopoverDetails.date||!PopoverDetails.ref_no" >Confirm</button>
+			<button ng-if="ActivePaymentMethod.id=='VCHR'" class="btn btn-sm btn-block btn-primary" ng-click="savePopoverDetails(ActivePaymentMethod.id)" ng-disabled="!PopoverDetails.ref_no" >Confirm</button>
 		</script>
 		<script type="text/ng-template" id="successModal.html">
 			<div class="modal-body text-center">

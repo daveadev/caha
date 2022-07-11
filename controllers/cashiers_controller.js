@@ -500,7 +500,7 @@ define(['app', 'api'], function(app) {
                             id: pid,
                             amount: amount,
                         };
-						if(payment.id!='CASH'){
+						if(payment.id!=='CASH'){
 							payment.date = $scope.PopoverDetails.date;
 							if($scope.PopoverDetails.bank)
 								payment.bank = $scope.PopoverDetails.bank+' - '+$scope.PopoverDetails.ref_no;
@@ -898,7 +898,7 @@ define(['app', 'api'], function(app) {
 					}
                 }
                 $scope.CurrentChange = (cash + noncash) - $scope.TotalDue;
-				if($scope.SelectedPayments['CHCK']||$scope.SelectedPayments['CHRG']){
+				if($scope.SelectedPayments['CHCK']||$scope.SelectedPayments['VCHR']){
 					if((cash+noncash)>=$scope.TotalDue&&$scope.Popdone)
 						$scope.Disabled=0;
 				}
