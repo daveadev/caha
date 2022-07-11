@@ -9,16 +9,7 @@ class TransactionType extends AppModel {
 				'amount'=> "SUM(
 						IF(
 						AccountSchedule.transaction_type_id='INIPY',
-						AccountSchedule.due_amount-AccountSchedule.paid_amount,
-							IF (
-								AccountSchedule.transaction_type_id='SBQPY'
-								AND AccountSchedule.order >1,
-								AccountSchedule.due_amount-AccountSchedule.paid_amount,
-								IF(TransactionType.id='MODUL',
-									Account.module_balance,
-									TransactionType.default_amount
-								)
-							)
+						AccountSchedule.due_amount-AccountSchedule.paid_amount,TransactionType.default_amount
 						)
 				)"
 				);
@@ -101,14 +92,14 @@ class TransactionType extends AppModel {
 								//'AccountSchedule.due_date <='=> $transacDate
 		                    )
 		                ),
-					array(
+				/* 	array(
 		                    'table' => 'accounts',
 		                    'alias' => 'Account',
 		                    'type' => 'INNER',
 		                    'conditions' => array(
 		                        'Account.id '=>$delimiter,
 		                    )
-		                ),
+		                ), */
 						
 	                );
 			$queryData['group'] = array('TransactionType.id');
