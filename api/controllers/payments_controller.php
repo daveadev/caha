@@ -106,10 +106,13 @@ class PaymentsController extends AppController {
 
 			// Todo: Move to new function PrepareTransaction
 			$t_payment = 0;
+			$VOUCHER = false;
 			foreach($this->data['Payment'] as $i=>$t){
 				$t_payment += $t['amount'];
 				if($t['id']=='CHCK')
 					$CHECK = true;
+				if($t['id']=='VCHR')
+					$VOUCHER = true;
 			}
 			
 			// For transactions table
@@ -140,13 +143,12 @@ class PaymentsController extends AppController {
 			// to get the total payment of all payments and save transac payments
 			foreach($payments as $i=>$pay){
 				$tp = array('transaction_id'=>$transac_id,'payment_method_id'=>$pay['id'],'amount'=>$pay['amount']);
-				if($pay['id']!=='CASH'){
-					$tp['valid_on']=$pay['date'];
-					$tp['details']=$pay['bank'];
-					$isCharge = $pay['bank'];
+				switch($pay['id']){
+					case 'CASH': $tp['details']='Cash'; break;
+					case 'CHCK': $tp['valid_on']=$pay['date']; $tp['details']=$pay['bank'];	$isCharge = $pay['bank']; break;
+					case 'VCHR': $tp['details']=$pay['bank']; $isCharge = $pay['bank']; break;
 				}
-				else
-					$tp['details']='Cash';
+				
 				array_push($payment_modes,$pay['id']);
 				array_push($transac_payments,$tp);
 				$total_payment += $pay['amount'];
@@ -286,9 +288,9 @@ class PaymentsController extends AppController {
 				array_push($transac_details,$td);
 				if($trnx['id']=='OLDAC'):
 					$total_payment -= $trnx['amount'];
-					$Account['payment_total'] +=$trnx['amount'];
+					//$Account['payment_total'] +=$trnx['amount'];
 					$Account['old_balance'] -=$trnx['amount'];
-					$Account['outstanding_balance'] -=$trnx['amount'];
+					//$Account['outstanding_balance'] -=$trnx['amount'];
 				endif;
 				if($trnx['type']=='AR')
 					$total_payment -= $trnx['amount'];
@@ -299,27 +301,51 @@ class PaymentsController extends AppController {
 			
 			$sched_payment = $total_payment;
 			$account_schedules = array();
+			//pr($schedules); exit();
 			if(!$isModule){
-				foreach($schedules as $i=>$sched){
-					if(isset($sched['AccountSchedule']))
+				//if voucher, distribute payment to lower the balance
+				if($VOUCHER){
+					$total_sub = 0;
+					$sub_count = 0;
+					foreach($schedules as $i=>$sched){
 						$sched = $sched['AccountSchedule'];
-					if($sched['paid_amount']<$sched['due_amount']){
-						$payment_required = $sched['due_amount']-$sched['paid_amount'];
-						if($payment_required<=$sched_payment){
-							$sched_payment-=$payment_required;
-							$sched['status'] = 'PAID';
-							$sched['paid_amount'] = $payment_required+$sched['paid_amount'];
-						}else{
-							$sched['paid_amount'] = $sched_payment+$sched['paid_amount'];
-							$sched_payment = 0;
-						}
-						$sched['paid_date'] = $today;
-						
-						array_push($account_schedules,$sched);
-						//pr($sched);
+						//pr($sched); exit();
+						if($sched['transaction_type_id']=='INIPY')
+							continue;
+						$total_sub += $sched['due_amount']-$sched['paid_amount'];
+						$sub_count++;
 					}
-					if($sched_payment==0)
-						break;
+					$new_sub = ($total_sub - $t_payment)/$sub_count;
+					foreach($schedules as $i=>$sched){
+						$sched = $sched['AccountSchedule'];
+						if($sched['transaction_type_id']=='INIPY')
+							continue;
+						$sched['due_amount'] = $new_sub;
+						array_push($account_schedules,$sched);
+					}
+				}
+				else{
+					foreach($schedules as $i=>$sched){
+						if(isset($sched['AccountSchedule']))
+							$sched = $sched['AccountSchedule'];
+						if($sched['paid_amount']<$sched['due_amount']){
+							$payment_required = $sched['due_amount']-$sched['paid_amount'];
+							if($payment_required<=$sched_payment){
+								$sched_payment-=$payment_required;
+								$sched['status'] = 'PAID';
+								$sched['paid_amount'] = $payment_required+$sched['paid_amount'];
+							}else{
+								$sched['paid_amount'] = $sched_payment+$sched['paid_amount'];
+								$sched_payment = 0;
+							}
+							$sched['paid_date'] = $today;
+							
+							array_push($account_schedules,$sched);
+							//pr($sched);
+						}
+						if($sched_payment==0)
+							break;
+					}
 				}
 			}
 			

@@ -13,8 +13,6 @@ define(['app','api','atomic/bomb'],function(app){
 					$scope.Printed = 0;
 					$scope.Options = ['Single','Batch'];
 					$scope.ActiveOpt = 'Single';
-					$scope.ActiveDept = $app.ACTIVE_DEPT;
-					$scope.ActiveSy = $app.ACTIVE_SY;
 					$scope.ActiveSem = $app.DEFAULT_.SEMESTER.id;
 					getDepartments();
 					getYl();
@@ -23,6 +21,12 @@ define(['app','api','atomic/bomb'],function(app){
 				}
 			});
 		}
+		$selfScope.$watch("SOA.Active",function(active){
+			if(!active) return false;
+			$scope.ActiveSy = active.sy;
+			$scope.ActiveDept = active.ACTIVE_DEPT;
+			console.log($scope.ActiveSy);
+		});
 		
 		$scope.setActOption = function(opt){
 			$scope.ActiveOpt = opt;
