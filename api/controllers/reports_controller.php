@@ -17,28 +17,20 @@ class ReportsController extends AppController{
 			$config = $this->MasterConfig->find('all',array());
 			$esp = $config[5]['MasterConfig']['sys_value'];
 			$mod_esp = $config[10]['MasterConfig']['sys_value'];
+			$esp = $_GET['sy'];
 			if(in_array($student['Student']['year_level_id'],array('GY','GZ')))
 				$esp_check = $esp+1+.10;
 			else
 				$esp_check = $esp+1;
 			$classlist =  $this->ClasslistBlock->find('all',array('recursive'=>-1,'conditions'=>array('ClasslistBlock.student_id'=>$account_id,'ClasslistBlock.esp'=>$esp_check)));
-			//pr($esp_check);exit();
 			if(isset($classlist[0])&&$mod_esp)
 				$esp++;
-			//pr($student); 
-			//pr($esp_check); 
-			//pr($classlist); 
-			//exit();
-			//pr($assessment); 
-			//exit();
-			//$esp = 2022;
-			//Student's SOA
+			
 			$data = $this->Ledger->find('all',array(
 				'conditions'=>array('Ledger.account_id'=>$account_id,'Ledger.esp'=>$esp),
 				'order'=>array('Ledger.transac_date','Ledger.ref_no','Ledger.id')
 			));
 			$student['Student']['esp'] = $esp;
-			//pr($student);exit;
 			$this->set(compact('data','student'));
 		}else{
 			$sec_id=$_GET['section_id'];

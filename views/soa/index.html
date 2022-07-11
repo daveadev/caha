@@ -3,7 +3,7 @@
 		<a-container>
 			<a-header>
 				<a-row>
-					<a-col size='12'>
+					<a-col size='6'>
 						<ul class="nav nav-pills">
 							<li ng-repeat="opt in SOA.Options" 
 							ng-click="SOA.setActOption(opt)" 
@@ -11,6 +11,10 @@
 								<a>{{opt}}</a>
 							</li>
 						</ul>
+					</a-col>
+					<a-col size="6">
+						<o-dropdown-filter ng-model="SOA.Active" show-section="false" show-sem="false" show-period="false" class="pull-right" >
+						</o-dropdown-filter>
 					</a-col>
 				</a-row>
 				
@@ -68,6 +72,7 @@
 				<div style="height:100%;" ng-show="SOA.Printed && SOA.ActiveOpt=='Single'">
 					<form action="api/soa" method="GET" target="SOAframe" id="PrintSoa">
 						<input type="hidden" name="account_id" value="{{SOA.Student.id}}"/>
+						<input type="hidden" name="sy" value="{{SOA.ActiveSy}}"/>
 					</form>
 					<iframe name="SOAframe"  id="SOAframe" frameborder="0" style="width:100%;height:100%;display:block;"></iframe>
 				</div>
