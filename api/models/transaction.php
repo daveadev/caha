@@ -113,10 +113,10 @@ class Transaction extends AppModel {
 					}
 				}
 				
-			$conds = array('Transaction.ref_no LIKE'=> $typ.'%','and'=>array('Transaction.transac_date <='=>$end,'Transaction.transac_date >='=>$start));
+			$conds = array('OR'=>array('Transaction.ref_no LIKE'=> '%'.$typ.'%'),'and'=>array('Transaction.transac_date <='=>$end,'Transaction.transac_date >='=>$start));
 				
 			}
-			//exit();
+			//pr($conds); exit();
 			$queryData['conditions']=$conds;
 		}
 		//pr($queryData); exit();
