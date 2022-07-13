@@ -17,7 +17,8 @@ class ReportsController extends AppController{
 			$config = $this->MasterConfig->find('all',array());
 			$esp = $config[5]['MasterConfig']['sys_value'];
 			$mod_esp = $config[10]['MasterConfig']['sys_value'];
-			$esp = $_GET['sy'];
+			if(isset($_GET['sy']))
+				$esp = $_GET['sy'];
 			if(in_array($student['Student']['year_level_id'],array('GY','GZ')))
 				$esp_check = $esp+1+.10;
 			else
@@ -30,6 +31,7 @@ class ReportsController extends AppController{
 				'conditions'=>array('Ledger.account_id'=>$account_id,'Ledger.esp'=>$esp),
 				'order'=>array('Ledger.transac_date','Ledger.ref_no','Ledger.id')
 			));
+			
 			$student['Student']['esp'] = $esp;
 			$this->set(compact('data','student'));
 		}else{
