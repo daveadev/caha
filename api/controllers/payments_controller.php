@@ -772,7 +772,7 @@ class PaymentsController extends AppController {
 			$yl = array('G7','G8','G9','GX','GY','GZ');
 			$yindex = array_search($all_info['Student']['year_level_id'],$yl);
 			if($sy[1]!=3){
-				$ass['old_balance'] = $account['outstanding_balance'];
+				$ass['old_balance'] = $account['old_balance'];
 				$curr_yearlvl = $yl[$yindex+1];
 			}
 			else
