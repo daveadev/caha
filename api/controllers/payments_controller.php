@@ -238,15 +238,12 @@ class PaymentsController extends AppController {
 					);
 					if($trnx['id']!=='OLDAC'){
 						$history['total_due']=$Account['assessment_total'];
-						
 						$history['total_paid']=$payment_to_date+abs($Account['discount_amount']);
 						if(!$isModule){
 							//$history['balance']=($Account['assessment_total']-abs($Account['discount_amount']))-$payment_to_date;
 							$Account['outstanding_balance'] = ($Account['assessment_total']-abs($Account['discount_amount']))-$payment_to_date;
-							//$Account['payment_total'] = $payment_to_date;
+							$Account['payment_total'] = $payment_to_date;
 						}
-						if(isset($Account['old_balance'])&&$Account['old_balance']>0)
-							$Account['outstanding_balance']+=$Account['old_balance'];
 					}
 				}else{
 					$history = array(
