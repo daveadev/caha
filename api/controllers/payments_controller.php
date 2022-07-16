@@ -302,24 +302,54 @@ class PaymentsController extends AppController {
 			if(!$isModule){
 				//if voucher, distribute payment to lower the balance
 				if($VOUCHER){
-					$total_sub = 0;
+					$deductions = $this->Ledger->find('all',array('recursive'=>-1,'conditions'=>array('Ledger.account_id'=>$Account['id'],'Ledger.esp'=>$ESP,'Ledger.type'=>'-')));
+					$total_assess = $Account['assessment_total'];
 					$sub_count = 0;
-					foreach($schedules as $i=>$sched){
-						$sched = $sched['AccountSchedule'];
-						//pr($sched); exit();
-						if($sched['transaction_type_id']=='INIPY')
-							continue;
-						$total_sub += $sched['due_amount']-$sched['paid_amount'];
-						$sub_count++;
+					$unpaid_sub = 0;
+					$t_deductions = 0;
+					$total_paid_sched = 0;
+					$total_due_sched = 0;
+					foreach($deductions as $p){
+						$p=$p['Ledger'];
+						$t_deductions+=$p['amount'];
 					}
-					$new_sub = ($total_sub - $t_payment)/$sub_count;
 					foreach($schedules as $i=>$sched){
 						$sched = $sched['AccountSchedule'];
-						if($sched['transaction_type_id']=='INIPY')
-							continue;
-						$sched['due_amount'] = $new_sub;
+						if($sched['paid_amount']==0)
+							$unpaid_sub++;
+						if($sched['transaction_type_id']!='INIPY')
+						{$sub_count++; $total_due_sched+=$sched['due_amount'];}
+						$total_paid_sched+=$sched['paid_amount'];
+					}
+					$new_sub = ($total_assess-($t_deductions+$transac_payment))/$unpaid_sub;
+					
+					//update the account schedule
+					
+					foreach($schedules as $i=>$sched){
+						$sched=$sched['AccountSchedule'];
+						if($sched['transaction_type_id']=='INIPY'){
+							$sched['due_amount']+=($total_due_sched+$sched['due_amount'])-(($new_sub*$sub_count)+$sched['due_amount']+$transac_payment);
+							$sched['paid_amount']=$sched['due_amount'];
+						}else{
+							$sched['due_amount']=$new_sub;
+							if($sched['due_amount']<=$total_paid_sched){
+								$sched['paid_amount']=$sched['due_amount'];
+								$sched['status']='PAID';
+								$sched['paid_date'] = $today;
+							}else
+								$sched['paid_amount']=$total_paid_sched;
+						}
+						$total_paid_sched-=$sched['paid_amount'];
 						array_push($account_schedules,$sched);
 					}
+					/* pr($account_schedules);
+					pr($total_assess); 
+					pr($t_deductions); 
+					pr($transac_payment); 
+					pr($unpaid_sub); 
+					pr($new_sub); 
+					exit();
+					 */
 				}
 				else{
 					foreach($schedules as $i=>$sched){
