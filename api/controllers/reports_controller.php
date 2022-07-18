@@ -1,7 +1,8 @@
 <?php
 class ReportsController extends AppController{
 	var $name = 'Reports';
-	var $uses = array('Ledger','Account', 'Student','Section','Transaction','TransactionType','MasterConfig','ClasslistBlock','Assessment');
+	var $uses = array('Ledger','Account', 'Student','Section','Transaction','TransactionType',
+						'MasterConfig','ClasslistBlock','Assessment','AccountSchedule');
 
 	// GET srp/test_soa?account_id=LSJXXXXX
 	function soa(){
@@ -31,9 +32,11 @@ class ReportsController extends AppController{
 				'conditions'=>array('Ledger.account_id'=>$account_id,'Ledger.esp'=>$esp),
 				'order'=>array('Ledger.transac_date','Ledger.ref_no','Ledger.id')
 			));
-			
+			$acct = $this->Account->find('all',array('recursive'=>1,'conditions'=>array('Account.id'=>$account_id)));
+			$sched = $acct[0]['AccountSchedule'];
+			//pr($sched); exit();
 			$student['Student']['esp'] = $esp;
-			$this->set(compact('data','student'));
+			$this->set(compact('data','student','sched'));
 		}else{
 			$sec_id=$_GET['section_id'];
 			$sy=$_GET['sy'];
@@ -170,6 +173,8 @@ class ReportsController extends AppController{
 		foreach($trnx['TransactionPayment'] as $payment){
 			if($payment['payment_method_id']=='CHCK')
 				$data['check_details'] = $payment['details'] .' / '. date("d-M-Y", strtotime($payment['valid_on']));
+			if($payment['payment_method_id']=='VCHR')
+				$data['check_details'] = 'voucher no: ' . $payment['details'];
 		}
 		//pr($data); exit();
 		$this->set(compact('data'));

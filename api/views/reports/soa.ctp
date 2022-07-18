@@ -11,6 +11,7 @@ if(!isset($batch)){
 	foreach($chunk_data as $dt){
 		//pr($chunk_data); exit();
 		$pr->ledger($student,$dt,$total_page,$i);
+		$pr->payment_sched($sched);
 		if(count($chunk_data) != ($i++)){
 			$pr->createSheet();
 		}
@@ -24,6 +25,7 @@ if(!isset($batch)){
 		$total_page = count($batch);
 
 		$pr->ledger($item,$item,$total_page,$index+1);
+		$pr->payment_sched($sched);
 		if($index+1!=count($batch))
 			$pr->createSheet();
 		

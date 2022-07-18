@@ -141,6 +141,35 @@ class SOA extends Formsheet{
 		$this->centerText(0,61,'Page '.$page.' of '.$total_page,38,'');
 	}
 	
+	function payment_sched($data){
+		//pr($data); exit();
+		$metrics =array(
+			'base_x'=> 0.5,
+			'base_y'=> 0.5,
+			'width'=> 7.5,
+			'height'=> 12.5,
+			'cols'=> 38,
+			'rows'=> 62,	
+		);
+		$this->section($metrics);
+		$this->GRID['font_size']=7;
+
+		//PAYMENT SCHED
+		$y=40;
+		$totaldue=0;
+		$this->leftText(1,$y++,'PAYMENT SCHEDULE','','b');
+		foreach($data as $d){
+			$this->leftText(1,$y,date("M d, Y", strtotime($d['due_date'])),'','');
+			if($d['due_amount']) $this->rightText(10,$y,number_format($d['due_amount'],2),3,'');
+			else $this->rightText(10,$y,'--',3,'');
+			$totaldue+=$d['due_amount'];
+			$y++;
+		}
+	
+		$this->drawLine($y-0.6,'h',array(1,12));
+		$this->rightText(10,$y,number_format($totaldue,2),3,'b');
+	}
+	
 }
 ?>
 	
