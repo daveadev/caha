@@ -174,7 +174,7 @@ class ReportsController extends AppController{
 			if($payment['payment_method_id']=='CHCK')
 				$data['check_details'] = $payment['details'] .' / '. date("d-M-Y", strtotime($payment['valid_on']));
 			if($payment['payment_method_id']=='VCHR')
-				$data['check_details'] = 'voucher no: ' . $payment['details'];
+				$data['check_details'] = 'Voucher No.: ' . $payment['details'];
 		}
 		//pr($data); exit();
 		$this->set(compact('data'));
