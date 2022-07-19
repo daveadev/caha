@@ -245,6 +245,10 @@ class PaymentsController extends AppController {
 							$Account['payment_total'] = $payment_to_date;
 						}
 					}
+					if($trnx['id']=='MODUL'){
+						$history['total_due']=4950;
+						$history['total_paid']=4950-$Account['module_balance'];
+					}
 				}else{
 					$history = array(
 						'account_id'=>$account_id,
