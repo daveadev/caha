@@ -31,27 +31,11 @@ class CashierCollectionsController extends AppController {
 				//$conds =  array('Transaction.ref_no LIKE'=> $typ.'%','transac_date'=>$date);
 			}
 		}
-		//pr($this->paginate()); exit();
-		//$conds =  array('AccountHistory.ref_no LIKE'=> $type.'%','flag'=>'-','and'=>array('transac_date <='=>$end,'transac_date >='=>$start));
 		$collections = $this->paginate();
 		
 		$sections = $this->Section->find('all',array('recursive'=>1));
 
-		// Get running total from AccountHistory if OR otherwise use Transaction
-		/* switch($type){
-			case 'AR':
-				$total = $this->AccountHistory->find('all',array('conditions'=>$conds));
-			default:
-				$total = $this->Transaction->find('all',array('conditions'=>$conds));
-			break;
-		}
 		
-		$total_collections = 0;
-		foreach($total as $i=>$amount){
-			$total_collections += $amount['Transaction']['amount'];
-			if($type=='AR')
-				$total_collections += $amount['AccountHistory']['amount'];
-		} */
 		
 		
 		$list = array();
@@ -68,18 +52,14 @@ class CashierCollectionsController extends AppController {
 		}
 		
 	
-		//pr($list);exit();
 		if($this->isAPIRequest()){
 			$page = $this->paginate['CashierCollection']['page'];
 			$limit = $this->paginate['CashierCollection']['limit'];
 			$cnt = $limit!=999999?($page-1)*$limit+1:1;
-			//pr($collections); exit();
 			$booklets = array();
 			foreach($collections as $i=>$col){
-				//pr($col);
 				$st = $col['Student'];
 				$cl = $col['CashierCollection'];
-				//pr($col); 
 				$acct = $col['Account'];
 				$book = $col['Booklet'];
 				$booknum = $book['booklet_number'];
@@ -98,11 +78,11 @@ class CashierCollectionsController extends AppController {
 					array_push($booklets[$booknum]['ref_nos'],$ref);
 					$booklets[$booknum]['amount'] += $cl['amount'];
 				}
-				//pr($booklets);
+				
 				$cl['cnt'] =  $cnt;
 				$status = $col['Account']['subsidy_status'];
 				$status = $status=='REGXX'?'REG':substr($status,-3);
-				//pr($acct);
+				
 				if($acct['account_type']=='student'){
 					if(isset($st['class_name']))
 						$cl['received_from'] = $st['class_name'];
@@ -114,14 +94,13 @@ class CashierCollectionsController extends AppController {
 					$yl_ref = $st['year_level_id'];
 					$sec_ref = $st['section_id'];
 				}else{
-					//pr($acct); exit();
 					$cl['date'] ='-';
 					$cl['received_from'] ='-';
 					$cl['sno'] =$acct['id'];
 					$cl['status'] ='-';
 					
 				}
-				
+				//pr($col);
 				if(isset($yl_ref)){
 					if(isset($list[$yl_ref][$sec_ref])):
 						$cl['level'] = $list[$yl_ref][$sec_ref]['yl'];
@@ -160,9 +139,10 @@ class CashierCollectionsController extends AppController {
 					$cl['level'] = 'N/A';
 					$cl['section'] = 'N/A';
 					
-					if($acct['account_type']=='inquiry'){
+					if($acct['account_type']=='inquiry'||isset($col['Inquiry']['full_name'])){
 						$cl['status']='New';
 						$cl['received_from'] = $col['Inquiry']['full_name'];
+						
 					}
 					if($acct['account_type']=='others'){
 						$cl['status']='Others';
@@ -182,14 +162,11 @@ class CashierCollectionsController extends AppController {
 				$b['series_end'] = max($b['ref_nos']);
 				$booklets[$i] = $b;
 			}
-			//pr($booklets);
+			
 		}
-		//exit();
 		$collections = array('collections'=>$collections,'booklets'=>$booklets);
 		$cashierCollections = array(array('CashierCollection'=>$collections));
-		//pr($collections); exit();
-		//pr($collections);
-		//exit();
+		
 		$this->set('cashierCollections', $cashierCollections);
 	}
 
