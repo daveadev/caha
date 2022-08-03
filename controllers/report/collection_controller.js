@@ -13,6 +13,9 @@ define(['app','api','atomic/bomb'],function(app){
 			$scope.Headers = ['Month','Details','Collection',{label:'Balance',class:'amount total peso'}];
 			$scope.DHeaders = ['Date','Month','Details','Collection','Balance'];
 			$scope.Months = [
+				{id:6,'month':'Jun'},
+				{id:7,'month':'Jul'},
+				{id:8,'month':'Aug'},
 				{id:9,'month':'Sep',},
 				{id:10,'month':'Oct'},
 				{id:11,'month':'Nov'},
@@ -22,11 +25,8 @@ define(['app','api','atomic/bomb'],function(app){
 				{id:3,'month':'Mar'},
 				{id:4,'month':'Apr'},
 				{id:5,'month':'May'},
-				{id:6,'month':'Jun'},
-				{id:7,'month':'Jul'},
-				{id:8,'month':'Aug'},
 			];
-			$scope.ActiveMonth = {id:9,'month':'Sep'};
+			$scope.ActiveMonth = {id:6,'month':'Jun'};
 			$scope.index = 0;
 			$scope.Chart = {labels:['No data'],data:[0],colors:['#dddddd'],options:{}}; 
 		}
@@ -36,6 +36,8 @@ define(['app','api','atomic/bomb'],function(app){
 			$scope.ActiveSY =  active.sy;
 			if($scope.date_to)
 				getCollections();
+			if($scope.ActiveOpt.id=='month')
+				getLedgerMonths();
 		});
 		$scope.setActOption = function(opt){
 			$scope.date_from='';
@@ -105,7 +107,7 @@ define(['app','api','atomic/bomb'],function(app){
 		}
 		
 		function getLedgerMonths(){
-			var trnx = ['INIPY','SBQPY'];
+			var trnx = ['INIPY','SBQPY','FULLP'];
 			var data = {
 				esp:$scope.ActiveSY,
 				type:'-',
@@ -113,6 +115,7 @@ define(['app','api','atomic/bomb'],function(app){
 				limit:'less'
 			}
 			api.GET('Ledgers',data,function success(response){
+				console.log(response);
 				var Months = [];
 				angular.forEach(response.data, function(led){
 					var date = new Date(led.transac_date);
