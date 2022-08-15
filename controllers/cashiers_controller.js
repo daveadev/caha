@@ -371,7 +371,7 @@ define(['app', 'api'], function(app) {
 			
 			function getReservations(){
 				//hardcoded ESP for the mean time while testing
-				api.GET('reservations', {account_id:$scope.SelectedStudent.id,esp:2022}, function success(response){
+				api.GET('reservations', {account_id:$scope.SelectedStudent.id,esp:$scope.ActiveSY}, function success(response){
 					$scope.HasRes = true;
 					$scope.Reservations = response.data;
 				}, function error(response){
@@ -391,6 +391,23 @@ define(['app', 'api'], function(app) {
 				}
 			}
 			
+			function getOutstandingBalance(){
+				var data = {account_id: $scope.ActiveStudent.id,esp:$scope.ActiveSY};
+				api.GET('ledgers',data, function success(response){
+					var ledgers=response.data;
+					console.log(ledgers);
+					var OutstandingBalance = 0;
+					angular.forEach(ledgers, function(item){
+						if(item.transaction_type_id=='MODUL')
+							return;
+						if(item.type=='+')
+							OutstandingBalance+=item.amount;
+						else
+							OutstandingBalance-=item.amount;
+					})
+					$scope.ActiveStudent.outstanding_balance = OutstandingBalance;
+				});
+			}
 			
             //Change the step for navigation
             $scope.nextStep = function() {
@@ -404,7 +421,7 @@ define(['app', 'api'], function(app) {
 					$scope.Disabled = 1;
 					getReservations();
                     $scope.ActiveStudent = $scope.SelectedStudent;
-					
+					getOutstandingBalance();
 					if($scope.isPayeeConfirmed){
 						if(!$scope.ActiveStudent.id){
 							$scope.ActiveTyp='A2O';
