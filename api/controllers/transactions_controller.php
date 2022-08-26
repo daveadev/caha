@@ -22,8 +22,11 @@ class TransactionsController extends AppController {
 						$t['Transaction']['name'] = $t['Student']['full_name'];
 						$t['Transaction']['sno'] = $t['Student']['sno'];
 						
-					}else
+					}else{
+						if(!isset($t['Inquiry']['full_name']))
+							pr($t);
 						$t['Transaction']['name'] = $t['Inquiry']['full_name'];
+					}
 				}else{
 					$t['Transaction']['name'] = $t['Account']['account_details'];
 				}
