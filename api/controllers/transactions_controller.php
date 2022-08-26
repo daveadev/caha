@@ -52,7 +52,8 @@ class TransactionsController extends AppController {
 			$transac = $this->data['Transaction'];
 			if($transac['action']=='cancel'){
 				$isOthers = false;
-				if(isset($transac['transac']['account_type']))
+				
+				if($transac['transac']['account_type']=='others')
 					$isOthers = true;
 				
 				$time = date("h:i:s");
@@ -159,7 +160,7 @@ class TransactionsController extends AppController {
 				$ledger['type'] = '+';
 				$ledger['amount'] = $total;
 				$ledger['details'] = $transac_dtl['details'];
-				//pr($ledger); exit();
+				
 				if(!$isOthers)
 					$this->Ledger->save($ledger);
 				
