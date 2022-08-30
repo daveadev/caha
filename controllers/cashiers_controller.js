@@ -352,13 +352,26 @@ define(['app', 'api'], function(app) {
 						//$scope.nextStep();
 					}
 					var OAIndex = 0;
-					angular.forEach($scope.TransactionTypes,function(res,ind){
-						
+					var HasIP = 0;
+					angular.forEach($scope.TransactionTypes,function(res,ind,$index){
 						if(res.id=='OLDAC')
 							OAIndex = ind;
-						
+						if(res.id=='INIPY'&&res.amount<res.due_amount){
+							HasIP = res.amount;
+						}
 					});
-					
+					//check if initial payment is partial, then transafer balance to next subsequent
+					$scope.HasIP = false;
+					for(var i = $scope.TransactionTypes.length - 1; i >= 0; i--){
+						let res = $scope.TransactionTypes[i];
+						
+						if(res.id=='INIPY'&&HasIP)
+							$scope.TransactionTypes.splice(i, 1);
+						if(res.id=='SBQPY'&&HasIP>0){
+							res.amount+=HasIP
+							$scope.HasIP = true;
+						}
+					}
 					// Set default amount Old Account from ActiveStudent.old_balance
 					if($scope.ActiveStudent.old_balance > 0){
 						$scope.TransactionTypes[OAIndex].amount =  $scope.ActiveStudent.old_balance;
@@ -471,6 +484,8 @@ define(['app', 'api'], function(app) {
 							qty: transactionType.qty
 							
                         };
+						if($scope.HasIP==true)
+							transaction.has_ip = true;
                         if ($scope.SelectedTransactions[transactionType.id]) {
 							if(transactionType.is_quantity&&transactionType.is_specify){
 								transaction.details = transactionType.desc+'_'+transactionType.qty+'x'+transaction.amount;	
@@ -495,7 +510,6 @@ define(['app', 'api'], function(app) {
 						if(transac.id=='INIPY'||transac.id=='FULLP')
 							$scope.IsNextSy = true;
 					});
-					console.log($scope.IsNextSy);
 					console.log($scope.ModEsp);
                 }
                 if ($scope.ActiveStep === 3) {

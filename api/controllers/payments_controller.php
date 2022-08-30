@@ -64,7 +64,7 @@ class PaymentsController extends AppController {
 			$curr_refNo = $booklet['receipt_type']. ' ' .$booklet['series_counter'];
 			$booklet = $this->checkBooklet($_DATA);
 			
-			//pr($_DATA); exit();
+			
 			if(!isset($schedules[0])){
 				foreach($transactions as $t){
 					if($t['id']=='INIPY'||$t['id']=='FULLP'){
@@ -160,6 +160,10 @@ class PaymentsController extends AppController {
 			$transac_payment = $total_payment;
 			foreach($transactions as $trnx){
 				
+				//check if has partial initial, pay initial
+				$HasIP = false;
+				if(isset($trnx['has_ip']))
+					$HasIP = true;
 				$detail = $trnx['name'];
 				$payment = $total_payment;
 				$total_module = 0;
@@ -324,7 +328,7 @@ class PaymentsController extends AppController {
 						
 					}
 					$new_sub = ($total_assess-($t_deductions+$transac_payment))/$unpaid_sub;
-					//pr($new_sub); exit();
+					
 					//update the account schedule
 					
 					foreach($schedules as $i=>$sched){
@@ -334,14 +338,6 @@ class PaymentsController extends AppController {
 						}
 						array_push($account_schedules,$sched);
 					}
-					/* pr($account_schedules);
-					pr($total_assess); 
-					pr($t_deductions); 
-					pr($transac_payment); 
-					pr($unpaid_sub); 
-					pr($new_sub); 
-					exit();
-					 */
 				}
 				else{
 					foreach($schedules as $i=>$sched){
