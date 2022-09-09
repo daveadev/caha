@@ -356,22 +356,30 @@ define(['app', 'api'], function(app) {
 					angular.forEach($scope.TransactionTypes,function(res,ind,$index){
 						if(res.id=='OLDAC')
 							OAIndex = ind;
-						if(res.id=='INIPY'&&res.amount<res.due_amount){
-							HasIP = res.amount;
-						}
 					});
 					//check if initial payment is partial, then transafer balance to next subsequent
 					$scope.HasIP = false;
-					for(var i = $scope.TransactionTypes.length - 1; i >= 0; i--){
-						let res = $scope.TransactionTypes[i];
-						
-						if(res.id=='INIPY'&&HasIP)
-							$scope.TransactionTypes.splice(i, 1);
-						if(res.id=='SBQPY'&&HasIP>0){
-							res.amount+=HasIP
-							$scope.HasIP = true;
+					api.GET('account_schedules',{account_id:$scope.ActiveStudent.id,limit:99}, function success(response){
+						let scheds = response.data;
+						for(var i = scheds.length - 1; i >= 0; i--){
+							let res = scheds[i];
+							if(res.transaction_type_id=='INIPY'&&res.paid_amount>0){
+								HasIP = res.due_amount-res.paid_amount;
+							}
 						}
-					}
+						console.log(HasIP);
+						for(var i = $scope.TransactionTypes.length - 1; i >= 0; i--){
+							let res = $scope.TransactionTypes[i];
+							
+							if(res.id=='INIPY'&&HasIP)
+								$scope.TransactionTypes.splice(i, 1);
+							if(res.id=='SBQPY'&&HasIP>0){
+								res.amount+=HasIP
+								$scope.HasIP = true;
+							}
+						}
+					});
+					
 					// Set default amount Old Account from ActiveStudent.old_balance
 					if($scope.ActiveStudent.old_balance > 0){
 						$scope.TransactionTypes[OAIndex].amount =  $scope.ActiveStudent.old_balance;

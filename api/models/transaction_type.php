@@ -1,7 +1,7 @@
 <?php
 class TransactionType extends AppModel {
 	var $name = 'TransactionType';
-	var $consumableFields = array('id','name','token','amount','amounts','description','type','is_quantity','is_specify','due_amount');
+	var $consumableFields = array('id','name','token','amount','amounts','description','type','is_quantity','is_specify');
 	var $virtualFields = array(
 				'token'=>"MD5(GROUP_CONCAT(AccountSchedule.due_date,'/',AccountSchedule.due_amount))",
 				'amounts'=>"GROUP_CONCAT(AccountSchedule.due_date,'/',AccountSchedule.due_amount-AccountSchedule.paid_amount ORDER BY AccountSchedule.order)",
@@ -12,8 +12,9 @@ class TransactionType extends AppModel {
 						AccountSchedule.due_amount-AccountSchedule.paid_amount,TransactionType.default_amount
 						)
 				)",
-				'due_amount'=>'AccountSchedule.due_amount',
+				
 				);
+	
 	//var $useDbConfig = 'sfm';
 	var $actsAs = array('Containable');
 	//The Associations below have been created with all possible keys, those that are not needed can be removed

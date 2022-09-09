@@ -158,16 +158,31 @@ class SOA extends Formsheet{
 		$y=40;
 		$totaldue=0;
 		$this->leftText(1,$y++,'PAYMENT SCHEDULE','','b');
+		$this->rightText(10,40.25,'Amount Due',3,'');
+		$this->rightText(14,40.25,'Balance',3,'');
+		$this->rightText(18,40.25,'Date paid',3,'');
+		$total_bal = 0;
 		foreach($data as $d){
 			$this->leftText(1,$y,date("M d, Y", strtotime($d['due_date'])),'','');
-			if($d['due_amount']) $this->rightText(10,$y,number_format($d['due_amount'],2),3,'');
+			
+			if($d['due_amount']){ 
+				$this->rightText(10,$y,number_format($d['due_amount'],2),3,'');
+				$balance = $d['due_amount']-$d['paid_amount'];
+				$this->rightText(14,$y,number_format($d['due_amount']-$d['paid_amount'],2),3,'');
+				$total_bal+=$balance;
+				if($d['status']=='PAID')
+					$this->rightText(18,$y,date("M d, Y", strtotime($d['paid_date'])),3,'');
+				
+			}
+			
 			else $this->rightText(10,$y,'--',3,'');
 			$totaldue+=$d['due_amount'];
 			$y++;
 		}
 	
-		$this->drawLine($y-0.6,'h',array(1,12));
+		$this->drawLine($y-0.6,'h',array(1,21));
 		$this->rightText(10,$y,number_format($totaldue,2),3,'b');
+		$this->rightText(14,$y,number_format($total_bal,2),3,'b');
 	}
 	
 }
