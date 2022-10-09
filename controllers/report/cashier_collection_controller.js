@@ -102,7 +102,7 @@ define(['app','api','atomic/bomb'],function(app){
 				d.amount = d.denomination*d.quantity;
 				$scope.Total += d.amount;
 			});
-			angular.forEach($scope.CashierData.data[0].collections, function(trx){
+			angular.forEach($scope.NonCashes, function(trx){
 				if(trx.payment)
 					$scope.TotalNon += trx.amount;
 			});
@@ -124,15 +124,16 @@ define(['app','api','atomic/bomb'],function(app){
 			});
 			data.booklets = $scope.Booklet;
 			var noncash = [];
-			angular.forEach($scope.CashierData.data[0].collections,function(non){
-				if(non.payment){
+			
+			
+			angular.forEach($scope.NonCashes,function(non){
+				
 					var a = {};
 					a.check_date = non.check_date;
 					a.bank_details = non.payment;
 					a.OR = non.ref_no;
 					a.amount = non.amount;
 					noncash.push(a);
-				}
 			});
 			data.noncash = noncash;
 			
@@ -222,6 +223,23 @@ define(['app','api','atomic/bomb'],function(app){
 					var col = [{collections:$scope.DataCollection}];
 					var print = {data:col};
 					$scope.CashierData =  print;
+					$scope.cancelled = [];
+					angular.forEach($scope.CashierData.data[0].collections,function(c){
+						if(c.ref_no.match('XOR')){
+							let ref_no = c.ref_no.split(" ");
+							ref_no = ref_no[1];
+							$scope.cancelled.push(ref_no);
+						}
+					});
+					$scope.NonCashes = [];
+					angular.forEach($scope.CashierData.data[0].collections,function(c){
+						let ref_no = c.ref_no.split(" ");
+						ref_no = ref_no[1];
+						if($scope.cancelled.indexOf(ref_no)!==1&&c.payment!==undefined){
+							$scope.NonCashes.push(c);
+						}
+					});
+					console.log($scope.NonCashes);
 					$scope.DataReady = true;
 					$scope.Collections.total = 0;
 					angular.forEach($scope.DataCollection, function(c){
@@ -272,6 +290,7 @@ define(['app','api','atomic/bomb'],function(app){
 				$scope.Remittance.doctype = $scope.ActiveOpt;
 				$scope.PrintRemittanceData = $scope.Remittance;
 				var noncash = [];
+				
 				angular.forEach($scope.CashierData.data[0].collections,function(non){
 					if(non.payment){
 						var a = {};
@@ -304,7 +323,6 @@ define(['app','api','atomic/bomb'],function(app){
 			//}
 			//data.limit = 'less';
 			api.GET('cashier_collections',data, function success(response){
-				console.log(response.data[0]);
 				$scope.Booklet = response.data[0].booklets;
 				getRemittance();
 			},function error(response){

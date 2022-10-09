@@ -73,7 +73,10 @@ class SOA extends Formsheet{
 		unset($data['Student']);
 		unset($data['YearLevel']);
 		unset($data['Section']);
+		unset($data['Sched']);
 		foreach($data as $d){
+			//pr($d); exit();
+			
 			if($d['Ledger']['transaction_type_id']!='MODUL'){
 				$time = strtotime($d['Ledger']['transac_date']);
 
@@ -163,6 +166,7 @@ class SOA extends Formsheet{
 		$this->rightText(18,40.25,'Date paid',3,'');
 		$total_bal = 0;
 		foreach($data as $d){
+			
 			$this->leftText(1,$y,date("M d, Y", strtotime($d['due_date'])),'','');
 			
 			if($d['due_amount']){ 

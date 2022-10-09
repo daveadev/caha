@@ -38,7 +38,7 @@ class CollectionsController extends AppController {
 		//total collections to with in date range
 		$collections = $this->Ledger->find('all',array('recursive'=>0,'conditions'=>$collect_range,'group'=>$group));
 		//get cancelled
-		$cancelled = $this->Ledger->find('all',array('recursive'=>0,'conditions'=>array('Ledger.ref_no LIKE '=>'XOR%','Ledger.esp'=>$esp,'Ledger.transaction_type_id'=>'MODUL','and'=>$date_range)));
+		$cancelled = $this->Ledger->find('all',array('recursive'=>0,'conditions'=>array('Ledger.ref_no LIKE '=>'XOR%','Ledger.esp'=>$esp,'Ledger.transaction_type_id !='=>'MODUL','and'=>$date_range)));
 		//pr($cancelled);
 		//total collected before the start date
 		$forwarded = $this->Ledger->find('all',array('recursive'=>0,'conditions'=>$cond_collect));

@@ -154,13 +154,13 @@ class DailyRemittance extends Formsheet{
 		$y=1;
 		$this->GRID['font_size']=9;
 		
-		$this->drawBox(0,0,12,15);
-		$this->drawLine(3,'v',array(0,15));
-		$this->drawLine(6,'v',array(0,16));
-		$this->drawLine(9,'v',array(0,16));
-		$this->drawLine(12,'v',array(15,1));
-		$this->drawLine(16,'h',array(6,6));
-		$this->drawMultipleLines(2,14,1,'h');
+		$this->drawBox(0,0,12,18);
+		$this->drawLine(3,'v',array(0,17));
+		$this->drawLine(6,'v',array(0,18));
+		$this->drawLine(9,'v',array(0,18));
+		$this->drawLine(15,'v',array(15,1));
+		$this->drawLine(18,'h',array(6,6));
+		$this->drawMultipleLines(2,17,1,'h');
 		$this->leftText(0.2,-0.3,'NON-CASH BREAKDOWN','','');
 		$y = 1.2;
 		$this->centerText(0,$y,'OR No.',3,'');
@@ -174,7 +174,8 @@ class DailyRemittance extends Formsheet{
 		$this->GRID['font_size']=8;
 		foreach($breakdown as $d){
 			$this->leftText(0.2,$y,$d['OR'],'','');
-			$this->centerText(3,$y,date('M d, Y',strtotime($d['check_date'])),3,'');
+			if(isset($d['check_date']))
+				$this->centerText(3,$y,date('M d, Y',strtotime($d['check_date'])),3,'');
 			$this->centerText(6,$y,$d['bank_details'],3,'');
 			$this->rightText(11.9,$y,number_format($d['amount'],2),'','');
 			$total+=$d['amount'];
@@ -182,7 +183,7 @@ class DailyRemittance extends Formsheet{
 			
 		}
 		
-		$y = 15.8;
+		$y = 17.8;
 		$this->rightText(8.8,$y,'Total','','b');
 		$this->rightText(11.9,$y,number_format($total,2),'','b');
 		

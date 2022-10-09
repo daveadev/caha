@@ -219,7 +219,7 @@
 							</tr>
 						</thead>
 						<tbody>
-							<tr ng-repeat="non in CS.CashierData.data[0].collections | filter:{payment:'!!'}">
+							<tr ng-repeat="non in CS.NonCashes">
 								<td>{{non.ref_no}}</td>
 								<td>{{non.check_date}}</td>
 								<td>{{non.payment}}</td>

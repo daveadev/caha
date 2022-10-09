@@ -21,11 +21,12 @@ if(!isset($batch)){
 	$pr->output();
 }else{
 	foreach($batch as $index=>$item){
-		//pr($index);
+		//pr($item['Sched']);
 		$total_page = count($batch);
 
 		$pr->ledger($item,$item,$total_page,$index+1);
-		$pr->payment_sched($sched);
+		
+		$pr->payment_sched($item['Sched']);
 		if($index+1!=count($batch))
 			$pr->createSheet();
 		

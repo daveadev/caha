@@ -49,6 +49,7 @@ class ReportsController extends AppController{
 			}
 			$ids = $this->ClasslistBlock->getIds($sec_id,$sy);
 			$batch = array();
+			
 			foreach($ids as $i=>$id){
 				$this->Student->bindModel(array('belongsTo' => array('Section')));
 				$this->Student->recursive=1;
@@ -60,13 +61,19 @@ class ReportsController extends AppController{
 					'conditions'=>array('Ledger.account_id'=>$id,'Ledger.esp'=>$esp),
 					'order'=>array('Ledger.transac_date','Ledger.ref_no','Ledger.id')
 				));
+				$sched = $this->Account->find('all',array('recursive'=>1,'conditions'=>array('Account.id'=>$id)));
+				$sched = $sched[0]['AccountSchedule'];
+				$order = array_column($sched, 'order');
+				array_multisort($order, SORT_ASC, $sched);
+				//pr($sched); exit();
 				$student['Student']['esp'] = $esp;
 				$data['Student'] = $student['Student'];
 				$data['YearLevel'] = $student['YearLevel'];
 				$data['Section'] = $student['Section'];
+				$data['Sched'] = $sched;
 				$batch[$i]=$data;
 			}
-			//pr($batch); exit();
+			
 			$this->set(compact('batch'));
 		}
 	}

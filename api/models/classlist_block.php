@@ -20,6 +20,8 @@ class ClasslistBlock extends AppModel {
 				'Student.full_name',
 				'Student.class_name',
 				'Student.status',
+				'Student.last_name',
+				'Student.first_name',
 			),
 			'order' => ''
 		),
@@ -120,12 +122,17 @@ class ClasslistBlock extends AppModel {
 									'conditions'=>array('ClasslistBlock.section_id'=>$secId,'ClasslistBlock.esp'=>$sy),
 									//'order'=>array('Student.class_name')
 							));
-		/* usort($list, 'sortByOrder');
-		pr($list); exit(); */
+		$sorted = array();
+		foreach($list as $i=>$item){
+			$sorted[$item['Student']['last_name']] = $item;
+		};
+		ksort($sorted,SORT_STRING );
+		//pr($sorted); exit();
 		$ids = array();
-		foreach($list as $item){
+		foreach($sorted as $item){
 			array_push($ids,$item['ClasslistBlock']['student_id']);
 		}
+		//pr($ids); exit();
 		return $ids;
 	}
 	/* function sortByOrder($a, $b) {

@@ -122,7 +122,7 @@ class PaymentsController extends AppController {
 								'booklet_id'=>$booklet['id'],
 								'ref_no'=>$curr_refNo,
 								'esp' => $ESP,
-								'amount'=> $TOTAL_DUE,
+								'amount'=> $t_payment,
 								'transac_date'=>$today,
 								'transac_time'=>$time,
 								'cashier'=>$USERNAME,
