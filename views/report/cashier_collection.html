@@ -56,6 +56,7 @@
 					</a-col>
 				</a-row>
 			</a-header>
+			
 			<a-canvas>
 				<a-content ng-show="CS.Collections&&!CS.NoCollections">
 					
@@ -63,7 +64,7 @@
 						<a-col size="6">
 							<h4 ng-show="CS.ActiveUser.user_type!='cashr'" for="">Collections from {{CS.date_from | date:'dd MMM yyyy'}} - {{CS.date_to | date:'dd MMM yyyy'}}</h4>
 							<h4 ng-show="CS.ActiveUser.user_type=='cashr'" for="">Collections for {{CS.cash_date| date:'dd MMM yyyy'}}</h4>
-							<h4 class="total amount peso pull-left" ng-show="CS.Collections.total">{{CS.Collections.total | currency}}</h4>
+							<h4 class="total amount peso pull-left" ng-show="CS.Collections.total">{{CS.Collections.total | currency}}</h4> <br />
 							<h4 ng-show="!CS.Collections.total">Loading {{CS.PrintMeta.page}} of {{CS.PrintMeta.pages}}</h4>
 						</a-col>
 						<a-col size="6">
@@ -73,52 +74,40 @@
 						</a-col>
 					</a-row>
 					<a-row>
+						<a-col><h4>Collection Breakdown</h4></a-col>
+					</a-row>
+					<a-row>
+						<a-col size="3">
+							<h5 ng-show="CS.Breakdown"> Tuition: 
+								<span class="total amount peso" >{{CS.Breakdown.tuitions | currency}}</span>
+							</h5>
+							<h5 ng-show="CS.Breakdown"> Modules: 
+								<span class="total amount peso" >{{CS.Breakdown.modules | currency}}</span>
+							</h5>
+							<h5 ng-show="CS.Breakdown"> Others: 
+								<span class="total amount peso" >{{CS.Breakdown.others | currency}}</span>
+							</h5>
+						</a-col>
+						<a-col size="3">
+							<h5 ng-show="CS.Breakdown"> Old Accounts: 
+								<span class="total amount peso" >{{CS.Breakdown.old_accounts | currency}}</span>
+							</h5>
+							<h5 ng-show="CS.Breakdown"> Voucher: 
+								<span class="total amount peso " >{{CS.Breakdown.vouchers | currency}}</span>
+							</h5>
+						</a-col>
+						
+					</a-row>
+					<a-row>
 						<a-col ng-if="CS.ActiveUser.user_type!=='cashr'">
 							<a-table headers="CS.Headers" props="CS.Props" data="CS.Collections.collections" ></a-table>
 						</a-col>
 						<a-col ng-if="CS.ActiveUser.user_type=='cashr'">
 							<a-table  headers="CS.CHeaders" props="CS.CProps" data="CS.Collections.collections" ></a-table>
 							
-							
-							<!-- <table class="table table-bordered table-condensed">
-								<thead>
-									<tr>
-										<th>Cnt</th>
-										<th>Student #</th>
-										<th>Received from</th>
-										<th>Level</th>
-										<th>Section</th>
-										<th>Status</th>
-										<th>Date</th>
-										<th>Particular</th>
-										<th>OR #</th>
-										<th>Amount</th>
-										<th>Total Due</th>
-										<th>Total Paid</th>
-										<th>Balance</th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr ng-repeat="col in CS.Collections.collections">
-										<td>{{col.cnt}}</td>
-										<td>{{col.sno}}</td>
-										<td>{{col.received_from}}</td>
-										<td>{{col.level}}</td>
-										<td>{{col.section}}</td>
-										<td>{{col.status}}</td>
-										<td>{{col.date}}</td>
-										<td>{{col.particulars}}</td>
-										<td>{{col.ref_no}}</td>
-										<td class="amount total">{{col.amount | currency}}</td>
-										<td class="amount total">{{col.total_due | currency}}</td>
-										<td class="amount total">{{col.total_paid | currency}}</td>
-										<td class="amount total">{{col.balance | currency}}</td>
-									</tr>
-									
-								</tbody>
-							</table> -->
 						</a-col>
 					</a-row>
+					
 				</a-content>
 				<a-content ng-show="!CS.Collections&&!CS.Loading" style="height: 100%">
 					<div class="empty-state">

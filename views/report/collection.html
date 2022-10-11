@@ -66,36 +66,10 @@
 				<a-content ng-show="CC.Collections">
 					<a-row>
 						<a-col size="6">
-							<canvas id="pie" class="chart chart-pie"
-							  chart-data="CC.Chart.data" chart-labels="CC.Chart.labels" chart-colors="CC.Chart.colors" chart-options="CC.Chart.options" >
-							</canvas>
+							
 						</a-col>
 						<a-col size="3">
-							<div class="amount amount-total">
-								<label for=""> {{CC.Collections.cfp | number: 2}} % Collection Forwarded</label>
-								<h3>
-									<div class="amount total peso"> {{CC.Collections.collection_forwarded | currency}}</div>
-								</h3>
-							</div>
-							<div class="amount amount-total">
-								<label for=""> {{CC.Collections.bbp | number:2}} % Receivable Balance</label>
-								<h3>
-									<div class="amount total peso">{{CC.Collections.receivable_balance | currency}}</div>
-								</h3>
-							</div>
-							<div class="amount amount-total">
-								<label for=""> {{CC.Collections.ccp - CC.Collections.cfp | number:2}} % Total Collected Period Covered</label>
-								<h3>
-									<div class="amount total peso">{{CC.Collections.coverage_collected | currency}}</div>
-								</h3>
-							</div>
-							<div class="amount amount-total">
-								<label for=""> {{CC.Collections.ccp | number:2}} % Total Collected to Date</label>
-								<h3>
-									<div class="amount total peso">{{CC.Collections.total_collected | currency}}</div>
-								</h3>
-							</div>
-
+							
 						</a-col>
 						<a-col size="3">
 							<div class="amount amount-total">

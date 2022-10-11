@@ -145,14 +145,29 @@ define(['app','api','atomic/bomb'],function(app){
 				data.breakdown = data.details;
 				$scope.PrintRemittanceData = data;
 				$scope.PrintRemit();
-				aModal.close("RemitModal");
 				getRemittance();
-				$scope.Saving = false;
+				
+				api.POST('daily_total_collections', daily_collections, function success(response){
+					aModal.close("RemitModal");
+					$scope.Saving = false;
+				},function error(response){
+					
+				});
 			}
 			var error = function(response){
 				
 			}
+			var daily_collections = {};
+			daily_collections['date'] = $filter('date')(new Date($scope.cash_date),'yyyy-MM-dd');
+			daily_collections['tuition'] = $scope.Breakdown.tuitions;
+			daily_collections['old_account'] = $scope.Breakdown.old_accounts;
+			daily_collections['module'] = $scope.Breakdown.modules;
+			daily_collections['voucher'] = $scope.Breakdown.vouchers;
+			daily_collections['other'] = $scope.Breakdown.others;
+			daily_collections['total'] = $scope.Collections.total;
 			api.POST('remittances', data, success, error);
+			
+			
 		}
 		
 		function getCashier(){
@@ -324,6 +339,8 @@ define(['app','api','atomic/bomb'],function(app){
 			//data.limit = 'less';
 			api.GET('cashier_collections',data, function success(response){
 				$scope.Booklet = response.data[0].booklets;
+				$scope.Breakdown = response.data[0];
+				console.log($scope.Breakdown);
 				getRemittance();
 			},function error(response){
 				getRemittance();

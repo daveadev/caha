@@ -2,7 +2,7 @@
 class CashierCollectionsController extends AppController {
 
 	var $name = 'CashierCollections';
-	var $uses = array('CashierCollection','Section','Student','Account','AccountHistory','Transaction','TransactionDetail','Booklet','TransactionPayment');
+	var $uses = array('CashierCollection','Section','Student','Account','AccountHistory','Transaction','TransactionDetail','Booklet','TransactionPayment','Ledger');
 	
 	function index() {
 		
@@ -28,8 +28,13 @@ class CashierCollectionsController extends AppController {
 			$conds =  array('Transaction.ref_no LIKE'=> '%'.$typ.'%','transac_date'=>$date);
 			if($type!=='OR'){
 				$this->paginate['CashierCollection']['contain'] = array('Student','Account','TransactionDetail','Booklet');
-				//$conds =  array('Transaction.ref_no LIKE'=> $typ.'%','transac_date'=>$date);
 			}
+			$cancelled = $this->Ledger->find('all',
+						array('recursive'=>1,
+							'conditions'=>array(
+									'Ledger.transac_date'=>$date,
+									//'Transaction.status'=>'cancelled',
+									'Ledger.ref_no LIKE'=> 'X'.$typ.'%')));
 		}
 		$collections = $this->paginate();
 		
@@ -57,7 +62,48 @@ class CashierCollectionsController extends AppController {
 			$limit = $this->paginate['CashierCollection']['limit'];
 			$cnt = $limit!=999999?($page-1)*$limit+1:1;
 			$booklets = array();
+			$old_accounts = 0;
+			$vouchers = 0;
+			$tuitions = 0;
+			$modules = 0;
+			$total = 0;
+			$v_ors = array();
+			$o_ors = array();
+			$t_ors = array();
+			$m_ors = array();
 			foreach($collections as $i=>$col){
+				//pr($col); exit();
+				$refno = explode(" ",$col['CashierCollection']['ref_no']);
+				//pr($refno); exit();
+				switch($col['TransactionDetail'][0]['transaction_type_id']){
+					case 'OLDAC': 
+						$old_accounts+=$col['CashierCollection']['amount'];
+						array_push($o_ors,$refno[1]);
+						break;
+					case 'INIPY': 
+						$tuitions+=$col['CashierCollection']['amount'];
+						array_push($t_ors,$refno[1]);
+						break;
+					case 'FULLP': 
+						$tuitions+=$col['CashierCollection']['amount'];
+						array_push($t_ors,$refno[1]);
+						break;
+					case 'MODUL': 
+						$modules+=$col['CashierCollection']['amount'];
+						array_push($m_ors,$refno[1]);
+						break;
+				}
+				if(isset($col['TransactionPayment'][0]['details']))
+					$vchr = $col['TransactionPayment'][0]['details'];
+				if($col['TransactionDetail'][0]['transaction_type_id']=='SBQPY'){
+					if(strpos('LV',$vchr)||strpos('FAV',$vchr)){
+						$vouchers+=$col['CashierCollection']['amount'];
+						array_push($v_ors,$refno[2]);
+					}else{
+						$tuitions+=$col['CashierCollection']['amount'];
+						array_push($t_ors,$refno[1]);
+					}
+				}
 				$st = $col['Student'];
 				$cl = $col['CashierCollection'];
 				$acct = $col['Account'];
@@ -160,11 +206,35 @@ class CashierCollectionsController extends AppController {
 			foreach($booklets as $i=>$b){
 				$b['series_start'] = min($b['ref_nos']);
 				$b['series_end'] = max($b['ref_nos']);
+				$total+=$b['amount'];
 				$booklets[$i] = $b;
 			}
 			
 		}
-		$collections = array('collections'=>$collections,'booklets'=>$booklets);
+		
+		
+		foreach($cancelled as $c){
+			$c_or = explode(" ",$c['Ledger']['ref_no']);
+			$deduct = $c['Ledger']['amount'];
+			if(in_array($c_or[1],$t_ors))
+				$tuitions-=$deduct;
+			if(in_array($c_or[1],$v_ors))
+				$vouchers-=$deduct;
+			if(in_array($c_or[1],$m_ors))
+				$modules-=$deduct;
+			if(in_array($c_or[1],$o_ors))
+				$old_accounts-=$deduct;
+		} 
+		$others = $total-($old_accounts+$tuitions+$modules+$vouchers);
+		$collections = array('collections'=>$collections,
+							'booklets'=>$booklets,
+							'vouchers'=>$vouchers,
+							'tuitions'=>$tuitions,
+							'modules'=>$modules,
+							'old_accounts'=>$old_accounts,
+							'others'=>$others);
+		
+		
 		$cashierCollections = array(array('CashierCollection'=>$collections));
 		
 		$this->set('cashierCollections', $cashierCollections);

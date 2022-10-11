@@ -83,12 +83,14 @@ class Transaction extends AppModel {
 				if($cond==='%OR%'){
 					$receipts=true;
 				}
+				if($cond=='cancelled'){
+					$cencelled=true;
+				}
 				
 			}
 			
-			if(!isset($receipts)){
+			if(!isset($receipts)&&isset($cancelled)){
 				foreach($conds as $i=>$cond){
-					//$type = 'Transaction.type';
 					$from = 'Transaction.from';
 					$to = 'Transaction.to';
 					$type = 'Transaction.type';
@@ -113,7 +115,7 @@ class Transaction extends AppModel {
 					}
 				}
 				
-			$conds = array('Transaction.ref_no LIKE'=> '%'.$typ.'%','and'=>array('Transaction.transac_date <='=>$end,'Transaction.transac_date >='=>$start));
+				$conds = array('Transaction.ref_no LIKE'=> '%'.$typ.'%','and'=>array('Transaction.transac_date <='=>$end,'Transaction.transac_date >='=>$start));
 				
 			}
 			//pr($conds); exit();
