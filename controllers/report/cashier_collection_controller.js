@@ -338,6 +338,7 @@ define(['app','api','atomic/bomb'],function(app){
 			//}
 			//data.limit = 'less';
 			api.GET('cashier_collections',data, function success(response){
+				
 				$scope.Booklet = response.data[0].booklets;
 				$scope.Breakdown = response.data[0];
 				console.log($scope.Breakdown);

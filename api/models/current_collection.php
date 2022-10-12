@@ -18,7 +18,6 @@ class CurrentCollection extends AppModel {
 				//pr($cond); exit();
 				$conds[$i]=$cond;
 			}
-			
 			$queryData['conditions']=$conds;
 		}
 		

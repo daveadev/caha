@@ -63,40 +63,40 @@
 				</a-row>
 			</a-header>
 			<a-canvas>
-				<a-content ng-show="CC.Collections">
+				<a-content ng-show="CC.Collections||CC.DailyCollections">
 					<a-row>
 						<a-col size="6">
 							
 						</a-col>
-						<a-col size="3">
+						<a-col size="2">
 							
 						</a-col>
-						<a-col size="3">
+						<a-col size="4">
 							<div class="amount amount-total">
-								<label for="">Total Receivable</label>
+								<label for="">Collections Forwarded till {{CC.date_from - 1 | date:'dd MMM yyyy'}}</label>
 								<h3>
-									<div class="amount total peso">{{CC.Collections.total_receivables | currency}}</div>
+									<div class="amount total peso">{{CC.DailyCollections.Forwarded | currency}}</div>
 								</h3>
 							</div>
 							<div class="amount amount-total">
-								<label >Total Subsidies</label>
+								<label >Collections from {{CC.date_from | date:'dd MMM yyyy'}} - {{CC.date_to | date:'dd MMM yyyy'}}</label>
 								<h3>
-									<div class="amount total peso debit ">{{CC.Collections.total_subsidies | currency}}</div>
+									<div class="amount total peso ">{{CC.DailyCollections.Collection | currency}}</div>
 								</h3>
 							</div>
-							<div class="amount amount-total">
+							<!-- <div class="amount amount-total">
 								<label for="">Net Receivables</label>
 								<h3>
 									<div class="credit amount total peso">{{CC.Collections.total_receivables+CC.Collections.total_subsidies | currency}}</div>
 								</h3>
-							</div>
+							</div> -->
 						</a-col>
 					</a-row>
 					<a-row >
 						<a-col size="6">
 							<h4 for="" ng-show="CC.ActiveOpt.id=='daily'" >Total collections from {{CC.date_from | date:'dd MMM yyyy'}} - {{CC.date_to | date:'dd MMM yyyy'}}</h4>
 							<h4 for="" ng-show="CC.ActiveOpt.id=='month'" >Total collections from {{CC.date_from.label}} - {{CC.date_to.label}}</h4>
-							<h4 class="total amount peso pull-left">{{CC.Collections.coverage_collected | currency}}</h4>
+							<h4 class="total amount peso pull-left">{{CC.DailyCollections.Collection | currency}}</h4>
 						</a-col>
 						<a-col size="6" ng-show="CC.ActiveOpt.id=='daily'" >
 							<div class="btn-group btn-group-sm pull-right" ng-class="{open:MoreLess}">
@@ -115,7 +115,6 @@
 					</a-row>
 					<a-row>
 						<a-col>
-							<!-- <a-table headers="CC.Headers" props="CC.Props" data="CC.Collections.monthly_collections" ></a-table> -->
 							<table class="table table-bordered table-condensed">
 								<thead>
 									<tr ng-show="CC.ActiveOpt.id=='month'">
@@ -128,9 +127,12 @@
 									<tr ng-show="CC.ActiveOpt.id=='daily'">
 										<th>Date</th>
 										<th>Day</th>
-										<th>Details</th>
-										<th>Collections</th>
-										<th>Total Collections</th>
+										<th>Old Accounts</th>
+										<th>Tuitions</th>
+										<th>Modules</th>
+										<th>Voucher</th>
+										<th>Others</th>
+										<th>Total</th>
 										<th>Balance</th>
 									</tr>
 								</thead>
@@ -142,20 +144,24 @@
 										<td class="amount total">{{col.t_collection | currency}}</td>
 										<td class="amount total">{{col.r_balance | currency}}</td>
 									</tr>
-									<tr ng-show="CC.ActiveOpt.id=='daily'" ng-repeat="col in CC.Modified[CC.ActivePage-1]">
+									<tr ng-show="CC.ActiveOpt.id=='daily'" ng-repeat="col in CC.DailyCollections.BreakDowns">
+										{{CC.DailyCollecitons.Breakdowns}}
 										<td>{{col.date | date:'dd MMM yyyy'}}</td>
 										<td>{{col.day}}</td>
-										<td>{{col.description}}</td>
-										<td class="amount total">{{col.collection | currency}}</td>
-										<td class="amount total">{{col.t_collection | currency}}</td>
-										<td class="amount total">{{col.r_balance | currency}}</td>
+										<td class="amount total">{{col.old_account | currency}}</td>
+										<td class="amount total">{{col.tuition | currency}}</td>
+										<td class="amount total">{{col.module | currency}}</td>
+										<td class="amount total">{{col.voucher | currency}}</td>
+										<td class="amount total">{{col.other | currency}}</td>
+										<td class="amount total">{{col.total | currency}}</td>
+										<td class="amount total">{{col.running_balance | currency}}</td>
 									</tr>
 								</tbody>
 							</table>
 						</a-col>
 					</a-row>
 				</a-content>
-				<a-content ng-show="!CC.Collections" style="height: 100%">
+				<a-content ng-show="!CC.Collections&&!CC.DailyCollections" style="height: 100%">
 					<div class="empty-state">
 						<div class="well">
 							<div class="empty-state-icon text-center">
