@@ -144,6 +144,7 @@ define(['app','api','atomic/bomb'],function(app){
 				data.doctype = $scope.ActiveOpt;
 				data.breakdown = data.details;
 				$scope.PrintRemittanceData = data;
+				$scope.PrintRemittanceData['breakdownDetails'] = $scope.bForPrinting;
 				$scope.PrintRemit();
 				getRemittance();
 				
@@ -239,7 +240,6 @@ define(['app','api','atomic/bomb'],function(app){
 					var print = {data:col};
 					print['breakdowns']=$scope.bForPrinting;
 					$scope.CashierData =  print;
-					console.log($scope.CashierData);
 					$scope.cancelled = [];
 					angular.forEach($scope.CashierData.data[0].collections,function(c){
 						if(c.ref_no.match('XOR')){
@@ -298,6 +298,8 @@ define(['app','api','atomic/bomb'],function(app){
 				$scope.Remittance.noncash = response.data[0].noncash;
 				$scope.Remitted = true;
 				$scope.PrintRemittanceData = $scope.Remittance;
+				$scope.PrintRemittanceData['breakdownDetails'] = $scope.bForPrinting;
+				
 			},function error(response){
 				$scope.Remittance = {};
 				$scope.Remittance.breakdown = $scope.Dinominations;
@@ -318,6 +320,7 @@ define(['app','api','atomic/bomb'],function(app){
 					}
 				});
 				$scope.PrintRemittanceData.noncash = noncash;
+				$scope.PrintRemittanceData['breakdownDetails']=$scope.bForPrinting;
 				$scope.Remitted = false;
 			});
 		}

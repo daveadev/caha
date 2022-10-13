@@ -80,7 +80,7 @@ class DailyRemittance extends Formsheet{
 			$y++;
 		}
 		
-		$y = 27;
+		$y = 32;
 		$this->GRID['font_size']=7;
 		$this->leftText(0,$y,'Date & Time Printed: '.date("M d,Y h:i:s A"),'','');
 	}
@@ -128,7 +128,7 @@ class DailyRemittance extends Formsheet{
 		$this->rightText(5.8,$y,'Total','','b');
 		$this->rightText(8.9,$y,number_format($total,2),'','b');
 		
-		$y=24.8;
+		$y=30;
 		$this->leftText(0,$y,'Prepared:','','');
 		$this->drawLine($y+0.2,'h',array(3,5));
 		$this->centerText(3,$y,'',5,'');
@@ -187,7 +187,7 @@ class DailyRemittance extends Formsheet{
 		$this->rightText(8.8,$y,'Total','','b');
 		$this->rightText(11.9,$y,number_format($total,2),'','b');
 		
-		$y=24.8;
+		$y=30;
 		$this->leftText(0,$y,'Prepared:','','');
 		$this->drawLine($y+0.2,'h',array(3,5));
 		$this->centerText(3,$y,'',5,'');
@@ -197,6 +197,33 @@ class DailyRemittance extends Formsheet{
 		$this->drawLine($y+0.2,'h',array(3,5));
 		$this->centerText(3,$y,'Signature Over Printed Name',5,'');
 		$this->centerText(3,$y+1,'Finance',5,'');
+	}
+	
+	function total_breakdown($breakdown){
+		$this->showLines = !true;
+		$metrics = array(
+			'base_x'=> 0,
+			'base_y'=> 1.2,
+			'width'=> 3.5,
+			'height'=> 2.8,
+			'cols'=> 12,
+			'rows'=> 15,	
+		);
+		$this->section($metrics);
+		$y=20;
+		$this->GRID['font_size']=9;
+		$this->leftText(1,$y,'Total Breakdowns:','','');
+		$y+=2;
+		$this->GRID['font_size']=8;
+		
+		
+		$this->leftText(1,$y,'Tuitions: '.number_format($breakdown['tuitions'],2),'','');
+		$this->leftText(6,$y,'Old Accounts: '.number_format($breakdown['old_accounts'],2),'','');
+		$y++;
+		$this->leftText(1,$y,'Vouchers: '.number_format($breakdown['vouchers'],2),'','');
+		$this->leftText(6,$y,'Modules: '.number_format($breakdown['modules'],2),'','');
+		$y++;
+		$this->leftText(1,$y,'Others: '.number_format($breakdown['others'],2),'','');
 	}
 }
 ?>
