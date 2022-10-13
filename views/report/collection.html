@@ -64,14 +64,21 @@
 			</a-header>
 			<a-canvas>
 				<a-content ng-show="CC.Collections||CC.DailyCollections">
+					<a-row></a-row>
 					<a-row>
+						
+						<a-col size="3">
+							<h4>Breakdowns:</h4>
+							<h5>Tuitions: <span class="total amount peso">{{CC.DailyCollections.tuitions | currency }}</span></h5>
+							<h5>Old Accounts: <span class="total amount peso">{{CC.DailyCollections.old_accounts | currency }}</span></h5>
+							
+						</a-col>
+						<a-col size="3">
+							<h4></h4><br />
+							<h5>Modules: <span class="total amount peso">{{CC.DailyCollections.modules | currency }}</span></h5>
+							<h5>Voucher: <span class="total amount peso">{{CC.DailyCollections.vouchers | currency }}</span></h5>
+						</a-col>
 						<a-col size="6">
-							
-						</a-col>
-						<a-col size="2">
-							
-						</a-col>
-						<a-col size="4">
 							<div class="amount amount-total">
 								<label for="">Collections Forwarded till {{CC.date_from - 1 | date:'dd MMM yyyy'}}</label>
 								<h3>
@@ -84,34 +91,19 @@
 									<div class="amount total peso ">{{CC.DailyCollections.Collection | currency}}</div>
 								</h3>
 							</div>
-							<!-- <div class="amount amount-total">
-								<label for="">Net Receivables</label>
-								<h3>
-									<div class="credit amount total peso">{{CC.Collections.total_receivables+CC.Collections.total_subsidies | currency}}</div>
-								</h3>
-							</div> -->
 						</a-col>
 					</a-row>
 					<a-row >
-						<a-col size="6">
+						<!-- <a-col size="6">
 							<h4 for="" ng-show="CC.ActiveOpt.id=='daily'" >Total collections from {{CC.date_from | date:'dd MMM yyyy'}} - {{CC.date_to | date:'dd MMM yyyy'}}</h4>
 							<h4 for="" ng-show="CC.ActiveOpt.id=='month'" >Total collections from {{CC.date_from.label}} - {{CC.date_to.label}}</h4>
 							<h4 class="total amount peso pull-left">{{CC.DailyCollections.Collection | currency}}</h4>
-						</a-col>
-						<a-col size="6" ng-show="CC.ActiveOpt.id=='daily'" >
-							<div class="btn-group btn-group-sm pull-right" ng-class="{open:MoreLess}">
-								<button class="btn btn-default" >
-									Page {{CC.ActivePage}} of {{CC.Modified.length}}
-								</button>
-								<button class="btn btn-default" ng-disabled="CC.ActivePage==1" ng-click="CC.NavPage('prev')">
-									<span class="glyphicon glyphicon-chevron-left"></span>
-								</button>
-								<button class="btn btn-default" ng-disabled="CC.ActivePage==CC.Modified.length" ng-click="CC.NavPage('next')">
-									<span class="glyphicon glyphicon-chevron-right"></span>
-								</button>
-								
-							</div>
-						</a-col>
+		
+						</a-col> -->
+						
+					</a-row>
+					<a-row>
+						
 					</a-row>
 					<a-row>
 						<a-col>

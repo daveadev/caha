@@ -251,12 +251,23 @@ define(['app','api','atomic/bomb'],function(app){
 			data.to = $filter('date')(new Date(data.to),'yyyy-MM-dd');
 			api.GET('current_collections', data, function succes(response){
 				var bal = response.data[0].NetReceivables-(response.data[0].Forwarded+response.data[0].TotalSubsidies);
-				console.log(response.data[0])
+				let oacc = 0;
+				let tui = 0;
+				let vouc = 0;
+				let mod = 0;
 				angular.forEach(response.data[0].BreakDowns, function($b){
+					mod+=$b.module;
+					oacc+=$b.old_account;
+					tui+=$b.tuition;
+					vouc+=$b.voucher;
 					bal-=$b['total'];
 					$b['running_balance']=bal;
 				});
 				$scope.DailyCollections = response.data[0];
+				$scope.DailyCollections['vouchers'] = vouc;
+				$scope.DailyCollections['modules'] = mod;
+				$scope.DailyCollections['tuitions'] = tui;
+				$scope.DailyCollections['old_accounts'] = oacc;
 				console.log($scope.DailyCollections);
 				$scope.Loaded = 1;
 				$scope.Loading = 0;

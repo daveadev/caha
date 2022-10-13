@@ -237,7 +237,9 @@ define(['app','api','atomic/bomb'],function(app){
 				}else{
 					var col = [{collections:$scope.DataCollection}];
 					var print = {data:col};
+					print['breakdowns']=$scope.bForPrinting;
 					$scope.CashierData =  print;
+					console.log($scope.CashierData);
 					$scope.cancelled = [];
 					angular.forEach($scope.CashierData.data[0].collections,function(c){
 						if(c.ref_no.match('XOR')){
@@ -254,7 +256,6 @@ define(['app','api','atomic/bomb'],function(app){
 							$scope.NonCashes.push(c);
 						}
 					});
-					console.log($scope.NonCashes);
 					$scope.DataReady = true;
 					$scope.Collections.total = 0;
 					angular.forEach($scope.DataCollection, function(c){
@@ -341,7 +342,13 @@ define(['app','api','atomic/bomb'],function(app){
 				
 				$scope.Booklet = response.data[0].booklets;
 				$scope.Breakdown = response.data[0];
-				console.log($scope.Breakdown);
+				$scope.bForPrinting = [{
+					'vouchers':$scope.Breakdown.vouchers,
+					'tuitions':$scope.Breakdown.tuitions,
+					'modules':$scope.Breakdown.modules,
+					'old_accounts':$scope.Breakdown.old_accounts,
+					'others':$scope.Breakdown.others,
+					}];
 				getRemittance();
 			},function error(response){
 				getRemittance();

@@ -204,7 +204,7 @@ class ReportsController extends AppController{
 		}else{
 			$data = $_POST['Cashier'];
 		}
-		
+		//pr($data); exit();
 		
 		$data = json_decode($data,true);
 		//$data = $data['data'];

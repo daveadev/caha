@@ -40,7 +40,7 @@ class CashierDailyCollections extends Formsheet{
 		//$this->leftText(0,$y++,'Date: '.date('d M Y',strtotime($hdr['date'])),'','');
 	}
 	
-	function data($hdr,$data,$total_page,$page){
+	function data($hdr,$data,$total_page,$page,$breakdown){
 		$this->showLines = !true;
 		$metrics = array(
 			'base_x'=> 0.25,
@@ -119,12 +119,18 @@ class CashierDailyCollections extends Formsheet{
 		if($page == $total_page){
 			$this->rightText(24.9,$y,'Grand Total','','b');
 			$this->rightText(27.9,$y,number_format(CashierDailyCollections::$total_amount,2),'','');
-			//$this->rightText(30.9,$y,number_format(CashierDailyCollections::$total_due,2),'','');
-			//$this->rightText(33.9,$y,number_format(CashierDailyCollections::$total_paid,2),'','');
-			//$this->rightText(36.9,$y,number_format(CashierDailyCollections::$total_balance,2),'','');
-			//$this->rightText(32.9,$y,number_format(CashierDailyCollections::$grand_total,2),'','b');
+			$this->GRID['font_size']=10;
+			$this->leftText(0,30,'Breakdowns','','b');
+			$this->GRID['font_size']=9;
+			$this->leftText(0,31,'Tuitions: '.number_format($breakdown['tuitions']),'','');
+			$this->leftText(0,32,'Vouchers: '.number_format($breakdown['vouchers']),'','');
+			$this->leftText(4,31,'Old Accounts: '.number_format($breakdown['old_accounts']),'','');
+			$this->leftText(4,32,'Modules: '.number_format($breakdown['modules']),'','');
+			$this->leftText(0,33,'Others: '.number_format($breakdown['others']),'','');
+			
 		}
 		//FOOTER DETAILS
+		$y++;
 		$this->GRID['font_size']=8;
 		$this->leftText(0,36,'Printed by: '.'Cashier 1','','');
 		$this->centerText(0,36,'Date & Time Printed: '. date("M d, Y h:i:s A"),28,'');
