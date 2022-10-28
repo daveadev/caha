@@ -89,7 +89,7 @@ class Transaction extends AppModel {
 				
 			}
 			
-			if(!isset($receipts)&&isset($cancelled)){
+			if(!isset($receipts)){
 				foreach($conds as $i=>$cond){
 					$from = 'Transaction.from';
 					$to = 'Transaction.to';
@@ -114,7 +114,6 @@ class Transaction extends AppModel {
 						unset($cond[$date]);
 					}
 				}
-				
 				$conds = array('Transaction.ref_no LIKE'=> '%'.$typ.'%','and'=>array('Transaction.transac_date <='=>$end,'Transaction.transac_date >='=>$start));
 				
 			}
