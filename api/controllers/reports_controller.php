@@ -87,6 +87,13 @@ class ReportsController extends AppController{
 		$this->set(compact('data'));
 	}
 	
+	function account_receivables(){
+		//pr($_POST['AccountReceivable']); exit();
+		$data = $_POST['AccountReceivable'];
+		$data = json_decode($data,true);
+		$this->set(compact('data'));
+	}
+	
 	function receipt(){
 		//$trnxId = 2536;//FOR SAMPLE OR DATAA
 		$trnxId = $_POST['TransactionId'];//1

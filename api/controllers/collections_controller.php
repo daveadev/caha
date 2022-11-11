@@ -14,7 +14,6 @@ class CollectionsController extends AppController {
 		$date_diff=strtotime($to)-strtotime($from);
 		$date_diff = round($date_diff / (60 * 60 * 24))+1;
 		$getFirst = $this->Ledger->find('all',array('recursive'=>0,'conditions'=>array('Ledger.transaction_type_id'=>'TUIXN','Ledger.esp'=>$esp),'order'=>'Ledger.transac_date'));
-		//pr($getFirst); exit();
 		$cut_off = $getFirst[0]['Ledger']['transac_date'];
 		
 		

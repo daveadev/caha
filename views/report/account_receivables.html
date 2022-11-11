@@ -1,0 +1,97 @@
+<div ng-controller="AccountReceivableController as AR" ng-init="AR.init()">
+	<a-module>
+		<a-container>
+			<a-header is-main="true">
+				<a-row>
+					<a-col size="6">
+						<h4>Account Receivables</h4>
+					</a-col>
+					<a-col size="6">
+						<o-dropdown-filter ng-model="AR.Active" show-section="false" show-sem="false" show-period="false" class="pull-right" >
+						</o-dropdown-filter>
+					</a-col>
+				</a-row>
+			</a-header>
+			<a-header>
+				<a-row>
+					<a-col size="6"></a-col>
+					<a-col size="6">
+						<button class="btn btn-primary pull-right" ng-click="AR.PrintAR()">Print</button>
+					</a-col>
+				</a-row>
+			</a-header>
+			<a-canvas>
+				<a-content ng-show="AR.AccountReceivables">
+					<a-row>
+						<a-col>
+						
+						</a-col>
+					</a-row>
+					<a-row>
+						<a-col size="6">
+							<h4>School Year {{AR.ActiveSY}} - {{AR.ActiveSY+1}}</h4>
+							<h5>As of {{AR.Today | date:'MMM-dd-yyyy HH:mm:ss'}}</h5>
+						</a-col>
+						<a-col size="3" class="text-right">
+							<h5>Tuitions and Misc Fees: </h5>
+							<h5>Subsidies:</h5>
+							<h5>Modules:</h5>
+							<h5>Financial Assistance: </h5>
+							<h5>Total Receivables: </h5>
+						</a-col>
+						<a-col size="3" class="pull-right">
+							<h5><span class="total amount peso">{{AR.AccountReceivables.totals.Tuitions | currency }}</span></h5>
+							<h5><span class="total amount peso">{{AR.AccountReceivables.totals.Subsidies | currency }}</span></h5>
+							<h5> <span class="total amount peso">{{AR.AccountReceivables.totals.Modules | currency }}</span></h5>
+							<h5> <span class="total amount peso">({{AR.AccountReceivables.totals.FinAsstn | currency }})</span></h5>
+							<h5> <span class="total amount peso">{{AR.AccountReceivables.totals.Receivables | currency }}</span></h5>
+						</a-col>
+					</a-row>
+					<a-row>
+						<a-col>
+							<table class="table table-bordered table-condensed">
+								<thead>
+									<tr>
+										<th>Date</th>
+										<th>Tuition Payments</th>
+										<th>Tuition Balance</th>
+										<th>Module Payments</th>
+										<th>Module Balance</th>
+										<th>Total Balance</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td colspan="3"><strong>Beginning Balance</strong></td>
+										<td colspan="3" class="amount total strong">{{AR.AccountReceivables.totals.Receivables | currency}}</td>
+									</tr>
+									<tr ng-repeat="ar in AR.AccountReceivables.ARC">
+										<td>{{ar.date}}</td>
+										<td class="amount total">{{ar.tuition |currency}}</td>
+										<td class="amount total">{{ar.t_balance |currency}}</td>
+										<td class="amount total">{{ar.module |currency}}</td>
+										<td class="amount total">{{ar.m_balance |currency}}</td>
+										<td class="amount total">{{ar.total_balance |currency}}</td>
+									</tr>
+								</tbody>
+							</table>
+						</a-col>
+					</a-row>
+				</a-content>
+				<a-content ng-show="!AR.AccountReceivables" style="height: 100%">
+					<div class="empty-state">
+						<div class="well text-center">
+							<div class="empty-state-icon text-center">
+								<i class="glyphicon glyphicon-refresh spin"></i>
+							</div>
+							<h4>Loading Accounts Receivables...</h4>
+						</div>
+					</div>
+				</a-content>
+				<form id="PrintAR" action="api/reports/account_receivables" method="POST" target="_blank">
+					<input type="hidden" value="{{AR.AccountReceivables}}" name="AccountReceivable" />
+				</form>
+			</a-canvas>
+		</a-container>
+	</a-module>
+</div>

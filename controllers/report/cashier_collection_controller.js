@@ -345,6 +345,7 @@ define(['app','api','atomic/bomb'],function(app){
 				
 				$scope.Booklet = response.data[0].booklets;
 				$scope.Breakdown = response.data[0];
+				console.log($scope.Breakdown);
 				$scope.bForPrinting = [{
 					'vouchers':$scope.Breakdown.vouchers,
 					'tuitions':$scope.Breakdown.tuitions,

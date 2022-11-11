@@ -122,11 +122,11 @@ class CashierDailyCollections extends Formsheet{
 			$this->GRID['font_size']=10;
 			$this->leftText(0,30,'Breakdowns','','b');
 			$this->GRID['font_size']=9;
-			$this->leftText(0,31,'Tuitions: '.number_format($breakdown['tuitions']),'','');
-			$this->leftText(0,32,'Vouchers: '.number_format($breakdown['vouchers']),'','');
-			$this->leftText(4,31,'Old Accounts: '.number_format($breakdown['old_accounts']),'','');
-			$this->leftText(4,32,'Modules: '.number_format($breakdown['modules']),'','');
-			$this->leftText(0,33,'Others: '.number_format($breakdown['others']),'','');
+			$this->leftText(0,31,'Tuitions: '.number_format($breakdown['tuitions'],2),'','');
+			$this->leftText(0,32,'Vouchers: '.number_format($breakdown['vouchers'],2),'','');
+			$this->leftText(4,31,'Old Accounts: '.number_format($breakdown['old_accounts'],2),'','');
+			$this->leftText(4,32,'Modules: '.number_format($breakdown['modules'],2),'','');
+			$this->leftText(0,33,'Others: '.number_format($breakdown['others'],2),'','');
 			
 		}
 		//FOOTER DETAILS

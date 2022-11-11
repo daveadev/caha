@@ -4,6 +4,7 @@ define(['app',
 		'../controllers/report/cashier_collection_controller',
 		'../controllers/report/student_accounts_controller',
 		'../controllers/report/receipts_controller',
+		'../controllers/report/account_receivable_controller',
 		], function (app) {
 
 });

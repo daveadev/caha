@@ -89,7 +89,7 @@ class Transaction extends AppModel {
 				
 			}
 			
-			if(!isset($receipts)&&isset($cancelled)){
+			if(!isset($receipts)){
 				foreach($conds as $i=>$cond){
 					$from = 'Transaction.from';
 					$to = 'Transaction.to';

@@ -71,6 +71,7 @@
 							<h4>Breakdowns:</h4>
 							<h5>Tuitions: <span class="total amount peso">{{CC.DailyCollections.tuitions | currency }}</span></h5>
 							<h5>Old Accounts: <span class="total amount peso">{{CC.DailyCollections.old_accounts | currency }}</span></h5>
+							<h5>Others: <span class="total amount peso">{{CC.DailyCollections.others | currency }}</span></h5>
 							
 						</a-col>
 						<a-col size="3">
@@ -89,6 +90,12 @@
 								<label >Collections from {{CC.date_from | date:'dd MMM yyyy'}} - {{CC.date_to | date:'dd MMM yyyy'}}</label>
 								<h3>
 									<div class="amount total peso ">{{CC.DailyCollections.Collection | currency}}</div>
+								</h3>
+							</div>
+							<div class="amount amount-total">
+								<label >Collections as of {{CC.date_to | date:'dd MMM yyyy'}}</label>
+								<h3>
+									<div class="amount total peso ">{{CC.DailyCollections.Collection + CC.DailyCollections.Forwarded | currency}}</div>
 								</h3>
 							</div>
 						</a-col>
