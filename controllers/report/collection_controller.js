@@ -31,6 +31,7 @@ define(['app','api','atomic/bomb'],function(app){
 			$scope.ActiveMonth = {id:6,'month':'Jun'};
 			$scope.index = 0;
 			$scope.Chart = {labels:['No data'],data:[0],colors:['#dddddd'],options:{}}; 
+			$scope.Loaded = 0;
 		}
 		$selfScope.$watch("CC.Active",function(active){
 			if(!active) return false;
@@ -250,16 +251,18 @@ define(['app','api','atomic/bomb'],function(app){
 			data.from = $filter('date')(new Date(data.from),'yyyy-MM-dd');
 			data.to = $filter('date')(new Date(data.to),'yyyy-MM-dd');
 			api.GET('current_collections', data, function succes(response){
-				var bal = response.data[0].NetReceivables-(response.data[0].Forwarded+response.data[0].TotalSubsidies);
+				var bal = response.data[0].NetReceivables-response.data[0].Forwarded;
 				let oacc = 0;
 				let tui = 0;
 				let vouc = 0;
 				let mod = 0;
+				let oth = 0;
 				angular.forEach(response.data[0].BreakDowns, function($b){
 					mod+=$b.module;
 					oacc+=$b.old_account;
 					tui+=$b.tuition;
 					vouc+=$b.voucher;
+					oth+=$b.other;
 					bal-=$b['total'];
 					$b['running_balance']=bal;
 				});
@@ -268,7 +271,8 @@ define(['app','api','atomic/bomb'],function(app){
 				$scope.DailyCollections['modules'] = mod;
 				$scope.DailyCollections['tuitions'] = tui;
 				$scope.DailyCollections['old_accounts'] = oacc;
-				console.log($scope.DailyCollections);
+				$scope.DailyCollections['others'] = oth;
+				$scope.PrintData = angular.copy({data:response.data});
 				$scope.Loaded = 1;
 				$scope.Loading = 0;
 			});

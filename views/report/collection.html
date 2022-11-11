@@ -57,8 +57,8 @@
 					</a-col>
 					<a-col size="2" align="right" style="margin-top:4px;">
 						<button class="btn btn-default" ng-click="CC.Clear()" ng-disabled="!CC.date_from||!CC.date_to" style="margin-right: 5%;">Clear</button>
-						<button class="btn btn-primary pull-right" ng-click="CC.LoadReport()" ng-disabled="!CC.date_from||!CC.date_to" ng-show="!CC.Collections.collections.length">Load</button>
-						<button class="btn btn-primary pull-right" ng-disabled="!CC.date_from||!CC.date_to" ng-show="CC.Collections.collections.length" ng-click="CC.PrintBtn()">Print</button>
+						<button class="btn btn-primary pull-right" ng-click="CC.LoadReport()" ng-disabled="!CC.date_from||!CC.date_to" ng-show="!CC.DailyCollections.BreakDowns.length">Load</button>
+						<button class="btn btn-primary pull-right" ng-disabled="!CC.date_from||!CC.date_to" ng-show="CC.DailyCollections.BreakDowns.length" ng-click="CC.PrintBtn()">Print</button>
 					</a-col>
 				</a-row>
 			</a-header>

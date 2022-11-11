@@ -165,6 +165,9 @@ class SOA extends Formsheet{
 		$this->rightText(14,40.25,'Balance',3,'');
 		$this->rightText(18,40.25,'Date paid',3,'');
 		$total_bal = 0;
+		$orderS = array_column($data,'order');
+		array_multisort($orderS, SORT_ASC,$data);
+		//pr($data); exit();
 		foreach($data as $d){
 			
 			$this->leftText(1,$y,date("M d, Y", strtotime($d['due_date'])),'','');

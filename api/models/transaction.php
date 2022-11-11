@@ -114,7 +114,6 @@ class Transaction extends AppModel {
 						unset($cond[$date]);
 					}
 				}
-				
 				$conds = array('Transaction.ref_no LIKE'=> '%'.$typ.'%','and'=>array('Transaction.transac_date <='=>$end,'Transaction.transac_date >='=>$start));
 				
 			}
