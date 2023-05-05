@@ -165,6 +165,54 @@ class LedgersController extends AppController {
 		echo $this->Ledger->generateREFNO(2020,'SPO');
 		exit;
 	}
+
+	function correction($sno=null){
+		if($this->data):
+			$corrections = $this->data['Ledger']['corrections'];
+			$this->Account->AccountSchedule->saveAll($corrections);
+		endif;
+
+		if($sno):
+			$this->Account->Student->recursive=-1;
+			$S =$this->Account->Student->findBySno($sno);
+			$student = $S['Student'];
+			$actNo = $student['id'];
+			$A = $this->Account->findById($actNo);
+			$sched = $A['AccountSchedule'];
+			
+			$hasCorrections = false;
+			// Load tuition by level and amount
+			App::import('Model','Tuition');
+			$T =  new Tuition();
+			$sy = 2022;
+			$yl =  $A['Student']['year_level_id'];
+			$amt=  $A['Account']['assessment_total'];
+			$TUI = $T->getTuiDetail($sy,$yl,$amt);
+
+			// Load Payscheme based on TUIID
+			App::import('Model','PaymentScheme');
+			$P = new PaymentScheme();
+			$tui =  $TUI['id'];
+			$sch =  $A['Account']['payment_scheme'];
+			$PSC = $P->getPSDetail($tui,$sch);
+			$pss = $PSC['PaymentSchemeSchedule'];
+			foreach($sched as $si=>$so):
+				$so['og_bill_month']=$so['bill_month'];
+				$so['og_due_amount']=$so['due_amount'];
+				$so['bill_month']=$pss[$si]['billing_period_id'];
+				$so['due_amount']=$pss[$si]['amount'];
+				$so['hasErr'] =  $so['due_amount']!=$so['og_due_amount'];
+				$so['hasErr'] = $so['hasErr'] || ($so['og_bill_month']!=$so['bill_month']);
+				$sched[$si]=$so;
+				$hasCorrections = $hasCorrections || $so['hasErr'];
+			endforeach;
+
+			$this->set('sched',$sched);
+			$this->set('student',$student);
+			$this->set('hasCorrections',$hasCorrections);
+
+		endif;
+	}
 	
 	
 }
