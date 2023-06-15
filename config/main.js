@@ -30,6 +30,7 @@ require.config({
 		'admin':'../controllers/admin',
 		'ngFileUpload': '../vendors/excel-reader/ng-file-upload.min',
 		'xlsx': '../vendors/excel-reader/xlsx.full.min',
+        'exceljs':'../vendors/node_modules/exceljs/dist/exceljs',
 		'jszip': '../vendors/excel-reader/jszip',
     },
     // Add angular modules that does not support AMD out of the box, put it in a shim
