@@ -9,6 +9,12 @@ class StudentsController extends AppController {
 	}
 
 	function view($id = null) {
+		if($id=='search' && $this->isAPIRequest()):
+			$keyword=$this->params['url']['keyword'];
+			$fields=explode(',', $this->params['url']['fields']);
+			$S = $this->Student->search($keyword,$fields);
+			return $this->set('student',$S);
+		endif;	
 		if (!$id) {
 			$this->Session->setFlash(__('Invalid student', true));
 			$this->redirect(array('action' => 'index'));

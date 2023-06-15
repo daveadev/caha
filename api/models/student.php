@@ -2,6 +2,7 @@
 class Student extends AppModel {
 	var $name = 'Student';
 	var $useDbConfig = 'ser';
+	var $actsAs = 'Containable';
 	var $consumableFields = array('id','status','sno','lrn','classroom_user_id','year_level_id','section_id','program_id','full_name', 'short_name','first_name','middle_name','last_name','prefix','suffix','gender','birthday','age','nationality','religion','mother_tongue','ethnic_group','weight','height','height_m2','bmi','bmi_category','height_fa');
 	var $recursive = 2;
 	var $virtualFields = array(
@@ -19,7 +20,7 @@ class Student extends AppModel {
 			'className' => 'YearLevel',
 			'foreignKey' => 'year_level_id',
 			'conditions' => '',
-			'fields' => array('id','name','description'),
+			'fields' => array('id','name','description','department_id'),
 			'order' => ''
 		),
 		'Section' => array(
@@ -29,6 +30,26 @@ class Student extends AppModel {
 			'fields' => array('id','name'),
 			'order' => ''
 		),
+		'Program' => array(
+			'className' => 'Program',
+			'foreignKey' => 'program_id',
+			'conditions' => '',
+			'fields' => array('id','name','description'),
+			'order' => ''
+		),
+		'Account' => array(
+			'className' => 'Account',
+			'foreignKey' => 'id',
+			'dependent' => false,
+			'conditions' => '',
+			'fields' => '',
+			'order' => '',
+			'limit' => '',
+			'offset' => '',
+			'exclusive' => '',
+			'finderQuery' => '',
+			'counterQuery' => ''
+		)
 	);
 	function findByName($name){
 		//pr($name); 
@@ -51,6 +72,80 @@ class Student extends AppModel {
 		}
 		
 	}
+
+	// Student Unified Search
+	function search($keyword,$fields =null){
+		// Import Inquiry Model
+		App::import('Model','Inquiry');
+		$INQ =  new Inquiry();
+		// Set up conditions filter by fields and keywords
+		if(!$fields):
+			$cond = array("full_name LIKE"=>"$keyword%");
+		else:
+			$cond=array();
+			// fields can be first_name, last_name, middle_name etc.
+			foreach($fields as $f):
+				$cond["$f LIKE"]="$keyword%"; // Build cond from fields
+			endforeach;
+			$cond = array('OR'=>$cond); // Make sure to use OR operator
+		endif;
+
+		// Define response fields
+		$flds = array('id','lrn','full_name','program_id','year_level_id','student_type','department_id');
+		// Find all Inquiry based on the filter
+		$I = $INQ->find('all',array('conditions'=>$cond,'recursive'=>-1,'fields'=>$flds));
+		
+		// Update flds for students
+		array_pop($flds); // Remove deparment_id
+		array_pop($flds); // remove student_type
+		$flds[]='sno'; // Add sno
+
+		// Setup STU and contain relevant fields
+		$STU =$this; 
+		$STU->contain('Account.subsidy_status','Program','YearLevel');
+		// Find all students based on filter
+		$S = $STU->find('all',array('conditions'=>$cond,'fields'=>$flds));
+		// Setup RES to contain all RESults
+		$RES = array();
+
+		// Loop into students and build stu object
+		foreach($S as $i=>$SO):
+			$stu =$SO['Student'];
+			$stu['student_type']=$SO['Account']['subsidy_status']; //Can be ESC , PUB or REG
+			$stu['department_id']=$SO['YearLevel']['department_id'];
+			$stu['enroll_status']='OLD';
+			array_push($RES, $stu);
+		endforeach;
+
+		// Loop into students and build inq object
+		foreach($I as $IO):
+			$inq = $IO['Inquiry'];
+			$inq['sno']='N/A'; // No SNO yet since new student
+			$inq['enroll_status']='NEW';
+			array_push($RES, $inq);
+		endforeach;
+
+		// Sort RES by full_name field
+		usort($RES, function($a, $b) {
+		    return strcmp($a['full_name'], $b['full_name']);
+		});
+
+		// Sanitize RES to differentiate NEW and OLD Students 
+		foreach($RES as $i=>$R):
+			$sno = $R['sno']=trim($R['sno']);
+			$R['full_name']= ucwords(strtolower($R['full_name']));
+			// Prefix SNO if OLD
+			$prefix = $R['enroll_status']=='OLD'?$sno:'NEW';
+			$R['display_name']=sprintf("%s %s",$prefix,$R['full_name']);
+			$RES[$i]=$R;
+		endforeach;
+
+
+		// Return RES inside Student key
+		$RES = array('Student'=>$RES);
+		return $RES;
+	}
+
 	function generateSNO($sy){
 		$SNO_SERIES = 1;
 		$SNO_PREFIX = sprintf('%d-',$sy);
