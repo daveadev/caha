@@ -28,6 +28,7 @@ require.config({
 		'util':'../config/util',
 		'report':'../controllers/report',
 		'admin':'../controllers/admin',
+        'main':'../controllers/main',
 		'ngFileUpload': '../vendors/excel-reader/ng-file-upload.min',
 		'xlsx': '../vendors/excel-reader/xlsx.full.min',
         'exceljs':'../vendors/node_modules/exceljs/dist/exceljs',

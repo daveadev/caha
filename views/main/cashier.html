@@ -1,0 +1,13 @@
+<div ng-controller="CashierController as CAC" ng-init="CAC.init()">
+	<a-module>
+		<a-container>
+			<a-header is-main="true">
+				<m-search-entity  ng-model="CAC.ActiveStudent" endpoint="'students/search'" search-fields="['first_name','last_name','middle_name']" obj-fields="CAC.StudFields" is-large="true" display-field="'display_name'"/>
+			</a-header>
+			<a-canvas>
+				<a-content>
+				</a-content>
+			</a-canvas>
+		</a-container>
+	</a-module>
+</div>
