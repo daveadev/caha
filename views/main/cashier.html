@@ -1,11 +1,101 @@
+<style>
+.tab-content{
+	padding-left: 15px;
+}
+.btn-action{
+	width: 220px;
+	height:100px;
+	text-align:left;
+	margin-right: 10px;
+	margin-bottom: 10px;
+
+}
+.btn-action>span.peso.amount{
+	width: auto;
+	float: none;
+	color: inherit;
+}
+.btn-action div.action-label {
+  width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  height: 40px;
+}
+.btn-action:hover div.action-label{
+	font-size: 12px;
+	white-space: normal;
+}
+</style>
 <div ng-controller="CashierController as CAC" ng-init="CAC.init()">
 	<a-module>
 		<a-container>
 			<a-header is-main="true">
-				<m-search-entity  ng-model="CAC.ActiveStudent" endpoint="'students/search'" search-fields="['first_name','last_name','middle_name']" obj-fields="CAC.StudFields" is-large="true" display-field="'display_name'"/>
+				<m-search-entity  ng-model="CAC.ActiveStudent" endpoint="'students/search'" search-fields="['first_name','last_name','middle_name','sno','rfid']" obj-fields="CAC.StudFields" is-large="true" display-field="'display_name'"/>
 			</a-header>
 			<a-canvas>
 				<a-content>
+					<a-row>
+						<a-col size="8">
+							<div class="pull-right" style="margin-right: 25px;">
+								<m-formgroup ng-model="CAC.ActiveSY" label="School Year" options="CAC.SchoolYears" option-label="label"></m-formgroup>
+							</div>
+							<uib-tabset type="pills" active="CAC.ActiveTabIndex">
+								<uib-tab index="0" heading="Transactions" classes="btn-lg">
+									<a-button size="lg" class="btn-action">
+										<div class="action-label">Initial Payment</div>
+										<span class="peso amount">5,000</span>
+									</a-button>
+									<a-button size="lg" class="btn-action">
+										<div class="action-label">Subsequent Payment</div>
+										<span class="peso amount">4,350</span>
+									</a-button>
+									<a-button size="lg" class="btn-action">
+										<div class="action-label">PE Uniform</div>
+										<span class="peso amount">4,350</span>
+									</a-button>
+									<a-button size="lg" class="btn-action">
+										<div class="action-label">Modules and eBook</div>
+										<span class="total peso amount">3,000</span>
+									</a-button>
+								</uib-tab>
+								<uib-tab index="1" heading="Paysched" classes="btn-lg">
+									
+								</uib-tab>
+							</uib-tabset>
+						</a-col>
+						<a-col size="4">
+							<div >
+								<div style="margin-bottom:10px;">
+									<h5 class="pull-left">Transaction Details</h5>
+									<div class="pull-right">
+										<a-button>
+												Clear
+										</a-button>
+									</div>	
+									<div class="clearfix"></div>
+								</div>
+							</div>
+							<div style="height:320px">
+								<a-table headers="CAC.Headers" props="CAC.Props" data="CAC.TransacDetails"></a-table>
+								<div class="btn-group btn-group-sm pull-right" ng-if="0" style="margin-top:-21px;">
+									<a-button ng-if="true">
+										<a-glyph icon="chevron-left"></a-glyph>
+									</a-button>
+									<a-button ng-if="true">
+										<a-glyph icon="chevron-right"></a-glyph>
+									</a-button>
+								</div>
+							</div>
+							<m-formgroup ng-model="CAC.TotalAmount" label="Total Amount" type="'number'" ng-disabled="true"></m-formgroup>
+							<a-button class="btn-block" size="lg" type="success">
+								Pay
+							</a-button>
+
+						</a-col>
+					</a-row>
+					
+
 				</a-content>
 			</a-canvas>
 		</a-container>
