@@ -93,7 +93,10 @@ class Student extends AppModel {
 		// Define response fields
 		$flds = array('id','lrn','full_name','program_id','year_level_id','student_type','department_id');
 		// Find all Inquiry based on the filter
-		$I = $INQ->find('all',array('conditions'=>$cond,'recursive'=>-1,'fields'=>$flds));
+		$condInq = $cond;
+		unset($condInq['OR']['sno LIKE']);
+		unset($condInq['OR']['rfid LIKE']);
+		$I = $INQ->find('all',array('conditions'=>$condInq,'recursive'=>-1,'fields'=>$flds));
 		
 		// Update flds for students
 		array_pop($flds); // Remove deparment_id
