@@ -42,25 +42,16 @@
 							</div>
 							<uib-tabset type="pills" active="CAC.ActiveTabIndex">
 								<uib-tab index="0" heading="Transactions" classes="btn-lg">
-									<a-button size="lg" class="btn-action">
-										<div class="action-label">Initial Payment</div>
-										<span class="peso amount">5,000</span>
-									</a-button>
-									<a-button size="lg" class="btn-action">
-										<div class="action-label">Subsequent Payment</div>
-										<span class="peso amount">4,350</span>
-									</a-button>
-									<a-button size="lg" class="btn-action">
-										<div class="action-label">PE Uniform</div>
-										<span class="peso amount">4,350</span>
-									</a-button>
-									<a-button size="lg" class="btn-action">
-										<div class="action-label">Modules and eBook</div>
-										<span class="total peso amount">3,000</span>
-									</a-button>
+
+										<div ng-controller="CashierTransactionsController as CTC" ng-init="CTC.init()">
+											<a-button size="lg" class="btn-action" ng-repeat="TItem in CTC.TransacList" ng-hide="TItem.hide" ng-disabled="TItem.disabled">
+												<div class="action-label">{{TItem.description}}</div>
+												<span class="peso amount">{{TItem.amount|currency}}</span>
+											</a-button>
+										</div>
 								</uib-tab>
 								<uib-tab index="1" heading="Paysched" classes="btn-lg">
-									
+										<a-table headers="CAC.PSHeaders" props="CAC.PSProps" data="CAC.Paysched"></a-table>
 								</uib-tab>
 							</uib-tabset>
 						</a-col>
