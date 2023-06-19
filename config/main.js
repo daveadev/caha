@@ -2,7 +2,6 @@ require.config({
     baseUrl:'app',
 	urlArgs :(function(){for(var s = Math.random()+'',c = 0x123456,i=0;i<s.length;i++)c += (s.charCodeAt(i)*(i + 1));return c;}()),
 	waitSeconds: 60,
-    // Alias libraries paths
     paths: {     
         'app': '../config/app',
         'settings': '../config/settings',
@@ -33,8 +32,8 @@ require.config({
 		'xlsx': '../vendors/excel-reader/xlsx.full.min',
         'exceljs':'../vendors/node_modules/exceljs/dist/exceljs',
 		'jszip': '../vendors/excel-reader/jszip',
+        'transact':'../utils/transactions'
     },
-    // Add angular modules that does not support AMD out of the box, put it in a shim
     shim: {
 		'angular' : {exports : 'angular'},
         'angular-route': ['angular'],
@@ -46,6 +45,5 @@ require.config({
 		'angular-chart': ['angular','chart'],
         'custom-window': ['angular'],
     },
-    // kick start application
     deps: ['app']
 });

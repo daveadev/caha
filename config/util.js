@@ -1,16 +1,16 @@
 define([], function(){
 	var util = {};
 		util.formatDate = function(tDate){
-			console.log(tDate);
-			var monthNames = ["January", "February", "March", "April", "May", "June",
-				"July", "August", "September", "October", "November", "December"
-			];
-			var month = monthNames[tDate.getMonth()]
-			var day = tDate.getDate();
-			var year = tDate.getFullYear();
-			var nDate = month + ' ' + day + ', ' + year;
+ 			const options = { month: 'short', day: 'numeric', year: 'numeric' };
+  			const formattedDate = tDate.toLocaleString('en-US', options);
+			return formattedDate;
 			
-			return nDate;
 		}
+		util.formatMoney = function(number){
+			const options =  {style: 'currency',currency: 'PHP'};
+			const formattedNumber = number.toLocaleString('en-US',options);
+ 			return formattedNumber;
+		}
+
 	return util;
 });
