@@ -8,7 +8,7 @@ class Student extends AppModel {
 	var $virtualFields = array(
 		'name'=>"CONCAT(Student.sno,' - ',Student.first_name,' ',Student.last_name)",
 		'short_name'=>"CONCAT(LEFT(Student.first_name,1),'.',Student.last_name)",
-		'full_name'=>"CONCAT(Student.first_name,' ',LEFT(Student.middle_name,1),' ',Student.last_name,' ',Student.suffix)",
+		'full_name'=>"CONCAT(Student.first_name,' ',LEFT(COALESCE(Student.middle_name),1),' ',Student.last_name,' ',Student.suffix)",
 		'class_name'=>"UPPER(CONCAT(Student.last_name,', ',Student.prefix, Student.first_name,' ',LEFT(Student.middle_name,1),'. ',Student.suffix))",
 		'print_name'=>"(CONCAT(Student.last_name,', ',Student.prefix, Student.first_name,' ',LEFT(Student.middle_name,1),'. ',Student.suffix))",
 	);
@@ -108,13 +108,19 @@ class Student extends AppModel {
 		$STU->contain('Account.subsidy_status','Program','YearLevel');
 		// Find all students based on filter
 		$S = $STU->find('all',array('conditions'=>$cond,'fields'=>$flds));
+
+
 		// Setup RES to contain all RESults
 		$RES = array();
 
 		// Loop into students and build stu object
 		foreach($S as $i=>$SO):
 			$stu =$SO['Student'];
-			$stu['student_type']=$SO['Account']['subsidy_status']; //Can be ESC , PUB or REG
+			$stu['student_type']=null;
+			if(isset($SO['Account']['subsidy_status'])):
+				//Can be ESC , PUB or REG
+				$stu['student_type']=null;$SO['Account']['subsidy_status'];
+			endif;
 			$stu['department_id']=$SO['YearLevel']['department_id'];
 			$stu['enroll_status']='OLD';
 			array_push($RES, $stu);

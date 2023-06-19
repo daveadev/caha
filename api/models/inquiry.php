@@ -7,7 +7,7 @@ class Inquiry extends AppModel {
 	var $virtualFields = array(
 		'name'=>"CONCAT(Inquiry.id,' - ',Inquiry.first_name,' ',Inquiry.last_name)",
 		'short_name'=>"CONCAT(LEFT(Inquiry.first_name,1),'.',Inquiry.last_name)",
-		'full_name'=>"CONCAT( Inquiry.first_name,' ',LEFT(Inquiry.middle_name,1),' ',Inquiry.last_name,' ',Inquiry.suffix)",
+		'full_name'=>"CONCAT_WS(Inquiry.first_name, LEFT(Inquiry.middle_name, 1), Inquiry.last_name, Inquiry.suffix)  ",
 		'class_name'=>"UPPER(CONCAT(Inquiry.last_name,', ', Inquiry.first_name,' ',LEFT(Inquiry.middle_name,1),'. ',Inquiry.suffix))",
 		'print_name'=>"(CONCAT(Inquiry.last_name,', ', Inquiry.first_name,' ',LEFT(Inquiry.middle_name,1),'. ',Inquiry.suffix))",
 	); 
