@@ -86,7 +86,7 @@ define(['app', 'api'], function(app) {
 				$scope.PopoverDetails.is_open = false;
 				$scope.changeDate = false;
 				$scope.HasRes = false;
-				$scope.PlaceHolder = 'Search Student or type "Others"';
+				$scope.PlaceHolder = 'Tap ID or Search Student, SNO and type "Others"';
                 $scope.$watch('hasStudentInfo', updateHasInfo);
                 $scope.$watch('hasTransactionInfo', updateHasInfo);
                 $scope.$watch('hasPaymentInfo', updateHasInfo);
@@ -155,6 +155,17 @@ define(['app', 'api'], function(app) {
 						return false;
 					}
 				});
+			}
+
+			$scope.unifiedSearch = function(item){
+				var keyword =  $scope.SearchWord.toLowerCase();
+				var isMatch =  item.name.toLowerCase().startsWith(keyword);
+					if(item.sno)
+						isMatch =  isMatch  || item.sno.toLowerCase().startsWith(keyword);
+					if(item.rfid)
+						isMatch =  isMatch  || item.rfid.toLowerCase().startsWith(keyword);
+					
+				return isMatch;	
 			}
 			
 			$scope.SearchStudent = function(){

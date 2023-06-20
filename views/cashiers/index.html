@@ -177,7 +177,7 @@
 						<div class="preloader-message">Loading...</div>
 						<div class="loader"></div>
 					</div>
-					<div class="list-group-item ng-class:{active:student.id===SelectedStudent.id}" ng-repeat="student in Students | filter:{name:SearchWord}" ng-click="setSelecetedStudent(student)">
+					<div class="list-group-item ng-class:{active:student.id===SelectedStudent.id}" ng-repeat="student in Students | filter:unifiedSearch" ng-click="setSelecetedStudent(student)">
 						<h4 class="list-group-item-heading">{{student.name}}</h4>
 						<p class="list-group-item-text">
 						<span>{{student.sno}}</span> | <span>{{student.year_level}}</span></p>

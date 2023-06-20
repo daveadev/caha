@@ -32,6 +32,7 @@ class AccountsController extends AppController {
 						$acc['Account']['name'] =$stud['first_name'].' '.$stud['middle_name'].' '.$stud['last_name'];
 						
 					$acc['Account']['sno'] =$stud['sno'];
+					$acc['Account']['rfid'] =$stud['rfid'];
 					
 					$acc['Account']['year_level'] =$yearLevel;
 					$acc['Account']['year_level_id'] =$yrlvId;

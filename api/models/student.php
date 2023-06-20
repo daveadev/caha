@@ -63,6 +63,7 @@ class Student extends AppModel {
 														'Student.last_name LIKE'=>$name,
 														'Student.sno LIKE'=>$name,
 														'Student.id LIKE'=>$name,
+														'Student.rfid LIKE'=>$name,
 													)
 											)
 									)
