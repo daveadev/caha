@@ -1,7 +1,7 @@
 "use strict";
 define(['app', 'api'], function(app) {
-    app.register.controller('CashierController', ['$log', '$scope', '$rootScope', '$uibModal', 'api','$filter', 
-	function($log, $scope, $rootScope, $uibModal, api,$filter) {
+    app.register.controller('CashierController', ['$log', '$scope', '$rootScope', '$uibModal', 'api','$filter','$timeout',
+	function($log, $scope, $rootScope, $uibModal, api,$filter,$timeout) {
         $scope.index = function() {
             $rootScope.__MODULE_NAME = 'Cashiers';
 			if($rootScope.__USER.user.user_type=='money'||$rootScope.__USER.user.user_type=='admin'){
@@ -156,6 +156,11 @@ define(['app', 'api'], function(app) {
 					}
 				});
 			}
+			$scope.handleKeypress = function(e){
+				if(e.key=='Enter'){
+					$scope.SearchStudent('auto');
+				}
+			}
 
 			$scope.unifiedSearch = function(item){
 				var keyword =  $scope.SearchWord.toLowerCase();
@@ -168,7 +173,7 @@ define(['app', 'api'], function(app) {
 				return isMatch;	
 			}
 			
-			$scope.SearchStudent = function(){
+			$scope.SearchStudent = function(source){
 				var message = '';
 				$scope.Search = 1;
 				if($scope.ActiveStudTyp!=='QR'){
@@ -178,7 +183,10 @@ define(['app', 'api'], function(app) {
 						fields:['first_name','middle_name','last_name','id'],
 						limit:'less'
 					}
-					requestStudents(filter);
+					requestStudents(filter,true);
+					if(source=='auto'){
+						$scope.SearchWord = '';
+					}
 				}else{
 					if($scope.SearchWord.includes('LSA')&&$scope.SearchWord.length==8){
 						var data = {
@@ -280,14 +288,19 @@ define(['app', 'api'], function(app) {
 				});
 			}
 			
-			function requestStudents(filter){
+			function requestStudents(filter,isAuto){
 				$scope.IsLoading = true;
 				filter =filter||{};
 				filter.account_type = $scope.ActiveStudTyp=='Old'?'student':'inquiry'; 
 				console.log(filter);
 				api.GET('accounts', filter,function success(response) {
 					$scope.IsLoading = false;
-					$scope.Students = response.data;
+					var data = response.data;
+					$scope.Students = data;
+
+					if(isAuto && $scope.Students.length){
+						$scope.setSelecetedStudent($scope.Students[0]);	
+					}
 				}, function error(response){
 					$scope.IsLoading = false;
 				});
