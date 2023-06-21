@@ -128,10 +128,12 @@ class CashierCollection extends AppModel {
 				}
 			}
 			if(!isset($dates))
-				$conds = array('CashierCollection.ref_no LIKE'=>'%'. $typ.'%','and'=>array('CashierCollection.transac_date <='=>$end,'CashierCollection.transac_date >='=>$start));
-			else
+				$conds = array('CashierCollection.ref_no LIKE'=>$typ.'%','and'=>array('CashierCollection.transac_date <='=>$end,'CashierCollection.transac_date >='=>$start));
+			else{
 				$conds = array('CashierCollection.ref_no LIKE'=> '%'.$typ.'%','CashierCollection.transac_date'=>$dates);
-			$conds['CashierCollection.cashier']=$user['username']; 
+				$conds['CashierCollection.cashier']=$user['username']; 
+			}
+				
 			$queryData['conditions']=$conds;
 		}
 		//pr($queryData); exit();

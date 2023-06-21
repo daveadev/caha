@@ -114,7 +114,7 @@
 					</a-row>
 					<a-row>
 						<a-col>
-							<table class="table table-bordered table-condensed">
+							<table class="table table-bordered table-condensed" ng-show="CC.ActiveOpt.id=='daily'&&CC.Collections.BreakDowns.length">
 								<thead>
 									<tr ng-show="CC.ActiveOpt.id=='month'">
 										<th>Month</th>
@@ -157,6 +157,14 @@
 									</tr>
 								</tbody>
 							</table>
+							<div class="empty-state" ng-show="CC.ActiveOpt.id=='daily'&&!CC.Collections.BreakDowns.length">
+								<div class="well">
+									<div class="empty-state-icon text-center">
+										<i class="glyphicon glyphicon-exclamation-sign"></i>
+									</div>
+									<h4>No Collections for the dates provided!</h4>
+								</div>
+							</div>
 						</a-col>
 					</a-row>
 				</a-content>

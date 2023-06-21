@@ -5,7 +5,7 @@ class CashierCollectionsController extends AppController {
 	var $uses = array('CashierCollection','Section','Student','Account','AccountHistory','Transaction','TransactionDetail','Booklet','TransactionPayment','Ledger');
 	
 	function index() {
-		
+		//pr($this->paginate()); exit();
 		$this->paginate['CashierCollection']['contain'] = array('Student','Account','Booklet','AccountHistory','TransactionDetail','Inquiry','TransactionPayment');
 		//pr($this->paginate()); exit;
 		
@@ -23,6 +23,12 @@ class CashierCollectionsController extends AppController {
 				$this->paginate['CashierCollection']['contain'] = array('Student','Account','TransactionDetail','Booklet');
 				//$conds =  array('Transaction.ref_no LIKE'=> $typ.'%','and'=>array('transac_date <='=>$end,'transac_date >='=>$start));
 			}
+			$cancelled = $this->Ledger->find('all',
+						array('recursive'=>1,
+							'conditions'=>array(
+								'and'=>array('Ledger.transac_date <='=>$end,
+											'Ledger.transac_date >='=>$start),
+									'Ledger.ref_no LIKE'=> 'X'.$typ.'%')));
 		}else{
 			$date = $_GET['date'];
 			$conds =  array('Transaction.ref_no LIKE'=> '%'.$typ.'%','transac_date'=>$date);
