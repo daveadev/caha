@@ -72,6 +72,7 @@ define(['app','api','atomic/bomb'],function(app){
 			$scope.date_from='';
 			$scope.date_to='';
 			$scope.Collections = '';
+			$scope.DailyCollections['BreakDowns'] = null;
 		}
 		
 		$scope.setFrom = function(index){

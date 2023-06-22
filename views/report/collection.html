@@ -15,7 +15,7 @@
 			</a-header>
 			<a-header>
 				<a-row>
-					<a-col size="4">
+					<a-col size="3">
 						<ul class="nav nav-pills">
 							<li ng-repeat="opt in CC.Options" 
 							ng-click="CC.setActOption(opt)" 
@@ -55,9 +55,9 @@
 							</select>
 						</div>
 					</a-col>
-					<a-col size="2" align="right" style="margin-top:4px;">
+					<a-col size="3" align="right" style="margin-top:4px;">
 						<button class="btn btn-default" ng-click="CC.Clear()" ng-disabled="!CC.date_from||!CC.date_to" style="margin-right: 5%;">Clear</button>
-						<button class="btn btn-primary pull-right" ng-click="CC.LoadReport()" ng-disabled="!CC.date_from||!CC.date_to" ng-show="!CC.DailyCollections.BreakDowns.length">Load</button>
+						<button class="btn btn-primary pull-right" ng-click="CC.LoadReport()" ng-disabled="!CC.date_from||!CC.date_to||CC.Loading" ng-show="!CC.DailyCollections.BreakDowns.length">{{CC.Loading ? 'Loding...' : 'Load' }}</button>
 						<button class="btn btn-primary pull-right" ng-disabled="!CC.date_from||!CC.date_to" ng-show="CC.DailyCollections.BreakDowns.length" ng-click="CC.PrintBtn()">Print</button>
 					</a-col>
 				</a-row>
@@ -101,12 +101,6 @@
 						</a-col>
 					</a-row>
 					<a-row >
-						<!-- <a-col size="6">
-							<h4 for="" ng-show="CC.ActiveOpt.id=='daily'" >Total collections from {{CC.date_from | date:'dd MMM yyyy'}} - {{CC.date_to | date:'dd MMM yyyy'}}</h4>
-							<h4 for="" ng-show="CC.ActiveOpt.id=='month'" >Total collections from {{CC.date_from.label}} - {{CC.date_to.label}}</h4>
-							<h4 class="total amount peso pull-left">{{CC.DailyCollections.Collection | currency}}</h4>
-		
-						</a-col> -->
 						
 					</a-row>
 					<a-row>
@@ -114,7 +108,7 @@
 					</a-row>
 					<a-row>
 						<a-col>
-							<table class="table table-bordered table-condensed" ng-show="CC.ActiveOpt.id=='daily'&&CC.Collections.BreakDowns.length">
+							<table class="table table-bordered table-condensed" ng-show="CC.ActiveOpt.id=='daily'&&CC.DailyCollections.BreakDowns.length">
 								<thead>
 									<tr ng-show="CC.ActiveOpt.id=='month'">
 										<th>Month</th>
@@ -157,7 +151,7 @@
 									</tr>
 								</tbody>
 							</table>
-							<div class="empty-state" ng-show="CC.ActiveOpt.id=='daily'&&!CC.Collections.BreakDowns.length">
+							<div class="empty-state" ng-show="CC.ActiveOpt.id=='daily'&&!CC.DailyCollections.BreakDowns">
 								<div class="well">
 									<div class="empty-state-icon text-center">
 										<i class="glyphicon glyphicon-exclamation-sign"></i>
