@@ -479,7 +479,8 @@ define(['app', 'api'], function(app) {
 					}
 					$scope.ActiveAssessment = undefined;
 					if($scope.ActiveStudent.id){
-						api.GET('assessments',{student_id:$scope.ActiveStudent.id,status:'ACTIV',esp:$scope.ActiveEsp+$scope.ModEsp}, function success(response){
+						var ModEsp = 1;
+						api.GET('assessments',{student_id:$scope.ActiveStudent.id,status:'ACTIV',esp:$scope.ActiveEsp+ModEsp}, function success(response){
 							$scope.ActiveAssessment = response.data[0];;
 							$scope.ActiveTyp = 'OR';
 							checkOrType();
@@ -628,7 +629,8 @@ define(['app', 'api'], function(app) {
 							Esp = $scope.ActiveSY+.1;
 						else
 							Esp = $scope.ActiveSY+.3;
-						$scope.ActiveAssessment.esp = Esp;
+						//$scope.ActiveAssessment.esp = Esp;
+						$scope.Payment.cashier.esp =  Math.floor($scope.ActiveAssessment.esp);
 						$scope.Payment.assessment = $scope.ActiveAssessment;
 					}
 					if($scope.HasRes)
