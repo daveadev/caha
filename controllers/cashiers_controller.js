@@ -40,9 +40,9 @@ define(['app', 'api'], function(app) {
 				$scope.CheckPayment = false;
 				$scope.Consumed = 0;
 				$scope.RectTypes = ['OR','AR','A2O'];
-				$scope.StudTypes = ['Old','New','QR'];
+				$scope.StudTypes = ['Old','New'];
 				$scope.ActiveTyp = 'OR';
-				$scope.ActiveStudTyp = 'Old';
+				$scope.setActiveStudType('Old');
 				$scope.ActiveUser = $rootScope.__USER.user;
 				if($scope.ActiveUser.user_type=='cashr')
 					getCashierId();
@@ -163,7 +163,7 @@ define(['app', 'api'], function(app) {
 			}
 
 			$scope.unifiedSearch = function(item){
-				
+				if(!item.hasOwnProperty('name')) return false;
 				var keyword =  $scope.SearchWord.toLowerCase();
 				var isMatch =  item.name.toLowerCase().includes(keyword);
 					if(item.sno)
@@ -258,10 +258,18 @@ define(['app', 'api'], function(app) {
 				$scope.ActiveStudTyp = type;
 				if(type!='QR'){
 					requestStudents();
-					$scope.PlaceHolder = 'Search Student or type "Others"';
+					if(type=='Old')
+						$scope.PlaceHolder = 'Tap ID or Search Barcode SNO or Student Name';
+					if(type=='New')
+						$scope.PlaceHolder = 'Search Barcode LSN or Student Name';
 				}
 				else
 					$scope.PlaceHolder = 'Search Assessment ID';
+				$scope.FocusSearch = false;	
+				$timeout(function(){
+					$scope.FocusSearch = true;	
+				},200);
+				
 			}
             //Get BookletID
 			function getAll(){

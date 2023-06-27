@@ -182,11 +182,19 @@
 						<p class="list-group-item-text">
 						<span>{{student.sno}}</span> | <span>{{student.year_level}}</span></p>
 					</div>
-					<div class="list-group-item ng-class:{active:SelectedPayee=='OTHR'}" ng-click="setSelecetedPayee('OTHR')" ng-show="!Search&&ActiveStudTyp!=='QR'&&Students.length">
+					<div class="list-group-item ng-class:{active:SelectedPayee=='OTHR'}" ng-click="setSelecetedPayee('OTHR')" ng-show="!Search&&ActiveStudTyp==='Old'&&Students.length">
 						<h4 class="list-group-item-heading">Others</h4>
 						<p class="list-group-item-text">
 							<span ng-show="!isPayeeConfirmed">Transact other than students.</span>
 							<span ng-show="isPayeeConfirmed">Transact to {{OtherPayeeName}}.</span>
+						</p>
+					</div>
+
+					<div class="list-group-item" ng-show="!Search&&ActiveStudTyp==='New'">
+						<h4 class="list-group-item-heading">New Students</h4>
+						<p class="list-group-item-text">
+							
+							<span>Use barcode printed in your assessment form.</span>
 						</p>
 					</div>
 					<div class="list-group-item ng-class:{active:student.id===SelectedStudent.id}" ng-repeat="student in Others | filter:{name:SearchWord}" ng-click="confirmPayee(student)">
@@ -206,7 +214,7 @@
 				<div class="list-group-item list-group-search-box">
 					<div class="input-group" ng-show="SelectedPayee!=='OTHR'"> 
 						<div class="input-group-btn"><button class="btn btn-default" ng-click="SearchStudent()" ><span class="glyphicon glyphicon-search"></span></button></div>
-						<input type="text" class="form-control" placeholder={{PlaceHolder}} focus="ActiveStep==1&&!__SIDEBAR_OPEN" ng-model="SearchWord" ng-keypress="handleKeypress($event)"/>
+						<input type="text" class="form-control" placeholder={{PlaceHolder}} focus="FocusSearch" ng-model="SearchWord" ng-keypress="handleKeypress($event)"/>
 						<div class="input-group-btn"><button class="btn btn-default" ng-click="ClearSearch()" ng-show="Search"><span class="glyphicon glyphicon-remove"></span></button></div>
 					</div>
 					<div class="input-group" ng-show="SelectedPayee==='OTHR'"> 
