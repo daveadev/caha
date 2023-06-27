@@ -26,7 +26,7 @@ class AccountsController extends AppController {
 						$yearLevel = $yrLevels[$yrlvId];
 					if(isset($sections[$sectId]))
 						$section = $sections[$sectId];
-					if(isset($stud['full_name`']))
+					if(isset($stud['full_name']))
 						$acc['Account']['name'] =$stud['full_name'];
 					else
 						$acc['Account']['name'] =$stud['first_name'].' '.$stud['middle_name'].' '.$stud['last_name'];

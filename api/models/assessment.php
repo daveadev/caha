@@ -1,15 +1,16 @@
 <?php
 class Assessment extends AppModel {
 	var $name = 'Assessment';
+	var $actsAs ='Containable';
 	var $useDbConfig = 'sem';
 	var $recursive = 2;
 	var $belongsTo = array(
 		'Inquiry' => array(
 			'className' => 'Inquiry',
 			'foreignKey' => false,
-			'dependent' => true,
+			'dependent' => false,
 			'conditions' => array('Inquiry.id=Assessment.student_id'),
-			'fields' => '',
+			'fields' =>array('id','first_name','middle_name','last_name','year_level_id'),
 			'order' => '',
 			'limit' => '',
 			'offset' => '',

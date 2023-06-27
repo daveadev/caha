@@ -8,13 +8,16 @@ class AssessmentsController extends AppController {
 		$order = array('Assessment.created' => 'desc');
 		$this->paginate['Assessment']['order'] = $order;
 		$this->paginate['Assessment']['recursive']=1;
+		$contains = array('Inquiry','Student','AssessmentPaysched','AssessmentFee','AssessmentSubject');
+		$this->paginate['Assessment']['contain']=$contains;
 		$assessments = $this->paginate();
+
 		if($this->isAPIRequest()){
 			$yrLevels = $this->Assessment->Student->YearLevel->find('list',array('fields'=>array('id','description')));
 			$sections = $this->Assessment->Student->YearLevel->Section->find('list',array('fields'=>array('id','description')));
-
+			
 			foreach($assessments as $i=>$a){
-				//pr($a); exit();
+				
 				$data = $a['Assessment'];
 				$fees = array();
 				$sched = array();
