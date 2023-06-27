@@ -163,13 +163,14 @@ define(['app', 'api'], function(app) {
 			}
 
 			$scope.unifiedSearch = function(item){
+				
 				var keyword =  $scope.SearchWord.toLowerCase();
-				var isMatch =  item.name.toLowerCase().startsWith(keyword);
+				var isMatch =  item.name.toLowerCase().includes(keyword);
 					if(item.sno)
 						isMatch =  isMatch  || item.sno.toLowerCase().startsWith(keyword);
 					if(item.rfid)
 						isMatch =  isMatch  || item.rfid.toLowerCase().startsWith(keyword);
-					
+				
 				return isMatch;	
 			}
 			
