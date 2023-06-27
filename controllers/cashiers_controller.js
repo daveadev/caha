@@ -297,7 +297,7 @@ define(['app', 'api'], function(app) {
 				});
 			}
 			
-			function requestStudents(filter,isAuto){
+			function requestStudents(filter,isAuto,retry){
 				$scope.IsLoading = true;
 				filter =filter||{};
 				filter.account_type = $scope.ActiveStudTyp=='Old'?'student':'inquiry'; 
@@ -307,8 +307,20 @@ define(['app', 'api'], function(app) {
 					var data = response.data;
 					$scope.Students = data;
 
-					if(isAuto && $scope.Students.length){
-						$scope.setSelecetedStudent($scope.Students[0]);	
+					if(isAuto){
+						if($scope.Students){
+							$scope.setSelecetedStudent($scope.Students[0]);		
+						}else{
+							if(!retry && isAuto){
+								var type = $scope.ActiveStudTyp=='Old'?'New':'Old';
+								$scope.setActiveStudType(type);
+								$timeout(function(){
+									 requestStudents(filter,true,true);
+								},200);
+								return;
+							}
+						}
+						
 					}
 				}, function error(response){
 					$scope.IsLoading = false;
