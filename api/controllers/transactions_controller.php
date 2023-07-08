@@ -160,6 +160,7 @@ class TransactionsController extends AppController {
 				$ledger['type'] = '+';
 				$ledger['amount'] = $total;
 				$ledger['details'] = $transac_dtl['details'];
+				$ledger['transaction_type_id'] = $transac['details'][0]['transaction_type_id'];
 				
 				if(!$isOthers)
 					$this->Ledger->save($ledger);
