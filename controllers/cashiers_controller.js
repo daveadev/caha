@@ -72,6 +72,7 @@ define(['app', 'api'], function(app) {
                 $scope.SelectedPayments = {};
                 $scope.SelectedPaymentDetails = {};
                 $scope.PopoverDetails = {};
+                $scope.ActiveAssessment = undefined;
                 $scope.TotalDue = 0;
                 $scope.TotalPaid = 0;
                 $scope.TotalChange = 0;
@@ -650,7 +651,9 @@ define(['app', 'api'], function(app) {
 						else
 							Esp = $scope.ActiveSY+.3;
 						//$scope.ActiveAssessment.esp = Esp;
-						$scope.Payment.cashier.esp =  Math.floor($scope.ActiveAssessment.esp);
+						var isFirstPay = $scope.SelectedTransactions['INIPY'] || $scope.SelectedTransactions['FULLP'];
+						if(isFirstPay)
+							$scope.Payment.cashier.esp =  Math.floor($scope.ActiveAssessment.esp);
 						$scope.Payment.assessment = $scope.ActiveAssessment;
 					}
 					if($scope.HasRes)
