@@ -24,10 +24,20 @@ class ReportsController extends AppController{
 				$esp_check = $esp+1+.10;
 			else
 				$esp_check = $esp+1;
+			/*
 			$classlist =  $this->ClasslistBlock->find('all',array('recursive'=>-1,'conditions'=>array('ClasslistBlock.student_id'=>$account_id,'ClasslistBlock.esp'=>$esp_check)));
+			*/
+			if(!isset($_GET['sy'])):
+				$cond  =array('ClasslistBlock.student_id'=>$account_id);
+				$flds = array('esp','status');
+				$ord =array('esp'=>'desc');
+				$clHist = $this->ClasslistBlock->find('list',array('conditions'=>$cond,'fields'=>$flds,'order'=>$ord));
+				$esp = floor(array_keys($clHist)[0]);
+			endif;
+			/*
 			if(isset($classlist[0])&&$mod_esp)
 				$esp++;
-			
+			*/
 			$data = $this->Ledger->find('all',array(
 				'conditions'=>array('Ledger.account_id'=>$account_id,'Ledger.esp'=>$esp),
 				'order'=>array('Ledger.transac_date','Ledger.ref_no','Ledger.id')
