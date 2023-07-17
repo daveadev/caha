@@ -150,7 +150,8 @@ define(['app', 'api', 'atomic/bomb'], function(app) {
 				ledgerItem.details = 'SY '+$scope.SchoolYear+' - '+(parseInt($scope.SchoolYear+1))+' '+$scope.Detail.name;
 			ledgerItem.transac_date = $filter('date')(new Date(ledgerItem.transac_date),'yyyy-MM-dd');
 			$scope.LedgerEntry = ledgerItem;
-            //console.log(tDate.getFullYear());
+			ledgerItem.details += '/Subsequent for '+$scope.Notes;
+            //console.log(ledgerItem);
 			
             api.POST('ledgers', ledgerItem, function success(response) {
 				$scope.Saving = 0;
@@ -164,18 +165,21 @@ define(['app', 'api', 'atomic/bomb'], function(app) {
 				if($scope.DefaultSY==$scope.SchoolYear){
 					var amount = angular.copy($scope.Amount);
 					angular.forEach(response.data, function(item){
-						if(item.paid_amount==0&&amount!==0){
+						if(item.paid_amount!=item.due_amount&&amount!==0){
 							if(amount>=item.due_amount){
+								amount-=item.due_amount-item.paid_amount;
 								item.paid_amount = item.due_amount;
 								item.status = 'PAID';
-								amount-=item.due_amount;
+								
 							}else{
 								item.paid_amount = amount;
 								amount = 0;
 							}
+							item.paid_date = $filter('date')(new Date($scope.date),'yyyy-MM-dd');
 						}
 					});
 					var scheds = response.data;
+					//console.log(scheds); return;
 					api.POST('account_schedules',scheds,function success(response){
 						
 					},function error(response){
