@@ -500,7 +500,7 @@ define(['app', 'api'], function(app) {
 					}
 					$scope.ActiveAssessment = undefined;
 					if($scope.ActiveStudent.id){
-						var ModEsp = 1;
+						var ModEsp = 0;
 						api.GET('assessments',{student_id:$scope.ActiveStudent.id,status:'ACTIV',esp:$scope.ActiveEsp+ModEsp}, function success(response){
 							$scope.ActiveAssessment = response.data[0];;
 							$scope.ActiveTyp = 'OR';
