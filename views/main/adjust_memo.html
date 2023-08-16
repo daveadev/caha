@@ -1,0 +1,58 @@
+<style>
+	.nav-pills>li{margin-left:-16px;}
+</style>
+<div ng-controller="AdjustMemoController as AMC" ng-init="AMC.init()">
+	<a-module>
+		<a-container>
+			<a-header is-main="true">
+				<m-search-entity  ng-model="AMC.ActiveStudent" endpoint="'students/search'" search-fields="['first_name','last_name','middle_name','sno','rfid']" obj-fields="AMC.StudFields" is-large="true" display-field="'display_name'"/>
+			</a-header>
+			<a-canvas>
+				<a-content>
+					<a-row>
+						<a-col size="2">
+							<m-formgroup ng-model="AMC.ActiveSY" options="AMC.SchoolYears" label="School Year" option-label="label"></m-formgroup>
+						</a-col>
+						<a-col size="2">
+							<m-formgroup ng-model="AMC.OutBalance" label="Outstanding Balance" type="number"></m-formgroup>
+						</a-col>
+						<a-col size="2">
+							<m-formgroup ng-model="AMC.PayTotal" label="Payment Total" type="number"></m-formgroup>
+						</a-col>
+						<a-col size="2">
+							<m-formgroup ng-model="AMC.AdjustTypes" label="Adjusting Memo" options="AMC.AdjustTypes"></m-formgroup>
+						</a-col>
+						<a-col size="2">
+							<m-formgroup ng-model="AMC.AdjustAmount" label="Amount" type="number"></m-formgroup>
+						</a-col>
+						<a-col size="2">
+							<div style="margin-top:24px;">
+								<a-button type="primary-block">
+									Compute
+								</a-button>
+							</div>
+						</a-col>
+					</a-row>
+					<a-row>
+						<a-col size="10">							
+							<uib-tabset type="pills" active="AMC.ActiveTabIndex">
+								<uib-tab index="0" heading="Ledger Entries" classes="btn-lg">
+									<a-table headers="AMC.LEHdrs" props="AMC.LEProps" data="AMC.LEData"></a-table>
+								</uib-tab>
+
+								<uib-tab index="1" heading="Payment Schedule" classes="btn-lg">
+									<a-table headers="AMC.PSHdrs" props="AMC.PSProps" data="AMC.PSData"></a-table>
+								</uib-tab>
+							</uib-tabset>
+						</a-col>
+						<a-col size="2">
+							
+								<a-button type="success btn-block" size="lg">APPLY</a-button>	
+							
+						</a-col>
+					</a-row>
+				</a-content>
+			</a-canvas>
+		</a-container>
+	</a-module>
+</div>
