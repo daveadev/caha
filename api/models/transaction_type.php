@@ -116,6 +116,7 @@ class TransactionType extends AppModel {
 			App::import('Model','Account');
 			$ACC  =  new Account();
 			$A = $ACC->findById($delimiter);
+			
 			if($A['Account']['outstanding_balance']<=0):
 				$assessment = $ASM->find('first',array('conditions'=>$ASMCond));
 			endif;

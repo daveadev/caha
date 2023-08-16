@@ -1,0 +1,46 @@
+<div ng-controller="PaymentPlanController as PPC" ng-init="PPC.init()">
+	<a-module>
+		<a-container>
+			<a-header is-main="true">
+				<m-search-entity  ng-model="PPC.ActiveStudent" endpoint="'students/search'" search-fields="['first_name','last_name','middle_name','sno','rfid']" obj-fields="PPC.StudFields" is-large="true" display-field="'display_name'"/>
+			</a-header>
+			<a-canvas>
+				<a-content>
+					<a-row>
+						<a-col size="2">
+							<m-formgroup ng-model="PPC.TotalDue" label="Total Due" type="'number'"></m-formgroup>
+						</a-col>
+						<a-col size="2">
+							<m-formgroup ng-model="PPC.PaymentTerms" label="Terms (mos.)" type="'number'"></m-formgroup>
+						</a-col>
+						<a-col size="2">
+							<m-formgroup ng-model="PPC.PaymentStart" label="Payment Start" type="'date'"></m-formgroup>
+						</a-col>
+						<a-col size="2">
+							<m-formgroup ng-model="PPC.TotalPayments" label="Total Payments" type="'number'"></m-formgroup>
+						</a-col>
+						<a-col size="2">
+							<m-formgroup ng-model="PPC.MonthlyDue" label="Monthly Payments" type="'number'"></m-formgroup>
+						</a-col>
+						<a-col size="2">
+							<div style="margin-top:24px;">
+								<a-button type="primary-block" ng-click="PPC.computePlan()">
+									Compute
+								</a-button>
+							</div>
+						</a-col>
+					</a-row>
+
+					<a-row>
+						<a-col>
+							<hr>
+							<h5>Payment Plan Schedule</h5>
+							
+							<m-table-edit headers="PPC.PlanHeaders" props="PPC.PlanProps" data="PPC.PlanData" inputs="PPC.PlanInputs" on-edit-save="PPC.updateItems" allow-add="false" allow-del="false"></m-table-edit>
+						</a-col>
+					</a-row>
+				</a-content>
+			</a-canvas>
+		</a-container>
+	</a-module>
+</div>
