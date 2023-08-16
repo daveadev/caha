@@ -10,20 +10,31 @@
 			<a-canvas>
 				<a-content>
 					<a-row>
-						<a-col size="2">
-							<m-formgroup ng-model="AMC.ActiveSY" options="AMC.SchoolYears" label="School Year" option-label="label"></m-formgroup>
+						<a-col size="4">
+							<a-row>
+								<a-col size="6">
+									<m-formgroup ng-model="AMC.ActiveSY" options="AMC.SchoolYears" label="School Year" option-label="label"></m-formgroup>
+								</a-col>
+							</a-row>
+							<a-row>
+								<a-col size="6">
+									<m-formgroup ng-model="AMC.OutBalance" label="Outstanding Balance"  ng-disabled="true"></m-formgroup>
+								</a-col>
+								<a-col size="6">
+									<m-formgroup ng-model="AMC.PayTotal" label="Payment Total"  ng-disabled="true"></m-formgroup>
+								</a-col>
+							</a-row>
+
 						</a-col>
-						<a-col size="2">
-							<m-formgroup ng-model="AMC.OutBalance" label="Outstanding Balance" type="number"></m-formgroup>
-						</a-col>
-						<a-col size="2">
-							<m-formgroup ng-model="AMC.PayTotal" label="Payment Total" type="number"></m-formgroup>
-						</a-col>
-						<a-col size="2">
-							<m-formgroup ng-model="AMC.AdjustTypes" label="Adjusting Memo" options="AMC.AdjustTypes"></m-formgroup>
-						</a-col>
-						<a-col size="2">
-							<m-formgroup ng-model="AMC.AdjustAmount" label="Amount" type="number"></m-formgroup>
+						<a-col size="6">
+							<a-row>
+								<a-col size="6">
+									<m-formgroup ng-model="AMC.AdjustType" label="Adjusting Memo" options="AMC.AMTypes"></m-formgroup>
+								</a-col>
+								<a-col size="6">
+									<m-formgroup ng-model="AMC.AdjustAmount" label="Amount" type="number"></m-formgroup>
+								</a-col>
+							</a-row>
 						</a-col>
 						<a-col size="2">
 							<div style="margin-top:24px;">
@@ -34,7 +45,7 @@
 						</a-col>
 					</a-row>
 					<a-row>
-						<a-col size="10">							
+						<a-col size="10">			
 							<uib-tabset type="pills" active="AMC.ActiveTabIndex">
 								<uib-tab index="0" heading="Ledger Entries" classes="btn-lg">
 									<a-table headers="AMC.LEHdrs" props="AMC.LEProps" data="AMC.LEData"></a-table>
