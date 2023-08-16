@@ -831,7 +831,7 @@ class PaymentsController extends AppController {
 		$module = array('account_id'=>$ass['id'],'type'=>'+','transaction_type_id'=>'MODUL','esp'=>$esp,'transac_date'=>$today,'transac_time'=>$time,'ref_no'=>$assessment_id,'details'=>'Modules & Ebooks','amount'=>$ass['module_balance']);
 		$this->Ledger->saveAll($module);
 		if($ass['subsidy_status']!='REGXX'&&!$isAdjustment){
-			$discount = array('account_id'=>$ass['id'],'type'=>'-','transaction_type_id'=>$ass['subsidy_status'],'esp'=>$esp,'transac_date'=>$today,'transac_time'=>$time,'ref_no'=>$assessment_id,'details'=>'Discount','amount'=>abs($ass['discount_amount']));
+			$discount = array('account_id'=>$ass['id'],'type'=>'-','transaction_type_id'=>$ass['subsidy_status'],'esp'=>$esp,'transac_date'=>$today,'transac_time'=>$time,'ref_no'=>$assessment_id,'details'=>'Subsidy','amount'=>abs($ass['discount_amount']));
 			$this->Ledger->saveAll($discount);
 		}
 		if(isset($all_info['Reservation'])){
@@ -879,6 +879,8 @@ class PaymentsController extends AppController {
 		//save account schedule and fees
 		$paysched = array();
 		$fees = array();
+
+		$hasLoyalty = 0;
 		if(!$isAdjustment){
 			foreach($ass['Paysched'] as $i=>$ps){
 				$ps['account_id'] = $ass['id'];
@@ -890,9 +892,14 @@ class PaymentsController extends AppController {
 		}
 		foreach($ass['Fee'] as $i=>$f){
 			$f['account_id'] = $ass['id'];
+			if($f['fee_id']=='LOY') $hasLoyalty = 1;
 			array_push($fees,$f);
 		}
 		
+		if($hasLoyalty){
+			$loyalty = array('account_id'=>$ass['id'],'type'=>'-','transaction_type_id'=>'LYLTY','esp'=>$esp,'transac_date'=>$today,'transac_time'=>$time,'ref_no'=>$assessment_id,'details'=>'Loyalty Discount','amount'=>3000);
+			$this->Ledger->saveAll($loyalty);
+		}
 		$this->AccountFee->saveAll($fees);
 		return $ass;
 	}
