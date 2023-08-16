@@ -32,7 +32,8 @@ require.config({
 		'xlsx': '../vendors/excel-reader/xlsx.full.min',
         'exceljs':'../vendors/node_modules/exceljs/dist/exceljs',
 		'jszip': '../vendors/excel-reader/jszip',
-        'transact':'../utils/transactions'
+        'transact':'../utils/transactions',
+        'adjust-memo':'../utils/adjust_memo',
     },
     shim: {
 		'angular' : {exports : 'angular'},
