@@ -32,26 +32,45 @@
 									<m-formgroup ng-model="AMC.AdjustType" label="Adjusting Memo" options="AMC.AMTypes"></m-formgroup>
 								</a-col>
 								<a-col size="6">
-									<m-formgroup ng-model="AMC.AdjustAmount" label="Amount" type="number"></m-formgroup>
+									<m-formgroup ng-model="AMC.AdjustAmount" label="Amount" type="'number'"></m-formgroup>
 								</a-col>
 							</a-row>
 						</a-col>
 						<a-col size="2">
 							<div style="margin-top:24px;">
-								<a-button type="primary-block">
+								<a-button type="primary-block" ng-click="AMC.computeAdjust()">
 									Compute
 								</a-button>
 							</div>
 						</a-col>
 					</a-row>
 					<a-row>
-						<a-col size="10">			
+						<a-col size="10">
 							<uib-tabset type="pills" active="AMC.ActiveTabIndex">
 								<uib-tab index="0" heading="Ledger Entries" classes="btn-lg">
-									<a-table headers="AMC.LEHdrs" props="AMC.LEProps" data="AMC.LEData"></a-table>
+									<a-row>
+										<a-col size="4">
+											<a-row>
+												<a-col size="7">
+													<m-formgroup ng-model="AMC.LERunBalanceDisp" label="Ledger Balance" ng-disabled="true"></m-formgroup>
+												</a-col>
+											</a-row>
+										</a-col>
+									</a-row>
+									<a-table headers="AMC.LEHdrs" props="AMC.LEProps" data="AMC.LEData" ng-model="AMC.LEActiveItem"></a-table>
 								</uib-tab>
 
 								<uib-tab index="1" heading="Payment Schedule" classes="btn-lg">
+
+									<a-row>
+										<a-col size="4">
+											<a-row>
+												<a-col size="7">
+													<m-formgroup ng-model="AMC.PSRunBalanceDisp" label="Paysched Balance" ng-disabled="true"></m-formgroup>
+												</a-col>
+											</a-row>
+										</a-col>
+									</a-row>
 									<a-table headers="AMC.PSHdrs" props="AMC.PSProps" data="AMC.PSData"></a-table>
 								</uib-tab>
 							</uib-tabset>
