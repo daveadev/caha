@@ -194,7 +194,8 @@ define(['app','adjust-memo','api','atomic/bomb'],function(app,AM){
 			    if (paymentSchedule[i].status !== 'PAID') {
 			      const balance = paymentSchedule[i].balance;
 			      const remainingBalance = Math.min(remainingAmount, balance);
-
+			      const itemId = paymentSchedule[i].id;
+			      paymentSchedule[i].api_id = itemId;
 			      paymentSchedule[i].id = trnx.id;
 			      paymentSchedule[i].paid_amount += remainingBalance;
 			      paymentSchedule[i].balance -= remainingBalance;
@@ -221,6 +222,7 @@ define(['app','adjust-memo','api','atomic/bomb'],function(app,AM){
 		      }
 		      if(paymentSchedule[i].id == trnx.id){
 		      	delete paymentSchedule[i].id;
+		      	paymentSchedule[i].id = paymentSchedule[i].api_id;
 		      }
 
 		      remainingAmount += paidAmount;
