@@ -42,20 +42,27 @@ define(['app','adjust-memo','api','atomic/bomb'],function(app,AM){
 			applyPaymentSched(schedule,sid);
 			applyAccount(account);
 		}
-		$selfScope.$watchGroup(['AMC.AdjustType','AMC.AdjustAmount','AMC.ActiveStudent','AMC.LEActiveItem','AMC.PSActiveItem'],function(vars){
+		$selfScope.$watchGroup(['AMC.ActiveStudent','AMC.AdjustType','AMC.AdjustAmount','AMC.ActiveStudent','AMC.LEActiveItem','AMC.PSActiveItem'],function(vars){
+			if(!$scope.ActiveStudent) return;
 			$scope.allowCompute =  $scope.AdjustType && $scope.AdjustAmount && !$scope.LEActiveItem.id;
 			$scope.allowInput = $scope.ActiveStudent.id   && !$scope.LEActiveItem.id;
 			$scope.allowClear = $scope.AdjustType && $scope.AdjustAmount && !$scope.allowCompute;
 			$scope.allowApply = $scope.LEActiveItem.id && $scope.PSActiveItem.id;
 		});
-		$selfScope.$watchGroup(['AMC.ActiveStudent'],function(entity){
+		$selfScope.$watch('AMC.ActiveStudent',function(entity){
 			let STU = $scope.ActiveStudent;
 			if(!STU) return;
 			let SID = STU.id;
 			let ESP = $scope.ActiveSY;
-			loadStudentAccount(SID);
-			loadLedgerEntry(SID, ESP);
-			loadPayschedule(SID,ESP);
+			if(SID==null){
+				reetStudentAccount();
+				resetLedgerEntry();
+				resetPaymentSched();
+			}else{
+				loadStudentAccount(SID);
+				loadLedgerEntry(SID, ESP);
+				loadPayschedule(SID,ESP);	
+			}
 		});
 		$selfScope.$watchGroup(['AMC.LERunBalance','AMC.PSRunBalance'],function(entity){
 			if(entity[0]!=undefined) $scope.LERunBalanceDisp = $filter('currency')(entity[0]);
@@ -341,6 +348,28 @@ define(['app','adjust-memo','api','atomic/bomb'],function(app,AM){
 			return api.POST('account_schedules',sched,success,error);
 
 			
+		}
+		// Reset Student Account
+		function reetStudentAccount(){
+			$scope.AdjustType = null;
+			$scope.AdjustAmount = null;
+			$scope.OutBalance = null;
+			$scope.PayTotal = null;
+
+		}
+		// Reset Ledger Entry
+		function resetLedgerEntry(){
+			$scope.LEData = [];
+			$scope.LERunBalance = null;
+			$scope.LERunBalanceDisp = null;
+			$scope.LEActiveItem = {};
+		}
+		// Reset Payment Schedule
+		function resetPaymentSched(){
+			$scope.PSData = [];
+			$scope.PSRunBalance = null;
+			$scope.PSRunBalanceDisp = null;
+			$scope.PSActiveItem = {};
 		}
 	}]);
 });
