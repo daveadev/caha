@@ -87,14 +87,16 @@ define(['app','adjust-memo','api','atomic/bomb'],function(app,AM){
 			$scope.LEHdrs = AM.UI.LEDGER.Headers;
 			$scope.LEProps = AM.UI.LEDGER.Properties;
 			$scope.LEData = [
-					{date:'17 Aug 2023',ref_no:'OR123', description:'Initial Payment',fee:5000,payment:0,balance:0}
+					//{date:'17 Aug 2023',ref_no:'OR123', description:'Initial Payment',fee:5000,payment:0,balance:0}
 					];
+			$scope.LEActiveItem = {};
 			// Payment Schedule
 			$scope.PSHdrs = AM.UI.PAYMENT_SCHED.Headers;
 			$scope.PSProps = AM.UI.PAYMENT_SCHED.Properties;
 			$scope.PSData = [
-				{due_date:'17 Aug 2023',due_amount:5000, paid_amount:5000,balance:0, status:'PAID'}
+				//{due_date:'17 Aug 2023',due_amount:5000, paid_amount:5000,balance:0, status:'PAID'}
 				];
+			$scope.PSActiveItem = {};
 
 		}
 
@@ -213,16 +215,24 @@ define(['app','adjust-memo','api','atomic/bomb'],function(app,AM){
 			let initBal = $scope.PSRunBalance;
 			let newBal = initBal -  amount;
 			let paymentSchedule = [];
+			let origPS = angular.copy($scope.PSData);
 			$scope.PSData.map((sched,index)=>{
 				sched.paid_amount =  parseFloat(sched.paid_amount.replace(',', ''));
 				sched.balance =  parseFloat(sched.balance.replace(',', ''));
 				$scope.PSData[index] = sched;
 			});
-
+			let updateIndex = 0;
 			let recomputedSchedule = distributePayment($scope.PSData,amount,trnx);
+				recomputedSchedule.map((sched,index)=>{
+					let ogPaidAmt =  parseFloat(origPS[index].paid_amount.replace(',', ''))
+					if(sched.paid_amount!= ogPaidAmt && updateIndex==0){
+						updateIndex = index;
+					}
+					$scope.PSData[index].paid_amount = $filter('currency')(sched.paid_amount);
+					$scope.PSData[index].balance = $filter('currency')(sched.balance);
+				});
 
-			$scope.PSData = recomputedSchedule;
-			$scope.PSActiveItem =$scope.PSData[1];
+			$scope.PSActiveItem =$scope.PSData[updateIndex];
 			$scope.PSRunBalance = newBal;
 		}
 		// Function to distribute a payment among items with no payment
@@ -271,11 +281,6 @@ define(['app','adjust-memo','api','atomic/bomb'],function(app,AM){
 		    }
 
 		  }
-
-		  paymentSchedule.map((sched,index)=>{
-				paymentSchedule[index].paid_amount = $filter('currency')(sched.paid_amount);
-				paymentSchedule[index].balance = $filter('currency')(sched.balance);
-			});
 		  return paymentSchedule;
 		}
 		// Clear Ledger Entries
@@ -320,7 +325,7 @@ define(['app','adjust-memo','api','atomic/bomb'],function(app,AM){
 				entry.transaction_type_id =e.code;
 				entry.details =e.description;
 				$scope.LEUpdate=false;
-				//api.POST('ledgers',entry,success,error);
+				api.POST('ledgers',entry,success,error);
 			});
 			
 		}
