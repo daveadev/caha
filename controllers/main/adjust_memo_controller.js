@@ -107,8 +107,7 @@ define(['app','adjust-memo','api','atomic/bomb'],function(app,AM){
 		function loadLedgerEntry(student_id,sy){
 			let filter= {account_id:student_id,esp:sy};
 			let success = function(response){
-			let entries = $filter('orderBy')(response.data,'transac_date');
-				entries = $filter('orderBy')(entries,'ref_no');
+			let entries = sortByTransacDateAndRef(response.data);
 			$scope.LEData = [];
 			let runBalance = 0;
 				entries.map((entry)=>{
@@ -137,6 +136,24 @@ define(['app','adjust-memo','api','atomic/bomb'],function(app,AM){
 				console.log(response);
 			};
 			api.GET('ledgers',filter,success,error);
+
+			function sortByTransacDateAndRef(arr) {
+			  return arr.slice().sort((a, b) => {
+			    const dateA = new Date(a.transac_date);
+			    const dateB = new Date(b.transac_date);
+
+			    if (dateA < dateB) {
+			      return -1;
+			    }
+			    if (dateA > dateB) {
+			      return 1;
+			    }
+
+			    // If transac_date is equal, sort by ref_no
+			    return a.ref_no.localeCompare(b.ref_no);
+			  });
+			}
+
 		}
 
 		function loadPayschedule(student_id){
