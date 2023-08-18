@@ -1,5 +1,5 @@
 <style>
-	.nav-pills>li{margin-left:-16px;}
+	.nav-pills>li{margin-bottom:20px;}
 </style>
 <div ng-controller="AdjustMemoController as AMC" ng-init="AMC.init()">
 	<a-module>
@@ -13,7 +13,7 @@
 						<a-col size="4">
 							<a-row>
 								<a-col size="6">
-									<m-formgroup ng-model="AMC.ActiveSY" options="AMC.SchoolYears" label="School Year" option-label="label"></m-formgroup>
+									<m-formgroup ng-model="AMC.ActiveSY" options="AMC.SchoolYears" label="School Year" option-label="label" ng-disabled="!AMC.ActiveStudent.id"></m-formgroup>
 								</a-col>
 							</a-row>
 							<a-row>
@@ -29,25 +29,29 @@
 						<a-col size="6">
 							<a-row>
 								<a-col size="6">
-									<m-formgroup ng-model="AMC.AdjustType" label="Adjusting Memo" options="AMC.AMTypes"></m-formgroup>
+									<m-formgroup ng-model="AMC.AdjustType" label="Adjusting Memo" options="AMC.AMTypes" ng-disabled="!AMC.allowInput"></m-formgroup>
 								</a-col>
 								<a-col size="6">
-									<m-formgroup ng-model="AMC.AdjustAmount" label="Amount" type="'number'"></m-formgroup>
+									<m-formgroup ng-model="AMC.AdjustAmount" label="Amount" type="'number'" ng-disabled="!AMC.allowInput"></m-formgroup>
 								</a-col>
 							</a-row>
 						</a-col>
 						<a-col size="2">
 							<div style="margin-top:24px;">
-								<a-button type="primary-block" ng-click="AMC.computeAdjust()">
+								<a-button type="primary-block" ng-click="AMC.computeAdjust()" ng-disabled="!AMC.allowCompute">
 									Compute
+								</a-button>
+								<a-button type="default-block" ng-click="AMC.clearAdjust()" ng-disabled="!AMC.allowClear">
+									Clear
 								</a-button>
 							</div>
 						</a-col>
 					</a-row>
+					<hr>
 					<a-row>
 						<a-col size="10">
 							<uib-tabset type="pills" active="AMC.ActiveTabIndex">
-								<uib-tab index="0" heading="Ledger Entries" classes="btn-lg">
+								<uib-tab index="0" heading="Ledger Entries">
 									<a-row>
 										<a-col size="4">
 											<a-row>
@@ -57,10 +61,11 @@
 											</a-row>
 										</a-col>
 									</a-row>
+
 									<a-table headers="AMC.LEHdrs" props="AMC.LEProps" data="AMC.LEData" ng-model="AMC.LEActiveItem"></a-table>
 								</uib-tab>
 
-								<uib-tab index="1" heading="Payment Schedule" classes="btn-lg">
+								<uib-tab index="1" heading="Payment Schedule">
 
 									<a-row>
 										<a-col size="4">
@@ -71,13 +76,13 @@
 											</a-row>
 										</a-col>
 									</a-row>
-									<a-table headers="AMC.PSHdrs" props="AMC.PSProps" data="AMC.PSData"></a-table>
+									<a-table headers="AMC.PSHdrs" props="AMC.PSProps" data="AMC.PSData" ng-model="AMC.PSActiveItem"></a-table>
 								</uib-tab>
 							</uib-tabset>
 						</a-col>
 						<a-col size="2">
 							
-								<a-button type="success btn-block" size="lg">APPLY</a-button>	
+								<a-button type="success btn-block" size="lg" ng-disabled="!AMC.LEActiveItem.id&&!AMC.PSActiveItem.id">APPLY</a-button>	
 							
 						</a-col>
 					</a-row>
