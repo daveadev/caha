@@ -29,10 +29,24 @@ define(['app','adjust-memo','api','atomic/bomb'],function(app,AM){
 			$scope.AdjustType = null;
 
 		}
-		$selfScope.$watchGroup(['AMC.AdjustType','AMC.AdjustAmount','AMC.ActiveStudent','AMC.LEActiveItem'],function(vars){
+		$scope.applyAdjust = function(){
+			$scope.allowApply = false;
+			$scope.allowClear = false;
+			$scope.SavingAdjust = true;
+			let trnx = ADJUST_TRNX;
+			let entries = $filter('filter')($scope.LEData,{id:trnx.id});
+			let schedule = $filter('filter')($scope.PSData,{id:trnx.id});
+			let sid = $scope.ActiveStudent.id;
+			let sy = $scope.ActiveSY;
+			applyLedgerEntry(entries,sid,sy);
+			applyPaymentSched(schedule,account);
+			applyAccount(account);
+		}
+		$selfScope.$watchGroup(['AMC.AdjustType','AMC.AdjustAmount','AMC.ActiveStudent','AMC.LEActiveItem','AMC.PSActiveItem'],function(vars){
 			$scope.allowCompute =  $scope.AdjustType && $scope.AdjustAmount && !$scope.LEActiveItem.id;
 			$scope.allowInput = $scope.ActiveStudent.id   && !$scope.LEActiveItem.id;
 			$scope.allowClear = $scope.AdjustType && $scope.AdjustAmount && !$scope.allowCompute;
+			$scope.allowApply = $scope.LEActiveItem.id && $scope.PSActiveItem.id;
 		});
 		$selfScope.$watchGroup(['AMC.ActiveStudent'],function(entity){
 			let STU = $scope.ActiveStudent;
@@ -162,6 +176,7 @@ define(['app','adjust-memo','api','atomic/bomb'],function(app,AM){
 				date: $filter('date')(new Date(),DATE_FORMAT),
 				ref_no: trnx.ref_no,
 				description: atObj.name,
+				code: atObj.id,
 				fee:null,
 				payment:$filter('currency')(amount),
 				balance:$filter('currency')(newBal)
