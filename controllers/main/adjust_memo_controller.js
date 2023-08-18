@@ -122,9 +122,9 @@ define(['app','adjust-memo','api','atomic/bomb'],function(app,AM){
 		function loadLedgerEntry(student_id,sy){
 			let filter= {account_id:student_id,esp:sy,limit:'less'};
 			let success = function(response){
-			let entries = sortByTransacDateAndRef(response.data);
-			$scope.LEData = [];
-			let runBalance = 0;
+				let entries = sortByTransacDateAndRef(response.data);
+				$scope.LEData = [];
+				let runBalance = 0;
 				entries.map((entry)=>{
 					let amt = entry.amount;
 					if(!amt) return;
@@ -145,6 +145,7 @@ define(['app','adjust-memo','api','atomic/bomb'],function(app,AM){
 					$scope.LEData.push(obj);
 				});	
 				$scope.LERunBalance = runBalance;
+				document.getElementById('PrintSoa').submit();
 
 			};
 			let error = function(response){
