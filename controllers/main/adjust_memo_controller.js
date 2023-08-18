@@ -39,7 +39,7 @@ define(['app','adjust-memo','api','atomic/bomb'],function(app,AM){
 			let sid = $scope.ActiveStudent.id;
 			let sy = $scope.ActiveSY;
 			applyLedgerEntry(entries,sid,sy);
-			applyPaymentSched(schedule,account);
+			applyPaymentSched(schedule,sid);
 			applyAccount(account);
 		}
 		$selfScope.$watchGroup(['AMC.AdjustType','AMC.AdjustAmount','AMC.ActiveStudent','AMC.LEActiveItem','AMC.PSActiveItem'],function(vars){
@@ -51,7 +51,6 @@ define(['app','adjust-memo','api','atomic/bomb'],function(app,AM){
 		$selfScope.$watchGroup(['AMC.ActiveStudent'],function(entity){
 			let STU = $scope.ActiveStudent;
 			if(!STU) return;
-
 			let SID = STU.id;
 			let ESP = $scope.ActiveSY;
 			loadStudentAccount(SID);
@@ -169,6 +168,7 @@ define(['app','adjust-memo','api','atomic/bomb'],function(app,AM){
 					let balance = due_amt - paid_amt;
 						runBalance+=balance;
 					let obj = {};
+						obj.api_id = sched.id;
 						obj.due_date =trnx_type=='INIPY'?'Upon Enrollment':$filter('date')(sched.due_date,DATE_FORMAT);
 						obj.due_amount =$filter('currency')(due_amt);
 						obj.paid_amount =$filter('currency')(paid_amt);
@@ -226,8 +226,7 @@ define(['app','adjust-memo','api','atomic/bomb'],function(app,AM){
 			    if (paymentSchedule[i].status !== 'PAID') {
 			      const balance = paymentSchedule[i].balance;
 			      const remainingBalance = Math.min(remainingAmount, balance);
-			      const itemId = paymentSchedule[i].id;
-			      paymentSchedule[i].api_id = itemId;
+			      
 			      paymentSchedule[i].id = trnx.id;
 			      paymentSchedule[i].paid_amount += remainingBalance;
 			      paymentSchedule[i].balance -= remainingBalance;
@@ -314,8 +313,33 @@ define(['app','adjust-memo','api','atomic/bomb'],function(app,AM){
 				entry.transaction_type_id =e.code;
 				entry.details =e.description;
 				$scope.LEUpdate=false;
-				api.POST('ledgers',entry,success,error);
+				//api.POST('ledgers',entry,success,error);
 			});
+			
+		}
+		// Apply Payment Schedule 
+		function applyPaymentSched(schedule,sid,index){
+			let sched = {account_id:sid};
+			if(index==undefined) index=0;
+			let adjSched = schedule[index];
+			if(adjSched.api_id)
+				sched.id = adjSched.api_id;
+			if(adjSched.status)
+				sched.status = adjSched.status;
+
+			sched.paid_amount = parseFloat(adjSched.paid_amount.replace(',', ''));
+			sched.paid_date =  $filter('date')(new Date(),'yyyy-MM-dd');
+
+			let success = function(response){
+				if(index<schedule.length-1){
+					return applyPaymentSched(schedule,sid,index+1);
+				}
+				$scope.PSUpdate = true;
+			}
+			let error = function(response){}
+			$scope.PSUpdate = false;
+			return api.POST('account_schedules',sched,success,error);
+
 			
 		}
 	}]);
