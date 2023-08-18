@@ -107,8 +107,8 @@ class Account extends AppModel {
 			'finderQuery' => '',
 			'counterQuery' => ''
 		),
-		'Transaction' => array(
-			'className' => 'Transaction',
+		'AccountTransaction' => array(
+			'className' => 'AccountTransaction',
 			'foreignKey' => 'account_id',
 			'dependent' => false,
 			'conditions' => '',
@@ -157,6 +157,55 @@ class Account extends AppModel {
 		}
 		
 		return $queryData;
+	}
+
+	function postTransaction($account_id, $trnx){
+		$A = $this->findById($account_id);
+		// Update account balances and totals
+		$ACC = $A['Account'];
+		if($trnx['flag']=='-'):
+			$amount =  $trnx['amount'];
+			$ACC['outstanding_balance'] -= $amount; 
+			$ACC['payment_total'] += $amount; 
+			
+			// Account
+			$ACD = array();
+			$ACD['id'] =  $ACC['id'];
+			$ACD['outstanding_balance'] =  $ACC['outstanding_balance'];
+			$ACD['payment_total'] =  $ACC['payment_total'];
+			$this->save($ACD);
+
+			// Account History
+			$ACH = array();
+			$ACH['account_id'] = $ACC['id'];
+			$ACH['total_due'] =  $ACC['assessment_total'];
+			$ACH['total_paid'] =  $ACC['payment_total'];
+			$ACH['balance'] =  $ACC['outstanding_balance'];
+			$ACH['transac_date'] =  $trnx['transac_date'];
+			$ACH['transac_time'] =  date('h:i:s',time());
+			$ACH['amount'] =  $amount;
+			$ACH['ref_no'] =  $trnx['ref_no'];
+			$ACH['details'] =  $trnx['details'];
+			$ACH['flag'] =  $trnx['flag'];
+			$this->AccountHistory->save($ACH);
+
+			// Account Fees
+			$ACF = array();
+			foreach($A['AccountFee'] as $AF):
+				if($AF['fee_id']=='TUI'):
+					$AF['paid_amount'] = $ACC['payment_total'];
+					$this->AccountFee->save($AF);
+				endif;
+			endforeach;
+
+			// Account Transaction
+			$ACT = array();
+			$ACT['account_id']= $ACC['id'];
+			$ACT['transaction_type_id']= $trnx['transaction_type_id'];
+			$ACT['ref_no']= $trnx['ref_no'];
+			$ACT['amount']= $trnx['amount'];
+			$this->AccountTransaction->save($ACT);
+		endif;
 	}
 
 }

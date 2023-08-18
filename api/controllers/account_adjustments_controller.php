@@ -4,6 +4,7 @@ class AccountAdjustmentsController extends AppController {
 	var $name = 'AccountAdjustments';
 
 	function index() {
+		
 		$this->AccountAdjustment->recursive = 0;
 		$this->set('accountAdjustments', $this->paginate());
 	}
@@ -20,6 +21,9 @@ class AccountAdjustmentsController extends AppController {
 		if (!empty($this->data)) {
 			$this->AccountAdjustment->create();
 			if ($this->AccountAdjustment->save($this->data)) {
+				$trnx = $this->data['AccountAdjustment'];
+				$aid = $trnx['account_id'];
+				$this->AccountAdjustment->Account->postTransaction($aid,$trnx);
 				$this->Session->setFlash(__('The account adjustment has been saved', true));
 				$this->redirect(array('action' => 'index'));
 			} else {
