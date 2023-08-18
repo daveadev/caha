@@ -82,7 +82,9 @@
 						</a-col>
 						<a-col size="2">
 							
-								<a-button type="success btn-block" size="lg" ng-disabled="!AMC.LEActiveItem.id&&!AMC.PSActiveItem.id">APPLY</a-button>	
+								<a-button type="success btn-block" size="lg" ng-click="AMC.applyAdjust()" ng-disabled="!AMC.allowApply">
+									{{AMC.SavingAdjust?'Saving...':'APPLY'}}
+								</a-button>	
 							
 						</a-col>
 					</a-row>
