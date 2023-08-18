@@ -81,9 +81,8 @@
 							</uib-tabset>
 						</a-col>
 						<a-col size="2">
-							
 								<a-button type="success btn-block" size="lg" ng-click="AMC.applyAdjust()" ng-disabled="!AMC.allowApply">
-									{{AMC.SavingAdjust?'Saving...':'APPLY'}}
+									{{AMC.SavingAdjust?'Saving...':(AMC.changesApplied?'SAVED!':'APPLY')}}
 								</a-button>	
 							
 						</a-col>

@@ -2,7 +2,7 @@
 define(['app','adjust-memo','api','atomic/bomb'],function(app,AM){
 	const DATE_FORMAT = 'dd MMM yyyy';
 	const ADJUST_TYPES = {};
-	const ADJUST_TRNX = {ref_no:'LSDxxxx',id:'TMP_LE'};
+	const ADJUST_TRNX = {ref_no:'-- AUTO --',id:'TMP_LE'};
 	app.register.controller('AdjustMemoController',['$scope','$rootScope','$filter','api','Atomic',
 	function($scope,$rootScope,$filter,api,atomic){
 		const $selfScope =  $scope;
@@ -16,6 +16,7 @@ define(['app','adjust-memo','api','atomic/bomb'],function(app,AM){
 			let amt = $scope.AdjustAmount;
 			let type = $scope.AdjustType;
 			let trnx = ADJUST_TRNX;
+			$scope.changesApplied = false;
 			computeLedgerEntry(amt,type,trnx);
 			computePaymentSched(amt,trnx);
 						
@@ -40,14 +41,21 @@ define(['app','adjust-memo','api','atomic/bomb'],function(app,AM){
 			let sy = $scope.ActiveSY;
 			applyLedgerEntry(entries,sid,sy);
 			applyPaymentSched(schedule,sid);
-			applyAccount(account);
 		}
 		$selfScope.$watchGroup(['AMC.ActiveStudent','AMC.AdjustType','AMC.AdjustAmount','AMC.ActiveStudent','AMC.LEActiveItem','AMC.PSActiveItem'],function(vars){
 			if(!$scope.ActiveStudent) return;
 			$scope.allowCompute =  $scope.AdjustType && $scope.AdjustAmount && !$scope.LEActiveItem.id;
 			$scope.allowInput = $scope.ActiveStudent.id   && !$scope.LEActiveItem.id;
 			$scope.allowClear = $scope.AdjustType && $scope.AdjustAmount && !$scope.allowCompute;
-			$scope.allowApply = $scope.LEActiveItem.id && $scope.PSActiveItem.id;
+			$scope.allowApply = $scope.LEActiveItem.id || $scope.PSActiveItem.id;
+			console.log($scope.LEActiveItem , $scope.PSActiveItem, $scope.allowApply);
+		});
+		$selfScope.$watchGroup(['AMC.LEUpdate','AMC.PSUpdate'],function(vars){
+			$scope.changesApplied = $scope.LEUpdate && $scope.PSUpdate	&& $scope.SavingAdjust;
+			if($scope.changesApplied){
+				$scope.SavingAdjust = false;
+				$scope.allowApply = false;
+			}
 		});
 		$selfScope.$watch('AMC.ActiveStudent',function(entity){
 			let STU = $scope.ActiveStudent;
@@ -61,7 +69,7 @@ define(['app','adjust-memo','api','atomic/bomb'],function(app,AM){
 			}else{
 				loadStudentAccount(SID);
 				loadLedgerEntry(SID, ESP);
-				loadPayschedule(SID,ESP);	
+				loadPayschedule(SID,ESP)
 			}
 		});
 		$selfScope.$watchGroup(['AMC.LERunBalance','AMC.PSRunBalance'],function(entity){
@@ -99,7 +107,6 @@ define(['app','adjust-memo','api','atomic/bomb'],function(app,AM){
 			$scope.PSActiveItem = {};
 
 		}
-
 		function loadStudentAccount(student_id){
 			let filter = {id:student_id};
 			let success = function(response){
@@ -113,7 +120,7 @@ define(['app','adjust-memo','api','atomic/bomb'],function(app,AM){
 			api.GET('accounts',filter,success,error);
 		}
 		function loadLedgerEntry(student_id,sy){
-			let filter= {account_id:student_id,esp:sy};
+			let filter= {account_id:student_id,esp:sy,limit:'less'};
 			let success = function(response){
 			let entries = sortByTransacDateAndRef(response.data);
 			$scope.LEData = [];
@@ -311,6 +318,12 @@ define(['app','adjust-memo','api','atomic/bomb'],function(app,AM){
 			let entry = {account_id:sid,sy:sy,esp:sy};
 			let success = function(response){
 				$scope.LEUpdate=true;
+				$scope.LEActiveItem={};
+				let transac = response.data;
+					delete transac.id;
+
+				applyAccountAdjust(transac);
+
 			};
 			let error = function(response){};
 			entries.map((e)=>{
@@ -331,6 +344,12 @@ define(['app','adjust-memo','api','atomic/bomb'],function(app,AM){
 		}
 		// Apply Payment Schedule 
 		function applyPaymentSched(schedule,sid,index){
+
+			if(!schedule.length){
+				$scope.PSUpdate = true;
+				$scope.PSActiveItem = {};
+				return false;
+			}
 			let sched = {account_id:sid};
 			if(index==undefined) index=0;
 			let adjSched = schedule[index];
@@ -345,14 +364,32 @@ define(['app','adjust-memo','api','atomic/bomb'],function(app,AM){
 			let success = function(response){
 				if(index<schedule.length-1){
 					return applyPaymentSched(schedule,sid,index+1);
+				}else{
+					$scope.PSUpdate = true;
+					$scope.PSActiveItem = {};
+					return loadPayschedule(sid,$scope.ActiveSY);
 				}
-				$scope.PSUpdate = true;
+				
 			}
 			let error = function(response){}
 			$scope.PSUpdate = false;
 			return api.POST('account_schedules',sched,success,error);
 
 			
+		}
+		function applyAccountAdjust(trnx){
+			let aObj =  trnx;
+				aObj.item_code = trnx.transaction_type_id;
+				aObj.adjust_date = trnx.transac_date;
+				aObj.flag = trnx.type;
+			let success = function(response){
+				let SID = trnx.account_id;
+				let ESP = trnx.esp;
+				loadStudentAccount(SID);
+				loadLedgerEntry(SID, ESP);
+			};
+			let error = function(response){};
+			api.POST('account_adjustments',aObj, success,error);
 		}
 		// Reset Student Account
 		function reetStudentAccount(){
