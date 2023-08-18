@@ -2,11 +2,11 @@
 define(['app','adjust-memo','api','atomic/bomb'],function(app,AM){
 	const DATE_FORMAT = 'dd MMM yyyy';
 	const ADJUST_TYPES = {};
+	const ADJUST_TRNX = {ref_no:'LSDxxxx',id:'TMP_LE'};
 	app.register.controller('AdjustMemoController',['$scope','$rootScope','$filter','api','Atomic',
 	function($scope,$rootScope,$filter,api,atomic){
 		const $selfScope =  $scope;
 		$scope = this;
-		console.log($filter('date'));
 
 		$scope.init = function(){
 			loadUIComps();
@@ -15,13 +15,13 @@ define(['app','adjust-memo','api','atomic/bomb'],function(app,AM){
 
 			let amt = $scope.AdjustAmount;
 			let type = $scope.AdjustType;
-			let trnx = {ref_no:'LSDxxxx',id:'TMP_LE'};
+			let trnx = ADJUST_TRNX;
 			computeLedgerEntry(amt,type,trnx);
 			computePaymentSched(amt,trnx);
 						
 		}
 		$scope.clearAdjust = function(){
-			let trnx = {ref_no:'LSDxxxx',id:'TMP_LE'};
+			let trnx = ADJUST_TRNX;
 			let amount = $scope.AdjustAmount;
 			clearLedgerEntry(trnx,amount);
 			clearPaymentSched(trnx,amount);
@@ -276,6 +276,30 @@ define(['app','adjust-memo','api','atomic/bomb'],function(app,AM){
 			let newBal = initBal +  amount;
 			$scope.PSData = distributePayment(schedule,amount*-1,trnx);
 			$scope.PSRunBalance =  newBal;
+		}
+
+		// Apply Ledger Entry
+		function applyLedgerEntry(entries,sid,sy){
+			let entry = {account_id:sid,sy:sy,esp:sy};
+			let success = function(response){
+				$scope.LEUpdate=true;
+			};
+			let error = function(response){};
+			entries.map((e)=>{
+				if(e.fee){
+					entry.type='+';
+					entry.amount = parseFloat(e.fee.replace(',', ''));
+				}else if(e.payment){
+					entry.type='-';
+					entry.amount = parseFloat(e.payment.replace(',', ''));
+				}
+				entry.transac_date = $filter('date')(new Date(e.date),'yyyy-MM-dd');
+				entry.transaction_type_id =e.code;
+				entry.details =e.description;
+				$scope.LEUpdate=false;
+				api.POST('ledgers',entry,success,error);
+			});
+			
 		}
 	}]);
 });
