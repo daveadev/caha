@@ -12,12 +12,28 @@ define(['app','adjust-memo','api','atomic/bomb'],function(app,AM){
 			loadUIComps();
 		}
 		$scope.computeAdjust = function(){
+
 			let amt = $scope.AdjustAmount;
 			let type = $scope.AdjustType;
 			let trnx = {ref_no:'LSDxxxx',id:'TMP_LE'};
 			computeLedgerEntry(amt,type,trnx);
+			computePaymentSched(amt,trnx);
 						
 		}
+		$scope.clearAdjust = function(){
+			let trnx = {ref_no:'LSDxxxx',id:'TMP_LE'};
+			let amount = $scope.AdjustAmount;
+			clearLedgerEntry(trnx,amount);
+			clearPaymentSched(trnx,amount);
+			$scope.AdjustAmount = null;
+			$scope.AdjustType = null;
+
+		}
+		$selfScope.$watchGroup(['AMC.AdjustType','AMC.AdjustAmount','AMC.ActiveStudent','AMC.LEActiveItem'],function(vars){
+			$scope.allowCompute =  $scope.AdjustType && $scope.AdjustAmount && !$scope.LEActiveItem.id;
+			$scope.allowInput = $scope.ActiveStudent.id   && !$scope.LEActiveItem.id;
+			$scope.allowClear = $scope.AdjustType && $scope.AdjustAmount && !$scope.allowCompute;
+		});
 		$selfScope.$watchGroup(['AMC.ActiveStudent'],function(entity){
 			let STU = $scope.ActiveStudent;
 			if(!STU) return;
@@ -153,6 +169,96 @@ define(['app','adjust-memo','api','atomic/bomb'],function(app,AM){
 			$scope.LEData.push(entryObj);
 			$scope.LEActiveItem = $scope.LEData[$scope.LEData.length-1];
 			$scope.LERunBalance = newBal;
+		}
+		function computePaymentSched(amount,trnx){
+			let initBal = $scope.PSRunBalance;
+			let newBal = initBal -  amount;
+			let paymentSchedule = [];
+			$scope.PSData.map((sched,index)=>{
+				sched.paid_amount =  parseFloat(sched.paid_amount.replace(',', ''));
+				sched.balance =  parseFloat(sched.balance.replace(',', ''));
+				$scope.PSData[index] = sched;
+			});
+
+			let recomputedSchedule = distributePayment($scope.PSData,amount,trnx);
+
+			$scope.PSData = recomputedSchedule;
+			$scope.PSActiveItem =$scope.PSData[1];
+			$scope.PSRunBalance = newBal;
+		}
+		// Function to distribute a payment among items with no payment
+		function distributePayment(paymentSchedule,paymentAmount,trnx) {
+		  let remainingAmount = paymentAmount;
+		  if(remainingAmount>=0){
+			  for (let i = 1; i < paymentSchedule.length; i++) {
+			    if (paymentSchedule[i].status !== 'PAID') {
+			      const balance = paymentSchedule[i].balance;
+			      const remainingBalance = Math.min(remainingAmount, balance);
+
+			      paymentSchedule[i].id = trnx.id;
+			      paymentSchedule[i].paid_amount += remainingBalance;
+			      paymentSchedule[i].balance -= remainingBalance;
+
+			      if (paymentSchedule[i].balance === 0.00) {
+			        paymentSchedule[i].status = 'PAID';
+			      }
+
+			      remainingAmount -= remainingBalance;
+
+			      if (remainingAmount <= 0.00) {
+			        break;
+			      }
+			    }
+			  }
+		  }else{
+		  	for (let i = paymentSchedule.length - 1; i >= 1; i--) {
+		      const paidAmount = Math.min(paymentSchedule[i].paid_amount, Math.abs(remainingAmount));
+		      paymentSchedule[i].paid_amount -= paidAmount;
+		      paymentSchedule[i].balance += paidAmount;
+
+		      if (paymentSchedule[i].status === 'PAID') {
+		        delete paymentSchedule[i].status;
+		      }
+		      if(paymentSchedule[i].id == trnx.id){
+		      	delete paymentSchedule[i].id;
+		      }
+
+		      remainingAmount += paidAmount;
+
+		      if (remainingAmount >= 0) {
+		        break;
+		      }
+		    }
+
+		  }
+
+		  paymentSchedule.map((sched,index)=>{
+				paymentSchedule[index].paid_amount = $filter('currency')(sched.paid_amount);
+				paymentSchedule[index].balance = $filter('currency')(sched.balance);
+			});
+		  return paymentSchedule;
+		}
+		// Clear Ledger Entries
+		function clearLedgerEntry(trnx,amount){
+			let entries = $scope.LEData;
+			let initBal = $scope.LERunBalance;
+			let newBal = initBal +  amount;
+			$scope.LEData = $filter('filter')(entries,{'id':'!'+trnx.id});
+			$scope.LERunBalance =  newBal;
+		}
+
+		// Clear Payment Schedule
+		function clearPaymentSched(trnx,amount){
+			let schedule = $scope.PSData;
+				schedule.map((sched,index)=>{
+					sched.paid_amount =  parseFloat(sched.paid_amount.replace(',', ''));
+					sched.balance =  parseFloat(sched.balance.replace(',', ''));
+					schedule[index] = sched;
+				});
+			let initBal = $scope.PSRunBalance;
+			let newBal = initBal +  amount;
+			$scope.PSData = distributePayment(schedule,amount*-1,trnx);
+			$scope.PSRunBalance =  newBal;
 		}
 	}]);
 });
