@@ -1,5 +1,6 @@
 <style>
 	.nav-pills>li{margin-bottom:20px;}
+	div[label$="Balance"] input,div[label$="Total"] input{text-align:right;}
 </style>
 <div ng-controller="AdjustMemoController as AMC" ng-init="AMC.init()">
 	<a-module>
@@ -18,7 +19,7 @@
 							</a-row>
 							<a-row>
 								<a-col size="6">
-									<m-formgroup ng-model="AMC.OutBalance" label="Outstanding Balance"  ng-disabled="true"></m-formgroup>
+									<m-formgroup ng-model="AMC.OutBalance" label="Outstanding Balance" classes="text-right"  ng-disabled="true"></m-formgroup>
 								</a-col>
 								<a-col size="6">
 									<m-formgroup ng-model="AMC.PayTotal" label="Payment Total"  ng-disabled="true"></m-formgroup>
@@ -79,7 +80,7 @@
 									<a-table headers="AMC.PSHdrs" props="AMC.PSProps" data="AMC.PSData" ng-model="AMC.PSActiveItem" is-preload="false"></a-table>
 								</uib-tab>
 
-								<uib-tab index="3" heading="Stateme of Account">
+								<uib-tab index="3" heading="Statement of Account">
 									<div style="height: 500px;" ng-show="AMC.ActiveStudent.id">
 										<form action="api/soa" method="GET" target="SOAframe" id="PrintSoa">
 											<input type="hidden" name="account_id" value="{{AMC.ActiveStudent.id}}"/>

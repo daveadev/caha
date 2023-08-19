@@ -16,12 +16,12 @@ define(['app','util','api'],function(app,util) {
 
 		// Ledger Entry
 		ADJM.UI.LEDGER = {};
-		ADJM.UI.LEDGER.Headers = [{label:'Transact Date',class:'col-md-2'},'Ref No', 'Description','Fees','Payments','Balance'];
+		ADJM.UI.LEDGER.Headers = [{label:'Transact Date',class:'col-md-2'},'Ref No', 'Description',{label:'Fees',class:'text-right'},{label:'Payment',class:'text-right'},{label:'Balance',class:'text-right'}];
 		ADJM.UI.LEDGER.Properties = ['date','ref_no','description','fee','payment','balance'];
 
 		// Payment Schedule
 		ADJM.UI.PAYMENT_SCHED={};
-		ADJM.UI.PAYMENT_SCHED.Headers = [{label:'Due Date',class:'col-md-2'},'Due Amount', 'Paid Amount','Balance','Status'];
+		ADJM.UI.PAYMENT_SCHED.Headers = [{label:'Due Date',class:'col-md-2 text-right'},{label:'Due Amount',class:'text-right'},{label:'Paid Amount',class:'text-right'},{label:'Balance',class:'text-right'},'Status'];
 		ADJM.UI.PAYMENT_SCHED.Properties = ['due_date','due_amount','paid_amount','balance','status'];
 
 

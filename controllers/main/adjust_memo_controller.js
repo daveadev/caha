@@ -77,6 +77,9 @@ define(['app','adjust-memo','api','atomic/bomb'],function(app,AM){
 			if(entity[1]!=undefined) $scope.PSRunBalanceDisp = $filter('currency')(entity[1]);
 		});
 		function loadUIComps(){
+			$rootScope.$watch('_APP',(app)=>{
+				$scope.ActiveSY = app.ACTIVE_SY;
+			});
 			// Atomic Ready 
 			atomic.ready(function(){
 				var sys = atomic.SchoolYears;
