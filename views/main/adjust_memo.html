@@ -1,6 +1,6 @@
 <style>
 	.nav-pills>li{margin-bottom:20px;}
-	div[label$="Balance"] input,div[label$="Total"] input{text-align:right;}
+	div[label$="Balance"] input,div[label$="Total"] input,div[label$="Amount"] input{text-align:right;}
 </style>
 <div ng-controller="AdjustMemoController as AMC" ng-init="AMC.init()">
 	<a-module>
@@ -29,21 +29,19 @@
 						</a-col>
 						<a-col size="6">
 							<a-row>
-								<a-col size="6">
-									<m-formgroup ng-model="AMC.AdjustType" label="Adjusting Memo" options="AMC.AMTypes" ng-disabled="!AMC.allowInput"></m-formgroup>
+								<a-col size="8">
+									<m-formgroup ng-model="AMC.AdjustType" label="Adjusting Memo" options="AMC.AMTypes" ng-disabled="!AMC.allowInput" size="'input-lg'"></m-formgroup>
 								</a-col>
-								<a-col size="6">
-									<m-formgroup ng-model="AMC.AdjustAmount" label="Amount" type="'number'" ng-disabled="!AMC.allowInput"></m-formgroup>
+								<a-col size="4">
+									<m-formgroup ng-model="AMC.AdjustAmount" label="Amount" type="'number'" ng-show="AMC.allowInput" size="'input-lg'"></m-formgroup>
+									<m-formgroup ng-model="AMC.AdjustAmountDisp" label="Amount" ng-disabled="!AMC.allowInput" ng-show="!AMC.allowInput"size="'input-lg'"></m-formgroup>
 								</a-col>
 							</a-row>
 						</a-col>
 						<a-col size="2">
 							<div style="margin-top:24px;">
-								<a-button type="primary-block" ng-click="AMC.computeAdjust()" ng-disabled="!AMC.allowCompute">
+								<a-button type="primary-block" ng-click="AMC.computeAdjust()" size="lg" ng-disabled="!AMC.allowCompute">
 									Compute
-								</a-button>
-								<a-button type="default-block" ng-click="AMC.clearAdjust()" ng-disabled="!AMC.allowClear">
-									Clear
 								</a-button>
 							</div>
 						</a-col>
@@ -101,13 +99,31 @@
 						</a-col>
 						<a-col size="2">
 								<a-button type="success btn-block" size="lg" ng-click="AMC.applyAdjust()" ng-disabled="!AMC.allowApply">
-									{{AMC.SavingAdjust?'Saving...':(AMC.changesApplied?'SAVED!':'APPLY')}}
+									{{AMC.SavingAdjust?'Saving...':(AMC.changesApplied?'SAVED!':'Apply Changes')}}
 								</a-button>	
-							
+								<a-button type="default-block" ng-click="AMC.clearAdjust()" ng-disabled="!AMC.allowClear">
+									Revert
+								</a-button>
 						</a-col>
 					</a-row>
 				</a-content>
 			</a-canvas>
 		</a-container>
 	</a-module>
+	<a-modal id="AdjustMemoModal" title="Adjustment Memo">
+		<a-modal-body>
+			<a-row>
+				<a-col size="6">
+					<m-formgroup ng-model="AMC.AdjRefNo" label="Ref No" size="'input-lg'"></m-formgroup>
+				</a-col>
+				<a-col size="6">
+					<m-formgroup ng-model="AMC.AdjDate" label="Adjustment Date" type="'date'" size="'input-lg'"></m-formgroup>
+				</a-col>
+			</a-row>
+		</a-modal-body>
+		<a-modal-footer>
+			<a-button type="default" class="pull-left" ng-click="AMC.closeAdjModal()">Cancel</a-button>
+			<a-button type="primary" ng-click="AMC.confirmAdjModal()">Confirm</a-button>
+		</a-modal-footer>
+	</a-modal>
 </div>

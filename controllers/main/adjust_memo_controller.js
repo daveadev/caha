@@ -3,8 +3,8 @@ define(['app','adjust-memo','api','atomic/bomb'],function(app,AM){
 	const DATE_FORMAT = 'dd MMM yyyy';
 	const ADJUST_TYPES = {};
 	const ADJUST_TRNX = {ref_no:'-- AUTO --',id:'TMP_LE'};
-	app.register.controller('AdjustMemoController',['$scope','$rootScope','$filter','api','Atomic',
-	function($scope,$rootScope,$filter,api,atomic){
+	app.register.controller('AdjustMemoController',['$scope','$rootScope','$filter','api','Atomic','aModal',
+	function($scope,$rootScope,$filter,api,atomic,aModal){
 		const $selfScope =  $scope;
 		$scope = this;
 
@@ -26,21 +26,16 @@ define(['app','adjust-memo','api','atomic/bomb'],function(app,AM){
 			let amount = $scope.AdjustAmount;
 			clearLedgerEntry(trnx,amount);
 			clearPaymentSched(trnx,amount);
-			$scope.AdjustAmount = null;
-			$scope.AdjustType = null;
+			//$scope.AdjustAmount = null;
+			//$scope.AdjustType = null;
 
 		}
 		$scope.applyAdjust = function(){
-			$scope.allowApply = false;
-			$scope.allowClear = false;
-			$scope.SavingAdjust = true;
-			let trnx = ADJUST_TRNX;
-			let entries = $filter('filter')($scope.LEData,{id:trnx.id});
-			let schedule = $filter('filter')($scope.PSData,{id:trnx.id});
-			let sid = $scope.ActiveStudent.id;
-			let sy = $scope.ActiveSY;
-			applyLedgerEntry(entries,sid,sy);
-			applyPaymentSched(schedule,sid);
+			aModal.open("AdjustMemoModal");
+		}
+
+		$scope.closeAdjModal = function(){
+			aModal.close("AdjustMemoModal");
 		}
 		$selfScope.$watchGroup(['AMC.ActiveStudent','AMC.AdjustType','AMC.AdjustAmount','AMC.ActiveStudent','AMC.LEActiveItem','AMC.PSActiveItem'],function(vars){
 			if(!$scope.ActiveStudent) return;
@@ -48,6 +43,7 @@ define(['app','adjust-memo','api','atomic/bomb'],function(app,AM){
 			$scope.allowInput = $scope.ActiveStudent.id   && !$scope.LEActiveItem.id;
 			$scope.allowClear = $scope.AdjustType && $scope.AdjustAmount && !$scope.allowCompute;
 			$scope.allowApply = $scope.LEActiveItem.id || $scope.PSActiveItem.id;
+			$scope.AdjustAmountDisp =  $filter('currency')($scope.AdjustAmount);
 			console.log($scope.LEActiveItem , $scope.PSActiveItem, $scope.allowApply);
 		});
 		$selfScope.$watchGroup(['AMC.LEUpdate','AMC.PSUpdate'],function(vars){
@@ -301,6 +297,7 @@ define(['app','adjust-memo','api','atomic/bomb'],function(app,AM){
 			let newBal = initBal +  amount;
 			$scope.LEData = $filter('filter')(entries,{'id':'!'+trnx.id});
 			$scope.LERunBalance =  newBal;
+			$scope.LEActiveItem = {};
 		}
 
 		// Clear Payment Schedule
@@ -314,7 +311,12 @@ define(['app','adjust-memo','api','atomic/bomb'],function(app,AM){
 			let initBal = $scope.PSRunBalance;
 			let newBal = initBal +  amount;
 			$scope.PSData = distributePayment(schedule,amount*-1,trnx);
+			$scope.PSData.map((sched,index)=>{
+				$scope.PSData[index].paid_amount = $filter('currency')(sched.paid_amount);
+				$scope.PSData[index].balance = $filter('currency')(sched.balance);
+			});
 			$scope.PSRunBalance =  newBal;
+			$scope.PSActiveItem = {};
 		}
 
 		// Apply Ledger Entry
@@ -416,6 +418,19 @@ define(['app','adjust-memo','api','atomic/bomb'],function(app,AM){
 			$scope.PSRunBalance = null;
 			$scope.PSRunBalanceDisp = null;
 			$scope.PSActiveItem = {};
+		}
+		// Confirm Adjust Memo
+		function confirmAdjust(){
+			$scope.allowApply = false;
+			$scope.allowClear = false;
+			$scope.SavingAdjust = true;
+			let trnx = ADJUST_TRNX;
+			let entries = $filter('filter')($scope.LEData,{id:trnx.id});
+			let schedule = $filter('filter')($scope.PSData,{id:trnx.id});
+			let sid = $scope.ActiveStudent.id;
+			let sy = $scope.ActiveSY;
+			applyLedgerEntry(entries,sid,sy);
+			applyPaymentSched(schedule,sid);
 		}
 	}]);
 });
