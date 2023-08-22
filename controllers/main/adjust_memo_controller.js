@@ -67,7 +67,7 @@ define(['app','adjust-memo','api','atomic/bomb'],function(app,AM){
 			let SID = STU.id;
 			let ESP = $scope.ActiveSY;
 			if(SID==null){
-				reetStudentAccount();
+				resetStudentAccount();
 				resetLedgerEntry();
 				resetPaymentSched();
 			}else{
@@ -407,11 +407,12 @@ define(['app','adjust-memo','api','atomic/bomb'],function(app,AM){
 			api.POST('account_adjustments',aObj, success,error);
 		}
 		// Reset Student Account
-		function reetStudentAccount(){
+		function resetStudentAccount(){
 			$scope.AdjustType = null;
 			$scope.AdjustAmount = null;
 			$scope.OutBalance = null;
 			$scope.PayTotal = null;
+			$scope.ActiveAccount = {}; 
 
 		}
 		// Reset Ledger Entry
