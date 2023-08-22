@@ -78,7 +78,7 @@
 									<a-table headers="AMC.PSHdrs" props="AMC.PSProps" data="AMC.PSData" ng-model="AMC.PSActiveItem" is-preload="false"></a-table>
 								</uib-tab>
 
-								<uib-tab index="3" heading="Statement of Account">
+								<uib-tab index="2" heading="Statement of Account">
 									<div style="height: 500px;" ng-show="AMC.ActiveStudent.id">
 										<form action="api/soa" method="GET" target="SOAframe" id="PrintSoa">
 											<input type="hidden" name="account_id" value="{{AMC.ActiveStudent.id}}"/>
