@@ -140,4 +140,8 @@
 			<a-button type="primary" ng-click="AMC.confirmAdjModal()">Confirm</a-button>
 		</a-modal-footer>
 	</a-modal>
+
+	<form action="api/receipts/view" method="POST" target="_blank" id="PrintAdjustReceipt">
+		<input type="hidden" name="details" value="{{AMC.PrintDetails}}"/>
+	</form>
 </div>
