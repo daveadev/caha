@@ -114,10 +114,24 @@
 		<a-modal-body>
 			<a-row>
 				<a-col size="6">
-					<m-formgroup ng-model="AMC.AdjRefNo" label="Ref No" size="'input-lg'"></m-formgroup>
+					<m-formgroup ng-model="AMC.AdjRefNo" label="Ref No" size="'input-lg'" ng-change="AMC.checkRefNo()"></m-formgroup>
 				</a-col>
 				<a-col size="6">
 					<m-formgroup ng-model="AMC.AdjDate" label="Adjustment Date" type="'date'" size="'input-lg'"></m-formgroup>
+				</a-col>
+			</a-row>
+			<a-row>
+				<a-col>
+					<m-formgroup ng-model="AMC.ActiveStudent.name" label="Student"ng-disabled="true"></m-formgroup>
+				</a-col>
+			</a-row>
+			<a-row>
+				<a-col size="6">
+					<m-formgroup ng-model="AMC.LEActiveItem.description" label="Adjusting Memo" ng-disabled="true"></m-formgroup>
+					
+				</a-col>
+				<a-col size="6">
+					<m-formgroup ng-model="AMC.AdjustAmountDisp" label="Amount" ng-disabled="true"></m-formgroup>
 				</a-col>
 			</a-row>
 		</a-modal-body>

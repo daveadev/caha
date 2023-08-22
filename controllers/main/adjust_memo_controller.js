@@ -31,11 +31,19 @@ define(['app','adjust-memo','api','atomic/bomb'],function(app,AM){
 
 		}
 		$scope.applyAdjust = function(){
+			modalDefaults();
 			aModal.open("AdjustMemoModal");
 		}
 
 		$scope.closeAdjModal = function(){
 			aModal.close("AdjustMemoModal");
+		}
+		$scope.confirmAdjModal = function(){
+			confirmAdjust();
+			aModal.close("AdjustMemoModal");
+		}
+		$scope.checkRefNo = function(){
+
 		}
 		$selfScope.$watchGroup(['AMC.ActiveStudent','AMC.AdjustType','AMC.AdjustAmount','AMC.ActiveStudent','AMC.LEActiveItem','AMC.PSActiveItem'],function(vars){
 			if(!$scope.ActiveStudent) return;
@@ -104,6 +112,7 @@ define(['app','adjust-memo','api','atomic/bomb'],function(app,AM){
 				//{due_date:'17 Aug 2023',due_amount:5000, paid_amount:5000,balance:0, status:'PAID'}
 				];
 			$scope.PSActiveItem = {};
+
 
 		}
 		function loadStudentAccount(student_id){
@@ -432,5 +441,20 @@ define(['app','adjust-memo','api','atomic/bomb'],function(app,AM){
 			applyLedgerEntry(entries,sid,sy);
 			applyPaymentSched(schedule,sid);
 		}
+		// Modal defaults
+		function modalDefaults(){
+			$scope.AdjDate = new Date();
+			let refNo = $scope.AdjustType.substr(0,3);
+			let filter = {sy:$scope.ActiveSY,prefix:refNo};
+			let success = function(response){
+				$scope.AdjRefNo = response.data.ref_no;
+			};
+			let error = function(response){};
+
+			$scope.AdjRefNo = filter.prefix;
+			api.GET('account_adjustments/ref_no',filter,success,error);
+		}
+		// Modal check refNo
+
 	}]);
 });
