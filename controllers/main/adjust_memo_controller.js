@@ -49,12 +49,13 @@ define(['app','adjust-memo','api','atomic/bomb'],function(app,AM){
 		}
 		$selfScope.$watchGroup(['AMC.ActiveStudent','AMC.AdjustType','AMC.AdjustAmount','AMC.ActiveStudent','AMC.LEActiveItem','AMC.PSActiveItem'],function(vars){
 			if(!$scope.ActiveStudent) return;
+			$scope.ActiveTabIndex = 2; 
 			$scope.allowCompute =  $scope.AdjustType && $scope.AdjustAmount && !$scope.LEActiveItem.id;
 			$scope.allowInput = $scope.ActiveStudent.id   && !$scope.LEActiveItem.id;
 			$scope.allowClear = $scope.AdjustType && $scope.AdjustAmount && !$scope.allowCompute;
 			$scope.allowApply = $scope.LEActiveItem.id || $scope.PSActiveItem.id;
 			$scope.AdjustAmountDisp =  $filter('currency')($scope.AdjustAmount);
-			console.log($scope.LEActiveItem , $scope.PSActiveItem, $scope.allowApply);
+			//console.log($scope.LEActiveItem , $scope.PSActiveItem, $scope.allowApply);
 		});
 		$selfScope.$watchGroup(['AMC.LEUpdate','AMC.PSUpdate'],function(vars){
 			$scope.changesApplied = $scope.LEUpdate && $scope.PSUpdate	&& $scope.SavingAdjust;
