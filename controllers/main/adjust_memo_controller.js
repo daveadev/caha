@@ -49,7 +49,6 @@ define(['app','adjust-memo','api','atomic/bomb'],function(app,AM){
 		}
 		$selfScope.$watchGroup(['AMC.ActiveStudent','AMC.AdjustType','AMC.AdjustAmount','AMC.ActiveStudent','AMC.LEActiveItem','AMC.PSActiveItem'],function(vars){
 			if(!$scope.ActiveStudent) return;
-			$scope.ActiveTabIndex = 2; 
 			$scope.allowCompute =  $scope.AdjustType && $scope.AdjustAmount && !$scope.LEActiveItem.id;
 			$scope.allowInput = $scope.ActiveStudent.id   && !$scope.LEActiveItem.id;
 			$scope.allowClear = $scope.AdjustType && $scope.AdjustAmount && !$scope.allowCompute;
@@ -146,6 +145,7 @@ define(['app','adjust-memo','api','atomic/bomb'],function(app,AM){
 
 		}
 		function loadStudentAccount(student_id){
+			$scope.ActiveTabIndex = 2; 
 			let filter = {id:student_id};
 			let success = function(response){
 				var account = response.data[0];
@@ -242,6 +242,7 @@ define(['app','adjust-memo','api','atomic/bomb'],function(app,AM){
 			api.GET('account_schedules',filter,success,error);
 		}
 		function computeLedgerEntry(amount,type,trnx){
+			$scope.ActiveTabIndex = 0;
 			let atObj = ADJUST_TYPES[type];
 			let initBal = $scope.LERunBalance;
 			let newBal = initBal -  amount;
