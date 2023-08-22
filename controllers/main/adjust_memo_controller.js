@@ -3,8 +3,8 @@ define(['app','adjust-memo','api','atomic/bomb'],function(app,AM){
 	const DATE_FORMAT = 'dd MMM yyyy';
 	const ADJUST_TYPES = {};
 	const ADJUST_TRNX = {ref_no:'-- AUTO --',id:'TMP_LE'};
-	app.register.controller('AdjustMemoController',['$scope','$rootScope','$filter','api','Atomic','aModal',
-	function($scope,$rootScope,$filter,api,atomic,aModal){
+	app.register.controller('AdjustMemoController',['$scope','$rootScope','$filter','$timeout','api','Atomic','aModal',
+	function($scope,$rootScope,$filter,$timeout,api,atomic,aModal){
 		const $selfScope =  $scope;
 		$scope = this;
 
@@ -17,6 +17,8 @@ define(['app','adjust-memo','api','atomic/bomb'],function(app,AM){
 			let type = $scope.AdjustType;
 			let trnx = ADJUST_TRNX;
 			$scope.changesApplied = false;
+			$scope.PrintDetails = {}; 
+			$scope.ActiveTabIndex = 0;
 			computeLedgerEntry(amt,type,trnx);
 			computePaymentSched(amt,trnx);
 						
@@ -59,8 +61,36 @@ define(['app','adjust-memo','api','atomic/bomb'],function(app,AM){
 			if($scope.changesApplied){
 				$scope.SavingAdjust = false;
 				$scope.allowApply = false;
+				$scope.AdjustType = null;
+				$scope.AdjustAmount = null;
+			}
+			
+		});
+		$selfScope.$watchGroup(['AMC.ActiveAccount','AMC.AdjustDetails'],function(vars){
+			if(!vars[0] && !vars[1]) return;
+			// Print Adjustment Receipt
+			if($scope.AdjustDetails.id && $scope.ActiveAccount.id){
+				let aAcc =  $scope.ActiveAccount;
+				let aDtl = $scope.AdjustDetails;
+				console.log()
+				let pObj = {};
+					pObj.student = aAcc.name;
+					pObj.sno = aAcc.sno;
+					pObj.year_level = aAcc.year_level;
+					pObj.section = aAcc.section;
+					pObj.ref_no = aDtl.ref_no;
+					pObj.transac_date =  $filter('date')(new Date(aDtl.transac_date),DATE_FORMAT);
+					pObj.sy = $scope.ActiveSY;
+					pObj.total_paid = $filter('currency')(aDtl.amount);
+					pObj.transac_details = [{item:aDtl.details,amount:pObj.total_paid}];
+				$scope.PrintDetails = pObj;
+				$timeout(function(){
+					document.getElementById('PrintAdjustReceipt').submit();			
+					$scope.ActiveTabIndex = 2;
+				},200);
 			}
 		});
+
 		$selfScope.$watch('AMC.ActiveStudent',function(entity){
 			let STU = $scope.ActiveStudent;
 			if(!STU) return;
@@ -91,7 +121,6 @@ define(['app','adjust-memo','api','atomic/bomb'],function(app,AM){
 				$scope.SchoolYears = $filter('orderBy')(sys,'-id');
 				$scope.ActiveSY = sy;
 			});
-
 			// Adjusting Transactions
 			$scope.AMTypes = AM.UI.TYPES;
 			AM.UI.TYPES.map((type)=>{
@@ -119,12 +148,14 @@ define(['app','adjust-memo','api','atomic/bomb'],function(app,AM){
 			let filter = {id:student_id};
 			let success = function(response){
 				var account = response.data[0];
+				$scope.ActiveAccount = account;
 				$scope.OutBalance = $filter('currency')(account.outstanding_balance);
 				$scope.PayTotal = $filter('currency')(account.payment_total);
 			};
 			let error = function(response){
 				console.log(response);
 			};
+			$scope.ActiveAccount = {};
 			api.GET('accounts',filter,success,error);
 		}
 		function loadLedgerEntry(student_id,sy){
@@ -217,7 +248,7 @@ define(['app','adjust-memo','api','atomic/bomb'],function(app,AM){
 				id:trnx.id,
 				date: $filter('date')(new Date(),DATE_FORMAT),
 				ref_no: trnx.ref_no,
-				description: atObj.name,
+				description: atObj.code,
 				code: atObj.id,
 				fee:null,
 				payment:$filter('currency')(amount),
@@ -349,7 +380,7 @@ define(['app','adjust-memo','api','atomic/bomb'],function(app,AM){
 					entry.type='-';
 					entry.amount = parseFloat(e.payment.replace(',', ''));
 				}
-				entry.transac_date = $filter('date')(new Date(e.date),'yyyy-MM-dd');
+				entry.transac_date = $filter('date')(new Date($scope.AdjDate),'yyyy-MM-dd');
 				entry.transaction_type_id =e.code;
 				entry.details =e.description;
 				$scope.LEUpdate=false;
@@ -374,7 +405,7 @@ define(['app','adjust-memo','api','atomic/bomb'],function(app,AM){
 				sched.status = adjSched.status;
 
 			sched.paid_amount = parseFloat(adjSched.paid_amount.replace(',', ''));
-			sched.paid_date =  $filter('date')(new Date(),'yyyy-MM-dd');
+			sched.paid_date =  $filter('date')(new Date($scope.AdjDate),'yyyy-MM-dd');
 
 			let success = function(response){
 				if(index<schedule.length-1){
@@ -400,10 +431,12 @@ define(['app','adjust-memo','api','atomic/bomb'],function(app,AM){
 			let success = function(response){
 				let SID = trnx.account_id;
 				let ESP = trnx.esp;
+				$scope.AdjustDetails = response.data;
 				loadStudentAccount(SID);
 				loadLedgerEntry(SID, ESP);
 			};
 			let error = function(response){};
+			$scope.AdjustDetails = {};
 			api.POST('account_adjustments',aObj, success,error);
 		}
 		// Reset Student Account
