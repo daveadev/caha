@@ -1,10 +1,11 @@
 <?php
-App::import('Vendor','receipts/receipt');
+App::import('Vendor','receipts/adjust_receipt');
 
 
-$pr= new OfficialReceipt();
-$pr->receipt();
-$pr->data($data);
+$pr= new AdjustmentReceipt();
+$pr->receipt(0);
+$pr->data($data,0);
+$pr->data($data,4.25);
 $pr->output();
 ?>
 
