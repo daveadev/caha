@@ -2,6 +2,7 @@
 class AccountAdjustmentsController extends AppController {
 
 	var $name = 'AccountAdjustments';
+	var $uses = array('AccountAdjustment','Ledger');
 
 	function index() {
 		
@@ -10,6 +11,13 @@ class AccountAdjustmentsController extends AppController {
 	}
 
 	function view($id = null) {
+		if($id=='ref_no'):
+			$sy = $_GET['sy'];
+			$prefix = $_GET['prefix'];
+			$refNo = $this->Ledger->generateREFNO($sy,$prefix);
+			$ADJ = array('AccountAdjustment'=>array('ref_no'=>$refNo));
+			return $this->set('accountAdjustment',$ADJ);
+		endif;
 		if (!$id) {
 			$this->Session->setFlash(__('Invalid account adjustment', true));
 			$this->redirect(array('action' => 'index'));
