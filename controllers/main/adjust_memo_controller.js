@@ -72,7 +72,6 @@ define(['app','adjust-memo','api','atomic/bomb'],function(app,AM){
 			if($scope.AdjustDetails.id && $scope.ActiveAccount.id){
 				let aAcc =  $scope.ActiveAccount;
 				let aDtl = $scope.AdjustDetails;
-				console.log()
 				let pObj = {};
 					pObj.student = aAcc.name;
 					pObj.sno = aAcc.sno;
@@ -87,6 +86,7 @@ define(['app','adjust-memo','api','atomic/bomb'],function(app,AM){
 				$timeout(function(){
 					document.getElementById('PrintAdjustReceipt').submit();			
 					$scope.ActiveTabIndex = 2;
+					$scope.AdjustDetails = {};
 				},200);
 			}
 		});
@@ -446,6 +446,7 @@ define(['app','adjust-memo','api','atomic/bomb'],function(app,AM){
 			$scope.OutBalance = null;
 			$scope.PayTotal = null;
 			$scope.ActiveAccount = {}; 
+			$scope.PrintDetails = {};
 
 		}
 		// Reset Ledger Entry
