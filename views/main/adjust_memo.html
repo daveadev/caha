@@ -37,13 +37,30 @@
 									<m-formgroup ng-model="AMC.AdjustAmountDisp" label="Amount" ng-disabled="!AMC.allowInput" ng-show="!AMC.allowInput"size="'input-lg'"></m-formgroup>
 								</a-col>
 							</a-row>
+							<a-row ng-show="false">
+								<a-col>
+									<m-formgroup ng-model="AMC.AdjustRefno" label="AMF Ref Nos." options="AMC.AMFRefNos" ng-disabled="!AMC.allowInput"></m-formgroup>
+								</a-col>
+							</a-row>
 						</a-col>
 						<a-col size="2">
 							<div style="margin-top:24px;">
 								<a-button type="primary-block" ng-click="AMC.computeAdjust()" size="lg" ng-disabled="!AMC.allowCompute">
 									Compute
 								</a-button>
+								
 							</div>
+							<div style="margin-top:39px;" ng-show="false">
+								<a-button type="default-block">
+									Reprint
+								</a-button>
+							</div>
+						</a-col>
+					</a-row>
+					<a-row>
+						<a-col size="4"></a-col>
+						<a-col size="6">
+							
 						</a-col>
 					</a-row>
 					<hr>
