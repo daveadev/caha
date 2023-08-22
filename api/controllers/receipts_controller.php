@@ -3,11 +3,38 @@ class ReceiptsController extends AppController{
 	var $name = 'Receipts';
 	var $uses = array('MasterConfig','Student');
 	function view(){
-		$refNo= $trnDate= $student= $sno= $yearLevel= $section= $syFor="XXX";
-		$trnDate=  $totalPaid = $cashier= $verify ="";
-		$trnxDtls = array(
-			array('item'=>'XXX','amount'=>0)
-		);
+		
+		if(isset($_POST['details'])):
+
+			$details = json_decode($_POST['details'],true);
+			$user = $this->Auth->user()['User'];
+			$details['cashier']=$user['username'];
+			// Transform  SY format
+			$details['sy'] = (int)substr($details['sy'],2,2);
+			$details['sy'] = sprintf("%s-%s",$details['sy'],$details['sy']+1);
+			$data = $details;
+		else:
+			$refNo= $trnDate= $student= $sno= $yearLevel= $section= $syFor="XXX";
+			$trnDate=  $totalPaid = $cashier= $verify ="XX";
+			$trnxDtls = array(
+				array('item'=>'XXX','amount'=>'XXX.XX')
+			);
+			$data = array(
+					'ref_no'=>$refNo,
+					'transac_date'=>$trnDate,
+					'student'=>$student,
+					'sno'=>$sno,
+					'year_level'=>$yearLevel,
+					'section'=>$section,
+					'sy'=>$syFor,
+					'transac_details'=> $trnxDtls,
+					'total_paid'=>$totalPaid,
+					'cashier'=>$cashier,
+					'verify_sign'=>'1A2khsfdso1sa'
+				);
+		endif;
+
+		
 		/*
 		Array
 		(
@@ -33,19 +60,7 @@ class ReceiptsController extends AppController{
 		    [verify_sign] => 7c00f733dab1f0c886b14ae5dae7f8ff
 		)
 		*/
-		$data = array(
-				'ref_no'=>$refNo,
-				'transac_date'=>$trnDate,
-				'student'=>$student,
-				'sno'=>$sno,
-				'year_level'=>$yearLevel,
-				'section'=>$section,
-				'sy'=>$syFor,
-				'transac_details'=> $trnxDtls,
-				'total_paid'=>$totalPaid,
-				'cashier'=>$cashier,
-				'verify_sign'=>'1A2khsfdso1sa'
-			);
+		
 		$this->set(compact('data'));
 	}
 }
