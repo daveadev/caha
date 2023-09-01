@@ -37,9 +37,9 @@
 									<m-formgroup ng-model="AMC.AdjustAmountDisp" label="Amount" ng-disabled="!AMC.allowInput" ng-show="!AMC.allowInput"size="'input-lg'"></m-formgroup>
 								</a-col>
 							</a-row>
-							<a-row ng-show="false">
+							<a-row >
 								<a-col>
-									<m-formgroup ng-model="AMC.AdjustRefno" label="AMF Ref Nos." options="AMC.AMFRefNos" ng-disabled="!AMC.allowInput"></m-formgroup>
+									<m-formgroup ng-model="AMC.AdjustRefno" label="AMF Ref Nos." options="AMC.AMFRefNos" option-label="ref_no" ng-disabled="!AMC.allowInput"></m-formgroup>
 								</a-col>
 							</a-row>
 						</a-col>
@@ -50,8 +50,8 @@
 								</a-button>
 								
 							</div>
-							<div style="margin-top:39px;" ng-show="false">
-								<a-button type="default-block">
+							<div style="margin-top:39px;" >
+								<a-button type="default-block" ng-click="AMC.reprintReceipt()">
 									Reprint
 								</a-button>
 							</div>

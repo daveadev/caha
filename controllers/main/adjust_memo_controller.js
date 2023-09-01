@@ -2,7 +2,8 @@
 define(['app','adjust-memo','api','atomic/bomb'],function(app,AM){
 	const DATE_FORMAT = 'dd MMM yyyy';
 	const ADJUST_TYPES = {};
-	const ADJUST_TRNX = {ref_no:'-- AUTO --',id:'TMP_LE'};
+	const ADJUST_TRNX = {ref_no:'AMFXXXXXX',id:'TMP_LE'};
+	const ADJ_RFNO_PRFX = ADJUST_TRNX.ref_no.substr(0,3);
 	app.register.controller('AdjustMemoController',['$scope','$rootScope','$filter','$timeout','api','Atomic','aModal',
 	function($scope,$rootScope,$filter,$timeout,api,atomic,aModal){
 		const $selfScope =  $scope;
@@ -36,7 +37,15 @@ define(['app','adjust-memo','api','atomic/bomb'],function(app,AM){
 			modalDefaults();
 			aModal.open("AdjustMemoModal");
 		}
-
+		$scope.reprintReceipt = function(){
+			let aAcc =  $scope.ActiveAccount;
+			let ref_id = $scope.AdjustRefno;
+			let trnx = $filter('filter')($scope.AMFRefNos,{id:ref_id})[0];
+				trnx.amount = parseFloat(trnx.payment.replace(',', ''));
+				trnx.details = trnx.description;
+			let pObj = buildPrintDetails(aAcc,trnx);
+			triggerPrint(pObj);
+		}
 		$scope.closeAdjModal = function(){
 			aModal.close("AdjustMemoModal");
 		}
@@ -72,22 +81,9 @@ define(['app','adjust-memo','api','atomic/bomb'],function(app,AM){
 			if($scope.AdjustDetails.id && $scope.ActiveAccount.id){
 				let aAcc =  $scope.ActiveAccount;
 				let aDtl = $scope.AdjustDetails;
-				let pObj = {};
-					pObj.student = aAcc.name;
-					pObj.sno = aAcc.sno;
-					pObj.year_level = aAcc.year_level;
-					pObj.section = aAcc.section;
-					pObj.ref_no = aDtl.ref_no;
-					pObj.transac_date =  $filter('date')(new Date(aDtl.transac_date),DATE_FORMAT);
-					pObj.sy = $scope.ActiveSY;
-					pObj.total_paid = $filter('currency')(aDtl.amount);
-					pObj.transac_details = [{item:aDtl.details,amount:pObj.total_paid}];
-				$scope.PrintDetails = pObj;
-				$timeout(function(){
-					document.getElementById('PrintAdjustReceipt').submit();			
-					$scope.ActiveTabIndex = 2;
-					$scope.AdjustDetails = {};
-				},200);
+				let pObj = buildPrintDetails(aAcc,aDtl);
+				triggerPrint(pObj);
+
 			}
 		});
 
@@ -157,6 +153,7 @@ define(['app','adjust-memo','api','atomic/bomb'],function(app,AM){
 				console.log(response);
 			};
 			$scope.ActiveAccount = {};
+			$scope.AMFRefNos = [];
 			api.GET('accounts',filter,success,error);
 		}
 		function loadLedgerEntry(student_id,sy){
@@ -185,6 +182,9 @@ define(['app','adjust-memo','api','atomic/bomb'],function(app,AM){
 					$scope.LEData.push(obj);
 				});	
 				$scope.LERunBalance = runBalance;
+
+				let amfs = $filter('filter')($scope.LEData,{ref_no:ADJ_RFNO_PRFX});
+				$scope.AMFRefNos =  amfs;
 				document.getElementById('PrintSoa').submit();
 
 			};
@@ -481,7 +481,7 @@ define(['app','adjust-memo','api','atomic/bomb'],function(app,AM){
 		// Modal defaults
 		function modalDefaults(){
 			$scope.AdjDate = new Date();
-			let refNo = $scope.AdjustType.substr(0,3);
+			let refNo = ADJ_RFNO_PRFX;
 			let filter = {sy:$scope.ActiveSY,prefix:refNo};
 			let success = function(response){
 				$scope.AdjRefNo = response.data.ref_no;
@@ -492,6 +492,27 @@ define(['app','adjust-memo','api','atomic/bomb'],function(app,AM){
 			api.GET('account_adjustments/ref_no',filter,success,error);
 		}
 		// Modal check refNo
-
+		// Build Print details
+		function buildPrintDetails(aAcc,aDtl){
+			let pObj = {};
+				pObj.student = aAcc.name;
+				pObj.sno = aAcc.sno;
+				pObj.year_level = aAcc.year_level;
+				pObj.section = aAcc.section;
+				pObj.ref_no = aDtl.ref_no;
+				pObj.transac_date =  $filter('date')(new Date(aDtl.transac_date),DATE_FORMAT);
+				pObj.sy = $scope.ActiveSY;
+				pObj.total_paid = $filter('currency')(aDtl.amount);
+				pObj.transac_details = [{item:aDtl.details,amount:pObj.total_paid}];
+				return pObj;
+		}
+		function triggerPrint(pObj){
+			$scope.PrintDetails = pObj;
+			$timeout(function(){
+				document.getElementById('PrintAdjustReceipt').submit();			
+				$scope.ActiveTabIndex = 2;
+				$scope.AdjustDetails = {};
+			},200);
+		}
 	}]);
 });
