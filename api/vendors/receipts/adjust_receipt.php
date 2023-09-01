@@ -1,8 +1,8 @@
 <?php
 require('vendors/fpdf17/formsheet.php');
 class AdjustmentReceipt extends Formsheet{
-	protected static $_width = 8.5;
-	protected static $_height = 6.7;
+	protected static $_width = 7;
+	protected static $_height = 5.4;
 	protected static $_unit = 'in';
 	protected static $_orient = 'L';	
 	protected static $curr_page = 1;
@@ -19,28 +19,28 @@ class AdjustmentReceipt extends Formsheet{
 		$metrics = array(
 			'base_x'=> 0+$offset,
 			'base_y'=> 0,
-			'width'=> 4.25,
-			'height'=> 6.7,
+			'width'=> 3.5,
+			'height'=> 5.4,
 			'cols'=> 38,
 			'rows'=> 62,	
 		);
 		$this->section($metrics);
-		//$this->DrawImage(0,0,4.25,6.4,__DIR__ ."/../images/receipt-clean.jpg");
+		$this->DrawImage(0,0,7,5.4,__DIR__ ."/../images/adjust_memo.png");
 	}
 	
 	
 	function data($data,$offset=0){
-		$this->showLines = !true;
+		//$this->showLines = true;
 		$metrics = array(
 			'base_x'=> 0+$offset,
 			'base_y'=> 0,
-			'width'=> 4.25,
-			'height'=> 6.7,
+			'width'=> 3.5,
+			'height'=> 5.4,
 			'cols'=> 22,
 			'rows'=> 34,	
 		);
 		$this->section($metrics);
-	
+		
 		$y=1;
 		$this->GRID['font_size']=10;
 		//$this->SetTextColor(78,68,66);
@@ -52,40 +52,40 @@ class AdjustmentReceipt extends Formsheet{
 		$this->GRID['font_size']=9;
 		
 		//Date
-		$this->leftText(14.2,7,$data['transac_date'],'','');
+		$this->leftText(14.75,8,$data['transac_date'],'','');
 		//Student No.
-		$this->leftText(8,7,$data['sno'],'','');
+		$this->leftText(6,8,$data['sno'],'','');
 		//Receive payment from
-		$this->leftText(6,8.7,utf8_decode($data['student']),'','');
+		$this->leftText(6,10,utf8_decode($data['student']),'','');
 		//Payment for
-		$this->leftText(8,10.25,$data['sy'],'','');
+		//$this->leftText(8,10.25,$data['sy'],'','');
 		//Year
-		$this->leftText(15,10.05,$data['year_level'].' / ','','');
+		$this->leftText(6,12.25,$data['year_level'].' / ','','');
 		//Section
-		$this->leftText(15,10.75,$data['section'],'','');
+		$this->leftText(6,13,$data['section'],'','');
 		
 		
-		$y=12.7;
+		$y=16;
 		$this->GRID['font_size']=9;
 		foreach($data['transac_details'] as $itm){
 			//pr($itm);exit;
 			$this->rightText(15,$y,'','','');
-			$this->rightText(15,$y,$itm['item'],'','');
+			$this->rightText(8,$y,$itm['item'],5,'');
 
-			$this->rightText(20,$y,$itm['amount'],'','');
+			$this->rightText(13,$y,$itm['amount'],7,'');
 			$y++;
 		}
 		//pr($data); exit();
 		if(isset($data['check_details'])){
 			$this->rightText(15,$y,'','','');
-			$this->rightText(15,$y,$data['check_details'],'','');
+			$this->rightText(13,$y,$data['check_details'],7,'');
 		}
 		
 		//Total
-		$this->rightText(20,26.3,$data['total_paid'],'','');
+		$this->rightText(13,29,$data['total_paid'],7,'');
 		
 		//Cashier
-		$this->centerText(13,28.3,$data['cashier'],7,'');
+		$this->centerText(13,31.5,$data['cashier'],7,'');
 		
 	
 		
