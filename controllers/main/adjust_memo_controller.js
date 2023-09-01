@@ -449,6 +449,7 @@ define(['app','adjust-memo','api','atomic/bomb'],function(app,AM){
 			$scope.PayTotal = null;
 			$scope.ActiveAccount = {}; 
 			$scope.PrintDetails = {};
+			$scope.AMFRefNos = [];
 
 		}
 		// Reset Ledger Entry
