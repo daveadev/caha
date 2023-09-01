@@ -41,9 +41,8 @@ define(['app','adjust-memo','api','atomic/bomb'],function(app,AM){
 			let aAcc =  $scope.ActiveAccount;
 			let ref_id = $scope.AdjustRefno;
 			let trnx = $filter('filter')($scope.AMFRefNos,{id:ref_id})[0];
-				trnx.amount = parseFloat(trnx.payment.replace(',', ''));
 				trnx.details = trnx.description;
-			let pObj = buildPrintDetails(aAcc,trnx);
+			let pObj = buildPrintDetails(aAcc,trnx,true);
 			triggerPrint(pObj);
 		}
 		$scope.closeAdjModal = function(){
@@ -494,17 +493,22 @@ define(['app','adjust-memo','api','atomic/bomb'],function(app,AM){
 		}
 		// Modal check refNo
 		// Build Print details
-		function buildPrintDetails(aAcc,aDtl){
+		function buildPrintDetails(aAcc,aDtl,reprint){
 			let pObj = {};
 				pObj.student = aAcc.name;
 				pObj.sno = aAcc.sno;
 				pObj.year_level = aAcc.year_level;
 				pObj.section = aAcc.section;
 				pObj.ref_no = aDtl.ref_no;
-				pObj.transac_date =  $filter('date')(new Date(aDtl.transac_date),DATE_FORMAT);
+				pObj.transac_date =  $filter('date')(new Date(aDtl.transac_date),DATE_FORMAT);;
 				pObj.sy = $scope.ActiveSY;
 				pObj.total_paid = $filter('currency')(aDtl.amount);
+				if(reprint){
+					pObj.transac_date = aDtl.date;
+					pObj.total_paid = aDtl.payment;
+				}
 				pObj.transac_details = [{item:aDtl.details,amount:pObj.total_paid}];
+				console.log(pObj);
 				return pObj;
 		}
 		function triggerPrint(pObj){

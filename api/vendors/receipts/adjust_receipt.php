@@ -25,7 +25,7 @@ class AdjustmentReceipt extends Formsheet{
 			'rows'=> 62,	
 		);
 		$this->section($metrics);
-		$this->DrawImage(0,0,7,5.4,__DIR__ ."/../images/adjust_memo.png");
+		//$this->DrawImage(0,0,7,5.4,__DIR__ ."/../images/adjust_memo.png");
 	}
 	
 	
@@ -58,7 +58,7 @@ class AdjustmentReceipt extends Formsheet{
 		//Receive payment from
 		$this->leftText(6,10,utf8_decode($data['student']),'','');
 		//Payment for
-		//$this->leftText(8,10.25,$data['sy'],'','');
+		$this->leftText(15,12.5,$data['sy'],7,'');
 		//Year
 		$this->leftText(6,12.25,$data['year_level'].' / ','','');
 		//Section
@@ -85,7 +85,7 @@ class AdjustmentReceipt extends Formsheet{
 		$this->rightText(13,29,$data['total_paid'],7,'');
 		
 		//Cashier
-		$this->centerText(13,31.5,$data['cashier'],7,'');
+		//$this->centerText(13,31.5,$data['cashier'],7,'');
 		
 	
 		

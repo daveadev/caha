@@ -10,8 +10,8 @@ class ReceiptsController extends AppController{
 			$user = $this->Auth->user()['User'];
 			$details['cashier']=$user['username'];
 			// Transform  SY format
-			$details['sy'] = (int)substr($details['sy'],2,2);
-			$details['sy'] = sprintf("%s-%s",$details['sy'],$details['sy']+1);
+			$details['sy'] = (int)$details['sy'];
+			$details['sy'] = sprintf("SY %s-%s",$details['sy'],$details['sy']+1);
 			$data = $details;
 		else:
 			$refNo= $trnDate= $student= $sno= $yearLevel= $section= $syFor="XXX";
