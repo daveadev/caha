@@ -1,5 +1,6 @@
 "use strict";
 define(['app','transact','api','atomic/bomb'],function(app,TRNX){
+	const DATE_FORMAT = {display:'dd MMM yyyy',data:'yyyy-mm-dd'};
 	app.register.controller('PaymentPlanController',['$scope','$rootScope','$filter','api','Atomic',
 	function($scope,$rootScope,$filter,api,atomic){
 		const $selfScope =  $scope;
@@ -23,10 +24,10 @@ define(['app','transact','api','atomic/bomb'],function(app,TRNX){
 				
 			});
 			$scope.TotalPayments = 0;
-			$scope.PlanHeaders = [{label:"#",class:'col-md-1'},"Due Date", "Due Amount", "Paid Amount", "Status"];
-			$scope.PlanProps = ["pay_count","due_date", "due_amount", "paid_amount", "status"];
+			$scope.PlanHeaders = [{label:"#",class:'col-md-1'},"Due Date", {label:"Due Amount",class:'text-right'}];
+			$scope.PlanProps = ["pay_count","due_date_display", "due_amount_display"];
 			$scope.PlanInputs = [{field:"pay_count", disabled:true},{field:'due_date',type:'date'},{field:'due_amount',type:'number'},{field:'paid_amount',type:'number'},{field:'status'}];
-			$scope.PlanData = [{due_date:new Date(), due_amount:0, paid_amount:0 , status:'UNPAID'}];
+			$scope.PlanData = [];
 		}
 
 		$selfScope.$watchGroup(['PPC.TotalDue','PPC.TotalPayments','PPC.PaymentTerms'],function(entity){
@@ -54,13 +55,17 @@ define(['app','transact','api','atomic/bomb'],function(app,TRNX){
 		  const paymentSchedule = [];
 		  const startDate = new Date(payStart);
 		  for (let i = 1; i <= payTerms; i++) {
-		  	const dueDate = new Date(startDate);
-    		dueDate.setMonth(startDate.getMonth() + (i-1));
-
+		  	let dueDate = new Date(startDate);
+    				dueDate.setMonth(startDate.getMonth() + (i-1));
+    		let dueDateDisp = $filter('date')(new Date(dueDate),DATE_FORMAT.display);
+    		let dueDateData = $filter('date')(new Date(dueDate),DATE_FORMAT.data);
+    		let monthlyDueDisp =  $filter('currency')(monthlyDue);
 		    const paymentEntry = {
 		      pay_count: i,
-		      due_date: dueDate,
+		      due_date: dueDateData,
+		      due_date_display: dueDateDisp,
 		      due_amount: monthlyDue,
+		      due_amount_display: monthlyDueDisp,
 		      paid_amount: 0,
 		      status: 'UNPAID'
 		    };
@@ -72,6 +77,7 @@ define(['app','transact','api','atomic/bomb'],function(app,TRNX){
 		  const lastMonthIndex = paymentSchedule.length - 1;
 		  const adjustedLastMonthDue = totalDue - (monthlyDue * (payTerms - 1));
 		  paymentSchedule[lastMonthIndex].due_amount = adjustedLastMonthDue;
+		  paymentSchedule[lastMonthIndex].due_amount_display = $filter('currency')(adjustedLastMonthDue);
 
 		  return paymentSchedule;
 		}
