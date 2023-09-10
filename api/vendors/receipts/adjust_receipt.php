@@ -9,13 +9,12 @@ class AdjustmentReceipt extends Formsheet{
 	protected static $page_count;
 	
 	function AdjustmentReceipt(){
-		$this->showLines = !true;
+		$this->showLines = false;
 		$this->FPDF(AdjustmentReceipt::$_orient, AdjustmentReceipt::$_unit,array(AdjustmentReceipt::$_width,AdjustmentReceipt::$_height));
 		$this->createSheet();
 	}
 	
 	function receipt($offset=0){
-		$this->showLines = !true;
 		$metrics = array(
 			'base_x'=> 0+$offset,
 			'base_y'=> 0,
@@ -30,7 +29,6 @@ class AdjustmentReceipt extends Formsheet{
 	
 	
 	function data($data,$offset=0){
-		//$this->showLines = true;
 		$metrics = array(
 			'base_x'=> 0+$offset,
 			'base_y'=> 0,

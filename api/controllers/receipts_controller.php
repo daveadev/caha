@@ -2,8 +2,14 @@
 class ReceiptsController extends AppController{
 	var $name = 'Receipts';
 	var $uses = array('MasterConfig','Student');
-	function view(){
-		
+	function view($id=null){
+		if($id=='payment_plan'):
+			$this->payment_plan();
+		else:
+			$this->adjust_memo();
+		endif;
+	}
+	protected function adjust_memo(){
 		if(isset($_POST['details'])):
 
 			$details = json_decode($_POST['details'],true);
@@ -62,5 +68,10 @@ class ReceiptsController extends AppController{
 		*/
 		
 		$this->set(compact('data'));
+		$this->render('adjust_memo');
+	}
+	protected function payment_plan(){
+		$this->render('payment_plan');
+		return;
 	}
 }
