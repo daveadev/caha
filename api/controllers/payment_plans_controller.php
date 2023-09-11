@@ -5,7 +5,11 @@ class PaymentPlansController extends AppController {
 
 	function index() {
 		$this->PaymentPlan->recursive = 0;
-		$this->set('PaymentPlans', $this->paginate());
+		$payPlans = $this->paginate();
+		foreach($payPlans as $pi=>$po):
+			$payPlans[$pi]['PaymentPlan']['schedule']=$po['PayPlanSchedule'];
+		endforeach;
+		$this->set('paymentPlans',$payPlans);
 	}
 
 	function view($id = null) {
