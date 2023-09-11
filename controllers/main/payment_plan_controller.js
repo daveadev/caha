@@ -1,6 +1,6 @@
 "use strict";
 define(['app','transact','api','atomic/bomb'],function(app,TRNX){
-	const DATE_FORMAT = {display:'dd MMM yyyy',data:'yyyy-mm-dd'};
+	const DATE_FORMAT = {display:'dd MMM yyyy',data:'yyyy-MM-dd'};
 	app.register.controller('PaymentPlanController',['$scope','$rootScope','$filter','api','Atomic',
 	function($scope,$rootScope,$filter,api,atomic){
 		const $selfScope =  $scope;
@@ -49,6 +49,25 @@ define(['app','transact','api','atomic/bomb'],function(app,TRNX){
 			var paysched = generatePaymentSchedule(totalDue,payTerms,totalPay,monthlyDue,payStart);
 			$scope.PlanData = paysched;
 		}
+		$scope.applyExtension = function(){
+			let data = {
+				account_id: $scope.ActiveStudent.id,
+				payment_start:$filter('date')(new Date($scope.PaymentStart),DATE_FORMAT.data),
+				total_due: $scope.TotalDue,
+				terms:$scope.PaymentTerms,
+				monthly_payments:$scope.MonthlyDue,
+				guarantor:$scope.Guarantor,
+				schedule:$scope.PlanData
+			}
+			var success = function(response){
+
+			};
+			var error = function(response){
+
+			};
+			api.POST('payment_plans',data,success,error);
+
+		}
 
 		// Function to generate payment schedule array
 		function generatePaymentSchedule(totalDue, payTerms, totalPay,monthlyDue,payStart) {
@@ -81,6 +100,7 @@ define(['app','transact','api','atomic/bomb'],function(app,TRNX){
 
 		  return paymentSchedule;
 		}
+
 
 
 	}]);
