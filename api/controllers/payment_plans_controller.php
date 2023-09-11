@@ -18,8 +18,14 @@ class PaymentPlansController extends AppController {
 
 	function add() {
 		if (!empty($this->data)) {
+			
 			$this->PaymentPlan->create();
-			if ($this->PaymentPlan->save($this->data)) {
+
+			$this->data['PaymentPlan']['user']= $this->Auth->user()['User']['username'];;
+			$this->data['PaymentPlan']['total_balance']=$this->data['PaymentPlan']['total_due'];
+			$this->data['PaymentPlan']['total_payments'] = 0;
+			$this->data['PayPlanSchedule']= $this->data['PaymentPlan']['schedule'];
+			if ($this->PaymentPlan->saveAll($this->data)) {
 				$this->Session->setFlash(__('The PaymentPlan has been saved', true));
 				$this->redirect(array('action' => 'index'));
 			} else {
