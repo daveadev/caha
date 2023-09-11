@@ -70,7 +70,9 @@ class ReceiptsController extends AppController{
 		$this->set(compact('data'));
 		$this->render('adjust_memo');
 	}
-	protected function payment_plan(){
+	function payment_plan(){
+		$details = json_decode($_POST['details'],true);
+		$this->set(compact('details'));
 		$this->render('payment_plan');
 		return;
 	}

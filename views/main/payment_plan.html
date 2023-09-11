@@ -63,4 +63,8 @@
 			</a-canvas>
 		</a-container>
 	</a-module>
+
+	<form action="api/receipts/payment_plan" method="POST" target="_blank" id="PrintPaymentPlan">
+		<input type="hidden" name="details" value="{{PPC.PrintPaymentDetails}}"/>
+	</form>
 </div>

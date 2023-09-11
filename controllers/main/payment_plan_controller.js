@@ -1,8 +1,8 @@
 "use strict";
 define(['app','transact','api','atomic/bomb'],function(app,TRNX){
 	const DATE_FORMAT = {display:'dd MMM yyyy',data:'yyyy-MM-dd'};
-	app.register.controller('PaymentPlanController',['$scope','$rootScope','$filter','api','Atomic',
-	function($scope,$rootScope,$filter,api,atomic){
+	app.register.controller('PaymentPlanController',['$scope','$rootScope','$filter','$timeout','api','Atomic',
+	function($scope,$rootScope,$filter,$timeout,api,atomic){
 		const $selfScope =  $scope;
 		$scope = this;
 
@@ -60,7 +60,8 @@ define(['app','transact','api','atomic/bomb'],function(app,TRNX){
 				schedule:$scope.PlanData
 			}
 			var success = function(response){
-
+				var data = response.data;
+				printPaymentPlan(data);
 			};
 			var error = function(response){
 
@@ -68,6 +69,13 @@ define(['app','transact','api','atomic/bomb'],function(app,TRNX){
 			api.POST('payment_plans',data,success,error);
 
 		}
+		function printPaymentPlan(details){
+			$scope.PrintPaymentDetails = details;
+			$timeout(function(){
+				document.getElementById('PrintPaymentPlan').submit();			
+			},200);
+		}
+
 
 		// Function to generate payment schedule array
 		function generatePaymentSchedule(totalDue, payTerms, totalPay,monthlyDue,payStart) {
