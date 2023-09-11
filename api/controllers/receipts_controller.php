@@ -72,6 +72,12 @@ class ReceiptsController extends AppController{
 	}
 	function payment_plan(){
 		$details = json_decode($_POST['details'],true);
+
+		$sid = $details['account_id'];
+		$this->Student->recursive=-1;
+		$stud = $this->Student->findById($sid);
+		$details['student']=$stud['Student']['full_name'];
+		$details['date_created'] = date('F d, Y',time());
 		$this->set(compact('details'));
 		$this->render('payment_plan');
 		return;

@@ -1,16 +1,26 @@
 <?php
 require('vendors/fpdf17/formsheet.php');
+require('vendors/utils/number_to_words.php');
 class PaymentPlanReceipt extends Formsheet{
 	protected static $_width = 8.5;
 	protected static $_height = 14;
 	protected static $_unit = 'in';
 	protected static $_orient = 'P';
 	
-	function PaymentPlanReceipt(){
+	function PaymentPlanReceipt($details=null){
 		$this->showLines = !true;
 		$this->_colorful=true;
 		$this->FPDF(PaymentPlanReceipt::$_orient, PaymentPlanReceipt::$_unit,array(PaymentPlanReceipt::$_width,PaymentPlanReceipt::$_height));
 		$this->createSheet();
+		$this->info = $details;
+		if($details):
+			$info = $details;
+			$info['old_bal'] =  number_format($info['total_due'],2,'.',',');
+			$info['amt_words'] = NumberToWordsConverter::amountToWords($info['total_due']);
+			$info['terms'] = $info['terms']. ' months';
+			$this->info = $info;
+		endif;
+		
 	}
 
 	function agreement(){
@@ -25,7 +35,7 @@ class PaymentPlanReceipt extends Formsheet{
 		$this->section($metrics);
 		$lnX=1;
 		$lnY=5;
-		$date = 'August 01, 2023';
+		$date = $this->info['date_created'];
 		$agrText = sprintf('This agreement made on %s, between:',$date);
 		$this->leftText($lnX,$lnY,$agrText,20);
 
@@ -51,7 +61,10 @@ class PaymentPlanReceipt extends Formsheet{
 
 		$this->leftText($lnX,$lnY+1.75,"1.",'');
 		$lnY+=3;
-		$text = "At the date of this Agreement, Parent has remaining balance with LSEI in the amount of **Twelve Thousand One Hundred Fifty-Five Pesos (Php12,155.00)** during the School Year - 2023.";
+		$amount_words = $this->info?$this->info['amt_words']:'---';
+		$old_bal = $this->info?$this->info['old_bal']:'---';
+
+		$text = "At the date of this Agreement, Parent has remaining balance with LSEI in the amount of **$amount_words (Php $old_bal)** during the School Year 2022 - 2023.";
 		$this->complexFormat($lnX,$lnY,$text,1.05);
 		$this->leftText($lnX,$lnY+1,"2.",'');
 		$lnY+=2.25;
@@ -66,8 +79,8 @@ class PaymentPlanReceipt extends Formsheet{
 		$lnY+=2;
 		$this->centerText($lnX,$lnY++,"LSEI Special Extension Payment Plan",20);
 		$this->centerText($lnX,$lnY++,"Schedule 1",20);
-		$lnY = $this->student_info($lnX,$lnY);
-		$lnY = $this->payment_schedule($lnX,$lnY);
+		$lnY = $this->student_info($lnX,$lnY,$this->info);
+		$lnY = $this->payment_schedule($lnX,$lnY,$this->info);
 
 		$lnY+=1;
 		$this->leftText($lnX,$lnY+1,"4.",'');
@@ -96,6 +109,7 @@ class PaymentPlanReceipt extends Formsheet{
 		
 		$this->complexFormat($lnX,$lnY,$text,1.05);
 
+		
 		$lnY+=3;
 		$this->leftText($lnX,$lnY,"Conforme:",20);
 		$this->leftText($lnX+8,$lnY,"Witness:",20);
@@ -107,7 +121,9 @@ class PaymentPlanReceipt extends Formsheet{
 		$this->leftText($lnX+4,$lnY-1.25,"/ mm / dd / yyyy ",20,'');
 		//$this->SetTextColor(0,0,0);
 		$this->GRID['font_size']=9.5;
-		$this->leftText($lnX,$lnY,"Juan Dela Cruz Sr.",20,'b');
+
+		$guarantor = $this->info?$this->info['guarantor']:'---';
+		$this->leftText($lnX,$lnY,$guarantor,20,'b');
 
 		$this->drawLine($lnY-1,'h',array($lnX+8,4.5));
 		$this->leftText($lnX+8,$lnY,"Cristina Casalla",20,'b');
@@ -120,6 +136,12 @@ class PaymentPlanReceipt extends Formsheet{
 	}
 
 	function student_info($x,$y,$info=null){
+		
+		$student = $guarantor = $terms = $old_bal = '----';
+		foreach($info as $key=>$val):
+			$$key = $val;
+		endforeach;
+
 		$w =  19;
 		$h = 4;
 		$colX = $x+($w/1.5);
@@ -130,22 +152,30 @@ class PaymentPlanReceipt extends Formsheet{
 		$x+=0.5;
 		$y+=1.25;
 		$this->leftText($x-0.25,$y,"Name of Student:",3);
-		$this->leftText($x+3.25,$y,"Juan Dela Cruz",3,'b');
+		$this->leftText($x+3.25,$y,$student,3,'b');
 
 		$this->leftText($colX+0.25,$y,"Old Balance:",3);
-		$this->leftText($colX+3.25,$y,"Php 12,155.00",3,'b');
+		$this->leftText($colX+3.25,$y,'Php '.$old_bal,3,'b');
 		$y+=1.9;
 		$this->leftText($x-0.25,$y,"Name of Parent:",3);
-		$this->leftText($x+3.25,$y,"Juan Dela Cruz Sr.",3,'b');
+		$this->leftText($x+3.25,$y,$guarantor,3,'b');
 		$this->leftText($colX+0.25,$y,"Installments:",3);
-		$this->leftText($colX+3.25,$y,"9 months",3,'b');
+		$this->leftText($colX+3.25,$y,$terms,3,'b');
 
 		return $y;
 	}
 
 	function payment_schedule($x,$y, $info=null){
+
+		
+
 		$noOfLines = 15;
 		$totalLines =  $noOfLines;
+		$schedule = null;
+		if($info):
+			$noOfLines = count($info['schedule']);
+			$schedule = $info['schedule'];
+		endif;
 		$noOfTables = 1;
 		$dispTable = 1;
 		if($noOfLines>12):
@@ -198,13 +228,18 @@ class PaymentPlanReceipt extends Formsheet{
 			endif;
 		}while($dispTable<=$noOfTables);
 		$lnCtr=1;
+		$schedIndex = 0;
 		foreach($lines as $i=>$ln):
 			$lx =  $ln[0];
 			$ly =  $ln[1];
 			$lc =  $ln[2];
 			if($i==count($lines)-1):
+				$total_due = "0.00";
+				if($info):
+					$total_due = $info['old_bal'];
+				endif;
 				$this->rightText($lx+$ofY,$ly,"Total Due",$colW,'b');
-				$this->rightText($lc+$ofY,$ly,"Php 12,155.00",$colW,'b');
+				$this->rightText($lc+$ofY,$ly,"Php $total_due",$colW,'b');
 			elseif($ly==$topLn):
 				$this->centerText($lx,$ly,"Due Date",$colW);
 				$this->centerText($lc,$ly,"Amount Due",$colW);
@@ -213,8 +248,16 @@ class PaymentPlanReceipt extends Formsheet{
 					$this->centerText($lx-$ofY,$ly-0.25,"-----------------------",$colW);
 					$this->rightText($lc+$ofY,$ly,"Next Table",$colW);
 				elseif($i<=$totalLines):
-					$this->leftText($lx-$ofY,$ly,"$i Sep dd, YYYY",$colW);
-					$this->rightText($lc+$ofY,$ly,"Php 1,000.00",$colW);
+					$due_date = "$i mm dd, yyyy";
+					$due_amt = "0.00";
+					if($schedule):
+						$sched = $schedule[$schedIndex];
+						$due_date = $sched['due_date_display'];
+						$due_amt = $sched['due_amount_display'];
+						$schedIndex++;
+					endif;
+					$this->leftText($lx-$ofY,$ly,"$due_date",$colW);
+					$this->rightText($lc+$ofY,$ly,"Php $due_amt",$colW);
 				endif;
 			endif;
 			$lnCtr++;
@@ -249,6 +292,95 @@ class PaymentPlanReceipt extends Formsheet{
 		    }
 		}
 	}
+
+	function amount_in_words($number) {
+    $ones = array(
+        1 => "one",
+        2 => "two",
+        3 => "three",
+        4 => "four",
+        5 => "five",
+        6 => "six",
+        7 => "seven",
+        8 => "eight",
+        9 => "nine",
+        10 => "ten",
+        11 => "eleven",
+        12 => "twelve",
+        13 => "thirteen",
+        14 => "fourteen",
+        15 => "fifteen",
+        16 => "sixteen",
+        17 => "seventeen",
+        18 => "eighteen",
+        19 => "nineteen"
+    );
+
+    $tens = array(
+        1 => "ten",
+        2 => "twenty",
+        3 => "thirty",
+        4 => "forty",
+        5 => "fifty",
+        6 => "sixty",
+        7 => "seventy",
+        8 => "eighty",
+        9 => "ninety"
+    );
+
+    $hundreds = array(
+        "hundred",
+        "thousand",
+        "million",
+        "billion",
+        "trillion",
+        "quadrillion"
+    ); // Limit to quadrillion
+
+    $num = str_replace(',', '', $number);
+    $num = number_format($num, 2, ".", ",");
+    $num_arr = explode(".", $num);
+    $wholenum = $num_arr[0];
+    $decnum = $num_arr[1];
+    $whole_arr = array_reverse(explode(",", $wholenum));
+    krsort($whole_arr);
+    $rettxt = "";
+    foreach ($whole_arr as $key => $i) {
+        if ($i < 20) {
+            $rettxt .= $ones[$i];
+        } elseif ($i < 100) {
+            $rettxt .= $tens[substr($i, 0, 1)];
+            if ($ones_place = substr($i, 1, 1)) {
+                $rettxt .= " " . $ones[$ones_place];
+            }
+        } else {
+            $rettxt .= $ones[substr($i, 0, 1)] . " " . $hundreds[0];
+            if ($tens_place = substr($i, 1, 1)) {
+                $rettxt .= " " . $tens[$tens_place];
+            }
+            if ($ones_place = substr($i, 2, 1)) {
+                $rettxt .= " " . $ones[$ones_place];
+            }
+        }
+        if ($key > 0) {
+            $rettxt .= " " . $hundreds[$key] . " ";
+        }
+    }
+    if ($decnum > 0) {
+        $rettxt .= " and ";
+        if ($decnum < 20) {
+            $rettxt .= $ones[$decnum];
+        } elseif ($decnum < 100) {
+            $rettxt .= $tens[substr($decnum, 0, 1)];
+            if ($ones_place = substr($decnum, 1, 1)) {
+                $rettxt .= " " . $ones[$ones_place];
+            }
+        }
+    }
+    return $rettxt;
+}
+
+
 }
 
 ?>
