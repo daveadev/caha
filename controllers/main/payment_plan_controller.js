@@ -30,15 +30,28 @@ define(['app','transact','api','atomic/bomb'],function(app,TRNX){
 			$scope.PlanData = [];
 		}
 
-		$selfScope.$watchGroup(['PPC.TotalDue','PPC.TotalPayments','PPC.PaymentTerms'],function(entity){
+		$selfScope.$watch('PPC.ActiveStudent',function(entity){
+			let STU = $scope.ActiveStudent;
+			if(!STU) return;
+			$scope.allowInput = true;
+			if(!STU.id){
+				resetPaymentPlan();
+			}
+		});
+		$selfScope.$watchGroup(['PPC.ActiveStudent','PPC.TotalDue','PPC.Guarantor','PPC.PaymentTerms','PPC.PaymentStart'],function(entity){
+			if(!$scope.ActiveStudent) return;
+			$scope.allowCompute =  $scope.TotalDue && $scope.PaymentTerms && $scope.PaymentStart && $scope.Guarantor;
 			// Compute default monthly due
-			if(entity[0] && entity[2]){
+			if(entity[1] && entity[3]){
 				var totalDue = $scope.TotalDue;
 				var totalPay = $scope.TotalPayments;
 				var payTerms = $scope.PaymentTerms;
 				var monthlyDue = Math.ceil((totalDue - totalPay) / payTerms);
 				$scope.MonthlyDue = monthlyDue;
 			}
+		});
+		$selfScope.$watch('PPC.PlanData',function(){
+			$scope.allowApply = $scope.PlanData.length;
 		});
 		$scope.computePlan = function(){
 			var totalDue = $scope.TotalDue;
@@ -48,6 +61,14 @@ define(['app','transact','api','atomic/bomb'],function(app,TRNX){
 			var payStart = $scope.PaymentStart;
 			var paysched = generatePaymentSchedule(totalDue,payTerms,totalPay,monthlyDue,payStart);
 			$scope.PlanData = paysched;
+			$scope.allowCompute = false;
+			$scope.allowInput = false;
+
+		}
+		$scope.revertExtension = function(){
+			$scope.allowCompute=true;
+			$scope.allowInput=true;
+			$scope.PlanData = [];
 		}
 		$scope.applyExtension = function(){
 			let data = {
@@ -68,6 +89,16 @@ define(['app','transact','api','atomic/bomb'],function(app,TRNX){
 			};
 			api.POST('payment_plans',data,success,error);
 
+		}
+
+		function resetPaymentPlan(){
+			$scope.TotalDue = undefined;
+			$scope.PaymentStart = undefined;
+			$scope.PaymentTerms= undefined;
+			$scope.Guarantor= undefined;
+			$scope.MonthlyDue= undefined;
+			$scope.PlanData = [];
+			$scope.PrintDetails = {};
 		}
 		function printPaymentPlan(details){
 			$scope.PrintPaymentDetails = details;

@@ -10,15 +10,15 @@
 						<a-col size="5">
 							<a-row>
 								<a-col size="4">
-									<m-formgroup ng-model="PPC.PaymentStart" label="Payment Start" type="'date'"></m-formgroup>
+									<m-formgroup ng-model="PPC.PaymentStart" label="Payment Start" type="'date'" ng-disabled="!PPC.allowInput"></m-formgroup>
 									
 								</a-col>
 								<a-col size="4">
-									<m-formgroup ng-model="PPC.TotalDue" label="Total Due" type="'number'"></m-formgroup>
+									<m-formgroup ng-model="PPC.TotalDue" label="Total Due" type="'number'" ng-disabled="!PPC.allowInput"></m-formgroup>
 									
 								</a-col>
 								<a-col size="3">
-									<m-formgroup ng-model="PPC.PaymentTerms" label="Terms (mos.)" type="'number'"></m-formgroup>
+									<m-formgroup ng-model="PPC.PaymentTerms" label="Terms (mos.)" type="'number'" ng-disabled="!PPC.allowInput"></m-formgroup>
 								</a-col>
 							</a-row>
 							
@@ -27,10 +27,10 @@
 							<a-row>
 								<a-col size="4">
 									<m-formgroup ng-model="PPC.MonthlyDue" 
-									size="'input-lg'" label="Monthly Payments" type="'number'"></m-formgroup>
+									size="'input-lg'" label="Monthly Payments" type="'number'" ng-disabled="!PPC.allowInput"></m-formgroup>
 								</a-col>
 								<a-col size="8">
-									<m-formgroup ng-model="PPC.Guarantor" size="'input-lg'" label="Name of Parent/Guardian"></m-formgroup>
+									<m-formgroup ng-model="PPC.Guarantor" size="'input-lg'" label="Name of Parent/Guardian" ng-disabled="!PPC.allowInput"></m-formgroup>
 								</a-col>
 							</a-row>
 							
@@ -38,7 +38,7 @@
 						
 						<a-col size="2">
 							<div style="margin-top:24px;">
-								<a-button type="primary-block" size="lg" ng-click="PPC.computePlan()">
+								<a-button type="primary-block" size="lg" ng-click="PPC.computePlan()" ng-disabled="!PPC.allowCompute">
 									Compute
 								</a-button>
 							</div>
@@ -49,12 +49,15 @@
 						<a-col size="10">
 							<h5>Payment Plan Schedule</h5>
 							
-							<a-table headers="PPC.PlanHeaders" props="PPC.PlanProps" data="PPC.PlanData"></a-table>
+							<a-table headers="PPC.PlanHeaders" props="PPC.PlanProps" data="PPC.PlanData" is-preload="false"></a-table>
 						</a-col>
 						<a-col size="2">
 							<div style="margin-top:24px;">
-								<a-button type="success" size="lg" ng-click="PPC.applyExtension()">
+								<a-button type="success" size="lg" ng-click="PPC.applyExtension()" ng-disabled="!PPC.allowApply">
 									Apply Extension
+								</a-button>
+								<a-button style="margin-top:10px;" type="default-block"  ng-click="PPC.revertExtension()" ng-disabled="!PPC.allowApply">
+									Revert
 								</a-button>
 							</div>
 						</a-col>
