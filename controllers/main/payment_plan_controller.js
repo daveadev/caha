@@ -9,6 +9,9 @@ define(['app','transact','api','atomic/bomb'],function(app,TRNX){
 
 		$scope.init = function(){
 			$rootScope.__MODULE_NAME = 'Extension Plan';
+			$rootScope.$watch('_APP',(app)=>{
+				$scope.ActiveSY = app.ACTIVE_SY;
+			});
 			atomic.ready(function(){
 				var sys = atomic.SchoolYears;
 				var sy = atomic.ActiveSY;
