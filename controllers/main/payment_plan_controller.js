@@ -46,6 +46,7 @@ define(['app','transact','api','atomic/bomb'],function(app,TRNX){
 			}else{
 				loadPayPlans(SID,ESP);
 			}
+			loadSOA();
 		});
 		$selfScope.$watchGroup(['PPC.ActiveStudent','PPC.TotalDue','PPC.Guarantor','PPC.PaymentTerms','PPC.PaymentStart'],function(entity){
 			if(!$scope.ActiveStudent) return;
@@ -73,6 +74,7 @@ define(['app','transact','api','atomic/bomb'],function(app,TRNX){
 			$scope.PlanData = paysched;
 			$scope.allowCompute = false;
 			$scope.allowInput = false;
+			$scope.ActiveTabIndex = 0;
 
 		}
 		$scope.revertExtension = function(){
@@ -143,6 +145,10 @@ define(['app','transact','api','atomic/bomb'],function(app,TRNX){
 				loadStudentAccount(sid);
 			};
 			return api.GET('payment_plans',filter,success,error);
+		}
+		function loadSOA(){
+			$scope.ActiveTabIndex = 1;
+			document.getElementById('PrintOldSoa').submit();
 		}
 		function resetPaymentPlan(){
 			$scope.TotalDue = undefined;

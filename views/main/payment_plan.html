@@ -1,3 +1,6 @@
+<style>
+	.nav-pills>li{margin-bottom:20px;}
+</style>
 <div ng-controller="PaymentPlanController as PPC" ng-init="PPC.init()">
 	<a-module>
 		<a-container>
@@ -60,24 +63,44 @@
 						</a-col>
 					</a-row>
 					<hr>
-					<a-row>
-						<a-col size="10">
-							<h5>Payment Plan Schedule</h5>
-							
-							<a-table headers="PPC.PlanHeaders" props="PPC.PlanProps" data="PPC.PlanData" is-preload="false"></a-table>
-						</a-col>
-						<a-col size="2">
-							<div style="margin-top:24px;">
-								<a-button type="success" size="lg" ng-click="PPC.applyExtension()" ng-disabled="!PPC.allowApply">
-									Apply Extension
-								</a-button>
-								<a-button style="margin-top:10px;" type="default-block"  ng-click="PPC.revertExtension()" ng-disabled="!PPC.allowApply">
-									<a-glyph icon="repeat"></a-glyph>
-									Revert
-								</a-button>
-							</div>
-						</a-col>
-					</a-row>
+
+					<uib-tabset type="pills" active="PPC.ActiveTabIndex">
+								<uib-tab index="0" heading="Payment Plan Schedule">
+									<a-row>
+										<a-col size="10">
+											<a-table headers="PPC.PlanHeaders" props="PPC.PlanProps" data="PPC.PlanData" is-preload="false"></a-table>
+										</a-col>
+										<a-col size="2">
+											<div style="margin-top:24px;">
+												<a-button type="success" size="lg" ng-click="PPC.applyExtension()" ng-disabled="!PPC.allowApply">
+													Apply Extension
+												</a-button>
+												<a-button style="margin-top:10px;" type="default-block"  ng-click="PPC.revertExtension()" ng-disabled="!PPC.allowApply">
+													<a-glyph icon="repeat"></a-glyph>
+													Revert
+												</a-button>
+											</div>
+										</a-col>
+									</a-row>
+								</uib-tab>
+								<uib-tab index="1" heading="Statement of Account SY {{PPC.ActiveSY-1}} -  {{PPC.ActiveSY}}">
+									<div style="height: 500px;" ng-show="PPC.ActiveStudent.id">
+										<form action="api/soa" method="GET" target="OldSOAframe" id="PrintOldSoa">
+											<input type="hidden" name="account_id" value="{{PPC.ActiveStudent.id}}"/>
+											<input type="hidden" name="sy" value="{{PPC.ActiveSY-1}}"/>
+										</form>
+										<iframe name="OldSOAframe"  id="OldSOAframe" frameborder="0" style="width:100%;height:100%;display:block;"></iframe>
+									</div>
+									<div class="empty-state" ng-hide="PPC.ActiveStudent.id">
+										<div class="well text-center">
+											<div class="empty-state-icon text-center">
+												<i class="glyphicon glyphicon-list-alt"></i>
+											</div>
+											<h4>Select Student to view SOA</h4>
+										</div>
+									</div>
+								</uib-tab>
+							</uib-tabset>
 				</a-content>
 			</a-canvas>
 		</a-container>
