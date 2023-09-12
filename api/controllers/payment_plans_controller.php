@@ -4,7 +4,8 @@ class PaymentPlansController extends AppController {
 	var $name = 'PaymentPlans';
 
 	function index() {
-		$this->PaymentPlan->recursive = 0;
+		$this->PaymentPlan->recursive = 1;
+		$conf = $this->paginate['PaymentPlan'];
 		$payPlans = $this->paginate();
 		foreach($payPlans as $pi=>$po):
 			$payPlans[$pi]['PaymentPlan']['schedule']=$po['PayPlanSchedule'];
