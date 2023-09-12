@@ -8,7 +8,7 @@ define(['app','adjust-memo','api','atomic/bomb'],function(app,AM){
 	function($scope,$rootScope,$filter,$timeout,api,atomic,aModal){
 		const $selfScope =  $scope;
 		$scope = this;
-
+		$rootScope.__MODULE_NAME = 'Adjusting Memo';
 		$scope.init = function(){
 			loadUIComps();
 		}

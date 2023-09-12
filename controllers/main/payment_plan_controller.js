@@ -6,7 +6,7 @@ define(['app','transact','api','atomic/bomb'],function(app,TRNX){
 	function($scope,$rootScope,$filter,$timeout,api,atomic){
 		const $selfScope =  $scope;
 		$scope = this;
-
+		$rootScope.__MODULE_NAME = 'Extension Plan';
 		$scope.init = function(){
 			atomic.ready(function(){
 				var sys = atomic.SchoolYears;
