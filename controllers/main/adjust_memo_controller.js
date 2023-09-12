@@ -8,7 +8,6 @@ define(['app','adjust-memo','api','atomic/bomb'],function(app,AM){
 	function($scope,$rootScope,$filter,$timeout,api,atomic,aModal){
 		const $selfScope =  $scope;
 		$scope = this;
-		$rootScope.__MODULE_NAME = 'Adjusting Memo';
 		$scope.init = function(){
 			loadUIComps();
 		}
@@ -106,6 +105,7 @@ define(['app','adjust-memo','api','atomic/bomb'],function(app,AM){
 			if(entity[1]!=undefined) $scope.PSRunBalanceDisp = $filter('currency')(entity[1]);
 		});
 		function loadUIComps(){
+			$rootScope.__MODULE_NAME = 'Adjusting Memo';
 			$rootScope.$watch('_APP',(app)=>{
 				$scope.ActiveSY = app.ACTIVE_SY;
 			});
