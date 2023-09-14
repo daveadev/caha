@@ -1,7 +1,7 @@
 <?php
 require('vendors/fpdf17/formsheet.php');
 class AdjustmentReceipt extends Formsheet{
-	protected static $_width = 7;
+	protected static $_width = 7.8;
 	protected static $_height = 5.4;
 	protected static $_unit = 'in';
 	protected static $_orient = 'L';	
@@ -18,13 +18,14 @@ class AdjustmentReceipt extends Formsheet{
 		$metrics = array(
 			'base_x'=> 0+$offset,
 			'base_y'=> 0,
-			'width'=> 3.5,
+			'width'=> 3.9,
 			'height'=> 5.4,
 			'cols'=> 38,
 			'rows'=> 62,	
 		);
 		$this->section($metrics);
-		//$this->DrawImage(0,0,7,5.4,__DIR__ ."/../images/adjust_memo.png");
+		//$this->DrawBox($metrics['base_x'],$metrics['base_y'],$metrics['cols'],$metrics['rows'],'D');
+		//$this->DrawImage(0,0,7.8,5.4,__DIR__ ."/../images/adjust_memo.png");
 	}
 	
 	
@@ -50,17 +51,17 @@ class AdjustmentReceipt extends Formsheet{
 		$this->GRID['font_size']=9;
 		
 		//Date
-		$this->leftText(14.75,8,$data['transac_date'],'','');
+		$this->leftText(16,8.5,$data['transac_date'],'','');
 		//Student No.
-		$this->leftText(6,8,$data['sno'],'','');
+		$this->leftText(6,8.5,$data['sno'],'','');
 		//Receive payment from
-		$this->leftText(6,10,utf8_decode($data['student']),'','');
+		$this->leftText(6,11,utf8_decode($data['student']),'','');
 		//Payment for
-		$this->leftText(15,12.5,$data['sy'],7,'');
+		$this->leftText(16,13,$data['sy'],7,'');
 		//Year
-		$this->leftText(6,12.25,$data['year_level'].' / ','','');
+		$this->leftText(6,12.75,$data['year_level'].' / ','','');
 		//Section
-		$this->leftText(6,13,$data['section'],'','');
+		$this->leftText(6,13.75,$data['section'],'','');
 		
 		
 		$y=16;
