@@ -63,11 +63,12 @@ class PaymentPlanReceipt extends Formsheet{
 		$lnY+=3;
 		$amount_words = $this->info?$this->info['amt_words']:'---';
 		$old_bal = $this->info?$this->info['old_bal']:'---';
+		$atw_w = $this->GetStringWidth($amount_words);
 
 		$text = "At the date of this Agreement, Parent has remaining balance with LSEI in the amount of **$amount_words (Php $old_bal)** during the School Year 2022 - 2023.";
 		$this->complexFormat($lnX,$lnY,$text,1.05);
-		$this->leftText($lnX,$lnY+1,"2.",'');
-		$lnY+=2.25;
+		$lnY+=$atw_w<4.5?2.25:3;
+		$this->leftText($lnX,$lnY-1.25,"2.",'');
 		$text = "Parent requested extension of the unpaid balance to the succeeding School Year 2023 - 2024 after experiencing financial difficulties during the period of School Year 2022 - 2023.";
 		$this->complexFormat($lnX,$lnY,$text,1.05);
 
@@ -170,12 +171,12 @@ class PaymentPlanReceipt extends Formsheet{
 		
 
 		$noOfLines = 15;
-		$totalLines =  $noOfLines;
 		$schedule = null;
 		if($info):
 			$noOfLines = count($info['schedule']);
 			$schedule = $info['schedule'];
 		endif;
+		$totalLines =  $noOfLines;
 		$noOfTables = 1;
 		$dispTable = 1;
 		if($noOfLines>12):
