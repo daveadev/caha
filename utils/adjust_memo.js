@@ -5,6 +5,7 @@ define(['app','util','api'],function(app,util) {
 		ADJM.UI.TYPES = [
 			{id:'AMFAV1', code:'FAV',name:'Financial Assistance Voucher'},
 			{id:'AMFAV2', code:'AFAV',name:'Additional Financial Assistance Voucher'},
+			{id:'AMOTFA', code:'OTFA',name:'One Time Financial Assistance'},
 			{id:'AMVASF', code:'VSV',name:'Valedictorian Special Voucher'},
 			{id:'AMSASV', code:'SSV',name:'Salutatorian Special Voucher'},
 			{id:'AMTPSV', code:'TSV',name:'Top Special Voucher'},

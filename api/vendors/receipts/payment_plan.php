@@ -248,7 +248,7 @@ class PaymentPlanReceipt extends Formsheet{
 				if($ly==$btmLn):
 					$this->centerText($lx-$ofY,$ly-0.25,"-----------------------",$colW);
 					$this->rightText($lc+$ofY,$ly,"Next Table",$colW);
-				elseif($i<=$totalLines):
+				elseif($schedIndex<=$totalLines):
 					$due_date = "$i mm dd, yyyy";
 					$due_amt = "0.00";
 					if($schedule):
