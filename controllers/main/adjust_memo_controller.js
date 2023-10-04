@@ -385,6 +385,7 @@ define(['app','adjust-memo','api','atomic/bomb'],function(app,AM){
 				entry.transaction_type_id =e.code;
 				entry.details =e.description;
 				$scope.LEUpdate=false;
+				entry.ref_no =  $scope.AdjRefNo;
 				api.POST('ledgers',entry,success,error);
 			});
 			
