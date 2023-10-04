@@ -85,4 +85,17 @@ class Ledger extends AppModel {
 		
 		return $REFNO;
 	}
+
+	function removeEntry($aid,$trnx_id,$esp,$flag){
+		// Define the conditions for deletion
+        $conditions = array(
+            'account_id' => $aid,
+            'transaction_type_id' => $trnx_id,
+            'esp' => $esp,
+            'type' => $flag
+        );
+
+        // Delete ledger entries based on the conditions
+        $this->deleteAll($conditions);
+	}
 }

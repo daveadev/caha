@@ -2,6 +2,7 @@
 class PaymentPlansController extends AppController {
 
 	var $name = 'PaymentPlans';
+	var $uses =  array('PaymentPlan','Ledger');
 
 	function index() {
 		$this->PaymentPlan->recursive = 1;
@@ -31,6 +32,9 @@ class PaymentPlansController extends AppController {
 			$this->data['PaymentPlan']['total_payments'] = 0;
 			$this->data['PayPlanSchedule']= $this->data['PaymentPlan']['schedule'];
 			if ($this->PaymentPlan->saveAll($this->data)) {
+				$AID =  $this->data['PaymentPlan']['account_id'];
+				$ESP =  $this->data['PaymentPlan']['esp'];
+				$this->Ledger->removeEntry($AID,'OLDAC',$ESP,'+');
 				$this->Session->setFlash(__('The PaymentPlan has been saved', true));
 				$this->redirect(array('action' => 'index'));
 			} else {
