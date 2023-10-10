@@ -27,8 +27,8 @@ define(['app','transact','api','atomic/bomb'],function(app,TRNX){
 			$scope.Headers = ['Description',{class:'col-md-4',label:'Amount'}];
 			$scope.Props = ['description','amount'];
 
-			$scope.PSHeaders = ['Due Date', 'Amount'];
-			$scope.PSProps = ['disp_date','disp_amount'];
+			$scope.PSHeaders = ['Due Date', 'Amount','Status'];
+			$scope.PSProps = ['disp_date','disp_amount','status'];
 			$scope.Paysched = [];
 			$scope.StudFields = ['id','full_name','enroll_status','student_type','department_id','year_level_id'];
 			$scope.TransacDetails=[];
@@ -45,7 +45,6 @@ define(['app','transact','api','atomic/bomb'],function(app,TRNX){
 		});
 
 		$selfScope.$on('UpdatePaysched',function(evt,args){
-			console.log(args);
 			$scope.Paysched = args.paysched;
 		});
 	}]);
@@ -66,17 +65,31 @@ define(['app','transact','api','atomic/bomb'],function(app,TRNX){
 			var sid = STU.id;
 			var type =  STU.enroll_status;
 			var asy = atomic.ActiveSY;
+
 			TRNX.runDefault();
-			if(NEXT_SY && sy> asy){
-				TRNX.getAssessment(sid,sy).then(function(){
-					$scope.TransacList = TRNX.getList();
-					var sched =  TRNX.getSched();
-					$selfScope.$emit('UpdatePaysched',{paysched:sched});
-				});
-			}else{
+			$selfScope.$emit('UpdatePaysched',{paysched:[]});
+			
+			if(!sid) return;
+			
+			var loadNextSY = NEXT_SY && sy> asy;
+			function updateTrnx(response){
+				var account =  response.data.data[0];
+				
+
 				$scope.TransacList = TRNX.getList();
-				$selfScope.$emit('UpdatePaysched',{paysched:[]});
+				var sched =  TRNX.getSched();
+				$selfScope.$emit('UpdatePaysched',{paysched:sched});
+				if(account.old_balance>0){
+					TRNX.getOldAccount(sid,sy);
+				}
+				
 			}
+			if(loadNextSY)
+				return TRNX.getAssessment(sid,sy).then(updateTrnx);
+			
+			TRNX.getAccount(sid,sy).then(updateTrnx);
+				
+			
 
 		});
 		
