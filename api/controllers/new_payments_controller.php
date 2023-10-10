@@ -5,10 +5,19 @@ class NewPaymentsController extends AppController {
 	var $uses = array('NewPayment','Transaction');
 
 	function add(){
-		pr($this->data);exit;
+		
 		$cashier = $this->Auth->user()['User']['username'];
-
-		$this->NewPayment->prepareTrnx($bkl_id,$ref_no,$amount,$esp,$account_id,$transac_date ,$cashier);
+		$paymentObj = $this->data['NewPayment'];
+		$paymentObj['ref_no'] = $paymentObj['series_no'];
+		$paymentObj['amount'] = $paymentObj['pay_due'];
+		$paymentObj['cashier'] = $cashier;
+		$TRNX = $this->Transaction;
+		$trnxObj = $this->NewPayment->prepareTrnx($paymentObj,$TRNX);
+		if($trnxObj['is_valid']):
+			$TRNX->saveAll($trnxObj);
+		else:
+			$this->cakeError('duplicateRefNo',array('ref_no'=>$trnxObj['ref_no']));
+		endif;
 	}
 
 }
