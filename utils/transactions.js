@@ -107,9 +107,9 @@ define(['app','util','api'],function(app,util) {
 		updateAmount('INIPY','set',0);
 		updateAmount('SBQPY','set',0);
 		updateAmount('OLDAC','set',0);
-		updateDisplay('INIPY','show');
+		updateDisplay('INIPY','hide');
 		updateDisplay('SBQPY','hide');
-		updateDisplay('OLDAC','hide');
+		updateDisplay('OLDAC','show');
 	}
 	function updateDisplays(){
 		list.map(function(lItem){
