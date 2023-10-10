@@ -22,7 +22,7 @@ class PaymentPlan extends AppModel {
 	var $belongsTo = array(
 		'Account' => array(
 			'className' => 'Account',
-			'foreignKey' => 'id',
+			'foreignKey' => 'account_id',
 			'dependent' => false,
 			'conditions' => '',
 			'fields' => '',
