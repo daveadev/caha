@@ -25,6 +25,11 @@
 .btn-action:hover div.action-label{
 	white-space: normal;
 }
+.btn-active,.btn-active:hover,.btn-active:focus{
+	border:2px solid #337ab7;
+	color:#337ab7;
+	background: white;
+}
 div[align="right"] input{
 	text-align: right;
 }
@@ -47,7 +52,7 @@ div[align="right"] input{
 
 										<div ng-controller="CashierTransactionsController as CTC" ng-init="CTC.init()">
 											<!--- Transactions - allowed & defaults -->
-											<a-button size="lg" class="btn-action" ng-class="{'btn-primary':TItem.isActive}" ng-repeat="TItem in CTC.TransacList" ng-hide="TItem.hide" ng-disabled="TItem.disabled || !TItem.amount" ng-click="CTC.addTrnx(TItem)">
+											<a-button size="lg" class="btn-action" ng-class="{'btn-active':TItem.isActive}" ng-repeat="TItem in CTC.TransacList" ng-hide="TItem.hide" ng-disabled="TItem.disabled || !TItem.amount" ng-click="CTC.addTrnx(TItem)">
 												<div class="action-label">{{TItem.description}}</div>
 												<span class="peso amount">{{TItem.amount|currency}}</span>
 											</a-button>
