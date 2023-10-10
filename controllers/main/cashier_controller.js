@@ -25,7 +25,7 @@ define(['app','transact','api','atomic/bomb'],function(app,TRNX){
 				
 			});
 			$scope.Headers = ['Description',{class:'col-md-4',label:'Amount'}];
-			$scope.Props = ['description','amount'];
+			$scope.Props = ['description','disp_amount'];
 
 			$scope.PSHeaders = ['Due Date', 'Amount','Status'];
 			$scope.PSProps = ['disp_date','disp_amount','status'];
@@ -47,10 +47,21 @@ define(['app','transact','api','atomic/bomb'],function(app,TRNX){
 		$selfScope.$on('UpdatePaysched',function(evt,args){
 			$scope.Paysched = args.paysched;
 		});
+		$selfScope.$on('UpdateTransacDetails',function(evt,args){
+			let details = args.details;
+			let totalAmt = 0;
+			$scope.TransacDetails = details;
+			details.map(function(item,index){
+				totalAmt+=item.amount;
+			});
+			$scope.TotalAmount = totalAmt;
+			$scope.TotalDispAmount = TRNX.util.formatMoney(totalAmt);
+
+		});
 	}]);
 
-	app.register.controller('CashierTransactionsController',['$scope','$rootScope','api','Atomic',
-	function($scope,$rootScope,api,atomic){
+	app.register.controller('CashierTransactionsController',['$scope','$rootScope','$filter','api','Atomic',
+	function($scope,$rootScope,$filter,api,atomic){
 		const $selfScope =  $scope;
 		$scope = this;
 		$scope.init = function(){
@@ -58,7 +69,11 @@ define(['app','transact','api','atomic/bomb'],function(app,TRNX){
 			$scope.TransacList = TRNX.getList();
 			TRNX.link(api);
 		};
-
+		$scope.addTrnx = function(item){
+			item.isActive = !item.isActive; 
+			let activeTrnx = $filter('filter')($scope.TransacList,{isActive:true});
+			$selfScope.$emit('UpdateTransacDetails',{details:activeTrnx});
+		}
 		$selfScope.$on('StudentSelected',function(evt,args){
 			var STU =  args.student;
 			var sy = args.sy;
@@ -79,15 +94,12 @@ define(['app','transact','api','atomic/bomb'],function(app,TRNX){
 				$scope.TransacList = TRNX.getList();
 				var sched =  TRNX.getSched();
 				$selfScope.$emit('UpdatePaysched',{paysched:sched});
-				if(account.old_balance>0){
-					TRNX.getOldAccount(sid,sy);
-				}
 				
 			}
 			if(loadNextSY)
 				return TRNX.getAssessment(sid,sy).then(updateTrnx);
 			
-			TRNX.getAccount(sid,sy).then(updateTrnx);
+			TRNX.getOldAccount(sid,sy).then(updateTrnx);
 				
 			
 

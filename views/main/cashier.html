@@ -23,8 +23,10 @@
   height: 40px;
 }
 .btn-action:hover div.action-label{
-	font-size: 12px;
 	white-space: normal;
+}
+div[align="right"] input{
+	text-align: right;
 }
 </style>
 <div ng-controller="CashierController as CAC" ng-init="CAC.init()">
@@ -44,10 +46,12 @@
 								<uib-tab index="0" heading="Transactions" classes="btn-lg">
 
 										<div ng-controller="CashierTransactionsController as CTC" ng-init="CTC.init()">
-											<a-button size="lg" class="btn-action" ng-repeat="TItem in CTC.TransacList" ng-hide="TItem.hide" ng-disabled="TItem.disabled">
+											<!--- Transactions - allowed & defaults -->
+											<a-button size="lg" class="btn-action" ng-class="{'btn-primary':TItem.isActive}" ng-repeat="TItem in CTC.TransacList" ng-hide="TItem.hide" ng-disabled="TItem.disabled || !TItem.amount" ng-click="CTC.addTrnx(TItem)">
 												<div class="action-label">{{TItem.description}}</div>
 												<span class="peso amount">{{TItem.amount|currency}}</span>
 											</a-button>
+											<!-- Transactions -->
 										</div>
 								</uib-tab>
 								<uib-tab index="1" heading="Paysched" classes="btn-lg">
@@ -71,7 +75,11 @@
 								</div>
 							</div>
 							<div style="height:320px">
+
+								<!-- Transaction Details -->
 								<a-table headers="CAC.Headers" props="CAC.Props" data="CAC.TransacDetails"></a-table>
+								<!-- Transaction Details -->
+
 								<div class="btn-group btn-group-sm pull-right" ng-if="0" style="margin-top:-21px;">
 									<a-button ng-if="true">
 										<a-glyph icon="chevron-left"></a-glyph>
@@ -81,7 +89,7 @@
 									</a-button>
 								</div>
 							</div>
-							<m-formgroup ng-model="CAC.TotalAmount" label="Total Amount" type="'number'" ng-disabled="true"></m-formgroup>
+							<m-formgroup ng-model="CAC.TotalDispAmount" label="Total Amount" align="right" ng-disabled="true"></m-formgroup>
 							<a-button class="btn-block" size="lg" type="success">
 								Pay
 							</a-button>

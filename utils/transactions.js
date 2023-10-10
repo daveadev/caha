@@ -17,6 +17,7 @@ define(['app','util','api'],function(app,util) {
 	TRNX.link = function(_api){
 		api =_api;
 	}
+	TRNX.util = util;
 	TRNX.getList = function(){
 		return list;
 	}
@@ -34,6 +35,7 @@ define(['app','util','api'],function(app,util) {
 				list[index].amount = amount;
 			break;
 		}
+		list[index].disp_amount = util.formatMoney(list[index].amount);
 	}
 	function updateDisplay(id,status){
 		var index = listIndex[id];
