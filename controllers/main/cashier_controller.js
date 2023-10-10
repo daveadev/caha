@@ -62,7 +62,7 @@ define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 		});
 
 		$scope.openPaymentModal = function(){
-			$selfScope.$broadcast('OpenPayModal',{total_amount:$scope.TotalAmount});
+			$selfScope.$broadcast('OpenPayModal',{total_amount:$scope.TotalAmount,details:$scope.TransacDetails});
 		}
 	}]);
 
@@ -140,12 +140,15 @@ define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 			$scope.PayObj.transac_date = new Date();
 			$scope.PayObj.pay_due = args.total_amount
 			$scope.PayObj.pay_amount = args.total_amount;
+			$scope.PayObj.details =  args.details;
 			loadBooklet();
 			
 		});
 		$selfScope.$on('StudentSelected',function(evt,args){
 			$scope.PayObj.student = args.student.name;
 			$scope.PayObj.section = args.student.section;
+			$scope.PayObj.account_id = args.student.id;
+			$scope.PayObj.esp = args.sy;
 			
 		});
 		$selfScope.$watch('CMC.PayObj.pay_amount',function(amt){
