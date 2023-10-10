@@ -1,7 +1,7 @@
 "use strict";
 define(['app','transact','api','atomic/bomb'],function(app,TRNX){
 	const TRNX_LIST = TRNX.__LIST;
-	const NEXT_SY = true;
+	const NEXT_SY = false;
 	app.register.controller('CashierController',['$scope','$rootScope','$filter','api','Atomic',
 	function($scope,$rootScope,$filter,api,atomic){
 		const $selfScope =  $scope;
