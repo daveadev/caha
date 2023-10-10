@@ -8,6 +8,7 @@ define(['app','transact','api','atomic/bomb'],function(app,TRNX){
 		$scope = this;
 
 		$scope.init = function(){
+			$scope.ActiveSY = $rootScope._APP.ACTIVE_SY;
 			atomic.ready(function(){
 				var sys = atomic.SchoolYears;
 				var sy = atomic.ActiveSY;
