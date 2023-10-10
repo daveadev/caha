@@ -152,8 +152,8 @@ div[align="right"] input{
 						<m-formgroup ng-model="CMC.PayObj.pay_details" label="Check Details" ng-show="CMC.PayObj.pay_type=='CHCK'"></m-formgroup>
 						<m-formgroup ng-model="CMC.PayObj.pay_details" label="Card Details" ng-show="CMC.PayObj.pay_type=='CARD'"></m-formgroup>
 					</a-col>
-					<a-col size="4" align="right" ng-hide="true">
-						<m-formgroup ng-model="CMC.PayObj.pay_change" label="Change" type="'number'"  ng-disabled="true"></m-formgroup>
+					<a-col size="4" align="right">
+						<m-formgroup ng-model="CMC.PayObj.pay_change" label="Change" type="'number'"  ng-disabled="true"  ng-show="CMC.PayObj.pay_amount >CMC.PayObj.pay_due"></m-formgroup>
 					</a-col>
 				</a-row>
 			</a-modal-body>

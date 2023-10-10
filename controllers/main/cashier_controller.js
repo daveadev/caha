@@ -1,5 +1,6 @@
 "use strict";
-define(['app','transact','api','atomic/bomb'],function(app,TRNX){
+define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
+	const DATE_FORMAT = "yyyy-MM-dd";
 	const TRNX_LIST = TRNX.__LIST;
 	const NEXT_SY = false;
 	app.register.controller('CashierController',['$scope','$rootScope','$filter','api','aModal','Atomic',
@@ -112,30 +113,34 @@ define(['app','transact','api','atomic/bomb'],function(app,TRNX){
 	}]);
 	
 
-	app.register.controller('CashierModalController',['$scope','$rootScope','api','aModal',
-	function($scope,$rootScope,api,aModal){
+	app.register.controller('CashierModalController',['$scope','$rootScope','$filter','api','aModal',
+	function($scope,$rootScope,$filter,api,aModal){
 		const $selfScope =  $scope;
 		$scope = this;
 		$scope.init = function(){
+			BKLT.link(api);
 			$scope.PayObj = {};
 			$scope.DocTypes = [
 					//{id:"OR", name:"Official Receipt"},
-					{id:"AR", name:"Acknowledgment Receipt"},
+					{id:"AR", name:"AR"},
 				];
 			$scope.PayTypes = [
 					{id:"CASH",name:"Cash"},
 					//{id:"CHCK",name:"Check"},
 					//{id:"CARD",name:"Card"}
 				];
+
+			
 		}
 		$selfScope.$on('OpenPayModal',function(evt,args){
 			aModal.open('CashierPaymentModal');
-			$scope.PayObj.series_no = 'AR1230';
+			$scope.PayObj.series_no = 'AR 1230';
 			$scope.PayObj.doc_type = 'AR';
 			$scope.PayObj.pay_type = 'CASH';
 			$scope.PayObj.transac_date = new Date();
 			$scope.PayObj.pay_due = args.total_amount
 			$scope.PayObj.pay_amount = args.total_amount;
+			loadBooklet();
 			
 		});
 		$selfScope.$on('StudentSelected',function(evt,args){
@@ -143,10 +148,34 @@ define(['app','transact','api','atomic/bomb'],function(app,TRNX){
 			$scope.PayObj.section = args.student.section;
 			
 		});
+		$selfScope.$watch('CMC.PayObj.pay_amount',function(amt){
+			let pay_due = $scope.PayObj.pay_due;
+			let pay_change = amt - pay_due;
+			$scope.PayObj.pay_change = pay_change; 
+		});
 		$scope.closeModal = function(){
 			aModal.close('CashierPaymentModal');
 		}
-		$scope.confirmPayment = function(){}
+		$scope.confirmPayment = function(){
+			let payment = angular.copy($scope.PayObj);
+				payment.transac_date =  $filter('date')(new Date(payment.transac_date),DATE_FORMAT);;
+			let success = function(){};
+			let error = function(){};
+			api.POST('new_payments',payment,success,error);
+		}
+
+		function loadBooklet(){
+			let doc_type = $scope.PayObj.doc_type;
+			BKLT.requestBooklets(doc_type).then(setDefaults);
+			
+		}
+		function setDefaults(){
+			$scope.Booklets = BKLT.getBooklets();
+			let bklt_id = $scope.Booklets[0].id;
+			let active_BL = BKLT.setActiveBL(bklt_id);
+			$scope.PayObj.booklet_id = bklt_id;
+			$scope.PayObj.series_no = active_BL.series_no;
+		}
 	
 		
 	}]);
