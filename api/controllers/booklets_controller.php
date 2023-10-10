@@ -5,6 +5,12 @@ class BookletsController extends AppController {
 
 	function index() {
 		$this->Booklet->recursive = 0;
+		$uid = $this->Auth->user()['User']['id'];
+		$cashier = $this->Booklet->Cashier->findByUserId($uid);
+		// Add current user filter if cashier is available
+		if($cashier):
+			$this->paginate['Booklet']['conditions'][] = array('cashier_id'=>$cashier['Cashier']['id']);
+		endif;
 		$this->set('booklets', $this->paginate());
 	}
 
