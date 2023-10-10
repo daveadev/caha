@@ -11,12 +11,14 @@ class AccountsController extends AppController {
 		if($this->isAPIRequest()){
 			$yrLevels = $this->Account->Student->YearLevel->find('list',array('fields'=>array('id','description')));
 			$sections = $this->Account->Student->YearLevel->Section->find('list',array('fields'=>array('id','description')));
+			
 
 			foreach($accounts as $i =>$acc){
 				$stud =  $acc['Student'];
 				$inqu =  $acc['Inquiry'];
 				//pr($acc); exit();
 				if($acc['Account']['account_type']=='student'){
+					$paySched =  $acc['AccountSchedule'];
 					$yrlvId =  $acc['Student']['year_level_id'];
 					$sectId =  $acc['Student']['section_id'];
 					$yearLevel = "";
@@ -39,6 +41,7 @@ class AccountsController extends AppController {
 					$acc['Account']['section'] =$section;
 					$acc['Account']['program_id'] =$acc['Student']['program_id'];
 					$acc['Account']['section_id'] =$sectId;
+					$acc['Account']['Paysched'] = $paySched;
 				}else if($inqu){
 					$yrlvId =  $acc['Inquiry']['year_level_id'];
 					$yearLevel = "";
