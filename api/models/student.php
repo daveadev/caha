@@ -106,7 +106,7 @@ class Student extends AppModel {
 
 		// Setup STU and contain relevant fields
 		$STU =$this; 
-		$STU->contain('Account.subsidy_status','Program','YearLevel');
+		$STU->contain('Account.subsidy_status','Program','YearLevel','Section');
 		// Find all students based on filter
 		$S = $STU->find('all',array('conditions'=>$cond,'fields'=>$flds));
 
@@ -123,6 +123,7 @@ class Student extends AppModel {
 				$stu['student_type']=null;$SO['Account']['subsidy_status'];
 			endif;
 			$stu['department_id']=$SO['YearLevel']['department_id'];
+			$stu['section']=$SO['YearLevel']['name'].' '.$SO['Section']['name'];
 			$stu['enroll_status']='OLD';
 			array_push($RES, $stu);
 		endforeach;
