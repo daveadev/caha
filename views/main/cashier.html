@@ -69,7 +69,7 @@ div[align="right"] input{
 										</div>
 								</uib-tab>
 								<uib-tab index="1" heading="Paysched" classes="btn-lg">
-										<a-table headers="CAC.PSHeaders" props="CAC.PSProps" data="CAC.Paysched"></a-table>
+										<a-table headers="CAC.PSHeaders" props="CAC.PSProps" data="CAC.Paysched" is-preload="false"></a-table>
 								</uib-tab>
 							</uib-tabset>
 						</a-col>
@@ -91,7 +91,7 @@ div[align="right"] input{
 							<div style="height:320px">
 
 								<!-- Transaction Details -->
-								<a-table headers="CAC.Headers" props="CAC.Props" data="CAC.TransacDetails"></a-table>
+								<a-table headers="CAC.Headers" props="CAC.Props" data="CAC.TransacDetails" is-preload="false"></a-table>
 								<!-- Transaction Details -->
 
 								<div class="btn-group btn-group-sm pull-right" ng-if="0" style="margin-top:-21px;">
