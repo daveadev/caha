@@ -2,8 +2,8 @@
 define(['app','transact','api','atomic/bomb'],function(app,TRNX){
 	const TRNX_LIST = TRNX.__LIST;
 	const NEXT_SY = false;
-	app.register.controller('CashierController',['$scope','$rootScope','$filter','api','Atomic',
-	function($scope,$rootScope,$filter,api,atomic){
+	app.register.controller('CashierController',['$scope','$rootScope','$filter','api','aModal','Atomic',
+	function($scope,$rootScope,$filter,api,aModal,atomic){
 		const $selfScope =  $scope;
 		$scope = this;
 
@@ -30,7 +30,7 @@ define(['app','transact','api','atomic/bomb'],function(app,TRNX){
 			$scope.PSHeaders = ['Due Date', 'Amount','Status'];
 			$scope.PSProps = ['disp_date','disp_amount','status'];
 			$scope.Paysched = [];
-			$scope.StudFields = ['id','full_name','enroll_status','student_type','department_id','year_level_id'];
+			$scope.StudFields = ['id','full_name','enroll_status','student_type','department_id','year_level_id','section'];
 			$scope.TransacDetails=[];
 			$scope.TotalAmount = 5000;
 			$scope.SeriesNo = 'OR 12345';
@@ -58,6 +58,10 @@ define(['app','transact','api','atomic/bomb'],function(app,TRNX){
 			$scope.TotalDispAmount = TRNX.util.formatMoney(totalAmt);
 
 		});
+
+		$scope.openPaymentModal = function(){
+			$selfScope.$broadcast('OpenPayModal',{total_amount:$scope.TotalAmount});
+		}
 	}]);
 
 	app.register.controller('CashierTransactionsController',['$scope','$rootScope','$filter','api','Atomic',
@@ -104,7 +108,47 @@ define(['app','transact','api','atomic/bomb'],function(app,TRNX){
 			
 
 		});
+	}]);
+	
+
+	app.register.controller('CashierModalController',['$scope','$rootScope','api','aModal',
+	function($scope,$rootScope,api,aModal){
+		const $selfScope =  $scope;
+		$scope = this;
+		$scope.init = function(){
+			$scope.PayObj = {};
+			$scope.DocTypes = [
+					//{id:"OR", name:"Official Receipt"},
+					{id:"AR", name:"Acknowledgment Receipt"},
+				];
+			$scope.PayTypes = [
+					{id:"CASH",name:"Cash"},
+					//{id:"CHCK",name:"Check"},
+					//{id:"CARD",name:"Card"}
+				];
+		}
+		$selfScope.$on('OpenPayModal',function(evt,args){
+			aModal.open('CashierPaymentModal');
+			$scope.PayObj.series_no = 'AR1230';
+			$scope.PayObj.doc_type = 'AR';
+			$scope.PayObj.pay_type = 'CASH';
+			$scope.PayObj.transac_date = new Date();
+			$scope.PayObj.pay_due = args.total_amount
+			$scope.PayObj.pay_amount = args.total_amount;
+			
+		});
+		$selfScope.$on('StudentSelected',function(evt,args){
+			$scope.PayObj.student = args.student.name;
+			$scope.PayObj.section = args.student.section;
+			
+		});
+		$scope.closeModal = function(){
+			aModal.close('CashierPaymentModal');
+		}
+		$scope.confirmPayment = function(){}
+	
 		
 	}]);
+
 
 });
