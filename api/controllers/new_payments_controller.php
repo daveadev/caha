@@ -27,8 +27,12 @@ class NewPaymentsController extends AppController {
 		$this->Session->setFlash(__('The payment has been saved', true));
 
 		// Dispatch an event to update Payment Plan
-		$this->requestAction('/payment_plans/new_payment',array('pass'=>$this->data));
-    
+		$payplan_action = $this->requestAction('/payment_plans/new_payment',array('pass'=>$this->data));
+		$this->data['NewPayment']['payplan']=$payplan_action;
+
+		// Dispatch an event to update Booklet
+		$booklet_action = $this->requestAction('/booklets/new_payment',array('pass'=>$this->data));
+    	$this->data['NewPayment']['booklet']=$booklet_action;
 	}
 
 }
