@@ -5,6 +5,8 @@ define(['app','util','api'],function(app,util) {
 				{id:'SBQPY', description:'Subsequent Payment',amount:0},
 				{id:'OLDAC', description:'Old Account',amount:0},
 				{id:'EXTPY', description:'Ext. Payment Plan',amount:0}
+				//{id:'UNIFM', description:'Uniform',amount:0},
+				//{id:'FORMS', description:'Forms',amount:0}
 			];
 	var api,list,listIndex,paysched;
 	(function(){
@@ -120,10 +122,10 @@ define(['app','util','api'],function(app,util) {
 		updateAmount('SBQPY','set',0);
 		updateAmount('OLDAC','set',0);
 		updateAmount('EXTPY','set',0);
+		//updateAmount('UNIFM','set',100);
 		updateDisplay('INIPY','hide');
 		updateDisplay('SBQPY','hide');
 		updateDisplay('OLDAC','hide');
-		updateDisplay('EXTPY','show');
 	}
 	function updateDisplays(){
 		list.map(function(lItem){
