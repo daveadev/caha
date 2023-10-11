@@ -87,7 +87,7 @@ class PaymentPlansController extends AppController {
 	        $esp = $transaction['esp'];  
 	        $ref_no = $transaction['series_no']; 
 	        $account_id = $transaction['account_id']; 
-	        
+
 	        // Iterate through transaction details
 	        foreach ($transaction['details'] as $dtl) {
 	            // Check if the detail is for an old account ('OLDAC')
@@ -96,7 +96,8 @@ class PaymentPlansController extends AppController {
 	                $amount = $dtl['amount'];
 
 	                // Forward the payment using the PaymentPlan model's forwardPayment function
-	                $this->PaymentPlan->forwardPayment($account_id, $esp, $ref_no, $amount);
+	              $plan=  $this->PaymentPlan->forwardPayment($account_id, $esp, $ref_no, $amount);
+	              return $plan;
 	            }
 	        }
 	    }

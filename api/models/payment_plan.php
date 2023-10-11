@@ -55,6 +55,7 @@ class PaymentPlan extends AppModel {
 	    // Update the account and payment plan with the payment amount
 	    $this->updateAccount($account, $plan, $amount);
 
+	    $planInfo = array();
 	    // Save balances in payment_plan and account if the account is valid
 	    if ($account['is_valid']) {
 	        $this->save($plan);
@@ -64,7 +65,12 @@ class PaymentPlan extends AppModel {
 	        $sched = $PPObj['PayPlanSchedule'];
 	        $this->distributePayments($sched, $amount);
 	        $this->PayPlanSchedule->saveAll($sched);
+	        $planInfo['amount_paid'] = $amount; 
+	        $planInfo['total_payments'] = $plan['total_payments']; 
+	        $planInfo['total_balance'] = $plan['total_balance']; 
 	    }
+
+	    return $planInfo;
 	}
 
 	/**
@@ -82,7 +88,7 @@ class PaymentPlan extends AppModel {
 	    // If the account is valid, update the total payments and balance
 	    if ($account['is_valid']) {
 	        $plan['total_payments'] += $amount;
-	        $plan['total_balance'] = $plan['total_balance'] - $plan['total_payments'];
+	        $plan['total_balance'] = $plan['total_due'] - $plan['total_payments'];
 	        $account['old_balance'] = $plan['total_balance'];
 	    }
 	}
