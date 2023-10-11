@@ -193,4 +193,8 @@ div[align="right"] input[disabled]{
 			</a-modal-footer>
 		</a-modal>
 	</div>
+
+	<form action="api/receipts/cash_ar" method="POST" target="_blank" id="PrintPayment">
+		<input type="hidden" name="details" value="{{CAC.PrintPaymentDetails}}"/>
+	</form>
 </div>

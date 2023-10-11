@@ -3,8 +3,8 @@ define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 	const DATE_FORMAT = "yyyy-MM-dd";
 	const TRNX_LIST = TRNX.__LIST;
 	const NEXT_SY = false;
-	app.register.controller('CashierController',['$scope','$rootScope','$filter','api','aModal','Atomic',
-	function($scope,$rootScope,$filter,api,aModal,atomic){
+	app.register.controller('CashierController',['$scope','$rootScope','$filter','$timeout','api','aModal','Atomic',
+	function($scope,$rootScope,$filter,$timeout,api,aModal,atomic){
 		const $selfScope =  $scope;
 		$scope = this;
 
@@ -114,10 +114,17 @@ define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 			$selfScope.$broadcast('StudentSelected',{student:stud,sy:sy});
 			$scope.ActiveTabIndex = 1;
 			aModal.close('CashierPaymentModal');
+			$selfScope.$broadcast('PrintPaymentReceipt',{details:args.details});
 		});
 		$selfScope.$on('PaymentError',function(evt,args){
 
 			alert(args.message);
+		});
+		$selfScope.$on('PrintPaymentReceipt',function(evt,args){
+			$scope.PrintPaymentDetails = args.details;
+			$timeout(function(){
+				document.getElementById('PrintPayment').submit();			
+			},200);
 		});
 	}]);
 
