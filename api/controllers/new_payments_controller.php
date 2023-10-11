@@ -6,18 +6,29 @@ class NewPaymentsController extends AppController {
 
 	function add(){
 		
+		// Get current cashier 
 		$cashier = $this->Auth->user()['User']['username'];
+		// Prepare paymentObject
 		$paymentObj = $this->data['NewPayment'];
 		$paymentObj['ref_no'] = $paymentObj['series_no'];
 		$paymentObj['amount'] = $paymentObj['pay_due'];
 		$paymentObj['cashier'] = $cashier;
+		// Prepare Transaction in NewPayment
 		$TRNX = $this->Transaction;
 		$trnxObj = $this->NewPayment->prepareTrnx($paymentObj,$TRNX);
-		if($trnxObj['is_valid']):
-			$TRNX->saveAll($trnxObj);
-		else:
-			$this->cakeError('duplicateRefNo',array('ref_no'=>$trnxObj['ref_no']));
-		endif;
+
+		// Handle Error before saving
+		if(!$trnxObj['is_valid'])
+			return $this->cakeError('duplicateRefNo',array('ref_no'=>$trnxObj['ref_no']));
+		
+		// Proceed on saving Transaction and respond to api
+		$TRNX->saveAll($trnxObj);
+		$this->NewPayment->id = $TRNX->id;
+		$this->Session->setFlash(__('The payment has been saved', true));
+
+		// Dispatch an event to update Payment Plan
+		$this->requestAction('/payment_plans/new_payment',array('pass'=>$this->data));
+    
 	}
 
 }
