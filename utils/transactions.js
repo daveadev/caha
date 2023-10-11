@@ -69,15 +69,15 @@ define(['app','util','api'],function(app,util) {
 				sched.transaction_type_id ='OLDAC';
 				sched.amount = sched.due_amount;
 			}
-			if(sched.status!=='PAID'){
-				_paysched.push(sched);	
-			}
+			
+			_paysched.push(sched);	
+			
 			
 		});
 		paysched = angular.copy( _paysched);
 	}
 	function computeAmounts(){
-		paysched.map(function(sched){
+		paysched.map(function(sched,index){
 			var ttid=  sched.transaction_type_id;
 			var due_date = new Date(sched.due_date);
 			var due_year = due_date.getFullYear();
@@ -88,7 +88,14 @@ define(['app','util','api'],function(app,util) {
 			var tod_month = today.getMonth()+1;
 			
 			var isDue = due_year<tod_year || (due_year==tod_year && due_month<=tod_month);
-			if(!isDue) return;
+			var trnx = list[listIndex[ttid]];
+			
+			if(sched.status=='PAID') {
+				paysched[index].class='success';
+				return;
+			}
+			if(!isDue && trnx.amount>0) return;
+			paysched[index].class=isDue?'danger':'warning';
 				switch(ttid){
 					case 'INIPY':
 						updateAmount(ttid,'set',sched.due_amount);
