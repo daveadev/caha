@@ -3,12 +3,20 @@ class ReceiptsController extends AppController{
 	var $name = 'Receipts';
 	var $uses = array('MasterConfig','Student');
 	function view($id=null){
-		if($id=='payment_plan'):
-			$this->payment_plan();
-		else:
-			$this->adjust_memo();
-		endif;
+		
+		switch($id){
+			case 'payment_plan':
+				$this->payment_plan();
+			break;
+			case 'cash_ar':
+				$this->cash_ar();
+			break;
+			default:
+				$this->adjust_memo();
+			break;
+		}
 	}
+
 	protected function adjust_memo(){
 		if(isset($_POST['details'])):
 
@@ -81,5 +89,10 @@ class ReceiptsController extends AppController{
 		$this->set(compact('details'));
 		$this->render('payment_plan');
 		return;
+	}
+
+	protected function cash_ar(){
+		$this->render('cash_ar');
+		return;	
 	}
 }

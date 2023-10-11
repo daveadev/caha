@@ -2,8 +2,8 @@
 require('vendors/fpdf17/formsheet.php');
 class AcknowledgementReceipt extends Formsheet{
 	//20cm x 10.7cm
-	protected static $_width = 7.87402;
-	protected static $_height = 4.212598;
+	protected static $_width = 7.7;
+	protected static $_height = 4.1;
 	protected static $_unit = 'in';
 	protected static $_orient = 'L';	
 	protected static $curr_page = 1;
@@ -18,53 +18,47 @@ class AcknowledgementReceipt extends Formsheet{
 	function template(){
 		$this->showLines = !true;
 		$metrics = array(
-			'base_x'=> 1,
-			'base_y'=> 0.25,
-			'width'=> 5.87402,
-			'height'=> 3.712598,
-			'cols'=> 22,
+			'base_x'=> 0,
+			'base_y'=> 0,
+			'width'=> 7.7,
+			'height'=>4.1,
+			'cols'=> 28,
 			'rows'=> 17,	
 		);
 		$this->section($metrics);
-		//$this->DrawImage(0,0,7.87402,6.181102,__DIR__ ."/../images/arr.png");
-		$this->DrawImage(1,0,0.8,0.8,__DIR__ ."/../images/logo.png");
-		$y=2;
-		$this->GRID['font_size']=14;
-		$this->centerText(1,$y++,'Lake Shore Educational Institution, Inc.',22,'b');
-		$this->GRID['font_size']=10;
-		$this->centerText(1,$y++,utf8_decode ('Canlalay, Biñan, Laguna'),22,'b');
-		$y+=1;
+		$this->DrawImage(0,0,7.7,4.1,__DIR__ ."/../images/ar-clean.png");
+
+
+		$metrics = array(
+			'base_x'=> 1,
+			'base_y'=> 0.25,
+			'width'=> 7.7,
+			'height'=>4.4,
+			'cols'=> 28,
+			'rows'=> 17,	
+		);
+		$this->section($metrics);
+		$y=5;
 		$this->GRID['font_size']=11;
-		$this->leftText(0,$y,'CASH ACKNOWLEDGEMENT RECEIPT','','b');
-		
-		$this->GRID['font_size']=10;
+		$this->leftText(18,$y,'03 OCT 2023','','');
 		$y+=1;
-		$this->drawLine($y+0.2,'h',array(16.5,5.5));
-		$this->leftText(15,$y,'Date','','');
-		$y+=1.5;
 	
-		$this->drawLine($y+0.2,'h',array(5.5,16.5));
-		$this->leftText(2,$y++,'Receive from','','');
-		
-		$this->drawLine($y+0.2,'h',array(4,18));
-		$this->leftText(0,$y++,'and address at','','');
-		
-		$this->drawLine($y+0.2,'h',array(0,22));
-		$this->leftText(0,$y++,'','','');
-		
-		$this->drawLine($y+0.2,'h',array(3,19));
-		$this->leftText(0,$y++,'the sum of','','');
-		
-		$this->drawLine($y+0.2,'h',array(0,22));
-		$this->leftText(0,$y++,'','','');
-		
-		$this->drawLine($y+0.2,'h',array(6,16));
-		$this->leftText(0,$y,'In partial/full payment for','','');
-	
+		$this->leftText(4.5,$y,'Juan Dela Cruz','','');
 		$y+=2;
-		$this->drawLine($y+0.2,'h',array(13,9));
-		$this->leftText(12,$y++,'By:','','');
-		$this->centerText(13,$y++,'Cashier / Authorized Representative',9,'');
+		
+		$this->leftText(4.5,$y,'G10 Justice','','');
+		$y+=1;
+
+		$y+=1;
+		$this->leftText(-2.5,$y,'Five Hundred Pesos',16,'');
+		
+		$this->leftText(18,$y,'500.00','','');
+		$y+=1;
+		$this->leftText(6,$y,'Modules and eBooks',16,'');
+		$y+=2;
+
+		$this->leftText(18,$y,'Cashier','','');
+		
 	}
 	
 	
