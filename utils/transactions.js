@@ -3,7 +3,8 @@ define(['app','util','api'],function(app,util) {
 	const INI_TRNX = [
 				{id:'INIPY', description:'Initial Payment',amount:0},
 				{id:'SBQPY', description:'Subsequent Payment',amount:0},
-				{id:'OLDAC', description:'Old Account',amount:0}
+				{id:'OLDAC', description:'Old Account',amount:0},
+				{id:'EXTPY', description:'Ext. Payment Plan',amount:0}
 			];
 	var api,list,listIndex,paysched;
 	(function(){
@@ -67,7 +68,7 @@ define(['app','util','api'],function(app,util) {
 			else
 				sched.disp_date = util.formatDate(new Date(sched.due_date));
 			if(is_old){
-				sched.transaction_type_id ='OLDAC';
+				sched.transaction_type_id ='EXTPY';
 				sched.amount = sched.due_amount;
 			}
 			
@@ -108,6 +109,9 @@ define(['app','util','api'],function(app,util) {
 					case 'OLDAC':
 						updateAmount('OLDAC','add',sched.due_amount);
 					break;
+					case 'EXTPY':
+						updateAmount('EXTPY','add',sched.due_amount);
+					break;
 				}
 		});
 	}
@@ -115,9 +119,11 @@ define(['app','util','api'],function(app,util) {
 		updateAmount('INIPY','set',0);
 		updateAmount('SBQPY','set',0);
 		updateAmount('OLDAC','set',0);
+		updateAmount('EXTPY','set',0);
 		updateDisplay('INIPY','hide');
 		updateDisplay('SBQPY','hide');
-		updateDisplay('OLDAC','show');
+		updateDisplay('OLDAC','hide');
+		updateDisplay('EXTPY','show');
 	}
 	function updateDisplays(){
 		list.map(function(lItem){

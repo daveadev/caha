@@ -90,8 +90,8 @@ class PaymentPlansController extends AppController {
 
 	        // Iterate through transaction details
 	        foreach ($transaction['details'] as $dtl) {
-	            // Check if the detail is for an old account ('OLDAC')
-	            if ($dtl['id'] == 'OLDAC') {
+	            // Check if the detail is for an extended payment plan ('EXTPY')
+	            if ($dtl['id'] == 'EXTPY') {
 	                // Extract the amount from the detail
 	                $amount = $dtl['amount'];
 

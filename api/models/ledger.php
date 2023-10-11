@@ -104,7 +104,7 @@ class Ledger extends AppModel {
 	    $ttId = $entry['transaction_type_id'];
 
 		$this->create();
-		if($ttId=='OLDAC')
+		if($ttId=='EXTPY')
 			$this->setSource('payplan_ledgers');
 		
 		$this->save($entry);
