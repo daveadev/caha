@@ -58,7 +58,8 @@ define(['app','util','api'],function(app,util) {
 	function formatPaysched(psched,is_old){
 		let _paysched=[];
 		psched.map(function(sched){
-			
+			if(sched.paid_amount>0)
+				sched.due_amount -= sched.paid_amount;
 			sched.disp_amount =  util.formatMoney(sched.due_amount);
 			
 			if(sched.bill_month=="UPONNROL")

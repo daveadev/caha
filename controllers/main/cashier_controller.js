@@ -30,7 +30,7 @@ define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 			$scope.Props = ['description','disp_amount'];
 			$scope.Inputs = [{field:'description',disabled:true},{field:'amount',type:'number'}];
 
-			$scope.PSHeaders = ['Due Date', 'Amount','Status'];
+			$scope.PSHeaders = ['Due Date', 'Due Amount','Status'];
 			$scope.PSProps = ['disp_date','disp_amount','status'];
 			$scope.Paysched = [];
 			$scope.StudFields = ['id','full_name','enroll_status','student_type','department_id','year_level_id','section'];
