@@ -25,13 +25,28 @@
 .btn-action:hover div.action-label{
 	white-space: normal;
 }
-.btn-active,.btn-active:hover,.btn-active:focus{
-	border:2px solid #337ab7;
+.btn-active,.btn-active:hover,.btn-active:focus,
+.btn-active[disabled],.btn-active[disabled]:hover,.btn-active[disabled]:focus{
+	border:1px solid #337ab7;
 	color:#337ab7;
+	background: white;
+}
+.btn-action.btn-active,
+.btn-action.btn-active:hover,
+.btn-action.btn-active:focus{
+	background: #d9edf7;
+	border:2px solid #337ab7;
+}
+.btn-active[disabled],
+.btn-active[disabled]:hover,
+.btn-active[disabled]:focus{
 	background: white;
 }
 div[align="right"] input{
 	text-align: right;
+}
+div[align="right"] input[disabled]{
+	background: white;
 }
 </style>
 <div ng-controller="CashierController as CAC" ng-init="CAC.init()">
@@ -52,7 +67,7 @@ div[align="right"] input{
 
 										<div ng-controller="CashierTransactionsController as CTC" ng-init="CTC.init()">
 											<!--- Transactions - allowed & defaults -->
-											<a-button size="lg" class="btn-action" ng-class="{'btn-active':CTC.ActiveTrnx[TItem.id]}" ng-repeat="TItem in CTC.TransacList" ng-hide="TItem.hide" ng-disabled="TItem.disabled || !TItem.amount" ng-click="CTC.addTrnx(TItem.id)">
+											<a-button size="lg" class="btn-action" ng-class="{'btn-active':CTC.ActiveTrnx[TItem.id]}" ng-repeat="TItem in CTC.TransacList" ng-hide="TItem.hide" ng-disabled="(TItem.disabled || !TItem.amount) || CAC.TrnxDtlMode=='EDIT'" ng-click="CTC.addTrnx(TItem.id)">
 												<div class="action-label">{{TItem.description}}</div>
 												<span class="peso amount">{{TItem.amount|currency}}</span>
 											</a-button>
@@ -77,12 +92,21 @@ div[align="right"] input{
 							<div >
 								<div style="margin-bottom:10px;">
 									<h5 class="pull-left">Transaction Details</h5>
-									<div class="pull-right">
-										<a-button>
+									<div class="pull-right" ng-show="CAC.TrnxDtlMode!='EDIT'">
+										<a-button ng-click="CAC.clearTrnxDetails()" ng-disabled="!CAC.allowClear">
 												Clear
 										</a-button>
-										<a-button>
+										<a-button type="active" ng-click="CAC.editTrnxDetails()" ng-disabled="!CAC.allowEdit">
 												&nbsp;Edit&nbsp; 
+										</a-button>
+									</div>
+
+									<div class="pull-right"ng-show="CAC.TrnxDtlMode=='EDIT'">
+										<a-button ng-click="CAC.closeTrnxDetails()">
+												Close
+										</a-button>
+										<a-button type="primary" ng-click="CAC.updateTrnxDetails()" ng-disabled="!CAC.allowUpdate">
+												Update
 										</a-button>
 									</div>	
 									<div class="clearfix"></div>
@@ -91,7 +115,13 @@ div[align="right"] input{
 							<div style="height:320px">
 
 								<!-- Transaction Details -->
-								<a-table headers="CAC.Headers" props="CAC.Props" data="CAC.TransacDetails" is-preload="false"></a-table>
+								<div ng-show="CAC.TrnxDtlMode!=='EDIT'">
+									<a-table headers="CAC.Headers" props="CAC.Props" data="CAC.TransacDetails" is-preload="false"></a-table>
+								</div>
+								<div ng-show="CAC.TrnxDtlMode==='EDIT'">
+									
+									<m-table-edit headers="CAC.Headers" props="CAC.Props" data="CAC.EditTransacDetails" inputs="CAC.Inputs" on-edit-save="CAC.updateDetails"  allow-add="false" allow-del="false" ></m-table-edit>
+								</div>
 								<!-- Transaction Details -->
 
 								<div class="btn-group btn-group-sm pull-right" ng-if="0" style="margin-top:-21px;">
