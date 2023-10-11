@@ -106,6 +106,19 @@ define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 		$scope.openPaymentModal = function(){
 			$selfScope.$broadcast('OpenPayModal',{total_amount:$scope.TotalAmount,details:$scope.TransacDetails});
 		}
+
+		$selfScope.$on('PaymentSucess',function(evt,args){
+			let stud = $scope.ActiveStudent;
+			let sy = $scope.ActiveSY;
+			$selfScope.$broadcast('ResetTransactions');
+			$selfScope.$broadcast('StudentSelected',{student:stud,sy:sy});
+			$scope.ActiveTabIndex = 1;
+			aModal.close('CashierPaymentModal');
+		});
+		$selfScope.$on('PaymentError',function(evt,args){
+
+			alert(args.message);
+		});
 	}]);
 
 	app.register.controller('CashierTransactionsController',['$scope','$rootScope','$filter','api','Atomic',
@@ -229,8 +242,14 @@ define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 		$scope.confirmPayment = function(){
 			let payment = angular.copy($scope.PayObj);
 				payment.transac_date =  $filter('date')(new Date(payment.transac_date),DATE_FORMAT);;
-			let success = function(){};
-			let error = function(){};
+			let success = function(response){
+				let data = response.data;
+				$selfScope.$emit('PaymentSucess',{details:data});
+			};
+			let error = function(response){
+				$selfScope.$emit('PaymentError',{message:response.message});
+
+			};
 			api.POST('new_payments',payment,success,error);
 		}
 
