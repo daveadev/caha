@@ -92,4 +92,16 @@ class BookletsController extends AppController {
 		$this->Session->setFlash(__('Booklet was not deleted', true));
 		$this->redirect(array('action' => 'index'));
 	}
+
+	function new_payment($transaction) {
+		// Check if the transaction details are set
+		if (isset($transaction)) {
+			// Extract relevant information from the transaction
+			$esp = $transaction['esp'];  
+			$ref_no = $transaction['series_no']; 
+			$booklet_id = $transaction['booklet_id'];
+			$booklet = $this->Booklet->updateSeries($ref_no,$booklet_id);
+			return $booklet;
+		}
+	}
 }
