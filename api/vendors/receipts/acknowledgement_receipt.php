@@ -1,5 +1,6 @@
 <?php
 require('vendors/fpdf17/formsheet.php');
+require('vendors/utils/number_to_words.php');
 class AcknowledgementReceipt extends Formsheet{
 	//20cm x 10.7cm
 	protected static $_width = 7.7;
@@ -9,7 +10,8 @@ class AcknowledgementReceipt extends Formsheet{
 	protected static $curr_page = 1;
 	protected static $page_count;
 	
-	function AcknowledgementReceipt(){
+	function AcknowledgementReceipt($data=null){
+		$this->data=$data;
 		$this->showLines = true;
 		$this->FPDF(AcknowledgementReceipt::$_orient, AcknowledgementReceipt::$_unit,array(AcknowledgementReceipt::$_width,AcknowledgementReceipt::$_height));
 		$this->createSheet();
@@ -26,7 +28,7 @@ class AcknowledgementReceipt extends Formsheet{
 			'rows'=> 17,	
 		);
 		$this->section($metrics);
-		$this->DrawImage(0,0,7.7,4.1,__DIR__ ."/../images/ar-clean.png");
+		//$this->DrawImage(0,0,7.7,4.1,__DIR__ ."/../images/ar-clean.png");
 
 
 		$metrics = array(
@@ -40,24 +42,38 @@ class AcknowledgementReceipt extends Formsheet{
 		$this->section($metrics);
 		$y=5;
 		$this->GRID['font_size']=11;
-		$this->leftText(18,$y,'03 OCT 2023','','');
+		$date = $this->data['transac_date'];
+		$student = $this->data['student'];
+		$section = $this->data['section'];
+		$cashier = $this->data['cashier'];
+		$amount = (float)$this->data['pay_due'];
+		$details = $this->data['details'];
+
+		$amt_money = number_format($amount,2,'.',',');
+		$amt_words = NumberToWordsConverter::amountToWords($amount);
+		$pay_for = array();
+		foreach($details as $dtl):
+			$pay_for[] = $dtl['description'];
+		endforeach;
+		$pay_for = implode('/', $pay_for);
+		$this->leftText(18,$y,$date,'','');
 		$y+=1;
 	
-		$this->leftText(4.5,$y,'Juan Dela Cruz','','');
+		$this->leftText(4.5,$y,$student,'','');
 		$y+=2;
 		
-		$this->leftText(4.5,$y,'G10 Justice','','');
+		$this->leftText(4.5,$y,$section,'','');
 		$y+=1;
 
 		$y+=1;
-		$this->leftText(-2.5,$y,'Five Hundred Pesos',16,'');
-		
-		$this->leftText(18,$y,'500.00','','');
+		$this->leftText(-2.5,$y,$amt_words,16,'');
+
+		$this->leftText(18,$y,$amt_money,'','');
 		$y+=1;
-		$this->leftText(6,$y,'Modules and eBooks',16,'');
+		$this->leftText(6,$y,$pay_for,16,'');
 		$y+=2;
 
-		$this->leftText(18,$y,'Cashier','','');
+		$this->leftText(18,$y,$cashier,'','');
 		
 	}
 	

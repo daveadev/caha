@@ -3,18 +3,7 @@ class ReceiptsController extends AppController{
 	var $name = 'Receipts';
 	var $uses = array('MasterConfig','Student');
 	function view($id=null){
-		
-		switch($id){
-			case 'payment_plan':
-				$this->payment_plan();
-			break;
-			case 'cash_ar':
-				$this->cash_ar();
-			break;
-			default:
-				$this->adjust_memo();
-			break;
-		}
+		$this->adjust_memo();
 	}
 
 	protected function adjust_memo(){
@@ -91,7 +80,17 @@ class ReceiptsController extends AppController{
 		return;
 	}
 
-	protected function cash_ar(){
+	function cash_ar(){
+		$details = json_decode($_POST['details'],true);
+
+		$sid = $details['account_id'];
+		$this->Student->recursive=-1;
+		$stud = $this->Student->findById($sid);
+		$details['student']=$stud['Student']['full_name'];
+		$details['transac_date'] = date('d M Y',strtotime($details['transac_date']));
+		$user = $this->Auth->user()['User'];
+		$details['cashier']=$user['username'];
+		$this->set(compact('details'));
 		$this->render('cash_ar');
 		return;	
 	}
