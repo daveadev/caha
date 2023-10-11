@@ -214,5 +214,30 @@ class LedgersController extends AppController {
 		endif;
 	}
 	
+
+	function new_payment($transaction){
+		if(isset($transaction)):
+			$transac_time = date("h:i:s");
+			$entry = array(
+				'account_id'=>$transaction['account_id'],
+				'ref_no'=>$transaction['series_no'],
+				'esp'=>$transaction['esp'],
+				'transac_date'=>$transaction['transac_date'],
+				'transac_time'=>$transac_time,
+				'type'=>'-',
+			);
+			$entries = array();
+			foreach($transaction['details'] as $dtl):
+				if($dtl['id']=='OLDAC'):
+					
+					$entry['transaction_type_id']=$dtl['id'];
+					$entry['details']=$dtl['description'];
+					$entry['amount']=$dtl['amount'];
+					$entries[]=$this->Ledger->insertEntry($entry);
+				endif;
+			endforeach;
+			return $entries;
+		endif;
+	}
 	
 }

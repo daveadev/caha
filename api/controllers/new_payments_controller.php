@@ -33,6 +33,10 @@ class NewPaymentsController extends AppController {
 		// Dispatch an event to update Booklet
 		$booklet_action = $this->requestAction('/booklets/new_payment',array('pass'=>$this->data));
     	$this->data['NewPayment']['booklet']=$booklet_action;
+
+    	// Dispatch an event to update legder
+		$ledger_action = $this->requestAction('/ledgers/new_payment',array('pass'=>$this->data));
+    	$this->data['NewPayment']['ledger']=$ledger_action;
 	}
 
 }

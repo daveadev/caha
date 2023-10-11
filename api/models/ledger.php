@@ -98,4 +98,24 @@ class Ledger extends AppModel {
         // Delete ledger entries based on the conditions
         $this->deleteAll($conditions);
 	}
+
+	function insertEntry($entry){
+
+	    $ttId = $entry['transaction_type_id'];
+
+		$this->create();
+		if($ttId=='OLDAC')
+			$this->setSource('payplan_ledgers');
+		
+		$this->save($entry);
+		$entryInfo = array(
+			'id'=>$this->id,
+			'ref_no'=>$entry['ref_no'],
+			'transaction'=>$ttId.' '.$entry['amount']
+		);
+		 
+
+		return $entryInfo;
+
+	}
 }
