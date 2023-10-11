@@ -34,15 +34,25 @@ define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 			$scope.Paysched = [];
 			$scope.StudFields = ['id','full_name','enroll_status','student_type','department_id','year_level_id','section'];
 			$scope.TransacDetails=[];
-			$scope.TotalAmount = 5000;
-			$scope.SeriesNo = 'OR 12345';
+			$scope.TotalAmount = 0;
+			$scope.SeriesNo = '';
 			$scope.TransacDate = new Date();
 		}
 		
-		$selfScope.$watchGroup(['CAC.ActiveStudent','CAC.ActiveSY'],function(entity){
+		$selfScope.$watchGroup(['CAC.ActiveStudent','CAC.ActiveSY','CAC.TotalAmount'],function(entity){
 			var stud = entity[0];
 			var sy = entity[1];
+			var amount = entity[2];
 			if(!stud||!sy) return;
+			$scope.allowPay = stud.id && sy && amount>0;
+			
+			if(!stud.id){
+				$selfScope.$broadcast('UpdatePaysched',{paysched:[]});
+				$selfScope.$broadcast('UpdateTransacDetails',{details:[]});
+				$selfScope.$broadcast('ResetTransactions');
+				
+			}
+			
 			$selfScope.$broadcast('StudentSelected',{student:stud,sy:sy});
 		});
 
@@ -58,7 +68,6 @@ define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 			});
 			$scope.TotalAmount = totalAmt;
 			$scope.TotalDispAmount = TRNX.util.formatMoney(totalAmt);
-
 		});
 
 		$scope.openPaymentModal = function(){
@@ -74,11 +83,25 @@ define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 			TRNX.runDefault();
 			$scope.TransacList = TRNX.getList();
 			TRNX.link(api);
+			$scope.ActiveTrnx = {};
 		};
-		$scope.addTrnx = function(item){
-			item.isActive = !item.isActive; 
+
+		$scope.addTrnx = function(id){
+			$scope.ActiveTrnx[id]=!$scope.ActiveTrnx[id];
+			updateTrnxUI();
 			let activeTrnx = $filter('filter')($scope.TransacList,{isActive:true});
 			$selfScope.$emit('UpdateTransacDetails',{details:activeTrnx});
+		}
+		$selfScope.$on('ResetTransactions',function(evt,args){
+			$scope.ActiveTrnx={};
+			$scope.TransacList=TRNX.getList();
+			updateTrnxUI();
+		});
+
+		function updateTrnxUI(){
+			$scope.TransacList.map(function(item,index){
+				$scope.TransacList[index].isActive = !!$scope.ActiveTrnx[item.id];
+			});
 		}
 		$selfScope.$on('StudentSelected',function(evt,args){
 			var STU =  args.student;
@@ -97,7 +120,7 @@ define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 				var account =  response.data.data[0];
 				
 
-				$scope.TransacList = TRNX.getList();
+				$scope.TransacList = angular.copy(TRNX.getList());
 				var sched =  TRNX.getSched();
 				$selfScope.$emit('UpdatePaysched',{paysched:sched});
 				
@@ -107,8 +130,6 @@ define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 			
 			TRNX.getOldAccount(sid,sy).then(updateTrnx);
 				
-			
-
 		});
 	}]);
 	

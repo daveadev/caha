@@ -52,7 +52,7 @@ div[align="right"] input{
 
 										<div ng-controller="CashierTransactionsController as CTC" ng-init="CTC.init()">
 											<!--- Transactions - allowed & defaults -->
-											<a-button size="lg" class="btn-action" ng-class="{'btn-active':TItem.isActive}" ng-repeat="TItem in CTC.TransacList" ng-hide="TItem.hide" ng-disabled="TItem.disabled || !TItem.amount" ng-click="CTC.addTrnx(TItem)">
+											<a-button size="lg" class="btn-action" ng-class="{'btn-active':CTC.ActiveTrnx[TItem.id]}" ng-repeat="TItem in CTC.TransacList" ng-hide="TItem.hide" ng-disabled="TItem.disabled || !TItem.amount" ng-click="CTC.addTrnx(TItem.id)">
 												<div class="action-label">{{TItem.description}}</div>
 												<span class="peso amount">{{TItem.amount|currency}}</span>
 											</a-button>
@@ -103,8 +103,8 @@ div[align="right"] input{
 									</a-button>
 								</div>
 							</div>
-							<m-formgroup ng-model="CAC.TotalDispAmount" label="Total Amount" align="right" ng-disabled="true"></m-formgroup>
-							<a-button class="btn-block" size="lg" type="success" ng-click="CAC.openPaymentModal()">
+							<m-formgroup ng-model="CAC.TotalDispAmount" label="Total Amount" align="right" ng-disabled="true" size="'input-lg'"></m-formgroup>
+							<a-button class="btn-block" size="lg" type="success" ng-click="CAC.openPaymentModal()" ng-disabled="!CAC.allowPay">
 								Pay
 							</a-button>
 
