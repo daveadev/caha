@@ -28,6 +28,7 @@ define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 			});
 			$scope.Headers = ['Description',{class:'col-md-4',label:'Amount'}];
 			$scope.Props = ['description','disp_amount'];
+			$scope.Inputs = [{field:'description',disabled:true},{field:'amount',type:'number'}];
 
 			$scope.PSHeaders = ['Due Date', 'Amount','Status'];
 			$scope.PSProps = ['disp_date','disp_amount','status'];
@@ -38,22 +39,51 @@ define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 			$scope.SeriesNo = '';
 			$scope.TransacDate = new Date();
 		}
-		
-		$selfScope.$watchGroup(['CAC.ActiveStudent','CAC.ActiveSY','CAC.TotalAmount'],function(entity){
+		$scope.editTrnxDetails = function(){
+			$scope.TrnxDtlMode = 'EDIT';
+			$scope.allowUpdate = true;
+			$scope.allowPay = false;
+			$scope.EditTransacDetails = angular.copy($scope.TransacDetails);
+		}
+		$scope.clearTrnxDetails = function(){
+			$scope.TrnxDtlMode = 'RESET';
+			$selfScope.$broadcast('ResetTransactions');
+		}
+		$scope.closeTrnxDetails = function(){
+			$scope.TrnxDtlMode = 'VIEW';
+			$scope.allowUpdate = false; 
+		}
+		$scope.updateTrnxDetails = function(){
+			$scope.TrnxDtlMode = 'VIEW';
+			$scope.allowPay = true;
+			let trnxDetails = $scope.EditTransacDetails;
+			$selfScope.$emit('UpdateTransacDetails',{details:trnxDetails,format:true});
+			$selfScope.$broadcast('UpdateTransacList',{details:trnxDetails});
+		}
+		$scope.updateDetails = function(details){
+			let hasZero = false;
+			details.map(function(dtl){
+				if(dtl.amount==0)
+					hasZero=true;
+			});
+			if(hasZero) return;
+			$scope.EditTransacDetails = details;
+		}
+		$selfScope.$watchGroup(['CAC.ActiveStudent','CAC.ActiveSY'],function(entity){
 			var stud = entity[0];
 			var sy = entity[1];
-			var amount = entity[2];
 			if(!stud||!sy) return;
-			$scope.allowPay = stud.id && sy && amount>0;
-			
 			if(!stud.id){
 				$selfScope.$broadcast('UpdatePaysched',{paysched:[]});
-				$selfScope.$broadcast('UpdateTransacDetails',{details:[]});
 				$selfScope.$broadcast('ResetTransactions');
 				
 			}
-			
 			$selfScope.$broadcast('StudentSelected',{student:stud,sy:sy});
+		});
+		$selfScope.$watch('CAC.TotalAmount',function(amount){
+			$scope.allowPay = $scope.ActiveStudent.id && $scope.ActiveSY && amount>0;
+			$scope.allowClear = $scope.allowPay && $scope.TrnxDtlMode!=='EDIT';
+			$scope.allowEdit = $scope.allowPay && $scope.TrnxDtlMode!=='EDIT';
 		});
 
 		$selfScope.$on('UpdatePaysched',function(evt,args){
@@ -61,10 +91,13 @@ define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 		});
 		$selfScope.$on('UpdateTransacDetails',function(evt,args){
 			let details = args.details;
+			let formatAmount = args.format;
 			let totalAmt = 0;
 			$scope.TransacDetails = details;
 			details.map(function(item,index){
 				totalAmt+=item.amount;
+				if(formatAmount)
+					item.disp_amount = TRNX.util.formatMoney(item.amount);
 			});
 			$scope.TotalAmount = totalAmt;
 			$scope.TotalDispAmount = TRNX.util.formatMoney(totalAmt);
@@ -94,10 +127,23 @@ define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 		}
 		$selfScope.$on('ResetTransactions',function(evt,args){
 			$scope.ActiveTrnx={};
-			$scope.TransacList=TRNX.getList();
 			updateTrnxUI();
+			$scope.TransacList=TRNX.getList();
+			$selfScope.$emit('UpdateTransacDetails',{details:[]});
 		});
 
+		$selfScope.$on('UpdateTransacList',function(evt,args){
+			let details = args.details;
+			details.map(function(dtl){
+				$scope.TransacList.map(function(trl,index){
+					if(dtl.id===trl.id){
+						trl.amount = dtl.amount;
+						trl.disp_amount = dtl.disp_amount;
+						$scope.TransacList[index]=trl;
+					}
+				});
+			});
+		});
 		function updateTrnxUI(){
 			$scope.TransacList.map(function(item,index){
 				$scope.TransacList[index].isActive = !!$scope.ActiveTrnx[item.id];
