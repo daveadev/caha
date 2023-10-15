@@ -17,8 +17,17 @@ class PaymentPlan extends AppModel {
 			'exclusive' => '',
 			'finderQuery' => '',
 			'counterQuery' => ''
-		)
+		),
+		'PayplanLedger' => array(
+            'className' => 'PayplanLedger',
+            'foreignKey' =>false,
+            'conditions' =>'',
+            'fields' => '',
+            'order' => ''
+        )
 	);
+
+
 	var $belongsTo = array(
 		'Account' => array(
 			'className' => 'Account',
@@ -32,8 +41,10 @@ class PaymentPlan extends AppModel {
 			'exclusive' => '',
 			'finderQuery' => '',
 			'counterQuery' => ''
-		),
+		)
 	);
+
+
 
 	/**
 	 * Forward a payment for a given account and ESP (Effective School Year Period).
@@ -129,6 +140,61 @@ class PaymentPlan extends AppModel {
 	    }
 
 	    return $schedule;
+	}
+
+
+	/**
+	 * Retrieves account details and related payment plan information.
+	 *
+	 * @param int $account_id The account ID for which details are to be retrieved.
+	 * @param float $esp The effective selling price for filtering ledgers and payment plans.
+	 * @return array An array containing account details, current and old payment schedules, and ledgers.
+	 */
+	function getDetails($account_id, $esp) {
+	    // Set conditions for the Ledger association based on 'esp'
+	    $this->Account->belongsTo['Student']['fields']=array('id','name','full_name','lrn','sno','section_id','year_level_id');
+	    $this->Account->hasMany['Ledger']['conditions'] = array('Ledger.esp' => $esp);
+
+	    // Retrieve account information based on the 'account_id'
+	    $accountInfo = $this->Account->findById($account_id);
+
+	    // Define conditions for the PaymentPlan association based on 'account_id' and 'esp'
+	    $conditions = array(
+	        'PaymentPlan.account_id' => $account_id,
+	        'PaymentPlan.esp' => $esp
+	    );
+
+	    // Define options for the find operation, including joins with 'payplan_ledgers'
+	    $options = array(
+	        'conditions' => $conditions,
+	        'joins' => array(
+	            array(
+	                'table' => 'payplan_ledgers',
+	                'alias' => 'PayplanLedger',
+	                'type' => 'INNER',
+	                'conditions' => array(
+	                    'PaymentPlan.account_id = PayplanLedger.account_id',
+	                    'PaymentPlan.esp = PayplanLedger.esp'
+	                ),
+	                'order' => array('PayplanLedger.transac_date', 'PayplanLedger.ref_no')
+	            )
+	        )
+	    );
+
+	    // Retrieve payment plan information based on the defined options
+	    $payplan = $this->find('first', $options);
+
+	    // Prepare a statement array containing relevant data
+	    $statement = array();
+	    $statement['account'] = $accountInfo['Account'];
+	    $statement['student'] = $accountInfo['Student'];
+	    $statement['paysched_curent'] = $accountInfo['AccountSchedule'];
+	    $statement['ledger_current'] = $accountInfo['Ledger'];
+	    $statement['paysched_old'] = $payplan['PayPlanSchedule'];
+	    $statement['ledger_old'] = $payplan['PayplanLedger'];
+
+	    // Return the statement containing all relevant data
+	    return $statement;
 	}
 
 }

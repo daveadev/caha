@@ -2,7 +2,7 @@
 class ReportsController extends AppController{
 	var $name = 'Reports';
 	var $uses = array('Ledger','Account', 'Student','Section','Transaction','TransactionType',
-						'MasterConfig','ClasslistBlock','Assessment','AccountSchedule');
+						'MasterConfig','ClasslistBlock','Assessment','AccountSchedule','PaymentPlan');
 
 	// GET srp/test_soa?account_id=LSJXXXXX
 	function soa(){
@@ -87,7 +87,12 @@ class ReportsController extends AppController{
 			$this->set(compact('batch'));
 		}
 	}
-	
+	function statement($account_id=null,$sy=null){
+		$payplan = $this->PaymentPlan->getDetails($account_id ,$sy);
+		pr($payplan);exit;
+		
+
+	}
 	function daily_collections(){
 		$data = $_POST['Collections'];
 		//test data
