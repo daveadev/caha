@@ -158,6 +158,12 @@ class PaymentPlan extends AppModel {
 	    // Retrieve account information based on the 'account_id'
 	    $accountInfo = $this->Account->findById($account_id);
 
+	    // Statement Info
+	    $sy = floor($esp);
+	    $sno = trim($accountInfo['Student']['sno']);
+	    $name = $accountInfo['Student']['full_name'];
+	    $accountInfo['Account']['name'] = sprintf("%s | %s",$sno,$name);
+	    $accountInfo['Account']['school_year'] = sprintf("%s - %s",$sy,$sy+1);
 	    // Define conditions for the PaymentPlan association based on 'account_id' and 'esp'
 	    $conditions = array(
 	        'PaymentPlan.account_id' => $account_id,
@@ -188,13 +194,35 @@ class PaymentPlan extends AppModel {
 	    $statement = array();
 	    $statement['account'] = $accountInfo['Account'];
 	    $statement['student'] = $accountInfo['Student'];
-	    $statement['paysched_curent'] = $accountInfo['AccountSchedule'];
+	    $statement['paysched_current'] = $this->formatSchedule($accountInfo['AccountSchedule']);
 	    $statement['ledger_current'] = $accountInfo['Ledger'];
-	    $statement['paysched_old'] = $payplan['PayPlanSchedule'];
+	    $statement['paysched_old'] = $this->formatSchedule($payplan['PayPlanSchedule']);
 	    $statement['ledger_old'] = $payplan['PayplanLedger'];
 
 	    // Return the statement containing all relevant data
 	    return $statement;
 	}
+	protected function formatSchedule(&$schedule){
+		$total_due = 0;
+		$total_pay = 0;
+		$total_bal = 0;
+		foreach($schedule as &$sched):
+			$sched['due_date']= date("d M Y",strtotime($sched['due_date']));
+			$sched['balance'] =  $sched['due_amount'] - $sched['paid_amount'];
+			$total_due += $sched['due_amount'];
+			$total_pay += $sched['paid_amount'];
+			$total_bal += $sched['balance'];
+			$sched['due_amount']= number_format($sched['due_amount'],2,'.',',');
+			$sched['paid_amount']= $sched['paid_amount']>0?number_format($sched['paid_amount'],2,'.',','):'-';
+			$sched['balance']= $sched['balance']>0?number_format($sched['balance'],2,'.',','):'-';
+		endforeach;
+		$schedule[] = array(
+			'is_total'=>true,
+			'total_due'=>number_format($total_due,2,'.',','),
+			'total_pay'=>number_format($total_pay,2,'.',','),
+			'total_bal'=>number_format($total_bal,2,'.',',')
+		);
+		return $schedule;
 
+	}
 }

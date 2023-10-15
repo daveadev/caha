@@ -88,8 +88,8 @@ class ReportsController extends AppController{
 		}
 	}
 	function statement($account_id=null,$sy=null){
-		$payplan = $this->PaymentPlan->getDetails($account_id ,$sy);
-		pr($payplan);exit;
+		$statement = $this->PaymentPlan->getDetails($account_id ,$sy);
+		$this->set(compact('statement'));
 		
 
 	}
