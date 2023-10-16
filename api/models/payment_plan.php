@@ -150,7 +150,7 @@ class PaymentPlan extends AppModel {
 	 * @param float $esp The effective selling price for filtering ledgers and payment plans.
 	 * @return array An array containing account details, current and old payment schedules, and ledgers.
 	 */
-	function getDetails($account_id, $esp) {
+	function getDetails($account_id, $esp,$type='old') {
 	    // Set conditions for the Ledger association based on 'esp'
 	    $this->Account->belongsTo['Student']['fields']=array('id','name','full_name','lrn','sno','section_id','year_level_id');
 	    $this->Account->hasMany['Ledger']['conditions'] = array('Ledger.esp' => $esp);
@@ -201,10 +201,14 @@ class PaymentPlan extends AppModel {
 	    $statement = array();
 	    $statement['account'] = $accountInfo['Account'];
 	    $statement['student'] = $accountInfo['Student'];
-	    $statement['paysched_current'] = $this->formatSchedule($accountInfo['AccountSchedule']);
-	    $statement['ledger_current'] = $this->formatLedger($accountInfo['Ledger']);
-	    $statement['paysched_old'] = $this->formatSchedule($payplan['PayPlanSchedule']);
-	    $statement['ledger_old'] = $this->formatLedger($payplan['PayplanLedger']);
+	    if($type=='current'):
+		    $statement['paysched_current'] = $this->formatSchedule($accountInfo['AccountSchedule']);
+		    $statement['ledger_current'] = $this->formatLedger($accountInfo['Ledger']);
+	   	endif;
+	   	if($type=='old'):
+		    $statement['paysched_old'] = $this->formatSchedule($payplan['PayPlanSchedule']);
+		    $statement['ledger_old'] = $this->formatLedger($payplan['PayplanLedger']);
+	   	endif;
 
 	    // Return the statement containing all relevant data
 	    return $statement;

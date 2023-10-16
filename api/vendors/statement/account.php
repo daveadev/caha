@@ -195,6 +195,7 @@ class AccountStatement extends Formsheet{
 		$this->section($metrics);
 		$this->GRID['font_size']=10;
 		$this->leftText(0,0.5,'Payment Instruction',10,'b');
+		$this->rightText(28,0.5,'Page 1 of 1',10,'b');
 		$this->DrawBox(0,1,15.5,8,'D');
 		
 		$account = $this->data['account'];

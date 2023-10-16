@@ -87,9 +87,14 @@ class ReportsController extends AppController{
 			$this->set(compact('batch'));
 		}
 	}
-	function statement($account_id=null,$sy=null){
-		$statement = $this->PaymentPlan->getDetails($account_id ,$sy);
-		$this->set(compact('statement'));
+	function statement($account_id=null,$sy=null,$type='old'){
+		if(isset($_POST['account_id'])):
+			$account_id = $_POST['account_id'];
+			$sy = $_POST['sy'];
+			$type = $_POST['type'];
+		endif;
+		$statement = $this->PaymentPlan->getDetails($account_id ,$sy,$type);
+		$this->set(compact('statement','type'));
 		
 
 	}
