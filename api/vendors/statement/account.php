@@ -4,7 +4,7 @@ require('vendors/fpdf17/barcode/php-barcode.php');
 
 class AccountStatement extends Formsheet{
 	protected static $_width = 8.5;
-	protected static $_height = 13;
+	protected static $_height = 11;
 	protected static $_unit = 'in';
 	protected static $_orient = 'P';	
 	protected static $curr_page = 1;
@@ -186,7 +186,7 @@ class AccountStatement extends Formsheet{
 		$last_y = $this->data['last_y'];
 		$metrics = array(
 			'base_x'=> 0.5,
-			'base_y'=> 10.5 ,
+			'base_y'=> 8.5 ,
 			'width'=> 7.5,
 			'height'=> 1.5,
 			'cols'=> 38,
@@ -211,7 +211,7 @@ class AccountStatement extends Formsheet{
 		$this->GRID['font_size']=8;
 		$this->wrapText(0.75,6.75,$note,14,'l',0.7);
 		$bx =2;
-		$by = 11.5;
+		$by = 9.5;
 		$code=$account['sno'];
 		$color = '000'; 
 		$w = 0.021; 
