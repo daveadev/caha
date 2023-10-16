@@ -155,14 +155,21 @@ class PaymentPlan extends AppModel {
 	    $this->Account->belongsTo['Student']['fields']=array('id','name','full_name','lrn','sno','section_id','year_level_id');
 	    $this->Account->hasMany['Ledger']['conditions'] = array('Ledger.esp' => $esp);
 
+
 	    // Retrieve account information based on the 'account_id'
 	    $accountInfo = $this->Account->findById($account_id);
+	    $sect_id = $accountInfo['Student']['section_id'];
+	    $sectInfo = $this->Account->Student->Section->findByid($sect_id);
+
 
 	    // Statement Info
 	    $sy = floor($esp);
 	    $sno = trim($accountInfo['Student']['sno']);
+	    $section = sprintf("%s - %s",$sectInfo['YearLevel']['name'],$sectInfo['Section']['name']);
 	    $name = $accountInfo['Student']['full_name'];
-	    $accountInfo['Account']['name'] = sprintf("%s | %s",$sno,$name);
+	    $accountInfo['Account']['name'] = $name;
+	    $accountInfo['Account']['sno'] = $sno;
+	    $accountInfo['Student']['section'] = $section;
 	    $accountInfo['Account']['school_year'] = sprintf("%s - %s",$sy,$sy+1);
 	    // Define conditions for the PaymentPlan association based on 'account_id' and 'esp'
 	    $conditions = array(
@@ -195,9 +202,9 @@ class PaymentPlan extends AppModel {
 	    $statement['account'] = $accountInfo['Account'];
 	    $statement['student'] = $accountInfo['Student'];
 	    $statement['paysched_current'] = $this->formatSchedule($accountInfo['AccountSchedule']);
-	    $statement['ledger_current'] = $accountInfo['Ledger'];
+	    $statement['ledger_current'] = $this->formatLedger($accountInfo['Ledger']);
 	    $statement['paysched_old'] = $this->formatSchedule($payplan['PayPlanSchedule']);
-	    $statement['ledger_old'] = $payplan['PayplanLedger'];
+	    $statement['ledger_old'] = $this->formatLedger($payplan['PayplanLedger']);
 
 	    // Return the statement containing all relevant data
 	    return $statement;
@@ -224,5 +231,27 @@ class PaymentPlan extends AppModel {
 		);
 		return $schedule;
 
+	}
+
+	protected function formatLedger(&$entries){
+		$run_bal = 0;
+		foreach($entries as &$entry):
+
+			$entry['transac_date']= date("d M Y",strtotime($entry['transac_date']));
+			$amount = $entry['amount'];
+			
+			$type = $entry['type'];
+			$pay=$type=='-'?$amount:0;
+			$fee=$type=='+'?$amount:0;
+			$run_bal += $fee - $pay;
+			$entry['fee'] = $fee==0?'':number_format($fee,2,'.',',');
+			$entry['pay'] = $pay==0?'': number_format($pay,2,'.',',');
+			
+			$run_bal_disp = number_format(abs($run_bal),2,'.',',');
+			if($run_bal<0)
+				$run_bal_disp = "($run_bal_disp)";
+			$entry['bal'] =$run_bal_disp; 
+		endforeach;
+		return $entries;
 	}
 }
