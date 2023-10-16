@@ -86,7 +86,7 @@
 								<uib-tab index="2" heading="Payment Plan SOA ">
 
 									<div style="height: 500px;" ng-show="PPC.ActiveStudent.id" >
-										<form action="api/reports/statement" method="POST" target="PPSOAframe" id="PrintPPSoa">
+										<form action="api/reports/statement" method="GET" target="PPSOAframe" id="PrintPPSoa">
 											<input type="hidden" name="account_id" value="{{PPC.ActiveStudent.id}}"/>
 											<input type="hidden" name="sy" value="{{PPC.ActiveSY}}"/>
 											<input type="hidden" name="type" value="old"/>

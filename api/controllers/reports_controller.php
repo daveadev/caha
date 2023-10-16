@@ -88,10 +88,10 @@ class ReportsController extends AppController{
 		}
 	}
 	function statement($account_id=null,$sy=null,$type='old'){
-		if(isset($_POST['account_id'])):
-			$account_id = $_POST['account_id'];
-			$sy = $_POST['sy'];
-			$type = $_POST['type'];
+		if(isset($_GET['account_id'])):
+			$account_id = $_GET['account_id'];
+			$sy = $_GET['sy'];
+			$type = $_GET['type'];
 		endif;
 		$statement = $this->PaymentPlan->getDetails($account_id ,$sy,$type);
 		$this->set(compact('statement','type'));

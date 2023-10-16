@@ -89,7 +89,7 @@ div[align="right"] input[disabled]{
 
 								<uib-tab index="2" heading="SOA" classes="btn-lg">
 										<div style="height: 500px;" ng-show="CAC.ActiveStudent.id" >
-										<form action="api/reports/statement" method="POST" target="PPSOA2frame2" id="PrintPPSoa2">
+										<form action="api/reports/statement" method="GET" target="PPSOA2frame2" id="PrintPPSoa2">
 											<input type="hidden" name="account_id" value="{{CAC.ActiveStudent.id}}"/>
 											<input type="hidden" name="sy" value="{{CAC.ActiveSY}}"/>
 											<input type="hidden" name="type" value="old"/>
