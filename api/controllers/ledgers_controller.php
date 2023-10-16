@@ -228,7 +228,7 @@ class LedgersController extends AppController {
 			);
 			$entries = array();
 			foreach($transaction['details'] as $dtl):
-				if($dtl['id']=='OLDAC'):
+				if($dtl['id']=='EXTPY'):
 					
 					$entry['transaction_type_id']=$dtl['id'];
 					$entry['details']=$dtl['description'];
