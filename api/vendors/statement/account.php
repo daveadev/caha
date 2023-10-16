@@ -82,28 +82,38 @@ class AccountStatement extends Formsheet{
 		$this->rightText(15,$y,'Balance',5,'b');
 		//$this->rightText(16,$y,'Date Paid',5,'b');
 		
+		$dueNow = $schedule[count($schedule)-1]['due_now'];
+		$this->data['account']['due_now']=$dueNow;
+
 		// Monthly schedule
-		foreach($schedule as $sched):
+		foreach($schedule as $index=>$sched):
 			$y++;
-			
 			if(isset($sched['due_date'])):
+				if(in_array($index,$dueNow['months'])):
+					$this->SetFillColor(195,237,209);
+					$this->DrawBox(-0.5,$y-0.75,21,1,'FD');
+				endif;
 				$this->leftText(0,$y,$sched['due_date'],5,'');
+				
+				
 				$this->rightText(5,$y,$sched['due_amount'],5,'');
 				$this->rightText(10,$y,$sched['paid_amount'],5,'');
 				$this->rightText(15,$y,$sched['balance'],5,'');
+				
 				//$this->rightText(16,$y,'15 Sep 2023',5,'');
 			else:
 
 				$this->leftText(0,$y,'Total',5,'b');
 				$this->rightText(5,$y,$sched['total_due'],5,'b');
-				$this->rightText(10,$y,$sched['total_bal'],5,'b');
-				$this->rightText(15,$y,$sched['total_pay'],5,'b');
+				$this->rightText(10,$y,$sched['total_pay'],5,'b');
+				$this->rightText(15,$y,$sched['total_bal'],5,'b');
 				
 			endif;
 		endforeach;
 
 		// Due Box
 		$student = $this->data['student'];
+		
 		
 		$this->SetDrawColor(27,151,68);
 		$this->SetFillColor(195,237,209);
@@ -114,8 +124,8 @@ class AccountStatement extends Formsheet{
 
 		$this->GRID['font_size']=14;
 		$this->leftText(24,5,$student['sno'],4,'b');
-		$this->rightText(33,5,'16 Oct 2023',4,'b');
-		$this->leftText(24,8.5,'Php 1,000.00',4,'b');
+		$this->rightText(33,5,$dueNow['date'],4,'b');
+		$this->leftText(24,8.5,'Php '.$dueNow['amount'],4,'b');
 
 		$this->GRID['font_size']=10;
 		$note = "Kindly make payments at the school's accounting office on or before the deadline.";
@@ -188,13 +198,14 @@ class AccountStatement extends Formsheet{
 		$this->DrawBox(0,1,15.5,8,'D');
 		
 		$account = $this->data['account'];
+		$dueNow = $account['due_now'];
 
 		$this->GRID['font_size']=9;
 		$this->leftText(1,2,'Student No.',10,'');
 		$this->rightText(4,2,'Amount Due',10,'');
 		$this->GRID['font_size']=11;
 		$this->leftText(1,3,$account['sno'],10,'');
-		$this->rightText(4,3,'Php 1,000.00',10,'');
+		$this->rightText(4,3,'Php '.$dueNow['amount'],10,'');
 		$note = "To avoid late fees, kindly make payments at the school's accounting office on or before the deadline.";
 		$this->GRID['font_size']=8;
 		$this->wrapText(0.75,6.75,$note,14,'l',0.7);

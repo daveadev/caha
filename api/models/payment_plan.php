@@ -210,6 +210,7 @@ class PaymentPlan extends AppModel {
 	    return $statement;
 	}
 	protected function formatSchedule(&$schedule){
+		$dueNow = $this->dueThisMonth($schedule);
 		$total_due = 0;
 		$total_pay = 0;
 		$total_bal = 0;
@@ -227,12 +228,35 @@ class PaymentPlan extends AppModel {
 			'is_total'=>true,
 			'total_due'=>number_format($total_due,2,'.',','),
 			'total_pay'=>number_format($total_pay,2,'.',','),
-			'total_bal'=>number_format($total_bal,2,'.',',')
+			'total_bal'=>number_format($total_bal,2,'.',','),
+			'due_now' =>$dueNow
 		);
 		return $schedule;
 
 	}
-
+	protected function dueThisMonth($schedule){
+		$currentMonth = date('Y-m');
+		$dueAmount = 0;
+		$dueNow = array();
+		$dueMos = array();
+		foreach ($schedule as $index=>$sched) {
+		    $dueDate = strtotime($sched['due_date']);
+		    $hasBal = $sched['paid_amount'] < $sched['due_amount'];
+		    $isOverDue = $dueDate <= time();
+		    $isDueNow = substr($sched['due_date'], 0, 7) === $currentMonth;
+		    if ( $hasBal && ( $isOverDue||$isDueNow )) {
+		       $dueAmount += $sched['due_amount'];
+		       $dueMos[]=$index;
+		    }
+		    if($isDueNow){
+		    	$dueNow['date'] = date('d M Y',$dueDate);
+		    }
+		}
+		$dueNow['amount']=number_format($dueAmount,2,'.',',');
+		$dueNow['months']=$dueMos;
+		
+		return $dueNow;
+	}
 	protected function formatLedger(&$entries){
 		$run_bal = 0;
 		foreach($entries as &$entry):
