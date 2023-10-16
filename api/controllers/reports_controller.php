@@ -5,6 +5,12 @@ class ReportsController extends AppController{
 						'MasterConfig','ClasslistBlock','Assessment','AccountSchedule','PaymentPlan');
 
 	// GET srp/test_soa?account_id=LSJXXXXX
+
+	function view($module){
+		if($module=='statement'){
+			$this->statement();
+		}
+	}
 	function soa(){
 		//pr($_GET); exit();
 		if(isset($_GET['account_id'])){
@@ -95,6 +101,7 @@ class ReportsController extends AppController{
 		endif;
 		$statement = $this->PaymentPlan->getDetails($account_id ,$sy,$type);
 		$this->set(compact('statement','type'));
+		$this->render('statement');
 		
 
 	}
