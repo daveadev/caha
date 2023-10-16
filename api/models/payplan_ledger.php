@@ -6,9 +6,7 @@ class PayplanLedger extends AppModel {
 			'className' => 'PaymentPlan',
 			'foreignKey' => false,
 			'dependent' => false,
-			'conditions' => array(
-					'PaymentPlan.account_id = PayplanLedger.account',
-					'PaymentPlan.esp = PayplanLedger.esp'),
+			'conditions' => '',
 			'fields' => '',
 			'order' => '',
 			'limit' => '',

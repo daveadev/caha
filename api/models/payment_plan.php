@@ -180,22 +180,15 @@ class PaymentPlan extends AppModel {
 	    // Define options for the find operation, including joins with 'payplan_ledgers'
 	    $options = array(
 	        'conditions' => $conditions,
-	        'joins' => array(
-	            array(
-	                'table' => 'payplan_ledgers',
-	                'alias' => 'PayplanLedger',
-	                'type' => 'INNER',
-	                'conditions' => array(
-	                    'PaymentPlan.account_id = PayplanLedger.account_id',
-	                    'PaymentPlan.esp = PayplanLedger.esp'
-	                ),
-	                'order' => array('PayplanLedger.transac_date', 'PayplanLedger.ref_no')
-	            )
-	        )
 	    );
 
 	    // Retrieve payment plan information based on the defined options
 	    $payplan = $this->find('first', $options);
+	    $cond = array('PayplanLedger.account_id'=>$account_id,
+	    	'PayplanLedger.esp'=>$esp
+		);
+	    
+	    
 
 	    // Prepare a statement array containing relevant data
 	    $statement = array();
@@ -206,6 +199,14 @@ class PaymentPlan extends AppModel {
 		    $statement['ledger_current'] = $this->formatLedger($accountInfo['Ledger']);
 	   	endif;
 	   	if($type=='old'):
+
+	   		$this->PayplanLedger->recursive=-1;
+	    $ledger = $this->PayplanLedger->find('all',array('conditions'=>$cond));
+	    	$payplan_sched = array();
+	    	foreach($ledger as $l):
+	    		$payplan_sched[]=$l['PayplanLedger'];
+	    	endforeach;
+	    	$payplan['PayplanLedger']=$payplan_sched;
 		    $statement['paysched_old'] = $this->formatSchedule($payplan['PayPlanSchedule']);
 		    $statement['ledger_old'] = $this->formatLedger($payplan['PayplanLedger']);
 	   	endif;
