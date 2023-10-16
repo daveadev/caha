@@ -86,6 +86,25 @@ div[align="right"] input[disabled]{
 								<uib-tab index="1" heading="Paysched" classes="btn-lg">
 										<a-table headers="CAC.PSHeaders" props="CAC.PSProps" data="CAC.Paysched" is-preload="false"></a-table>
 								</uib-tab>
+
+								<uib-tab index="2" heading="SOA" classes="btn-lg">
+										<div style="height: 500px;" ng-show="CAC.ActiveStudent.id" >
+										<form action="api/reports/statement" method="POST" target="PPSOA2frame2" id="PrintPPSoa2">
+											<input type="hidden" name="account_id" value="{{CAC.ActiveStudent.id}}"/>
+											<input type="hidden" name="sy" value="{{CAC.ActiveSY}}"/>
+											<input type="hidden" name="type" value="old"/>
+										</form>
+										<iframe name="PPSOA2frame2"  id="PPSOA2frame" frameborder="0" style="width:100%;height:100%;display:block;"></iframe>
+									</div>
+									<div class="empty-state" ng-hide="CAC.ActiveStudent.id">
+										<div class="well text-center">
+											<div class="empty-state-icon text-center">
+												<i class="glyphicon glyphicon-list-alt"></i>
+											</div>
+											<h4>Select Student to view SOA</h4>
+										</div>
+									</div>
+								</uib-tab>
 							</uib-tabset>
 						</a-col>
 						<a-col size="4">

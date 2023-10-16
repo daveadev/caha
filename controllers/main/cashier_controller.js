@@ -9,7 +9,10 @@ define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 		$scope = this;
 
 		$scope.init = function(){
-			$scope.ActiveSY = $rootScope._APP.ACTIVE_SY;
+			$rootScope.$watch('_APP',function(){
+				$scope.ActiveSY = $rootScope._APP.ACTIVE_SY;	
+			});
+			
 			atomic.ready(function(){
 				var sys = atomic.SchoolYears;
 				var sy = atomic.ActiveSY;
@@ -128,8 +131,8 @@ define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 		});
 	}]);
 
-	app.register.controller('CashierTransactionsController',['$scope','$rootScope','$filter','api','Atomic',
-	function($scope,$rootScope,$filter,api,atomic){
+	app.register.controller('CashierTransactionsController',['$scope','$rootScope','$filter','$timeout','api','Atomic',
+	function($scope,$rootScope,$filter,$timeout,api,atomic){
 		const $selfScope =  $scope;
 		$scope = this;
 		$scope.init = function(){
@@ -176,9 +179,10 @@ define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 			var type =  STU.enroll_status;
 			var asy = atomic.ActiveSY;
 
+
 			TRNX.runDefault();
 			$selfScope.$emit('UpdatePaysched',{paysched:[]});
-			
+
 			if(!sid) return;
 			
 			var loadNextSY = NEXT_SY && sy> asy;
@@ -191,6 +195,9 @@ define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 				$selfScope.$emit('UpdatePaysched',{paysched:sched});
 				
 			}
+			$timeout(function(){
+				document.getElementById('PrintPPSoa2').submit();
+			},200);
 			if(loadNextSY)
 				return TRNX.getAssessment(sid,sy).then(updateTrnx);
 			
