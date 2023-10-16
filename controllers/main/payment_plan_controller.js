@@ -149,6 +149,7 @@ define(['app','transact','api','atomic/bomb'],function(app,TRNX){
 		function loadSOA(){
 			$scope.ActiveTabIndex = 1;
 			document.getElementById('PrintOldSoa').submit();
+			document.getElementById('PrintPPSoa').submit();			
 		}
 		function resetPaymentPlan(){
 			$scope.TotalDue = undefined;
@@ -164,6 +165,7 @@ define(['app','transact','api','atomic/bomb'],function(app,TRNX){
 			$scope.PrintPaymentDetails = details;
 			$timeout(function(){
 				document.getElementById('PrintPaymentPlan').submit();			
+				
 			},200);
 		}
 
