@@ -6,8 +6,9 @@ foreach($statements as $sInd=>$sObj):
 	$AS->data = $sObj;
 	$AS->headerInfo();
 	$AS->paysched($type);
-	$AS->ledger($type);
 	$AS->payment_ins();
+	$AS->ledger($type);
+	
 	if($sInd<count($statements)-1)
 		$AS->createSheet();
 endforeach;
