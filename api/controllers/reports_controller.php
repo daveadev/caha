@@ -18,9 +18,20 @@ class ReportsController extends AppController{
 		
 		if(isset($_GET['account_id'])){
 			$account_id =  $_GET['account_id'];
+
+			if(!isset($_GET['sy'])):
+				$cond  =array('ClasslistBlock.student_id'=>$account_id);
+				$flds = array('esp','status');
+				$ord =array('esp'=>'desc');
+				$clHist = $this->ClasslistBlock->find('list',array('conditions'=>$cond,'fields'=>$flds,'order'=>$ord));
+				$esp = floor(array_keys($clHist)[0]);
+			else:
+				$esp = $_GET['sy'];
+			endif;
+
 			if($format=='new'):
-				$sy = $_GET['sy'];
-				return $this->statement($account_id,$sy,'current');
+				
+				return $this->statement($account_id,$esp,'current');
 			endif;
 			//Student's Details
 			$this->Student->bindModel(array('belongsTo' => array('Section')));
@@ -39,13 +50,7 @@ class ReportsController extends AppController{
 			/*
 			$classlist =  $this->ClasslistBlock->find('all',array('recursive'=>-1,'conditions'=>array('ClasslistBlock.student_id'=>$account_id,'ClasslistBlock.esp'=>$esp_check)));
 			*/
-			if(!isset($_GET['sy'])):
-				$cond  =array('ClasslistBlock.student_id'=>$account_id);
-				$flds = array('esp','status');
-				$ord =array('esp'=>'desc');
-				$clHist = $this->ClasslistBlock->find('list',array('conditions'=>$cond,'fields'=>$flds,'order'=>$ord));
-				$esp = floor(array_keys($clHist)[0]);
-			endif;
+			
 			/*
 			if(isset($classlist[0])&&$mod_esp)
 				$esp++;
@@ -100,16 +105,18 @@ class ReportsController extends AppController{
 				$data['Sched'] = $sched;
 				$batch[$i]=$data;
 			}
-			
 			$this->set(compact('batch'));
 		}
+
 	}
 	function statement($account_id=null,$sy=null,$type='old'){
 		$ids = array();
 		if(isset($_GET['account_id'])):
 			$account_id = $_GET['account_id'];
-			$sy = $_GET['sy'];
-			$type = $_GET['type'];
+			if(isset($_GET['sy']))
+				$sy = $_GET['sy'];
+			if(isset($_GET['type']))
+				$type = $_GET['type'];
 			$ids[] = $account_id;
 		endif;
 
