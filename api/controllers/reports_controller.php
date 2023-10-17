@@ -11,11 +11,17 @@ class ReportsController extends AppController{
 			$this->statement();
 		}
 	}
-	function soa(){
+	function soa($format="old"){
 		//pr($_GET); exit();
+		if(isset($_GET['format']))
+			$format = $_GET['format'];
+		
 		if(isset($_GET['account_id'])){
 			$account_id =  $_GET['account_id'];
-			
+			if($format=='new'):
+				$sy = $_GET['sy'];
+				return $this->statement($account_id,$sy,'current');
+			endif;
 			//Student's Details
 			$this->Student->bindModel(array('belongsTo' => array('Section')));
 			$this->Student->recursive=1;
@@ -54,6 +60,8 @@ class ReportsController extends AppController{
 			$student['Student']['esp'] = $esp;
 			$this->set(compact('data','student','sched'));
 		}else{
+
+			
 			$sec_id=$_GET['section_id'];
 			$sy=$_GET['sy'];
 			if($_GET['dept']=='SH'){
@@ -65,7 +73,10 @@ class ReportsController extends AppController{
 			}
 			$ids = $this->ClasslistBlock->getIds($sec_id,$sy);
 			$batch = array();
-			
+
+			if($format=='new'):
+				return $this->statement(null,$sy,'current');
+			endif;
 			foreach($ids as $i=>$id){
 				$this->Student->bindModel(array('belongsTo' => array('Section')));
 				$this->Student->recursive=1;
@@ -94,13 +105,31 @@ class ReportsController extends AppController{
 		}
 	}
 	function statement($account_id=null,$sy=null,$type='old'){
+		$ids = array();
 		if(isset($_GET['account_id'])):
 			$account_id = $_GET['account_id'];
 			$sy = $_GET['sy'];
 			$type = $_GET['type'];
+			$ids[] = $account_id;
 		endif;
-		$statement = $this->PaymentPlan->getDetails($account_id ,$sy,$type);
-		$this->set(compact('statement','type'));
+
+		if(isset($_GET['section_id']) && isset($_GET['sy'])):
+			$sec_id=$_GET['section_id'];
+			$sy=$_GET['sy'];
+			if($_GET['dept']=='SH'){
+				if($_GET['sem']==45)
+					$esp=.3;
+				else
+					$esp=.1;
+				$sy = intval($sy)+$esp;
+			}
+			$ids = $this->ClasslistBlock->getIds($sec_id,$sy);
+		endif;
+		$statements=array();
+		foreach($ids as $accId):
+			$statements[] = $this->PaymentPlan->getDetails($accId ,$sy,$type);
+		endforeach;
+		$this->set(compact('statements','type'));
 		$this->render('statement');
 		
 
