@@ -169,7 +169,7 @@ class PaymentPlan extends AppModel {
 	    $sy = floor($esp);
 	    $sno = trim($accountInfo['Student']['sno']);
 	    $section = sprintf("%s - %s",$sectInfo['YearLevel']['name'],$sectInfo['Section']['name']);
-	    $name = $accountInfo['Student']['full_name'];
+	    $name = ucwords(strtolower($accountInfo['Student']['full_name']));
 	    $accountInfo['Account']['name'] = $name;
 	    $accountInfo['Account']['sno'] = $sno;
 	    $accountInfo['Student']['section'] = $section;
