@@ -157,6 +157,9 @@ class PaymentPlan extends AppModel {
 
 
 	    // Retrieve account information based on the 'account_id'
+	    if($esp<2023){
+	    	$this->Account->udpateEspSource($esp);
+	    }
 	    $accountInfo = $this->Account->findById($account_id);
 	    $sect_id = $accountInfo['Student']['section_id'];
 	    $sectInfo = $this->Account->Student->Section->findByid($sect_id);
@@ -253,13 +256,12 @@ class PaymentPlan extends AppModel {
 		       $dueAmount += $sched['due_amount'];
 		       $dueMos[]=$index;
 		    }
-		    if($isDueNow){
+		    if($isDueNow||$isOverDue){
 		    	$dueNow['date'] = date('d M Y',$dueDate);
 		    }
 		}
 		$dueNow['amount']=number_format($dueAmount,2,'.',',');
 		$dueNow['months']=$dueMos;
-		
 		return $dueNow;
 	}
 	protected function formatLedger(&$entries){
