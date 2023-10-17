@@ -235,7 +235,7 @@ define(['app', 'api'], function(app) {
 			$scope.PrintSoa = function(){
 				var acct_id = $scope.ActiveStudent.id;
 				document.getElementById('PrintSoa').value;
-				var newURL = 'api/soa?account_id='+acct_id;
+				var newURL = 'api/soa?account_id='+acct_id+'&format=new';
 				window.open(newURL);
 			}
 			
