@@ -11,9 +11,18 @@ class AccountStatement extends Formsheet{
 	protected static $page_count;
 	function AccountStatement($data=null){
 		$this->data = $data;
+		$this->loadConfig($this->data['config']);
 		$this->showLines = !true;
 		$this->FPDF(AccountStatement::$_orient, AccountStatement::$_unit,array(AccountStatement::$_width,AccountStatement::$_height));
 		$this->createSheet();
+	}
+	function loadConfig($conf){
+		$basePath = __DIR__;
+		$path = $basePath .'/config/'.$conf;
+		$contents = file_get_contents($path);
+		$this->config = json_decode($contents,true);
+		$this->config['artwork']['basePath']=$basePath.'/images/';
+
 	}
 	function headerInfo(){
 		$metrics = array(
@@ -74,6 +83,7 @@ class AccountStatement extends Formsheet{
 		$schedule = $this->data[$sched_key];
 		$this->GRID['font_size']=10.5;
 		$this->leftText(0,1.25,$sched_title,10,'b');
+		$this->rightText(33,1.25,"Page 1 of 1",5,'b');
 		$y=2.5;
 		$this->GRID['font_size']=9.5;
 		$this->leftText(0,$y,'Date Due',5,'b');
@@ -174,28 +184,38 @@ class AccountStatement extends Formsheet{
 			$this->rightText(32,$y,$entry['bal'],5,'');
 		endforeach;
 		$y+=1.5;
-		$this->centerText(0,$y,"************** Nothing follows ************** ",38,'i');
+		$this->centerText(0,$y,"**************** Nothing follows **************** ",38,'i');
+		$y++;
+		$dateGen = sprintf("** Generated as of %s",date('d M Y , h:i:a **', time()));
+		$this->centerText(0,$y,$dateGen,38,'i');
 
+		
 		$h = $this->GRID['cell_height'];
 		$this->data['last_y'] = $metrics['base_y']+ ($h*$y);
 
 		
 	}
 	function payment_ins(){
-
+		
 		$last_y = $this->data['last_y'];
 		$metrics = array(
 			'base_x'=> 0.5,
-			'base_y'=> 8.5 ,
+			'base_y'=> 8.8 ,
 			'width'=> 7.5,
 			'height'=> 1.5,
 			'cols'=> 38,
 			'rows'=> 7.5,	
 		);
 		$this->section($metrics);
+
+		$artwork = $this->config['artwork'];
+		$image = $artwork['basePath'].$artwork['image'];
+		$iw = $artwork['width'];
+		$ih = $artwork['height'];
+		$this->DrawImage(24,-10,$iw,$ih,$image);
+
 		$this->GRID['font_size']=10;
 		$this->leftText(0,0.5,'Payment Instruction',10,'b');
-		$this->rightText(28,0.5,'Page 1 of 1',10,'b');
 		$this->DrawBox(0,1,15.5,8,'D');
 		
 		$account = $this->data['account'];
@@ -207,11 +227,13 @@ class AccountStatement extends Formsheet{
 		$this->GRID['font_size']=11;
 		$this->leftText(1,3,$account['sno'],10,'');
 		$this->rightText(4,3,'Php '.$dueNow['amount'],10,'');
-		$note = "To avoid late fees, kindly make payments at the school's accounting office on or before the deadline.";
-		$this->GRID['font_size']=8;
-		$this->wrapText(0.75,6.75,$note,14,'l',0.7);
+		$note = "To avoid  late  fees, kindly  make  payments  at the ";
+		$this->GRID['font_size']=8.25;
+		$this->leftText(0.95,7,$note,5,'');
+		$note = "school's accounting office on or before the deadline.";
+		$this->leftText(0.95,7.8,$note,5,'');
 		$bx =2;
-		$by = 9.5;
+		$by = 9.78;
 		$code=$account['sno'];
 		$color = '000'; 
 		$w = 0.021; 
@@ -219,8 +241,10 @@ class AccountStatement extends Formsheet{
 		$angle = 0; 
 		$type = 'code128'; 
 		Barcode::fpdf($this, $color, $bx, $by, $angle, $type, $code,$w,$h);  
-
-		$this->leftText(16,2,'Notes:',10,'');
+		$notes = $this->config['notes'];
+		$this->GRID['font_size']=9.5;
+		$this->leftText(16.5,2,'Notes:',10,'');
+		$this->wrapText(16.25,2.5,$notes,21,'i',0.8);
 		$this->DrawBox(15.5,1,22.5,8,'D');
 	}
 }
