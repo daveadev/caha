@@ -275,7 +275,8 @@ class PaymentPlan extends AppModel {
 			$run_bal += $fee - $pay;
 			$entry['fee'] = $fee==0?'':number_format($fee,2,'.',',');
 			$entry['pay'] = $pay==0?'': number_format($pay,2,'.',',');
-			
+			if($fee==0 && $type=='+')
+				$entry['fee'] = '0.00';
 			$run_bal_disp = number_format(abs($run_bal),2,'.',',');
 			if($run_bal<0)
 				$run_bal_disp = "($run_bal_disp)";
