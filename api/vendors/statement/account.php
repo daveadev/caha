@@ -150,7 +150,7 @@ class AccountStatement extends Formsheet{
 		$last_y = $this->data['last_y'];
 
 		$ledger_key = 'ledger_'.$type;
-		$ledger_title =$type=='current'?'Tuition Fee':'Ledger';
+		$ledger_title =$type=='current'?'Ledger':'Ledger';
 		$ledger = $this->data[$ledger_key];
 		$metrics = array(
 			'base_x'=> 0.5,
