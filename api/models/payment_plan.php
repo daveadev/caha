@@ -153,7 +153,7 @@ class PaymentPlan extends AppModel {
 	function getDetails($account_id, $esp,$type='old') {
 	    // Set conditions for the Ledger association based on 'esp'
 	    $this->Account->belongsTo['Student']['fields']=array('id','name','full_name','lrn','sno','section_id','year_level_id');
-	    $this->Account->hasMany['Ledger']['conditions'] = array('Ledger.esp' => $esp);
+	    $this->Account->hasMany['Ledger']['conditions'] = array('Ledger.esp' => floor($esp));
 
 
 	    // Retrieve account information based on the 'account_id'
