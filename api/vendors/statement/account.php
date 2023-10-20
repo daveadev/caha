@@ -91,9 +91,12 @@ class AccountStatement extends Formsheet{
 		$this->rightText(10,$y,'Payments',5,'b');
 		$this->rightText(15,$y,'Balance',5,'b');
 		//$this->rightText(16,$y,'Date Paid',5,'b');
-		
-		$dueNow = $schedule[count($schedule)-1]['due_now'];
-		$this->data['account']['due_now']=$dueNow;
+		$schedLen = count($schedule);
+		$dueNow = array('date'=>'NO DUE','amount'=>'0.00');
+		if($schedLen){
+			$dueNow = $schedule[count($schedule)-1]['due_now'];
+			$this->data['account']['due_now']=$dueNow;	
+		}
 
 		// Monthly schedule
 		foreach($schedule as $index=>$sched):
@@ -120,7 +123,14 @@ class AccountStatement extends Formsheet{
 				
 			endif;
 		endforeach;
-
+		if(!$schedule){
+			$y=5.5;
+			$this->centerText(0,$y++,"********** NO APPLICABLE FEES  **********",21,'b');
+			if($type!='current')
+				$this->centerText(0,$y++,"+         Student did not apply for EPP          +",21,'');
+			$this->centerText(0,$y++,"**************** Nothing follows **************** ",21,'i');
+			$y=12.5;
+		}
 		// Due Box
 		$student = $this->data['student'];
 		
@@ -219,7 +229,9 @@ class AccountStatement extends Formsheet{
 		$this->DrawBox(0,1,15.5,8,'D');
 		
 		$account = $this->data['account'];
-		$dueNow = $account['due_now'];
+		$dueNow = array('amount'=>'0.00');
+		if(isset($account['due_now']))
+			$dueNow = $account['due_now'];
 
 		$this->GRID['font_size']=9;
 		$this->leftText(1,2,'Student No.',10,'');

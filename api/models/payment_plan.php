@@ -190,6 +190,7 @@ class PaymentPlan extends AppModel {
 	    $cond = array('PayplanLedger.account_id'=>$account_id,
 	    	'PayplanLedger.esp'=>$esp
 		);
+
 	    
 	    
 
@@ -202,7 +203,11 @@ class PaymentPlan extends AppModel {
 		    $statement['ledger_current'] = $this->formatLedger($accountInfo['Ledger']);
 	   	endif;
 	   	if($type=='old'):
-
+	   		if(!$payplan){
+	   			$statement['paysched_old'] = array();
+	   			$statement['ledger_old'] = array();
+	   			return $statement;
+	   		}
 	   		$this->PayplanLedger->recursive=-1;
 	    $ledger = $this->PayplanLedger->find('all',array('conditions'=>$cond));
 	    	$payplan_sched = array();
