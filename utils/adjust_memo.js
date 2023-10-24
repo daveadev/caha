@@ -4,15 +4,15 @@ define(['app','util','api'],function(app,util) {
 		// Adjustment Types
 		ADJM.UI.TYPES = [
 			{id:'AMFAV1', code:'FAV',name:'Financial Assistance Voucher'},
-			{id:'AMFAV2', code:'AFAV',name:'Additional Financial Assistance Voucher'},
+			{id:'AMFAV2', code:'AFAV',name:'Additional Financial Assistance Voucher',disabled:true},
 			{id:'AMOTFA', code:'OTFA',name:'One Time Financial Assistance'},
-			{id:'AMVASF', code:'VSV',name:'Valedictorian Special Voucher'},
-			{id:'AMSASV', code:'SSV',name:'Salutatorian Special Voucher'},
-			{id:'AMTPSV', code:'TSV',name:'Top Special Voucher'},
-			{id:'AMSFAV', code:'SFAV',name:'Special Financial Voucher'},
+			{id:'AMVASF', code:'VSV',name:'Valedictorian Special Voucher',disabled:true},
+			{id:'AMSASV', code:'SSV',name:'Salutatorian Special Voucher',disabled:true},
+			{id:'AMTPSV', code:'TSV',name:'Top Special Voucher',disabled:true},
+			{id:'AMSFAV', code:'SFAV',name:'Special Financial Voucher',disabled:true},
 			{id:'AMSPOV', code:'SPV',name:'Sponsorship Voucher'},
-			{id:'AMTMCA', code:'TBD',name:'Temporary Clear Account'},
-			{id:'AMPECA', code:'PBD',name:'Permanent Clear Account'}
+			{id:'AMTMCA', code:'TBD',name:'Temporary Clear Account',applyToPaysched:false},
+			{id:'AMPECA', code:'PBD',name:'Permanent Clear Account',applyToPaysched:false}
 		];
 
 		// Ledger Entry
