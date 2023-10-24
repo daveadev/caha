@@ -51,6 +51,13 @@ class Student extends AppModel {
 			'counterQuery' => ''
 		)
 	);
+
+	var $hasMany = array(
+        'Assessment' => array(
+            'className' => 'Assessment',
+            'foreignKey' => 'student_id'
+        )
+    );
 	function findByName($name){
 		//pr($name); 
 		$url = $_GET['url'];
@@ -78,7 +85,9 @@ class Student extends AppModel {
 	function search($keyword,$fields =null){
 		// Import Inquiry Model
 		App::import('Model','Inquiry');
+		App::import('Model','MasterConfig');
 		$INQ =  new Inquiry();
+		$CNF =  new MasterConfig();
 		// Set up conditions filter by fields and keywords
 		if(!$fields):
 			$cond = array("full_name LIKE"=>"$keyword%");
@@ -97,7 +106,32 @@ class Student extends AppModel {
 		$condInq = $cond;
 		unset($condInq['OR']['sno LIKE']);
 		unset($condInq['OR']['rfid LIKE']);
-		$I = $INQ->find('all',array('conditions'=>$condInq,'recursive'=>-1,'fields'=>$flds));
+		$I = array();
+		$includeNewStud = true;
+		if($includeNewStud):
+			$inqOptions = array(
+				'conditions'=>$condInq,
+				'recursive'=>-1,
+				'fields'=>$flds
+			);
+			$ESP = $CNF->findBySysKey('ACTIVE_SY')['MasterConfig']['sys_value'];
+			
+			$inqOptions['joins']=array(
+				array(
+		            'table' => 'assessments', 
+		            'alias' => 'Assessment',
+		            'type' => 'INNER', 
+		            'conditions' => array(
+		                'Assessment.student_id = Inquiry.id',
+		                array('Assessment.student_id LIKE'=>'LSN%'),
+		                array('Assessment.status != '=>'NROLD'),
+		                array('FLOOR(Assessment.esp)'=>$ESP)
+		            )
+		        )
+			);
+			$inqOptions['fields'][]='Assessment.*';
+			$I = $INQ->find('all',$inqOptions);
+		endif;
 		
 		// Update flds for students
 		array_pop($flds); // Remove deparment_id
@@ -113,7 +147,7 @@ class Student extends AppModel {
 
 		// Setup RES to contain all RESults
 		$RES = array();
-
+		$hashes = array();
 		// Loop into students and build stu object
 		foreach($S as $i=>$SO):
 			$stu =$SO['Student'];
@@ -125,6 +159,10 @@ class Student extends AppModel {
 			$stu['department_id']=$SO['YearLevel']['department_id'];
 			$stu['section']=$SO['YearLevel']['name'].' '.$SO['Section']['name'];
 			$stu['enroll_status']='OLD';
+			$hash = md5($stu['full_name']);
+			$stu['hash']=$hash;
+			if(!isset($hashes[$hash]))
+				$hashes[$hash]= $hash;
 			array_push($RES, $stu);
 		endforeach;
 
@@ -133,6 +171,10 @@ class Student extends AppModel {
 			$inq = $IO['Inquiry'];
 			$inq['sno']='N/A'; // No SNO yet since new student
 			$inq['enroll_status']='NEW';
+			$hash = md5($inq['full_name']);
+			$inq['hash']=$hash;
+			if(isset($hashes[$hash]))
+				continue;
 			array_push($RES, $inq);
 		endforeach;
 
