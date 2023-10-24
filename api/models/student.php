@@ -114,8 +114,11 @@ class Student extends AppModel {
 				'recursive'=>-1,
 				'fields'=>$flds
 			);
+
+			// Active SY to filter in ASM
 			$ESP = $CNF->findBySysKey('ACTIVE_SY')['MasterConfig']['sys_value'];
 			
+			// Check INQ with ASM not yet enrolled 
 			$inqOptions['joins']=array(
 				array(
 		            'table' => 'assessments', 
@@ -129,7 +132,6 @@ class Student extends AppModel {
 		            )
 		        )
 			);
-			$inqOptions['fields'][]='Assessment.*';
 			$I = $INQ->find('all',$inqOptions);
 		endif;
 		
@@ -159,6 +161,7 @@ class Student extends AppModel {
 			$stu['department_id']=$SO['YearLevel']['department_id'];
 			$stu['section']=$SO['YearLevel']['name'].' '.$SO['Section']['name'];
 			$stu['enroll_status']='OLD';
+			// Add hash to check for duplicate names
 			$hash = md5($stu['full_name']);
 			$stu['hash']=$hash;
 			if(!isset($hashes[$hash]))
@@ -172,6 +175,7 @@ class Student extends AppModel {
 			$inq['sno']='N/A'; // No SNO yet since new student
 			$inq['enroll_status']='NEW';
 			$hash = md5($inq['full_name']);
+			// Add hash to check for duplicate names
 			$inq['hash']=$hash;
 			if(isset($hashes[$hash]))
 				continue;
