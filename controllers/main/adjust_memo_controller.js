@@ -15,11 +15,17 @@ define(['app','adjust-memo','api','atomic/bomb'],function(app,AM){
 
 			let amt = $scope.AdjustAmount;
 			let type = $scope.AdjustType;
+			let typeObj = $filter('filter')($scope.AMTypes,{id:type})[0];
 			let trnx = ADJUST_TRNX;
 			$scope.changesApplied = false;
 			$scope.PrintDetails = {}; 
 			$scope.ActiveTabIndex = 0;
 			computeLedgerEntry(amt,type,trnx);
+
+			// Check if type applies to paysched
+			if(typeObj.hasOwnProperty('applyToPaysched'))
+				if(!typeObj.applyToPaysched) return false;
+
 			computePaymentSched(amt,trnx);
 						
 		}
