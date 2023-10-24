@@ -259,6 +259,7 @@ class PaymentPlan extends AppModel {
 		    $isDueNow = substr($sched['due_date'], 0, 7) === $currentMonth;
 		    if ( $hasBal && ( $isOverDue||$isDueNow )) {
 		       $dueAmount += $sched['due_amount'];
+		       $dueAmount -= $sched['paid_amount'];
 		       $dueMos[]=$index;
 		    }
 		    if($isDueNow||$isOverDue){
