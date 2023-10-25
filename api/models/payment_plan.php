@@ -300,8 +300,8 @@ class PaymentPlan extends AppModel {
 	public function recomputePaysched(&$schedule,$adjust=null){
 		if($adjust):
 			$code =$adjust['apply_to'];
+			$AdjAmount = $adjust['amount'];
 			if($code =='SBQPY'):
-				$AdjAmount = $adjust['amount'];
 				$PSLen = count($schedule)-1;
 				$total_payments = 0;
 				unset($schedule[$PSLen]);
@@ -326,8 +326,49 @@ class PaymentPlan extends AppModel {
 				$sched['due_amount']=$last_due;
 				$this->distributePayments($schedule,$total_payments);
 				$this->formatSchedule($schedule);
+			endif;
+			if($code =='OLDAC'):
+				$total_payments = $AdjAmount;
 				
+				$PSLen = count($schedule)-1;
+				$lastItem = $schedule[$PSLen];
+				unset($schedule[$PSLen]);
+				$oldAccSched= array(
+					'due_date'=>'Old Account',
+					'due_amount'=>$AdjAmount,
+					'paid_amount'=>'-',
+					'status'=>'NONE',
+					'balance'=>$AdjAmount,
+				);
+				$oa_pay =0;
+				if(isset($adjust['payments'])):
+					$oa_pay =$adjust['payments'];
+					$oldAccSched['paid_amount']=$oa_pay;
+					$oldAccSched['balance']=$AdjAmount-$oa_pay;
+				endif;
+
+				$total_due = floatval(str_replace(",", "", $lastItem['total_due']));
+				$total_pay = floatval(str_replace(",", "", $lastItem['total_pay']));
+				$total_due +=$AdjAmount;
+				$total_pay +=$oa_pay;
+				$total_bal = $total_due- $total_pay;
+
+				$lastItem['total_due']=number_format($total_due,2,'.',',');
+				$lastItem['total_pay']=number_format($total_pay,2,'.',',');
+				$lastItem['total_bal']=number_format($total_bal,2,'.',',');
+				
+
+
+				$oldAccSched['due_amount'] = number_format($oldAccSched['due_amount'],2,'.',',');
+				if($oa_pay)
+				$oldAccSched['paid_amount']=number_format($oldAccSched['paid_amount'],2,'.',',');
+				$oldAccSched['balance'] = number_format($oldAccSched['balance'],2,'.',',');
+				$schedule[]=$oldAccSched;
+				$schedule[]=$lastItem;
+
 			endif;
 		endif;
 	}
+
+	
 }

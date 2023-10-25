@@ -94,7 +94,11 @@ class AccountStatement extends Formsheet{
 		$schedLen = count($schedule);
 		$dueNow = array('date'=>'NO DUE','amount'=>'0.00');
 		if($schedLen){
-			$dueNow = $schedule[count($schedule)-1]['due_now'];
+			$dueIndex = $schedLen;
+			while(!isset($schedule[$dueIndex]['due_now'])){
+				$dueIndex--;
+			}
+			$dueNow = $schedule[$dueIndex]['due_now'];
 			$this->data['account']['due_now']=$dueNow;	
 		}
 

@@ -251,6 +251,8 @@ class Account extends AppModel {
 		$MOD = 0;
 		$DSC = 0;
 		$LOY = 0;
+		$OLD = 0;
+		$VOU = 0;
 		$LE = $statement['ledger_'.$type]; 
 		$TUIIndex =null;
 		foreach($LE as $index=>$entry):
@@ -268,10 +270,20 @@ class Account extends AppModel {
 				case 'LYLTY':
 					$LOY = $this->lookupAmount($entry);
 				break;
+				case 'OLDAC':
+					$OLD = $this->lookupAmount($entry);
+				break;
+				case 'AMFAV':
+
+				break;
 				default:
 					if($details=='Subsidy' || $code=='DSESC'):
 						$DSC = $this->lookupAmount($entry);
 					endif;
+					if($details=='FAV'  || $code =='AMFAV'):
+						$VOU = $this->lookupAmount($entry);
+					endif;
+
 				break;
 			}
 		endforeach;
@@ -284,19 +296,24 @@ class Account extends AppModel {
 		$LE = &$statement['ledger_'.$type];
 		$LETotalDue = ($TUI + $MOD) - $DSC - $LOY;
 
+		
+
+
+		if($VOU):
+		endif;
 		$Variance = $PSTotalDue -  $LETotalDue;
 		if($Variance!=0 ):
 			App::import('Model','PaymentPlan');
 			$PP = new PaymentPlan();
 			$isPSExccess = $PSTotalDue >$LETotalDue;
-
+			$UPON_ENROL = $this->lookupAmount($PS[0],'due_amount');
+			$TOT_SBQPY =  $LETotalDue -$UPON_ENROL;
 			if($isPSExccess):
 				// Make correction for Loyal Discount or Modules
 				$isLOYDiff = $LOY>0  &&  $Variance==$LOY;
 				$isMODiff = $MOD==0  && $Variance ==4950 ;
-				$isDefaultDiff =  !$isMODiff && $Variance >0 ;
-			
-			
+				
+				// Loyalty Discounts Correction
 				if($isLOYDiff):
 					$TUIObj = &$LE[$TUIIndex];
 					$TUIObj['amount']+=$LOY;
@@ -305,24 +322,30 @@ class Account extends AppModel {
 					$ammended['corrected']=true;
 				endif;
 
-				$UPON_ENROL = $this->lookupAmount($PS[0],'due_amount');
+				// Modules & eBook correction
 				if($isMODiff):
 					$TOT_SBQPY =  $PSTotalDue -$UPON_ENROL - $Variance;
 				endif;
-				if($isDefaultDiff):
-					$TOT_SBQPY =  $LETotalDue -$UPON_ENROL;
-				endif;
-				
-				$PSAdj = array();
-				$PSAdj['amount'] = $TOT_SBQPY;
-				$PSAdj['apply_to'] = 'SBQPY';
-				$PP->recomputePaysched($PS,$PSAdj);
-				$PS=array_values($PS);
-				$statement['paysched_'.$type] = $PS;
-				$this->AccountSchedule->updateSchedule($PS);
-				$ammended['corrected']=true;
 			endif;
+			$PSAdj = array();
+			$PSAdj['amount'] = $TOT_SBQPY;
+			$PSAdj['apply_to'] = 'SBQPY';
+			$PP->recomputePaysched($PS,$PSAdj);
+			$PS=array_values($PS);
+			$statement['paysched_'.$type] = $PS;
+			$this->AccountSchedule->updateSchedule($PS);
+			$ammended['corrected']=true;
+		endif;
 
+		if($OLD):
+			App::import('Model','PaymentPlan');
+			$PP = new PaymentPlan();
+			$PSAdj = array();
+			$PSAdj['amount'] =  $OLD;
+			$PSAdj['apply_to'] = 'OLDAC';
+			$PP->recomputePaysched($PS,$PSAdj);
+			$statement['paysched_'.$type] = array_values($PS);
+			$ammended['corrected']=true;
 		endif;
 		return $ammended;
 	}
