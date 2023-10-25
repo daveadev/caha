@@ -243,6 +243,10 @@ class Account extends AppModel {
 		$LEEndBal =$this->getEndBal($LE,'ledger');
 
 		$isValid = $LEEndBal==$PSEndBal;
+		$INIPY_0 = $PS[0]['status']!='PAID';
+		$SBQPY_1 = floatval(str_replace(",", "", $PS[1]['paid_amount']))>0; 
+		$isValid = $isValid && !($INIPY_0 && $SBQPY_1);
+		
 		return $isValid;
 	}
 
