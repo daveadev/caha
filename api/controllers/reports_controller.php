@@ -141,8 +141,12 @@ class ReportsController extends AppController{
 				$SOAC = new SoaCorrection();
 				$user = $this->Auth->user()['User']['username'];
 				$SOAC->log($sy,$type,$STO,$user);
-				$this->Account->ammend($STO,$type);
+				$ammend = $this->Account->ammend($STO,$type);
+				if($ammend['corrected']):
+					$SOAC->log($sy,$type.'_correction',$STO,$user);
+				endif;
 			endif;
+
 			$statements[] =  $STO;
 		endforeach;
 

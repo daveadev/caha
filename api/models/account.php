@@ -246,6 +246,7 @@ class Account extends AppModel {
 	}
 
 	function ammend(&$statement,$type="current"){
+		$ammended = array('corrected'=>false);
 		$TUI = 0;
 		$MOD = 0;
 		$DSC = 0;
@@ -287,22 +288,31 @@ class Account extends AppModel {
 		if($Variance!=0 ):
 			App::import('Model','PaymentPlan');
 			$PP = new PaymentPlan();
+			$isPSExccess = $PSTotalDue >$LETotalDue;
+
+			if($isPSExccess):
+				// Make correction for Loyal Discount or Modules
+				$isLOYDiff = $LOY>0  &&  $Variance==$LOY;
+				$isMODiff = $MOD==0  && $Variance ==4950 ;
+				$isDefaultDiff =  !$isMODiff && $Variance >0 ;
 			
-			// Make correction for Loyal Discount
-			$isLOYDiff = $LOY>0 && $PSTotalDue >$LETotalDue &&  $Variance==$LOY;
-			$isMODiff = $MOD==0 && $PSTotalDue > $LETotalDue && $Variance ==4950 ;
+			
+				if($isLOYDiff):
+					$TUIObj = &$LE[$TUIIndex];
+					$TUIObj['amount']+=$LOY;
+					$this->Ledger->updateEntry($TUIObj);
+					$PP->recomputeLedger($LE);
+					$ammended['corrected']=true;
+				endif;
 
-			if($isLOYDiff):
-				$TUIObj = &$LE[$TUIIndex];
-				$TUIObj['amount']+=$LOY;
-				$this->Ledger->updateEntry($TUIObj);
-				$PP->recomputeLedger($LE);
-			endif;
-			if($isMODiff):
 				$UPON_ENROL = $this->lookupAmount($PS[0],'due_amount');
+				if($isMODiff):
+					$TOT_SBQPY =  $PSTotalDue -$UPON_ENROL - $Variance;
+				endif;
+				if($isDefaultDiff):
+					$TOT_SBQPY =  $LETotalDue -$UPON_ENROL;
+				endif;
 				
-				$TOT_SBQPY =  $PSTotalDue -$UPON_ENROL - $Variance;
-
 				$PSAdj = array();
 				$PSAdj['amount'] = $TOT_SBQPY;
 				$PSAdj['apply_to'] = 'SBQPY';
@@ -310,8 +320,10 @@ class Account extends AppModel {
 				$PS=array_values($PS);
 				$statement['paysched_'.$type] = $PS;
 				$this->AccountSchedule->updateSchedule($PS);
+				$ammended['corrected']=true;
 			endif;
-		endif;
 
+		endif;
+		return $ammended;
 	}
 }
