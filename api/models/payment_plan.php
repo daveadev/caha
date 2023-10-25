@@ -229,12 +229,18 @@ class PaymentPlan extends AppModel {
 		$total_pay = 0;
 		$total_bal = 0;
 		foreach($schedule as &$sched):
+			if($sched['due_date']!='Old Account')
 			$sched['due_date']= date("d M Y",strtotime($sched['due_date']));
 			$sched['balance'] =  $sched['due_amount'] - $sched['paid_amount'];
 			$total_due += $sched['due_amount'];
 			$total_pay += $sched['paid_amount'];
 			$total_bal += $sched['balance'];
+
 			$sched['due_amount']= number_format($sched['due_amount'],2,'.',',');
+
+			if($sched['due_amount']<0):
+				$sched['due_amount'] ="(". str_replace('-','',$sched['due_amount']).")";
+			endif;
 			$sched['paid_amount']= $sched['paid_amount']>0?number_format($sched['paid_amount'],2,'.',','):'-';
 			$sched['balance']= $sched['balance']>0?number_format($sched['balance'],2,'.',','):'-';
 		endforeach;
@@ -254,6 +260,7 @@ class PaymentPlan extends AppModel {
 		$dueNow = array();
 		$dueMos = array();
 		foreach ($schedule as $index=>$sched) {
+			if($sched['due_date']=='Old Account') continue;
 		    $dueDate = strtotime($sched['due_date']);
 		    $hasBal = $sched['paid_amount'] < $sched['due_amount'];
 		    $isOverDue = $dueDate <= time();
@@ -366,6 +373,39 @@ class PaymentPlan extends AppModel {
 				$schedule[]=$oldAccSched;
 				$schedule[]=$lastItem;
 
+			endif;
+
+			if($code =='AMFAV'):
+
+				$total_payments = $AdjAmount;
+				
+				$PSLen = count($schedule)-1;
+				$lastItem = $schedule[$PSLen];
+				array_pop($schedule);
+				$hasOLDACC = false;
+				foreach($schedule as &$sched):
+					if(isset($sched['bill_month'])):
+						$sched['due_amount'] = floatval(str_replace(",", "", $sched['due_amount']));
+						$sched['paid_amount']=0;
+						$sched['balance']=0;
+						$sched['status']='NONE';
+					else:
+						$hasOLDACC = $sched['due_date'] =='Old Account';
+					endif;
+				endforeach;
+				$OLD_ACC =null;
+				if($hasOLDACC):
+					$OLD_ACC = array_pop($schedule);
+					$OLD_ACC['due_amount']=floatval(str_replace(",", "", $OLD_ACC['due_amount']));
+					$OLD_ACC['paid_amount']=floatval(str_replace(",", "", $OLD_ACC['paid_amount']));
+					$OLD_ACC['balance']=floatval(str_replace(",", "", $OLD_ACC['balance']));
+				endif;
+
+				
+				$this->distributePayments($schedule,$total_payments);
+				if($hasOLDACC)
+					array_push($schedule,$OLD_ACC);
+				$this->formatSchedule($schedule);
 			endif;
 		endif;
 	}

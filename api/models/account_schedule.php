@@ -26,6 +26,9 @@ class AccountSchedule extends AppModel {
 		foreach($schedule as $sched){
 			if(isset($sched['is_total'])) 
 				continue;
+			if($sched['due_date']=='Old Account')
+				continue;
+			
 			$schedObj = array();
 			$schedObj['id'] =$sched['id'];
 			$due_amount = floatval(str_replace(",", "", $sched['due_amount']));

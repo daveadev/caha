@@ -214,8 +214,9 @@ class Account extends AppModel {
 	}
 	protected function lookupAmount($obj,$key="amount"){
 		$amount = $obj[$key];
-		if(!is_numeric($amount))
+		if(!is_numeric($amount)){
 			$amount = floatval(str_replace(",", "", $amount));
+		}
 		return $amount;
 	}
 	protected function getEndBal($arr,$key){
@@ -253,6 +254,7 @@ class Account extends AppModel {
 		$LOY = 0;
 		$OLD = 0;
 		$VOU = 0;
+		$OR_PAY = 0;
 		$LE = $statement['ledger_'.$type]; 
 		$TUIIndex =null;
 		foreach($LE as $index=>$entry):
@@ -271,17 +273,21 @@ class Account extends AppModel {
 					$LOY = $this->lookupAmount($entry);
 				break;
 				case 'OLDAC':
-					$OLD = $this->lookupAmount($entry);
+					$old_amt = $this->lookupAmount($entry);
+					if($entry['type']=='-')
+						$old_amt *=-1;
+					$OLD += $old_amt;
+					
 				break;
-				case 'AMFAV':
-
+				case 'INIPY': case 'SBQPY':
+					$OR_PAY += $this->lookupAmount($entry);
 				break;
 				default:
 					if($details=='Subsidy' || $code=='DSESC'):
 						$DSC = $this->lookupAmount($entry);
 					endif;
 					if($details=='FAV'  || $code =='AMFAV'):
-						$VOU = $this->lookupAmount($entry);
+						$VOU += $this->lookupAmount($entry);
 					endif;
 
 				break;
@@ -294,14 +300,13 @@ class Account extends AppModel {
 		$PSTotalDue = $this->lookupAmount($PSTotals,'total_due');
 
 		$LE = &$statement['ledger_'.$type];
-		$LETotalDue = ($TUI + $MOD) - $DSC - $LOY;
-
+		$LEFees = $TUI + $MOD ;
+		$LEPays = $DSC + $LOY  ;
+		$LETotalDue = $LEFees - $LEPays;
 		
-
-
-		if($VOU):
-		endif;
+		
 		$Variance = $PSTotalDue -  $LETotalDue;
+
 		if($Variance!=0 ):
 			App::import('Model','PaymentPlan');
 			$PP = new PaymentPlan();
@@ -336,7 +341,6 @@ class Account extends AppModel {
 			$this->AccountSchedule->updateSchedule($PS);
 			$ammended['corrected']=true;
 		endif;
-
 		if($OLD):
 			App::import('Model','PaymentPlan');
 			$PP = new PaymentPlan();
@@ -344,9 +348,30 @@ class Account extends AppModel {
 			$PSAdj['amount'] =  $OLD;
 			$PSAdj['apply_to'] = 'OLDAC';
 			$PP->recomputePaysched($PS,$PSAdj);
-			$statement['paysched_'.$type] = array_values($PS);
+			$PS = array_values($PS);
+			$statement['paysched_'.$type] = $PS;
 			$ammended['corrected']=true;
 		endif;
+
+
+		if($VOU):
+
+			App::import('Model','PaymentPlan');
+			$PP = new PaymentPlan();
+			$PSAdj = array();
+			$PSAdj['amount'] =  $VOU +$OR_PAY;
+			$PSAdj['apply_to'] = 'AMFAV';
+			$PP->recomputePaysched($PS,$PSAdj);
+			$PS = array_values($PS);
+			$statement['paysched_'.$type] = $PS;
+			$this->AccountSchedule->updateSchedule($PS);
+			$ammended['corrected']=true;
+
+		endif;
+		
+
+
+		
 		return $ammended;
 	}
 }
