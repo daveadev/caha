@@ -137,6 +137,10 @@ class ReportsController extends AppController{
 			$STO = $this->PaymentPlan->getDetails($accId ,$sy,$type);
 			$isValid = $this->Account->review($STO,$type);
 			if(!$isValid):
+				App::import('Model','SoaCorrection');
+				$SOAC = new SoaCorrection();
+				$user = $this->Auth->user()['User']['username'];
+				$SOAC->log($sy,$type,$STO,$user);
 				$this->Account->ammend($STO,$type);
 			endif;
 			$statements[] =  $STO;
