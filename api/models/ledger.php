@@ -118,4 +118,19 @@ class Ledger extends AppModel {
 		return $entryInfo;
 
 	}
+
+	function updateEntry($entry){
+		$ttId = $entry['transaction_type_id'];
+		$this->save($entry);
+
+		$entryInfo = array(
+			'id'=>$this->id,
+			'ref_no'=>$entry['ref_no'],
+			'transaction'=>$ttId.' '.$entry['amount']
+		);
+		 
+
+		return $entryInfo;
+
+	}
 }

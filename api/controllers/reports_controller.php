@@ -134,8 +134,15 @@ class ReportsController extends AppController{
 		endif;
 		$statements=array();
 		foreach($ids as $accId):
-			$statements[] = $this->PaymentPlan->getDetails($accId ,$sy,$type);
+			$STO = $this->PaymentPlan->getDetails($accId ,$sy,$type);
+			$isValid = $this->Account->review($STO,$type);
+			if(!$isValid):
+				$this->Account->ammend($STO,$type);
+			endif;
+			$statements[] =  $STO;
 		endforeach;
+
+		
 		$this->set(compact('statements','type'));
 		$this->render('statement');
 		

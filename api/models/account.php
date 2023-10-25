@@ -212,5 +212,106 @@ class Account extends AppModel {
 		$this->setSource('accounts_'.$sy);
 		$this->AccountSchedule->setSource('account_schedules_'.$sy);
 	}
+	protected function lookupAmount($obj,$key="amount"){
+		$amount = $obj[$key];
+		if(!is_numeric($amount))
+			$amount = floatval(str_replace(",", "", $amount));
+		return $amount;
+	}
+	protected function getEndBal($arr,$key){
+		$amount=0;
+		$lastItem = $this->getEndItem($arr);
+		if($key=='paysched'):
+			$amount = $this->lookupAmount($lastItem,'total_bal');
+		elseif($key=='ledger'):
+			$amount = $this->lookupAmount($lastItem,'bal');
+		endif;
 
+		return $amount;
+	}
+	protected function getEndItem(&$arr){
+		return $arr[count($arr)-1];
+	}
+	function review($statement,$type="current"){
+		$isValid = true;
+		$PS = $statement['paysched_'.$type];
+		$PSLast = $PS[count($PS)-1];
+		$PSEndBal = $this->getEndBal($PS,'paysched');
+
+		$LE = $statement['ledger_'.$type]; 
+		$LEEndBal =$this->getEndBal($LE,'ledger');
+
+		$isValid = $LEEndBal==$PSEndBal;
+		return $isValid;
+	}
+
+	function ammend(&$statement,$type="current"){
+		$TUI = 0;
+		$MOD = 0;
+		$DSC = 0;
+		$LOY = 0;
+		$LE = $statement['ledger_'.$type]; 
+		$TUIIndex =null;
+		foreach($LE as $index=>$entry):
+			$details = $entry['details'];
+			$code = $entry['transaction_type_id'];
+			
+			switch($code){
+				case 'TUIXN':
+					$TUI = $this->lookupAmount($entry);
+					$TUIIndex = $index;
+				break;
+				case 'MODUL':
+					$MOD = $this->lookupAmount($entry);
+				break;
+				case 'LYLTY':
+					$LOY = $this->lookupAmount($entry);
+				break;
+				default:
+					if($details=='Subsidy' || $code=='DSESC'):
+						$DSC = $this->lookupAmount($entry);
+					endif;
+				break;
+			}
+		endforeach;
+
+		$PS = $statement['paysched_'.$type];
+		$PSEndBal = $this->getEndBal($PS,'paysched');
+		$PSTotals= &$this->getEndItem($PS);
+		$PSTotalDue = $this->lookupAmount($PSTotals,'total_due');
+
+		$LE = &$statement['ledger_'.$type];
+		$LETotalDue = ($TUI + $MOD) - $DSC - $LOY;
+
+		$Variance = $PSTotalDue -  $LETotalDue;
+		if($Variance!=0 ):
+			App::import('Model','PaymentPlan');
+			$PP = new PaymentPlan();
+			
+			// Make correction for Loyal Discount
+			$isLOYDiff = $LOY>0 && $PSTotalDue >$LETotalDue &&  $Variance==$LOY;
+			$isMODiff = $MOD==0 && $PSTotalDue > $LETotalDue && $Variance ==4950 ;
+
+			if($isLOYDiff):
+				$TUIObj = &$LE[$TUIIndex];
+				$TUIObj['amount']+=$LOY;
+				$this->Ledger->updateEntry($TUIObj);
+				$PP->recomputeLedger($LE);
+			endif;
+			if($isMODiff):
+				$UPON_ENROL = $this->lookupAmount($PS[0],'due_amount');
+				
+				$TOT_SBQPY =  $PSTotalDue -$UPON_ENROL - $Variance;
+
+				$PSAdj = array();
+				$PSAdj['amount'] = $TOT_SBQPY;
+				$PSAdj['apply_to'] = 'SBQPY';
+				$PP->recomputePaysched($PS,$PSAdj);
+				$PS=array_values($PS);
+				$statement['paysched_'.$type] = $PS;
+				$this->AccountSchedule->updateSchedule($PS);
+			endif;
+		endif;
+
+	}
 }

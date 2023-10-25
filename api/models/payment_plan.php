@@ -113,7 +113,8 @@ class PaymentPlan extends AppModel {
 	protected function distributePayments(&$schedule, $totalPayment) {
 	    foreach ($schedule as &$payment) {
 	        // Check if the payment is unpaid and there's a remaining payment to be made
-	        if ($payment['status'] === 'UNPAID' && $totalPayment > 0) {
+	        $isPAID = $payment['status'] === 'UNPAID' || $payment['status'] === 'NONE';
+	        if ($isPAID && $totalPayment > 0) {
 	            // Calculate the amount to be paid for this schedule
 	            $amountToPay = min($totalPayment, $payment['due_amount'] - $payment['paid_amount']);
 
@@ -291,5 +292,42 @@ class PaymentPlan extends AppModel {
 			$entry['bal'] =$run_bal_disp; 
 		endforeach;
 		return $entries;
+	}
+
+	public function recomputeLedger(&$entries){
+		$this->formatLedger($entries);
+	}
+	public function recomputePaysched(&$schedule,$adjust=null){
+		if($adjust):
+			$code =$adjust['apply_to'];
+			if($code =='SBQPY'):
+				$AdjAmount = $adjust['amount'];
+				$PSLen = count($schedule)-1;
+				$total_payments = 0;
+				unset($schedule[$PSLen]);
+				$due_amount = round($AdjAmount/($PSLen-1),0);
+				$total_dues = 0;
+				foreach($schedule as &$sched):
+					$ttid = $sched['transaction_type_id'];
+					$sched['due_amount'] = floatval(str_replace(",", "", $sched['due_amount']));
+					$paid_amount = floatval(str_replace(",", "", $sched['paid_amount']));
+					$sched['paid_amount'] =$paid_amount;
+					$total_payments+=$paid_amount;
+					if($ttid==$code):
+						$sched['due_amount']=$due_amount;
+					else:
+						$total_dues+=$sched['due_amount'];
+					endif;
+					$sched['paid_amount']=0;
+					$sched['status']='NONE';
+				endforeach;
+				$last_due = $AdjAmount- ($due_amount*($PSLen-2));
+				
+				$sched['due_amount']=$last_due;
+				$this->distributePayments($schedule,$total_payments);
+				$this->formatSchedule($schedule);
+				
+			endif;
+		endif;
 	}
 }

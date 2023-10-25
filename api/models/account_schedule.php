@@ -20,4 +20,22 @@ class AccountSchedule extends AppModel {
 			'order' => ''
 		)
 	);
+
+	function updateSchedule($schedule){
+		$scheduleAdj = array();
+		foreach($schedule as $sched){
+			if(isset($sched['is_total'])) 
+				continue;
+			$schedObj = array();
+			$schedObj['id'] =$sched['id'];
+			$due_amount = floatval(str_replace(",", "", $sched['due_amount']));
+
+			$paid_amount = floatval(str_replace(",", "", $sched['paid_amount']));
+			$schedObj['due_amount'] =$due_amount;
+			$schedObj['paid_amount'] =$paid_amount;
+			$schedObj['status'] =$sched['status'];
+			$scheduleAdj[] = $schedObj;
+		}
+		$this->saveAll($scheduleAdj);
+	}
 }
