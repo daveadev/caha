@@ -375,7 +375,7 @@ class PaymentPlan extends AppModel {
 
 			endif;
 
-			if($code =='AMFAV'):
+			if($code =='AMFAV' || $code=='OR_PAY'):
 
 				$total_payments = $AdjAmount;
 				

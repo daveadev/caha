@@ -369,8 +369,30 @@ class Account extends AppModel {
 
 		endif;
 		
+		if($OR_PAY && $Variance==0 && !$VOU):
+			App::import('Model','PaymentPlan');
+				$PP = new PaymentPlan();
+			$PSEndBal = $this->getEndBal($PS,'paysched');
+			$PSTotals= &$this->getEndItem($PS);
+			$PSTotalDue = $this->lookupAmount($PSTotals,'total_due');
 
+			$LEEEndBal = $this->getEndBal($LE,'ledger');
+			$LETotals= &$this->getEndItem($LE);
 
+			$LETotalDue = $this->lookupAmount($LETotals,'bal');
+		
+			if($LETotalDue!=$PSTotalDue):
+				$PSAdj = array();
+				$PSAdj['amount'] =  $VOU +$OR_PAY;
+				$PSAdj['apply_to'] = 'AMFAV';
+				$PP->recomputePaysched($PS,$PSAdj);
+				$PSAdj['apply_to'] = 'AMFAV';
+				$PP->recomputePaysched($PS,$PSAdj);
+				$PS = array_values($PS);
+				$statement['paysched_'.$type] = $PS;
+				$ammended['corrected']=true;
+			endif;
+		endif;
 		
 		return $ammended;
 	}
