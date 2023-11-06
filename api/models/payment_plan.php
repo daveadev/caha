@@ -174,6 +174,7 @@ class PaymentPlan extends AppModel {
 	    $accountInfo['Account']['name'] = $name;
 	    $accountInfo['Account']['sno'] = $sno;
 	    $accountInfo['Student']['section'] = $section;
+		$accountInfo['Account']['esp'] = $esp; 
 	    $accountInfo['Account']['school_year'] = sprintf("%s - %s",$sy,$sy+1);
 	    // Define conditions for the PaymentPlan association based on 'account_id' and 'esp'
 	    $conditions = array(
@@ -314,8 +315,10 @@ class PaymentPlan extends AppModel {
 				unset($schedule[$PSLen]);
 				$due_amount = round($AdjAmount/($PSLen-1),0);
 				$total_dues = 0;
+				$ttid = '';
 				foreach($schedule as &$sched):
-					$ttid = $sched['transaction_type_id'];
+					if(isset($sched['transaction_type_id']))
+						$ttid = $sched['transaction_type_id'];
 					$sched['due_amount'] = floatval(str_replace(",", "", $sched['due_amount']));
 					$paid_amount = floatval(str_replace(",", "", $sched['paid_amount']));
 					$sched['paid_amount'] =$paid_amount;

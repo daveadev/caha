@@ -221,13 +221,15 @@ class Account extends AppModel {
 	}
 	protected function getEndBal($arr,$key){
 		$amount=0;
-		$lastItem = $this->getEndItem($arr);
-		if($key=='paysched'):
-			$amount = $this->lookupAmount($lastItem,'total_bal');
-		elseif($key=='ledger'):
-			$amount = $this->lookupAmount($lastItem,'bal');
+		$hasItem = count($arr)>0;
+		if($hasItem):
+			$lastItem = $this->getEndItem($arr);
+			if($key=='paysched'):
+				$amount = $this->lookupAmount($lastItem,'total_bal');
+			elseif($key=='ledger'):
+				$amount = $this->lookupAmount($lastItem,'bal');
+			endif;
 		endif;
-
 		return $amount;
 	}
 	protected function getEndItem(&$arr){
@@ -238,13 +240,16 @@ class Account extends AppModel {
 		$PS = $statement['paysched_'.$type];
 		$PSLast = $PS[count($PS)-1];
 		$PSEndBal = $this->getEndBal($PS,'paysched');
-
 		$LE = $statement['ledger_'.$type]; 
 		$LEEndBal =$this->getEndBal($LE,'ledger');
 
 		$isValid = $LEEndBal==$PSEndBal;
 		$INIPY_0 = $PS[0]['status']!='PAID';
-		$SBQPY_1 = floatval(str_replace(",", "", $PS[1]['paid_amount']))>0; 
+		$SBQPY_1 =0;
+		if(isset($PS[1]['paid_amount'])):
+			$SBQPY_1 = floatval(str_replace(",", "", $PS[1]['paid_amount']))>0; 
+		endif;
+		
 		$isValid = $isValid && !($INIPY_0 && $SBQPY_1);
 		
 		return $isValid;
@@ -261,6 +266,7 @@ class Account extends AppModel {
 		$OR_PAY = 0;
 		$LE = $statement['ledger_'.$type]; 
 		$TUIIndex =null;
+		
 		foreach($LE as $index=>$entry):
 			$details = $entry['details'];
 			$code = $entry['transaction_type_id'];
@@ -309,12 +315,14 @@ class Account extends AppModel {
 		$LETotalDue = $LEFees - $LEPays;
 		
 		
+
 		$Variance = $PSTotalDue -  $LETotalDue;
 
 		if($Variance!=0 ):
 			App::import('Model','PaymentPlan');
 			$PP = new PaymentPlan();
 			$isPSExccess = $PSTotalDue >$LETotalDue;
+			$hasLE = count($LE)>0;
 			$UPON_ENROL = $this->lookupAmount($PS[0],'due_amount');
 			$TOT_SBQPY =  $LETotalDue -$UPON_ENROL;
 			if($isPSExccess):
@@ -334,6 +342,34 @@ class Account extends AppModel {
 				// Modules & eBook correction
 				if($isMODiff):
 					$TOT_SBQPY =  $PSTotalDue -$UPON_ENROL - $Variance;
+				endif;
+
+				if(!$hasLE):
+					$_AID =  $statement['account']['id'];
+					$_ESP =  floor($statement['account']['esp']);
+					$EPP_REFNO =  $this->Ledger->generateREFNO($_ESP,'EPP');
+					$_EPP_AMOUNT  = $PSTotalDue;
+					
+					$_EPP_date = date('Y-m-d', strtotime($PS[0]['due_date']));
+					$_EPP_time = '01:23:45';
+					
+					$EPPObj = array(
+						'ref_no'=>$EPP_REFNO,
+						'account_id'=>$_AID,
+						'type'=>'+',
+						'transaction_type_id'=>'EXTPY',
+						'details'=>'Ext. Payment Plan',
+						'amount'=>$_EPP_AMOUNT,
+						'esp'=>$_ESP,
+						'transac_date'=>$_EPP_date,
+						'transac_time'=>$_EPP_time,
+						'notes'=>'LE00_ERR Correction',
+					);
+					$LE = array($EPPObj);
+					$this->Ledger->insertEntry($EPPObj);
+					$PP->recomputeLedger($LE);
+					$statement['ledger_'.$type] = $LE;
+					$ammended['corrected']=true;
 				endif;
 			endif;
 			$PSAdj = array();

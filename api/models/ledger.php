@@ -76,6 +76,8 @@ class Ledger extends AppModel {
 		$REFNO_PREFIX = sprintf('%s%d',$prefix,$syID);
 		$cond =  array('Ledger.ref_no LIKE'=>$REFNO_PREFIX.'%');
 		$this->recursive=-1;
+		if($prefix=='EPP')
+			$this->setSource('payplan_ledgers');
 		
 		$ldgrObj = $this->find('first',array('conditions'=>$cond,'order'=>array('ref_no'=>'desc')));
 		

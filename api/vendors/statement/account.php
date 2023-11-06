@@ -135,6 +135,8 @@ class AccountStatement extends Formsheet{
 			$this->centerText(0,$y++,"**************** Nothing follows **************** ",21,'i');
 			$y=12.5;
 		}
+		if($schedLen==2)
+			$y=12.5;
 		// Due Box
 		$student = $this->data['student'];
 		
