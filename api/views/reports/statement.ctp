@@ -1,6 +1,6 @@
 <?php
 App::import('Vendor','statement/account');
-$conf = array('config'=>'soa_sy23_1q.json');
+$conf = array('config'=>'soa_sy23_1q2.json');
 $AS= new AccountStatement($conf);
 foreach($statements as $sInd=>$sObj):
 	$AS->data = $sObj;
