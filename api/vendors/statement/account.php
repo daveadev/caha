@@ -150,11 +150,12 @@ class AccountStatement extends Formsheet{
 
 		$this->GRID['font_size']=14;
 		$this->leftText(24,5,$student['sno'],4,'b');
+		if(isset($dueNow['date']))
 		$this->rightText(33,5,$dueNow['date'],4,'b');
 		$this->leftText(24,8.5,'Php '.$dueNow['amount'],4,'b');
 
 		$this->GRID['font_size']=10;
-		$note = "Kindly make payments at the school's accounting office on or before the deadline.";
+		$note = "For any discrepancies/clarifications, please consult with the LSEI Finance Department immediately.";
 		$this->wrapText(23,11,$note,14,'l',0.7);
 
 		$h = $this->GRID['cell_height'];
@@ -225,10 +226,12 @@ class AccountStatement extends Formsheet{
 		$this->section($metrics);
 
 		$artwork = $this->config['artwork'];
-		$image = $artwork['basePath'].$artwork['image'];
-		$iw = $artwork['width'];
-		$ih = $artwork['height'];
-		$this->DrawImage(24,-10,$iw,$ih,$image);
+		if($artwork['image']):
+			$image = $artwork['basePath'].$artwork['image'];
+			$iw = $artwork['width'];
+			$ih = $artwork['height'];
+			$this->DrawImage(24,-10,$iw,$ih,$image);
+		endif;
 
 		$this->GRID['font_size']=10;
 		$this->leftText(0,0.5,'Payment Instruction',10,'b');
@@ -250,6 +253,8 @@ class AccountStatement extends Formsheet{
 		$this->leftText(0.95,7,$note,5,'');
 		$note = "school's accounting office on or before the deadline.";
 		$this->leftText(0.95,7.8,$note,5,'');
+		$note = "For your convenience, bring this  when paying.";
+		$this->leftText(0.95,8.6,$note,5,'');
 		$bx =2;
 		$by = 9.78;
 		$code=$account['sno'];
