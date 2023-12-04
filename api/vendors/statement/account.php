@@ -51,6 +51,11 @@ class AccountStatement extends Formsheet{
 
 		$this->leftText(0,4.25,'School Year',10,'');
 		$this->leftText(5,4.25,$sy,10,'b');
+		if(isset($account['billing_no'])):
+			$billingNo = $account['billing_no'];
+			$this->leftText(0,5.25,'Reference No.',10,'');
+			$this->leftText(5,5.25,$billingNo,10,'b');
+		endif;
 		
 
 		$this->DrawImage(23,-1,3,1,__DIR__ ."/../images/new_logo.jpg");
