@@ -155,6 +155,7 @@ class PaymentPlan extends AppModel {
 	    // Set conditions for the Ledger association based on 'esp'
 	    $this->Account->belongsTo['Student']['fields']=array('id','name','full_name','lrn','sno','section_id','year_level_id');
 	    $this->Account->hasMany['Ledger']['conditions'] = array('Ledger.esp' => floor($esp));
+	    $this->Account->hasMany['Ledger']['order'] = array('Ledger.transac_date' ,'Ledger.id');
 
 
 	    // Retrieve account information based on the 'account_id'
@@ -260,8 +261,9 @@ class PaymentPlan extends AppModel {
 		$dueAmount = 0;
 		$dueNow = array();
 		$dueMos = array();
+		
 		foreach ($schedule as $index=>$sched) {
-			if($sched['due_date']=='Old Account') continue;
+			if($sched['due_date']=='Old Account' && count($schedule)>1) continue;
 		    $dueDate = strtotime($sched['due_date']);
 		    $hasBal = $sched['paid_amount'] < $sched['due_amount'];
 		    $isOverDue = $dueDate <= time();
@@ -281,6 +283,7 @@ class PaymentPlan extends AppModel {
 	}
 	protected function formatLedger(&$entries){
 		$run_bal = 0;
+	
 		foreach($entries as &$entry):
 
 			$entry['transac_date']= date("d M Y",strtotime($entry['transac_date']));
@@ -375,7 +378,12 @@ class PaymentPlan extends AppModel {
 				$oldAccSched['balance'] = number_format($oldAccSched['balance'],2,'.',',');
 				$schedule[]=$oldAccSched;
 				$schedule[]=$lastItem;
-
+				if(count($schedule)==2):
+					
+					$schedule[2]['due_now']['amount']=$lastItem['total_bal'];
+					$schedule[2]['due_now']['months'][]=1;
+					$schedule[2]['due_now']['date']=date('15 M Y',time());
+				endif;
 			endif;
 
 			if($code =='AMFAV' || $code=='OR_PAY'):

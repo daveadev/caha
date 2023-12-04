@@ -146,7 +146,17 @@ class ReportsController extends AppController{
 					$SOAC->log($sy,$type.'_correction',$STO,$user);
 				endif;
 			endif;
-
+			$PS =  $STO['paysched_'.$type];
+			$PSLen =  count($PS);
+			$dueNowObj =  $PS[$PSLen-1];
+			if(isset($dueNowObj['due_now'])):
+				App::import('Model','Billing');
+				$Billing =  new Billing();
+				$account =  $STO['account'];
+				$account['due_now'] =  $dueNowObj['due_now'];
+				$Billing->checkAccount($account);
+				$STO['account'] =  $account;
+			endif;
 			$statements[] =  $STO;
 		endforeach;
 

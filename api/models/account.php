@@ -238,21 +238,32 @@ class Account extends AppModel {
 	function review($statement,$type="current"){
 		$isValid = true;
 		$PS = $statement['paysched_'.$type];
-		$PSLast = $PS[count($PS)-1];
-		$PSEndBal = $this->getEndBal($PS,'paysched');
+		$PSLen = count($PS);
+		$PSEndBal =0;
+		if($PSLen>0):
+			$PSLast = $PS[count($PS)-1];
+			$PSEndBal = $this->getEndBal($PS,'paysched');
+		endif;
 		$LE = $statement['ledger_'.$type]; 
-		$LEEndBal =$this->getEndBal($LE,'ledger');
-
-		$isValid = $LEEndBal==$PSEndBal;
-		$INIPY_0 = $PS[0]['status']!='PAID';
-		$SBQPY_1 =0;
-		if(isset($PS[1]['paid_amount'])):
-			$SBQPY_1 = floatval(str_replace(",", "", $PS[1]['paid_amount']))>0; 
+		$LELen = count($LE);
+		$LEEndBal =0;
+		if($LELen>0):
+			$LEEndBal =$this->getEndBal($LE,'ledger');
 		endif;
 		
-		$isValid = $isValid && !($INIPY_0 && $SBQPY_1);
+		$isValid = $LEEndBal==$PSEndBal;
 		
+		if($PSLen>0 && $PSEndBal>0):
+			$INIPY_0 = $PS[0]['status']!='PAID';
+			$SBQPY_1 =0;
+			if(isset($PS[1]['paid_amount'])):
+				$SBQPY_1 = floatval(str_replace(",", "", $PS[1]['paid_amount']))>0; 
+			endif;
+			$isValid = $isValid && !($INIPY_0 && $SBQPY_1);
+		endif;
+
 		return $isValid;
+		
 	}
 
 	function ammend(&$statement,$type="current"){
@@ -289,14 +300,14 @@ class Account extends AppModel {
 					$OLD += $old_amt;
 					
 				break;
-				case 'INIPY': case 'SBQPY':
+				case 'INIPY': case 'SBQPY': case 'FULLP':
 					$OR_PAY += $this->lookupAmount($entry);
 				break;
 				default:
 					if($details=='Subsidy' || $code=='DSESC'):
 						$DSC = $this->lookupAmount($entry);
 					endif;
-					if($details=='FAV'  || $code =='AMFAV'):
+					if($details=='FAV'  || $code =='AMFAV' || $details=='SPV' || $code =='AMSPO'):
 						$VOU += $this->lookupAmount($entry);
 					endif;
 
@@ -330,13 +341,16 @@ class Account extends AppModel {
 				$isLOYDiff = $LOY>0  &&  $Variance==$LOY;
 				$isMODiff = $MOD==0  && $Variance ==4950 ;
 				
+				
 				// Loyalty Discounts Correction
 				if($isLOYDiff):
 					$TUIObj = &$LE[$TUIIndex];
-					$TUIObj['amount']+=$LOY;
-					$this->Ledger->updateEntry($TUIObj);
-					$PP->recomputeLedger($LE);
-					$ammended['corrected']=true;
+					if($TUIObj['amount']!=39925){
+						$TUIObj['amount']+=$LOY;
+						$this->Ledger->updateEntry($TUIObj);
+						$PP->recomputeLedger($LE);
+						$ammended['corrected']=true;
+					}
 				endif;
 
 				// Modules & eBook correction
@@ -391,6 +405,7 @@ class Account extends AppModel {
 			$PS = array_values($PS);
 			$statement['paysched_'.$type] = $PS;
 			$ammended['corrected']=true;
+
 		endif;
 
 
@@ -401,12 +416,12 @@ class Account extends AppModel {
 			$PSAdj = array();
 			$PSAdj['amount'] =  $VOU +$OR_PAY;
 			$PSAdj['apply_to'] = 'AMFAV';
+			//pr($PSAdj);
 			$PP->recomputePaysched($PS,$PSAdj);
 			$PS = array_values($PS);
 			$statement['paysched_'.$type] = $PS;
 			$this->AccountSchedule->updateSchedule($PS);
 			$ammended['corrected']=true;
-
 		endif;
 		
 		if($OR_PAY && $Variance==0 && !$VOU):

@@ -127,9 +127,12 @@ class AccountStatement extends Formsheet{
 				
 			endif;
 		endforeach;
-		if(!$schedule){
+		if($schedLen==1){
+			$y=12.5;
+		}
+		if(!$schedule || $schedLen<2){
 			$y=5.5;
-			$this->centerText(0,$y++,"********** NO APPLICABLE FEES  **********",21,'b');
+			$this->centerText(0,$y++," ********** NO APPLICABLE FEES  **********",21,'b');
 			if($type!='current')
 				$this->centerText(0,$y++,"+         Student did not apply for EPP          +",21,'');
 			$this->centerText(0,$y++,"**************** Nothing follows **************** ",21,'i');
@@ -217,8 +220,8 @@ class AccountStatement extends Formsheet{
 		$last_y = $this->data['last_y'];
 		$metrics = array(
 			'base_x'=> 0.5,
-			'base_y'=> 8.8 ,
-			'width'=> 7.5,
+			'base_y'=> 7.75,
+			'width'=> 7.7,
 			'height'=> 1.5,
 			'cols'=> 38,
 			'rows'=> 7.5,	
@@ -256,7 +259,7 @@ class AccountStatement extends Formsheet{
 		$note = "For your convenience, bring this  when paying.";
 		$this->leftText(0.95,8.6,$note,5,'');
 		$bx =2;
-		$by = 9.78;
+		$by = $metrics['base_y']+0.98;
 		$code=$account['sno'];
 		$color = '000'; 
 		$w = 0.021; 
@@ -264,10 +267,88 @@ class AccountStatement extends Formsheet{
 		$angle = 0; 
 		$type = 'code128'; 
 		Barcode::fpdf($this, $color, $bx, $by, $angle, $type, $code,$w,$h);  
-		$notes = $this->config['notes'];
-		$this->GRID['font_size']=9.5;
+		$font_size = 9.5;
+		$this->GRID['font_size']=$font_size;
 		$this->leftText(16.5,2,'Notes:',10,'');
-		$this->wrapText(16.25,2.5,$notes,21,'i',0.8);
+		$notes = $this->config['notes'];
+		if(isset($this->config['font_size'])):
+			$font_size = $this->config['font_size'];
+		endif;
+		$this->GRID['font_size']=$font_size;
 		$this->DrawBox(15.5,1,22.5,8,'D');
+		$this->wrapText(16.25,2.5,$notes,21,'i',0.7);
+		$h = $this->GRID['cell_height'];
+		$y=6.5;
+		$this->data['last_y'] = $metrics['base_y']+ ($h*$y);
+	}
+	function reply_slip(){
+		$last_y = $this->data['last_y'];
+		$metrics = array(
+			'base_x'=> 0.5,
+			'base_y'=> 0.65+$last_y,
+			'width'=> 7.5,
+			'height'=> 1.5,
+			'cols'=> 38,
+			'rows'=> 10,	
+		);
+		$this->section($metrics);
+		
+		
+		$this->GRID['font_size']=9;
+		$this->SetFillColor(195,237,209);
+		$this->DrawBox(-2.5,0.5,2,9.5,'F');
+		$this->RotateText(-1.25,8.25,'R E P L Y  S L I P',90);
+		$this->RotateText(-1.25,8.25,'R E P L Y  S L I P',90);
+		$x =-10;
+		$w = 58;
+		$h =0.5;
+		$x=0;
+		for($lx=-3;$lx<$metrics['cols']+3;$lx+=1){
+			$this->DrawLine($h,'h',array($lx,0.5));
+		}
+		
+		$y=2;
+		
+		$student = $this->data['student'];
+		$account = $this->data['account'];
+		$billingNo =  $account['billing_no'];
+		$this->GRID['font_size']=9;
+		$this->leftText(0,$y,'Ref No.: ',3,'');
+		$this->leftText(3,$y++,$billingNo ,10,'b');
+		$y+=0.5;
+		$this->GRID['font_size']=8;
+		$this->leftText(0,$y++,'Student Name / Level & Section:',10,'');
+		
+		$this->leftText(0,$y++, $account['name'],10,'b');
+		$this->leftText(0,$y++, $student['section'],10,'b');
+		
+		
+		$dueNow = array('date'=>'NO DUE','amount'=>'0.00');
+		if(isset($account['due_now']))
+			$dueNow = $account['due_now'];
+		
+		$dueShort =  sprintf("Php %s/ %s",$dueNow['amount'],$dueNow['date']);
+		$y=2;
+		$this->GRID['font_size']=9;
+		$this->rightText(10,$y,'Due Details: ',5,'');
+		$this->leftText(15.5,$y++,$dueShort,10,'b');
+		$y+=0.5;
+		$this->GRID['font_size']=8;
+		$this->rightText(12,$y++,'Parent / Guardian:',4,'');
+		$this->rightText(11.2,$y++,'Relationship:',4,'');
+		$this->rightText(11.2,$y++,'Contact No.:',4,'');
+		$y=3.6;
+		$this->DrawLine($y++,'h',array(15.5,7));
+		$this->DrawLine($y++,'h',array(15.5,7));
+		$this->DrawLine($y,'h',array(15.5,7));
+		$y=6;
+		$this->DrawLine($y-1,'h',array(28,11));
+		$this->leftText(35.5,$y-1.25,' / ',10,'');
+		$this->leftText(28,$y,'Signature Over Printed Name  / Date Signed',10,'');
+		
+		$y+=1.5;
+		$message= 'By signing this form, I hereby confirm the receipt of the Statement of Account with Ref No. '.$billingNo .' from Lake Shore Educational Insitution\'s Finance Office.';
+		$this->centerText(0,$y,$message,40,'i');
+
 	}
 }
