@@ -30,7 +30,7 @@ class Booklet extends AppModel {
 
 	function updateSeries($ref_no,$booklet_id){
 		$BKL = $this->findById($booklet_id);
-		$series_no =(int)preg_replace('/\D/', '', $ref_no);
+		$series_no =(int)preg_replace('/(A2O|AR|OR)/', '', $ref_no);
 		$booklet = array('is_valid'=>false);
 		if($BKL):
 			$booklet = $BKL['Booklet'];
@@ -44,6 +44,8 @@ class Booklet extends AppModel {
 				$booklet['is_valid'] = true;
 			else:
 				$booklet['is_valid']=false;
+				$booklet['message']="$series_no out of range for booklet id $booklet_id";
+				return $booklet;
 			endif;
 		endif;
 		$bookletInfo = array();
