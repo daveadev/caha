@@ -11,6 +11,11 @@ class BookletsController extends AppController {
 		if($cashier):
 			$this->paginate['Booklet']['conditions'][] = array('cashier_id'=>$cashier['Cashier']['id']);
 		endif;
+		if(isset($_GET['receipt_type'])):
+			if($_GET['receipt_type']=='A2O'):
+				$this->paginate['Booklet']['conditions'][0]=array('Booklet.receipt_type'=>'OR');
+			endif;
+		endif;
 		$this->set('booklets', $this->paginate());
 	}
 

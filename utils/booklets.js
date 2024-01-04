@@ -23,7 +23,7 @@ define(['app','util','api'],function(app,util) {
 	BKLT.requestBooklets = function(docType){
 		let filter ={
 			receipt_type: docType,
-			status:['ASSGN','ACTIV'],
+			status:['ACTIV'],
 			limit:'less'};
 		let success =function(response){
 			booklets = response.data;

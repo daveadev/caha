@@ -232,7 +232,7 @@ define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 		}
 		$selfScope.$on('OpenPayModal',function(evt,args){
 			aModal.open('CashierPaymentModal');
-			$scope.PayObj.series_no = 'AR 1230';
+			$scope.PayObj.series_no = null;
 			$scope.PayObj.doc_type = 'A2O';
 			$scope.PayObj.pay_type = 'CASH';
 			$scope.PayObj.transac_date = new Date();
