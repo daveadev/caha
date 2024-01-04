@@ -251,14 +251,21 @@ define(['app','adjust-memo','api','atomic/bomb'],function(app,AM){
 			let atObj = ADJUST_TYPES[type];
 			let initBal = $scope.LERunBalance;
 			let newBal = initBal -  amount;
+			let feeAmount = null;
+			let paymentAmount = $filter('currency')(amount);
+			if(atObj.adjustType=='fee'){
+				newBal = initBal + amount;
+				feeAmount =  $filter('currency')(amount);
+				paymentAmount =  null;
+			}
 			let entryObj = {
 				id:trnx.id,
 				date: $filter('date')(new Date(),DATE_FORMAT),
 				ref_no: trnx.ref_no,
 				description: atObj.code,
 				code: atObj.id,
-				fee:null,
-				payment:$filter('currency')(amount),
+				fee:feeAmount,
+				payment:paymentAmount,
 				balance:$filter('currency')(newBal)
 			};
 			$scope.LEData.push(entryObj);

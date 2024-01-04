@@ -161,12 +161,22 @@ class PaymentPlan extends AppModel {
 	    // Retrieve account information based on the 'account_id'
 	    if($esp<2023){
 	    	$this->Account->udpateEspSource($esp);
+			$this->Account->hasMany['AccountSchedule']['conditions']=array('YEAR(AccountSchedule.created)'=>$esp);
+		
 	    }
+		
 	    $accountInfo = $this->Account->findById($account_id);
 	    $sect_id = $accountInfo['Student']['section_id'];
 	    $sectInfo = $this->Account->Student->Section->findByid($sect_id);
-
-
+		
+		if($esp<2023){
+			$legderConditions=array('esp'=>$esp,'account_id'=>$account_id);
+			$ledgerEntries =  $this->Account->Ledger->find('all',array('recursive'=>-1,'conditions'=>$legderConditions));
+			$accountInfo['Ledger']=[];
+			foreach($ledgerEntries as $entry):
+				$accountInfo['Ledger'][]=$entry['Ledger'];
+			endforeach;
+		}
 	    // Statement Info
 	    $sy = floor($esp);
 	    $sno = trim($accountInfo['Student']['sno']);
@@ -268,17 +278,25 @@ class PaymentPlan extends AppModel {
 		    $hasBal = $sched['paid_amount'] < $sched['due_amount'];
 		    $isOverDue = $dueDate <= time();
 		    $isDueNow = substr($sched['due_date'], 0, 7) === $currentMonth;
+		    	
+		    if($isDueNow||$isOverDue){
+		    	$dueNow['date'] = date('d M Y',$dueDate);
+		    }
+
 		    if ( $hasBal && ( $isOverDue||$isDueNow )) {
 		       $dueAmount += $sched['due_amount'];
 		       $dueAmount -= $sched['paid_amount'];
 		       $dueMos[]=$index;
 		    }
-		    if($isDueNow||$isOverDue){
-		    	$dueNow['date'] = date('d M Y',$dueDate);
-		    }
+		    
 		}
+
 		$dueNow['amount']=number_format($dueAmount,2,'.',',');
 		$dueNow['months']=$dueMos;
+		// Move due date to current month when dueAmount is zero
+		if($dueAmount==0)
+			$dueNow['date'] = date('15 M Y',time());
+		
 		return $dueNow;
 	}
 	protected function formatLedger(&$entries){

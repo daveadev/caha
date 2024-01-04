@@ -288,12 +288,15 @@ class Account extends AppModel {
 					$TUIIndex = $index;
 				break;
 				case 'MODUL':
-					$MOD = $this->lookupAmount($entry);
+					$mod_amt = $this->lookupAmount($entry);
+					if($entry['type']=='-')
+						$mod_amt *=-1;
+					$MOD += $mod_amt;
 				break;
 				case 'LYLTY':
 					$LOY = $this->lookupAmount($entry);
 				break;
-				case 'OLDAC':
+				case 'OLDAC': case 'AMPEC':
 					$old_amt = $this->lookupAmount($entry);
 					if($entry['type']=='-')
 						$old_amt *=-1;
@@ -303,11 +306,15 @@ class Account extends AppModel {
 				case 'INIPY': case 'SBQPY': case 'FULLP':
 					$OR_PAY += $this->lookupAmount($entry);
 				break;
+				// Late & Regular ESC Voucher
+				case  'AMLES': case 'AMRES':
+					$VOU += $this->lookupAmount($entry);
+				break;
 				default:
 					if($details=='Subsidy' || $code=='DSESC'):
 						$DSC = $this->lookupAmount($entry);
 					endif;
-					if($details=='FAV'  || $code =='AMFAV' || $details=='SPV' || $code =='AMSPO'):
+					if($details=='FAV'  || $code =='AMFAV' || $details=='SPV' || $code =='AMSPO'  ):
 						$VOU += $this->lookupAmount($entry);
 					endif;
 

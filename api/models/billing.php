@@ -32,7 +32,7 @@ class Billing extends AppModel {
         $hashObj = $this->checkHashObj($account['id'], $dueNow['date'], $dueNow['amount']);
         $hasID = isset($hashObj['id']);
         
-        if(!$hasID){
+        if(!$hasID && $hashObj['account_id']){
         	$sy  =floor($account['esp']);
             $BNO = $this->generateREFNO($sy,'LSB');
             $hashObj['id']=$BNO;

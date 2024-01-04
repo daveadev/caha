@@ -10,9 +10,6 @@ class ReportsController extends AppController{
 		if($module=='statement'){
 			$this->statement();
 		}
-		if($module=='reminder'){
-			$this->reminder();
-		}
 	}
 	function soa($format="old"){
 		//pr($_GET); exit();
@@ -151,14 +148,16 @@ class ReportsController extends AppController{
 			endif;
 			$PS =  $STO['paysched_'.$type];
 			$PSLen =  count($PS);
-			$dueNowObj =  $PS[$PSLen-1];
-			if(isset($dueNowObj['due_now'])):
-				App::import('Model','Billing');
-				$Billing =  new Billing();
-				$account =  $STO['account'];
-				$account['due_now'] =  $dueNowObj['due_now'];
-				$Billing->checkAccount($account);
-				$STO['account'] =  $account;
+			if($PSLen):
+				$dueNowObj =  $PS[$PSLen-1];
+				if(isset($dueNowObj['due_now'])):
+					App::import('Model','Billing');
+					$Billing =  new Billing();
+					$account =  $STO['account'];
+					$account['due_now'] =  $dueNowObj['due_now'];
+					$Billing->checkAccount($account);
+					$STO['account'] =  $account;
+				endif;
 			endif;
 			$statements[] =  $STO;
 		endforeach;
@@ -168,52 +167,6 @@ class ReportsController extends AppController{
 		$this->render('statement');
 		
 
-	}
-
-	function reminder($account_id=null,$sy=null,$type='old'){
-		$ids = array();
-		if(isset($_GET['account_id'])):
-			$account_id = $_GET['account_id'];
-			if(isset($_GET['sy']))
-				$sy = $_GET['sy'];
-			if(isset($_GET['type']))
-				$type = $_GET['type'];
-			$ids[] = $account_id;
-		endif;
-
-		if(isset($_GET['section_id']) && isset($_GET['sy'])):
-			$sec_id=$_GET['section_id'];
-			$sy=$_GET['sy'];
-			if($_GET['dept']=='SH'){
-				if($_GET['sem']==45)
-					$esp=.3;
-				else
-					$esp=.1;
-				$sy = intval($sy)+$esp;
-			}
-			$ids = $this->ClasslistBlock->getIds($sec_id,$sy);
-		endif;
-		$statements=array();
-		foreach($ids as $accId):
-			$STO = $this->PaymentPlan->getDetails($accId ,$sy,$type);
-			$isValid = $this->Account->review($STO,$type);
-			if(!$isValid):
-				App::import('Model','SoaCorrection');
-				$SOAC = new SoaCorrection();
-				$user = $this->Auth->user()['User']['username'];
-				$SOAC->log($sy,$type,$STO,$user);
-				$ammend = $this->Account->ammend($STO,$type);
-				if($ammend['corrected']):
-					$SOAC->log($sy,$type.'_correction',$STO,$user);
-				endif;
-			endif;
-
-			$statements[] =  $STO;
-		endforeach;
-
-		
-		$this->set(compact('statements','type'));
-		$this->render('reminder');
 	}
 	function daily_collections(){
 		$data = $_POST['Collections'];

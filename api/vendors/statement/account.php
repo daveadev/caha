@@ -9,6 +9,7 @@ class AccountStatement extends Formsheet{
 	protected static $_orient = 'P';	
 	protected static $curr_page = 1;
 	protected static $page_count;
+	protected static $_MAX_LINES=10;
 	function AccountStatement($data=null){
 		$this->data = $data;
 		$this->loadConfig($this->data['config']);
@@ -44,18 +45,21 @@ class AccountStatement extends Formsheet{
 		$this->section($metrics);
 		$this->GRID['font_size']=10;
 		$this->leftText(0,2.25,'Student Name',10,'');
-		$this->leftText(5,2.25, $account['name'],10,'b');
+		$name  =$account['name'];
+		if(mb_check_encoding($account['name'],'utf8')):
+			$name =  utf8_decode($name);
+		endif;
+
+		$this->data['account']['name']=$name;
+		$this->leftText(5,2.25, $name,10,'b');
 
 		$this->leftText(0,3.25,'Level / Section',10,'');
 		$this->leftText(5,3.25,$student['section'],10,'b');
 
 		$this->leftText(0,4.25,'School Year',10,'');
 		$this->leftText(5,4.25,$sy,10,'b');
-		if(isset($account['billing_no'])):
-			$billingNo = $account['billing_no'];
-			$this->leftText(0,5.25,'Reference No.',10,'');
-			$this->leftText(5,5.25,$billingNo,10,'b');
-		endif;
+		
+		
 		
 
 		$this->DrawImage(23,-1,3,1,__DIR__ ."/../images/new_logo.jpg");
@@ -85,10 +89,15 @@ class AccountStatement extends Formsheet{
 		$this->section($metrics);
 		$sched_key = 'paysched_'.$type;
 		$sched_title =$type=='current'?'Payment Schedule':'Extension Payment Plan';
+
 		$schedule = $this->data[$sched_key];
+		$ledger_key = 'ledger_'.$type;
+		$ledger = $this->data[$ledger_key];
+		$totalPages =  count($ledger)> AccountStatement::$_MAX_LINES?2:1;
 		$this->GRID['font_size']=10.5;
 		$this->leftText(0,1.25,$sched_title,10,'b');
-		$this->rightText(33,1.25,"Page 1 of 1",5,'b');
+		
+		$this->rightText(33,1.25,"Page 1 of $totalPages",5,'b');
 		$y=2.5;
 		$this->GRID['font_size']=9.5;
 		$this->leftText(0,$y,'Date Due',5,'b');
@@ -96,16 +105,24 @@ class AccountStatement extends Formsheet{
 		$this->rightText(10,$y,'Payments',5,'b');
 		$this->rightText(15,$y,'Balance',5,'b');
 		//$this->rightText(16,$y,'Date Paid',5,'b');
+
+
 		$schedLen = count($schedule);
 		$dueNow = array('date'=>'NO DUE','amount'=>'0.00');
+
 		if($schedLen){
-			$dueIndex = $schedLen;
+			$dueIndex = $schedLen-1;
+			
 			while(!isset($schedule[$dueIndex]['due_now'])){
 				$dueIndex--;
 			}
+			
 			$dueNow = $schedule[$dueIndex]['due_now'];
+			
 			$this->data['account']['due_now']=$dueNow;	
+
 		}
+		
 
 		// Monthly schedule
 		foreach($schedule as $index=>$sched):
@@ -146,8 +163,15 @@ class AccountStatement extends Formsheet{
 		if($schedLen==2)
 			$y=12.5;
 		// Due Box
+		$account = $this->data['account'];
 		$student = $this->data['student'];
 		
+
+		if(isset($account['billing_no'])):
+			$billingNo = $account['billing_no'];
+			$this->leftText(23,1.3,'Ref No.:',5,'');
+			$this->leftText(25.5,1.3,$billingNo,5,'u');
+		endif;
 		
 		$this->SetDrawColor(27,151,68);
 		$this->SetFillColor(195,237,209);
@@ -162,6 +186,8 @@ class AccountStatement extends Formsheet{
 		$this->rightText(33,5,$dueNow['date'],4,'b');
 		$this->leftText(24,8.5,'Php '.$dueNow['amount'],4,'b');
 
+
+
 		$this->GRID['font_size']=10;
 		$note = "For any discrepancies/clarifications, please consult with the LSEI Finance Department immediately.";
 		$this->wrapText(23,11,$note,14,'l',0.7);
@@ -170,7 +196,7 @@ class AccountStatement extends Formsheet{
 		$this->data['last_y'] = $metrics['base_y']+ ($h*$y);
 	}
 
-	function ledger($type){
+	function ledger($type, $start=0,$prevEntry=null){
 		$this->showLines = !true;
 		$last_y = $this->data['last_y'];
 
@@ -199,7 +225,19 @@ class AccountStatement extends Formsheet{
 		$this->rightText(32,$y,'Balance',5,'b');
 		
 		// Monthly schedule
-		foreach($ledger as $entry):
+		$_ln_ctr=1;
+		if($prevEntry):
+			$y++;
+			$this->leftText(0,$y,'******',5,'');
+			$this->leftText(5,$y,'******',5,'');
+			$this->leftText(10,$y,'Running Balance',8,'');
+			$this->rightText(22,$y,'******',5,'');
+			$this->rightText(26.5,$y,'******',5,'');
+			$this->rightText(32,$y,$prevEntry['bal'],5,'');
+			$_ln_ctr++;
+		endif;
+		for($lIndex=$start;$lIndex<count($ledger);$lIndex++):
+			$entry= $ledger[$lIndex];
 			$y++;
 			$this->leftText(0,$y,$entry['transac_date'],5,'');
 			$this->leftText(5,$y,$entry['ref_no'],5,'');
@@ -207,7 +245,18 @@ class AccountStatement extends Formsheet{
 			$this->rightText(22,$y,$entry['fee'],5,'');
 			$this->rightText(27,$y,$entry['pay'],5,'');
 			$this->rightText(32,$y,$entry['bal'],5,'');
-		endforeach;
+			$_ln_ctr++;
+			if($_ln_ctr>AccountStatement::$_MAX_LINES):
+				$y+=1.5;
+				$this->centerText(0,$y,"**************** See page 2 of 2 **************** ",38,'i');
+				$this->payment_ins();
+				$this->reply_slip();
+				$this->createSheet();
+				$this->pageHeader();
+				$prevEntry = $ledger[$lIndex];
+				return $this->ledger($type, $lIndex+1,$prevEntry);
+			endif;
+		endfor;
 		$y+=1.5;
 		$this->centerText(0,$y,"**************** Nothing follows **************** ",38,'i');
 		$y++;
@@ -221,8 +270,9 @@ class AccountStatement extends Formsheet{
 		
 	}
 	function payment_ins(){
-		
 		$last_y = $this->data['last_y'];
+		
+		
 		$metrics = array(
 			'base_x'=> 0.5,
 			'base_y'=> 7.75,
@@ -231,6 +281,11 @@ class AccountStatement extends Formsheet{
 			'cols'=> 38,
 			'rows'=> 7.5,	
 		);
+		if(isset($this->data['payment_ins_printed'])):
+			$metrics['base_y']+=1;
+		endif;
+
+		$this->data['payment_ins_printed']=true;
 		$this->section($metrics);
 
 		$artwork = $this->config['artwork'];
@@ -244,7 +299,6 @@ class AccountStatement extends Formsheet{
 		$this->GRID['font_size']=10;
 		$this->leftText(0,0.5,'Payment Instruction',10,'b');
 		$this->DrawBox(0,1,15.5,8,'D');
-		
 		$account = $this->data['account'];
 		$dueNow = array('amount'=>'0.00');
 		if(isset($account['due_now']))
@@ -253,6 +307,13 @@ class AccountStatement extends Formsheet{
 		$this->GRID['font_size']=9;
 		$this->leftText(1,2,'Student No.',10,'');
 		$this->rightText(4,2,'Amount Due',10,'');
+
+		if(isset($account['billing_no'])):
+			$billingNo = $account['billing_no'];
+			$this->leftText(29.5,0.5,'Reference No.:',5,'');
+			$this->rightText(28,0.5,$billingNo,10,'b');
+		endif;
+		
 		$this->GRID['font_size']=11;
 		$this->leftText(1,3,$account['sno'],10,'');
 		$this->rightText(4,3,'Php '.$dueNow['amount'],10,'');
@@ -288,9 +349,11 @@ class AccountStatement extends Formsheet{
 	}
 	function reply_slip(){
 		$last_y = $this->data['last_y'];
+		if(isset($this->data['reply_slip_printed'])) return;
+		$this->data['reply_slip_printed']=true;
 		$metrics = array(
 			'base_x'=> 0.5,
-			'base_y'=> 0.65+$last_y,
+			'base_y'=> 0.6+$last_y,
 			'width'=> 7.5,
 			'height'=> 1.5,
 			'cols'=> 38,
@@ -316,10 +379,13 @@ class AccountStatement extends Formsheet{
 		
 		$student = $this->data['student'];
 		$account = $this->data['account'];
-		$billingNo =  $account['billing_no'];
+		$billingNo = 'N/A';
 		$this->GRID['font_size']=9;
-		$this->leftText(0,$y,'Ref No.: ',3,'');
-		$this->leftText(3,$y++,$billingNo ,10,'b');
+		if(isset($account['billing_no'])):
+			$billingNo =  $account['billing_no'];
+			$this->leftText(0,$y,'Ref No.: ',3,'');
+			$this->leftText(3,$y++,$billingNo ,10,'b');
+		endif;
 		$y+=0.5;
 		$this->GRID['font_size']=8;
 		$this->leftText(0,$y++,'Student Name / Level & Section:',10,'');
@@ -352,8 +418,38 @@ class AccountStatement extends Formsheet{
 		$this->leftText(28,$y,'Signature Over Printed Name  / Date Signed',10,'');
 		
 		$y+=1.5;
+		$this->GRID['font_size']=7.5;
 		$message= 'By signing this form, I hereby confirm the receipt of the Statement of Account with Ref No. '.$billingNo .' from Lake Shore Educational Insitution\'s Finance Office.';
 		$this->centerText(0,$y,$message,40,'i');
 
+	}
+	function pageHeader(){
+		$last_y = 0.25;
+		$metrics = array(
+			'base_x'=> 0.5,
+			'base_y'=> 0.125+$last_y,
+			'width'=> 7.5,
+			'height'=> 1.5,
+			'cols'=> 38,
+			'rows'=> 7.5,	
+		);
+		$this->section($metrics);
+		$y=0;
+		$this->GRID['font_size']=9;
+		$student = $this->data['student'];
+		$account = $this->data['account'];
+		$sy = $account['school_year'];
+		$this->GRID['font_size']=10;
+		$name  =trim($account['name']);
+		$this->leftText(0,$y, $name .' / '.$student['section'],10,'b');
+		$this->rightText(30,$y,"Statement of Account",7,'b');
+		$y++;
+		$this->leftText(0,$y,'School Year',5,'');
+		$this->leftText(4,$y,$sy,10,'b');
+		$this->rightText(30,$y,"Page 2 of 2",7,'');
+		
+
+		$h = $this->GRID['cell_height'];
+		$this->data['last_y'] = $metrics['base_y']+ ($h*$y);
 	}
 }

@@ -4,6 +4,8 @@ define(['app','util','api'],function(app,util) {
 		// Adjustment Types
 		ADJM.UI.TYPES = [
 			{id:'AMFAV1', code:'FAV',name:'Financial Assistance Voucher'},
+			{id:'AMLESC', code:'L-ESC',name:'Late Credit ESC/Voucher'},
+			{id:'AMRESC', code:'RegESC',name:'Regular Credit ESC/Voucher'},
 			{id:'AMFAV2', code:'AFAV',name:'Additional Financial Assistance Voucher',disabled:true},
 			{id:'AMOTFA', code:'OTFA',name:'One Time Financial Assistance'},
 			{id:'AMVASF', code:'VSV',name:'Valedictorian Special Voucher',disabled:true},
@@ -12,7 +14,7 @@ define(['app','util','api'],function(app,util) {
 			{id:'AMSFAV', code:'SFAV',name:'Special Financial Voucher',disabled:true},
 			{id:'AMSPOV', code:'SPV',name:'Sponsorship Voucher'},
 			{id:'AMTMCA', code:'TBD',name:'Temporary Clear Account',applyToPaysched:false},
-			{id:'AMPECA', code:'PBD',name:'Permanent Clear Account',applyToPaysched:false}
+			{id:'AMREFU', code:'Refund',name:'Refund Account',applyToPaysched:false, adjustType:'fee'}
 		];
 
 		// Ledger Entry
