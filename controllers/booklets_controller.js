@@ -40,7 +40,7 @@ define(['app','api','atomic/bomb'], function (app) {
 				$scope.Props = ['booklet_number','doctype','series_start','series_end', 'series_counter'];
 				$scope.TranxHeaders = ['Date','Ref no','Amount'];
 				$scope.TranxProps = ['transac_date','ref_no','amount'];
-				$scope.Options = [{id:'OR',name:'OR'},{id:'AR',name:'AR'}];
+				$scope.Options = [{id:'OR',name:'OR'},{id:'AR',name:'AR'},{id:'A2O',name:'A2O'}];
 				$scope.inputs = [{field:'booklet_number'},{field:'doctype',options:$scope.Options},{field:'series_start',type:'number'},{field:'series_end',type:'number'},{field:'series_counter',type:'number'}];
 				
 			};
