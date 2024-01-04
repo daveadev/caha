@@ -213,7 +213,13 @@ div[align="right"] input[disabled]{
 		</a-modal>
 	</div>
 
-	<form action="api/receipts/cash_ar" method="POST" target="_blank" id="PrintPayment">
+	<form action="api/receipts/cash_ar" method="POST" target="_blank" id="PrintARPayment">
+		<input type="hidden" name="details" value="{{CAC.PrintPaymentDetails}}"/>
+	</form>
+	<form action="api/receipts/cash_a2o" method="POST" target="_blank" id="PrintA2OPayment">
+		<input type="hidden" name="details" value="{{CAC.PrintPaymentDetails}}"/>
+	</form>
+	<form action="api/receipts/cash_or" method="POST" target="_blank" id="PrintORPayment">
 		<input type="hidden" name="details" value="{{CAC.PrintPaymentDetails}}"/>
 	</form>
 </div>

@@ -125,8 +125,11 @@ define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 		});
 		$selfScope.$on('PrintPaymentReceipt',function(evt,args){
 			$scope.PrintPaymentDetails = args.details;
+			let docType = $scope.PrintPaymentDetails.doc_type;
+			let payForm =  `Print${docType}Payment`;
+
 			$timeout(function(){
-				document.getElementById('PrintPayment').submit();			
+				document.getElementById(payForm).submit();			
 			},200);
 		});
 	}]);
@@ -216,6 +219,7 @@ define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 			$scope.PayObj = {};
 			$scope.DocTypes = [
 					//{id:"OR", name:"Official Receipt"},
+					{id:"A2O", name:"A2O"},
 					{id:"AR", name:"AR"},
 				];
 			$scope.PayTypes = [
@@ -229,7 +233,7 @@ define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 		$selfScope.$on('OpenPayModal',function(evt,args){
 			aModal.open('CashierPaymentModal');
 			$scope.PayObj.series_no = 'AR 1230';
-			$scope.PayObj.doc_type = 'AR';
+			$scope.PayObj.doc_type = 'A2O';
 			$scope.PayObj.pay_type = 'CASH';
 			$scope.PayObj.transac_date = new Date();
 			$scope.PayObj.pay_due = args.total_amount
