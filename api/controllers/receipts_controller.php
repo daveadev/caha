@@ -94,4 +94,39 @@ class ReceiptsController extends AppController{
 		$this->render('cash_ar');
 		return;	
 	}
+
+	function cash_a2o(){
+		$details = json_decode($_POST['details'],true);
+
+		$sid = $details['account_id'];
+		$this->Student->recursive=-1;
+		$stud = $this->Student->findById($sid);
+		$details['student']=$stud['Student']['full_name'];
+		$details['transac_date'] = date('d M Y',strtotime($details['transac_date']));
+		$user = $this->Auth->user()['User'];
+		$details['cashier']=$user['username'];
+
+		
+		$trnxDtls  =array();
+		foreach($details['details'] as $dtl){
+			$item = $dtl['description'];
+			$amount= number_format($dtl['amount'],2,'.',',');
+			$trnxDtls[] =  array('item'=>$item,'amount'=>$amount);
+		}
+		$or_details = array(
+			'ref_no'=>$details['series_no'],
+			'transac_date'=>$details['transac_date'],
+			'student'=>$details['student'],
+			'sno'=>'',
+			'year_level'=>'',
+			'section'=>'',
+			'sy'=>$details['esp'],
+			'transac_details'=> $trnxDtls,
+			'total_paid'=>$details['pay_amount'],
+			'cashier'=>$user['username']
+		);
+		$this->set(compact('details','or_details'));
+		$this->render('cash_a2o');
+		return;	
+	}
 }
