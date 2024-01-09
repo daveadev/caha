@@ -44,6 +44,7 @@ define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 			$scope.TotalAmount = 0;
 			$scope.SeriesNo = '';
 			$scope.TransacDate = new Date();
+			$scope.TotalDispAmount = TRNX.util.formatMoney($scope.TotalAmount);
 		}
 		$scope.editTrnxDetails = function(){
 			$scope.TrnxDtlMode = 'EDIT';
