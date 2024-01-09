@@ -9,7 +9,8 @@ define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 		$scope = this;
 
 		$scope.init = function(){
-			$rootScope.$watch('_APP',function(){
+			$rootScope.$watch('_APP',function(app){
+				if(!app) return;
 				$scope.ActiveSY = $rootScope._APP.ACTIVE_SY;	
 			});
 			
@@ -32,7 +33,9 @@ define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 			$scope.Headers = ['Description',{class:'col-md-4',label:'Amount'}];
 			$scope.Props = ['description','disp_amount'];
 			$scope.Inputs = [{field:'description',disabled:true},{field:'amount',type:'number'}];
-
+			$scope.PSTypes = [{id:'regular',name:'Current Account'},{id:'old', name:'Ext. Payment Plan'}];
+			$scope.PSType = 'old';
+			$rootScope.hasMultiplePS = false;
 			$scope.PSHeaders = ['Due Date', 'Due Amount','Status'];
 			$scope.PSProps = ['disp_date','disp_amount','status'];
 			$scope.Paysched = [];
@@ -84,6 +87,7 @@ define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 			$selfScope.$broadcast('StudentSelected',{student:stud,sy:sy});
 		});
 		$selfScope.$watch('CAC.TotalAmount',function(amount){
+			if(!$scope.ActiveStudent) return;
 			$scope.allowPay = $scope.ActiveStudent.id && $scope.ActiveSY && amount>0;
 			$scope.allowClear = $scope.allowPay && $scope.TrnxDtlMode!=='EDIT';
 			$scope.allowEdit = $scope.allowPay && $scope.TrnxDtlMode!=='EDIT';
@@ -169,6 +173,7 @@ define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 					}
 				});
 			});
+			
 		});
 		function updateTrnxUI(){
 			$scope.TransacList.map(function(item,index){
@@ -191,22 +196,37 @@ define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 			var loadNextSY = NEXT_SY && sy> asy;
 			function updateTrnx(response){
 				var account =  response.data.data[0];
-				
-
-				$scope.TransacList = angular.copy(TRNX.getList());
-				var sched =  TRNX.getSched();
+				var type =  account.hasOwnProperty('Paysched')?'regular':'old';
+				var sched =  TRNX.getSched(type);
 				$selfScope.$emit('UpdatePaysched',{paysched:sched});
 				
+				let specialPay = [];
+				$scope.TransacList = angular.copy(TRNX.getList());
+				$scope.TransacList.map(function(trl){
+					let ispayment = /^(EXTPY|SBQPY)$/.test(trl.id) && trl.amount>0;
+					if (ispayment)
+						specialPay.push(trl.id);
+				});
+				
+				$scope.PSType = type;
+				$rootScope.hasMultiplePS =  specialPay.length>1;
+					
 			}
 			$timeout(function(){
 				document.getElementById('PrintPPSoa2').submit();
 			},200);
 			if(loadNextSY)
 				return TRNX.getAssessment(sid,sy).then(updateTrnx);
-			
+				
 			TRNX.getOldAccount(sid,sy).then(updateTrnx);
+			TRNX.getAccount(sid,sy).then(updateTrnx);
+		});
+		$selfScope.$watch('CAC.PSType',function(type){
+			var sched =  TRNX.getSched(type);
+			$selfScope.$emit('UpdatePaysched',{paysched:sched});
 				
 		});
+
 	}]);
 	
 
