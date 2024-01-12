@@ -34,7 +34,8 @@ define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 			$scope.Props = ['description','disp_amount'];
 			$scope.Inputs = [{field:'description',disabled:true},{field:'amount',type:'number'}];
 			$scope.PSTypes = [{id:'regular',name:'Current Account'},{id:'old', name:'Ext. Payment Plan'}];
-			$scope.PSType = 'old';
+			$rootScope.__PSType = 'regular';
+			$scope.PSType = 'regular';
 			$rootScope.hasMultiplePS = false;
 			$scope.PSHeaders = ['Due Date', 'Due Amount','Status'];
 			$scope.PSProps = ['disp_date','disp_amount','status'];
@@ -208,24 +209,31 @@ define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 					if (ispayment)
 						specialPay.push(trl.id);
 				});
-				
 				$scope.PSType = type;
+				$rootScope.__PSType = type;
 				$rootScope.hasMultiplePS =  specialPay.length>1;
-					
+				$selfScope.$emit('DisplaySOA');
+				
 			}
-			$timeout(function(){
-				document.getElementById('PrintPPSoa2').submit();
-			},200);
+			$selfScope.$emit('DisplaySOA');
 			if(loadNextSY)
 				return TRNX.getAssessment(sid,sy).then(updateTrnx);
 				
-			TRNX.getOldAccount(sid,sy).then(updateTrnx);
-			TRNX.getAccount(sid,sy).then(updateTrnx);
+			TRNX.getOldAccount(sid,sy).then(updateTrnx).finally(function(){
+				TRNX.getAccount(sid,sy).then(updateTrnx);
+			});
+			
 		});
 		$selfScope.$watch('CAC.PSType',function(type){
 			var sched =  TRNX.getSched(type);
 			$selfScope.$emit('UpdatePaysched',{paysched:sched});
-				
+			$selfScope.$emit('DisplaySOA');
+			$rootScope.__PSType =type;
+		});
+		$selfScope.$on('DisplaySOA',function(){
+			$timeout(function(){
+				document.getElementById('PrintPPSoa2').submit();
+			},200);
 		});
 
 	}]);
