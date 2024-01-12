@@ -129,7 +129,7 @@ class Account extends AppModel {
 					break;
 				$keys =  array_keys($cond);
 				
-				$search = ['Account.name LIKE','Account.first_name LIKE','Account.middle_name','Account.last_name'];
+				$search = ['Account.name LIKE','Account.first_name LIKE','Account.middle_name','Account.last_name','Account.refresh'];
 			
 				if(in_array($search[1],$keys)){
 					$val = array_values($cond);
@@ -149,7 +149,9 @@ class Account extends AppModel {
 					unset($cond['Account.id LIKE']);
 					$cond['Account.id']=$student_ids;
 				}
-				
+				if(in_array($search[4],$keys)):
+					unset($cond['Account.refresh']);
+				endif;
 				$conds[$i]=$cond;
 			}
 			//pr($conds);exit();
@@ -512,7 +514,7 @@ class Account extends AppModel {
 	    // If the account is valid, update the total payments and balance
 	    if ($account['is_valid']) {
 	        $account['payment_total'] += $amount;
-	        $account['outstanding_balance'] = $net_amount;
+	        $account['outstanding_balance'] = $net_amount-$amount;
 	    }
 	}
 
