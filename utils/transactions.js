@@ -1,18 +1,19 @@
 define(['app','util','api'],function(app,util) {
 	const TRNX ={};
 	const INI_TRNX = [
-				{id:'INIPY', description:'Initial Payment',amount:0},
-				{id:'SBQPY', description:'Subsequent Payment',amount:0},
-				{id:'OLDAC', description:'Old Account',amount:0},
-				{id:'EXTPY', description:'Ext. Payment Plan',amount:0}
+				{id:'INIPY', description:'Initial Payment',amount:0, docType:'OR'},
+				{id:'SBQPY', description:'Subsequent Payment',amount:0, docType:'OR'},
+				{id:'OLDAC', description:'Old Account',amount:0, docType:'OR'},
+				{id:'EXTPY', description:'Ext. Payment Plan',amount:0, docType:'A2O'}
 				//{id:'UNIFM', description:'Uniform',amount:0},
 				//{id:'FORMS', description:'Forms',amount:0}
 			];
-	var api,list,listIndex,paysched;
+	var api,list,listIndex,paysched,payscheds;
 	(function(){
 		list= INI_TRNX;
 		listIndex = [];
 		paysched = [];
+		payscheds = {};
 		list.map(function(item,index){
 			listIndex[item.id]=index;
 		});
@@ -24,8 +25,13 @@ define(['app','util','api'],function(app,util) {
 	TRNX.getList = function(){
 		return list;
 	}
-	TRNX.getSched = function(){
-		return paysched;
+	TRNX.getSched = function(type){
+		let ps = paysched;
+		if(type=='old') 
+			ps=payscheds.old; 
+		if(type=='regular')
+			ps=payscheds.regular; 
+		return ps;
 	}
 	function updateAmount(id,action,amount){
 		var index = listIndex[id];
@@ -80,7 +86,7 @@ define(['app','util','api'],function(app,util) {
 		});
 		paysched = angular.copy( _paysched);
 	}
-	function computeAmounts(){
+	function computeAmounts(is_old){
 		paysched.map(function(sched,index){
 			var ttid=  sched.transaction_type_id;
 			var due_date = new Date(sched.due_date);
@@ -127,12 +133,17 @@ define(['app','util','api'],function(app,util) {
 		updateDisplay('SBQPY','hide');
 		updateDisplay('OLDAC','hide');
 	}
-	function updateDisplays(){
+	function updateDisplays(is_old){
 		list.map(function(lItem){
 			var hasAmt = lItem.amount>0;
 			var disp =hasAmt?'show':'hide';
 			updateDisplay(lItem.id,disp);
 		});
+
+		if(is_old) 
+			payscheds.old = angular.copy(paysched);
+		else
+			payscheds.regular = angular.copy(paysched);
 	}
 	
 	TRNX.runDefault = function(){
@@ -156,6 +167,7 @@ define(['app','util','api'],function(app,util) {
 			limit:1,
 		};
 		updateDisplay('OLDAC','show');
+		payscheds.regular = [];
 		return TRNX.requestAccount('accounts',filter,'Paysched');
 	}
 	TRNX.getOldAccount = function(sid,sy){
@@ -164,6 +176,7 @@ define(['app','util','api'],function(app,util) {
 			account_id:sid,
 			limit:1,
 		};
+		payscheds.old = [];
 		return TRNX.requestAccount('payment_plans',filter,'schedule');
 	}
 	TRNX.requestAccount = function(endpoint,filter,field){
@@ -173,7 +186,7 @@ define(['app','util','api'],function(app,util) {
 			var is_old = endpoint=='payment_plans';
 			formatPaysched(_paysched,is_old);
 			computeAmounts();
-			updateDisplays();
+			updateDisplays(is_old);
 		};
 		var error  =function(response){
 

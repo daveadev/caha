@@ -458,4 +458,102 @@ class Account extends AppModel {
 		
 		return $ammended;
 	}
+
+	/**
+	 * Forward a payment for a given account and ESP (Effective School Year Period).
+	 *
+	 * @param int $account_id The ID of the account.
+	 * @param string $esp The Effective School Year Period.
+	 * @param string $ref_no The reference number for the payment.
+	 * @param float $amount The payment amount.
+	 */
+	function forwardPayment($account_id, $esp, $ref_no, $amount) {
+	    // Find the account by account_id
+	    $ACObj = $this->findById($account_id);
+
+	    // Extract account information
+	    $account = $ACObj['Account'];
+
+	    // Update the account  with the payment amount
+	    $this->updateAccount($account, $amount);
+
+	    $accountInfo = array();
+	    // Save balances in payment_plan and account if the account is valid
+	    if ($account['is_valid']) {
+	        $this->save($account);
+	        
+	        // Distribute payment and update the payment schedule
+	        $sched = $ACObj['AccountSchedule'];
+	        $this->distributePayments($sched, $amount);
+	        $this->AccountSchedule->saveAll($sched);
+	        $accountInfo['amount_paid'] = $amount; 
+	        $accountInfo['total_payments'] = $account['payment_total']; 
+	        $accountInfo['total_balance'] = $account['outstanding_balance']; 
+	    }
+
+	    return $accountInfo;
+	}
+
+	/**
+	 * Update the account and payment plan based on the payment amount.
+	 *
+	 * @param array $account Reference to the account array.
+	 * @param array $plan Reference to the payment plan array.
+	 * @param float $amount The payment amount.
+	 */
+	protected function updateAccount(&$account, $amount) {
+	    $assess_total = $account['assessment_total'];
+	    $discounts = $account['discount_amount'];
+	    $payments = $account['payment_total'];
+	    $outstanding_bal = $account['outstanding_balance'];
+		$net_amount = $assess_total + $discounts -  $payments;
+	    $account['is_valid'] = $outstanding_bal == $net_amount ;
+
+	    // If the account is valid, update the total payments and balance
+	    if ($account['is_valid']) {
+	        $account['payment_total'] += $amount;
+	        $account['outstanding_balance'] = $net_amount;
+	    }
+	}
+
+
+	/**
+	 * Distribute the payment among the payment schedule based on the payment amount.
+	 *
+	 * @param array $schedule Reference to the payment schedule array.
+	 * @param float $totalPayment The total payment amount to be distributed.
+	 */
+	protected function distributePayments(&$schedule, $totalPayment) {
+	    foreach ($schedule as &$payment) {
+	        // Check if the payment is unpaid and there's a remaining payment to be made
+	        $isPAID = $payment['status'] === 'UNPAID' || $payment['status'] === 'NONE';
+	        if ($isPAID && $totalPayment > 0) {
+	            // Calculate the amount to be paid for this schedule
+	            $amountToPay = min($totalPayment, $payment['due_amount'] - $payment['paid_amount']);
+
+	            // Update paid amount and status
+	            $payment['paid_amount'] += $amountToPay;
+	            $totalPayment -= $amountToPay;
+
+	            if ($payment['paid_amount'] == $payment['due_amount']) {
+	                $payment['status'] = 'PAID';
+	            }
+
+	            // Distribute excess payment to the next schedules
+	            if ($totalPayment < 0) {
+	                // Get the next schedule
+	                $nextPayment = next($schedule);
+	                if ($nextPayment !== false) {
+	                    $nextPayment['paid_amount'] += abs($totalPayment);
+	                    if ($nextPayment['paid_amount'] == $nextPayment['due_amount']) {
+	                        $nextPayment['status'] = 'PAID';
+	                    }
+	                }
+	            }
+	        }
+	    }
+
+	    return $schedule;
+	}
+
 }
