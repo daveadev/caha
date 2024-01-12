@@ -271,14 +271,14 @@ class PaymentPlan extends AppModel {
 		$dueAmount = 0;
 		$dueNow = array();
 		$dueMos = array();
-		
 		foreach ($schedule as $index=>$sched) {
 			if($sched['due_date']=='Old Account' && count($schedule)>1) continue;
 		    $dueDate = strtotime($sched['due_date']);
+			$dueDateFormat = date('Y-m',$dueDate);
 		    $hasBal = $sched['paid_amount'] < $sched['due_amount'];
 		    $isOverDue = $dueDate <= time();
-		    $isDueNow = substr($sched['due_date'], 0, 7) === $currentMonth;
-		    	
+		    $isDueNow = $dueDateFormat === $currentMonth;
+			
 		    if($isDueNow||$isOverDue){
 		    	$dueNow['date'] = date('d M Y',$dueDate);
 		    }
