@@ -306,7 +306,10 @@ class Account extends AppModel {
 					
 				break;
 				case 'INIPY': case 'SBQPY': case 'FULLP':
-					$OR_PAY += $this->lookupAmount($entry);
+					$payment = $this->lookupAmount($entry);
+					if($entry['type']=='+')
+						$payment *=-1;
+					$OR_PAY += $payment;
 				break;
 				// Late & Regular ESC Voucher
 				case  'AMLES': case 'AMRES':
