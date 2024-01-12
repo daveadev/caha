@@ -8,7 +8,7 @@ foreach($statements as $sInd=>$sObj):
 	$AS->paysched($type);
 	$AS->ledger($type);
 	$AS->payment_ins();
-	$AS->reply_slip();
+	$AS->reply_slip($type);
 	
 	if($sInd<count($statements)-1)
 		$AS->createSheet();

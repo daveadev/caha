@@ -129,7 +129,11 @@ class AccountStatement extends Formsheet{
 			$y++;
 			if(isset($sched['due_date'])):
 				if(in_array($index,$dueNow['months'])):
-					$this->SetFillColor(195,237,209);
+					if($type=='current'):
+						$this->SetFillColor(195,237,209);
+					else:
+						$this->SetFillColor(252,246,219);
+					endif;
 					$this->DrawBox(-0.5,$y-0.75,21,1,'FD');
 				endif;
 				$this->leftText(0,$y,$sched['due_date'],5,'');
@@ -174,7 +178,11 @@ class AccountStatement extends Formsheet{
 		endif;
 		
 		$this->SetDrawColor(27,151,68);
-		$this->SetFillColor(195,237,209);
+		if($type=='current'):
+			$this->SetFillColor(195,237,209);
+		else:
+			$this->SetFillColor(252,246,219);
+		endif;
 		$this->DrawBox(23,2,15,8,'DF');
 		$this->leftText(24,3.5,'Student No.',4,'');
 		$this->rightText(33,3.5,'Due Date',4,'');
@@ -250,7 +258,7 @@ class AccountStatement extends Formsheet{
 				$y+=1.5;
 				$this->centerText(0,$y,"**************** See page 2 of 2 **************** ",38,'i');
 				$this->payment_ins();
-				$this->reply_slip();
+				$this->reply_slip($type);
 				$this->createSheet();
 				$this->pageHeader();
 				$prevEntry = $ledger[$lIndex];
@@ -347,7 +355,7 @@ class AccountStatement extends Formsheet{
 		$y=6.5;
 		$this->data['last_y'] = $metrics['base_y']+ ($h*$y);
 	}
-	function reply_slip(){
+	function reply_slip($type){
 		$last_y = $this->data['last_y'];
 		if(isset($this->data['reply_slip_printed'])) return;
 		$this->data['reply_slip_printed']=true;
@@ -363,7 +371,11 @@ class AccountStatement extends Formsheet{
 		
 		
 		$this->GRID['font_size']=9;
-		$this->SetFillColor(195,237,209);
+		if($type=='current'):
+			$this->SetFillColor(195,237,209);
+		else:
+			$this->SetFillColor(252,246,219);
+		endif;
 		$this->DrawBox(-2.5,0.5,2,9.5,'F');
 		$this->RotateText(-1.25,8.25,'R E P L Y  S L I P',90);
 		$this->RotateText(-1.25,8.25,'R E P L Y  S L I P',90);
