@@ -99,7 +99,7 @@ div[align="right"] input[disabled]{
 										<form action="api/reports/statement" method="GET" target="PPSOA2frame2" id="PrintPPSoa2">
 											<input type="hidden" name="account_id" value="{{CAC.ActiveStudent.id}}"/>
 											<input type="hidden" name="sy" value="{{CAC.ActiveSY}}"/>
-											<input type="hidden" name="type" value="old"/>
+											<input type="hidden" name="type" value="{{__PSType=='old'?'old':'current'}}"/>
 										</form>
 										<iframe name="PPSOA2frame2"  id="PPSOA2frame" frameborder="0" style="width:100%;height:100%;display:block;"></iframe>
 										<div class="text-center"  ng-show="hasMultiplePS">
