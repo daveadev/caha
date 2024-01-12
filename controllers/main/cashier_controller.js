@@ -120,8 +120,11 @@ define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 			let stud = $scope.ActiveStudent;
 			let sy = $scope.ActiveSY;
 			$selfScope.$broadcast('ResetTransactions');
-			$selfScope.$broadcast('StudentSelected',{student:stud,sy:sy});
-			$scope.ActiveTabIndex = 1;
+			$timeout(function(){
+				$selfScope.$broadcast('StudentSelected',{student:stud,sy:sy});
+				$scope.ActiveTabIndex = 1;
+			},1500);
+			
 			aModal.close('CashierPaymentModal');
 			$selfScope.$broadcast('PrintPaymentReceipt',{details:args.details});
 		});
@@ -162,6 +165,8 @@ define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 			updateTrnxUI();
 			$scope.TransacList=TRNX.getList();
 			$selfScope.$emit('UpdateTransacDetails',{details:[]});
+			$scope.PSType = null;
+			$rootScope.__PSType =null;
 		});
 
 		$selfScope.$on('UpdateTransacList',function(evt,args){

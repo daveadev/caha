@@ -122,6 +122,10 @@ define(['app','util','api'],function(app,util) {
 					break;
 				}
 		});
+		if(is_old) 
+			payscheds.old = angular.copy(paysched);
+		else
+			payscheds.regular = angular.copy(paysched);
 	}
 	function defaultList(){
 		updateAmount('INIPY','set',0);
@@ -162,9 +166,12 @@ define(['app','util','api'],function(app,util) {
 
 	TRNX.getAccount = function(sid,sy){
 		var esp = sy + '.25';
+		var timestamp = new Date();
+			timestamp =  timestamp.getDate()+'-'+timestamp.getUTCMilliseconds();
 		var filter = {
 			id:sid,
 			limit:1,
+			refresh: timestamp
 		};
 		updateDisplay('OLDAC','show');
 		payscheds.regular = [];
