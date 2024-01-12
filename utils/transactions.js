@@ -1,10 +1,10 @@
 define(['app','util','api'],function(app,util) {
 	const TRNX ={};
 	const INI_TRNX = [
-				{id:'INIPY', description:'Initial Payment',amount:0},
-				{id:'SBQPY', description:'Subsequent Payment',amount:0},
-				{id:'OLDAC', description:'Old Account',amount:0},
-				{id:'EXTPY', description:'Ext. Payment Plan',amount:0}
+				{id:'INIPY', description:'Initial Payment',amount:0, docType:'OR'},
+				{id:'SBQPY', description:'Subsequent Payment',amount:0, docType:'OR'},
+				{id:'OLDAC', description:'Old Account',amount:0, docType:'OR'},
+				{id:'EXTPY', description:'Ext. Payment Plan',amount:0, docType:'A2O'}
 				//{id:'UNIFM', description:'Uniform',amount:0},
 				//{id:'FORMS', description:'Forms',amount:0}
 			];

@@ -239,7 +239,7 @@ define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 			BKLT.link(api);
 			$scope.PayObj = {};
 			$scope.DocTypes = [
-					//{id:"OR", name:"Official Receipt"},
+					{id:"OR", name:"Official Receipt"},
 					{id:"A2O", name:"A2O"},
 					{id:"AR", name:"AR"},
 				];
@@ -253,8 +253,9 @@ define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 		}
 		$selfScope.$on('OpenPayModal',function(evt,args){
 			aModal.open('CashierPaymentModal');
+			let defaultDocType =  args.details[0].docType || 'A2O';
 			$scope.PayObj.series_no = null;
-			$scope.PayObj.doc_type = 'A2O';
+			$scope.PayObj.doc_type = defaultDocType;
 			$scope.PayObj.pay_type = 'CASH';
 			$scope.PayObj.transac_date = new Date();
 			$scope.PayObj.pay_due = args.total_amount
