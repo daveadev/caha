@@ -26,6 +26,10 @@ class NewPaymentsController extends AppController {
 		$this->NewPayment->id = $TRNX->id;
 		$this->Session->setFlash(__('The payment has been saved', true));
 
+		// Dispatch an event to update Account
+		$account_action = $this->requestAction('/accounts/new_payment',array('pass'=>$this->data));
+		$this->data['NewPayment']['account']=$account_action;
+
 		// Dispatch an event to update Payment Plan
 		$payplan_action = $this->requestAction('/payment_plans/new_payment',array('pass'=>$this->data));
 		$this->data['NewPayment']['payplan']=$payplan_action;

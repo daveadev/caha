@@ -125,4 +125,32 @@ class AccountsController extends AppController {
 		$this->Session->setFlash(__('Account was not deleted', true));
 		$this->redirect(array('action' => 'index'));
 	}
+
+	/**
+	 * Process a new payment based on a transaction.
+	 *
+	 * @param array $transaction The transaction details containing ESP, reference number, and account ID.
+	 */
+	function new_payment($transaction) {
+	    // Check if the transaction details are set
+	    if (isset($transaction)) {
+	        // Extract relevant information from the transaction
+	        $esp = $transaction['esp'];  
+	        $ref_no = $transaction['series_no']; 
+	        $account_id = $transaction['account_id']; 
+
+	        // Iterate through transaction details
+	        foreach ($transaction['details'] as $dtl) {
+	            // Check if the detail is for account schedule ('SBQPY')
+	            if ($dtl['id'] == 'SBQPY') {
+	                // Extract the amount from the detail
+	                $amount = $dtl['amount'];
+
+	                // Forward the payment using the Account model's forwardPayment function
+	              $account=  $this->Account->forwardPayment($account_id, $esp, $ref_no, $amount);
+	              return $account;
+	            }
+	        }
+	    }
+	}
 }
