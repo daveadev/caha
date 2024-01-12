@@ -38,8 +38,28 @@ class Booklet extends AppModel {
 			if($inRange):
 				$booklet['series_counter']= $series_no+1;
 				$booklet['status']='ACTIV';
-				if($booklet['series_counter']>$booklet['series_end'])
+				if($booklet['series_counter']>$booklet['series_end']):
 					$booklet['status']='CONSM';
+					$booklet['series_counter'] = $booklet['series_end'];
+					$this->save($booklet);
+
+					// Look for next available booklet and activate
+					$newBKLconf = array(
+						'conditions'=>array('Booklet.status'=>'ASSGN','Booklet.series_start >='=>$series_no+1),
+						'order'=>array('Booklet.series_start'=>'ASC')
+					);
+					$newBooklet = $this->find('first',$newBKLconf);
+					$newBooklet =  $newBooklet['Booklet'];
+					$newBooklet['status']='ACTIV';
+					$this->save($newBooklet);
+					// Return new booklet info 
+					$newSeriesNo = $newBooklet['series_counter'];
+					$bookletInfo = array();
+					$bookletInfo['booklet_id'] = $newBooklet['id'];
+					$bookletInfo['next_series_no'] = $newSeriesNo;
+					$bookletInfo['status'] ='ACTIV';
+					return $bookletInfo;
+				endif;
 				$this->save($booklet);
 				$booklet['is_valid'] = true;
 			else:
