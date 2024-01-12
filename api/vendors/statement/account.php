@@ -190,7 +190,10 @@ class AccountStatement extends Formsheet{
 
 		$this->GRID['font_size']=10;
 		$note = "For any discrepancies/clarifications, please consult with the LSEI Finance Department immediately.";
-		$this->wrapText(23,11,$note,14,'l',0.7);
+		if(isset($this->config['reminder'])):
+			$note =$this->config['reminder'];
+		endif;
+		$this->wrapText(23,11,$note,15,'l',0.7);
 
 		$h = $this->GRID['cell_height'];
 		$this->data['last_y'] = $metrics['base_y']+ ($h*$y);
