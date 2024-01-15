@@ -153,7 +153,7 @@ class AccountStatement extends Formsheet{
 				
 			endif;
 		endforeach;
-		if($schedLen==1){
+		if($schedLen<=7){
 			$y=12.5;
 		}
 		if(!$schedule || $schedLen<2){
