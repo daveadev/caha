@@ -145,9 +145,10 @@ class AccountsController extends AppController {
 	            if ($dtl['id'] == 'SBQPY') {
 	                // Extract the amount from the detail
 	                $amount = $dtl['amount'];
-
+					$trnxObj = array('id'=>$dtl['id'],'name'=>$dtl['description']);
+					$source = 'cashier2';
 	                // Forward the payment using the Account model's forwardPayment function
-	              $account=  $this->Account->forwardPayment($account_id, $esp, $ref_no, $amount);
+	              $account=  $this->Account->forwardPayment($account_id, $esp, $ref_no, $amount,$trnxObj,$source);
 	              return $account;
 	            }
 	        }

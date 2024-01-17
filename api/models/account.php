@@ -472,7 +472,7 @@ class Account extends AppModel {
 	 * @param string $ref_no The reference number for the payment.
 	 * @param float $amount The payment amount.
 	 */
-	function forwardPayment($account_id, $esp, $ref_no, $amount) {
+	function forwardPayment($account_id, $esp, $ref_no, $amount,$trnxObj,$source) {
 	    // Find the account by account_id
 	    $ACObj = $this->findById($account_id);
 
@@ -490,6 +490,7 @@ class Account extends AppModel {
 	        // Distribute payment and update the payment schedule
 	        $sched = $ACObj['AccountSchedule'];
 	        $this->distributePayments($sched, $amount);
+			$this->logPaymentHistory($account,$ref_no,$amount,$trnxObj,$source);
 	        $this->AccountSchedule->saveAll($sched);
 	        $accountInfo['amount_paid'] = $amount; 
 	        $accountInfo['total_payments'] = $account['payment_total']; 
@@ -521,6 +522,32 @@ class Account extends AppModel {
 	    }
 	}
 
+	protected function logPaymentHistory($account,$ref_no,$amount,$trnxObj,$source){
+		$tDate =  explode('~',date('Y-m-d~h:i:s',time()));
+		$history = array(
+			'account_id'=>$account['id'],
+			'total_due'=>$account['assessment_total'],
+			'total_paid'=>$account['payment_total'],
+			'balance'=>$account['outstanding_balance'],
+			'ref_no'=>$ref_no,
+			'flag'=>'-',
+			'details'=>$trnxObj['name'],
+			'amount'=>$amount,
+			'transac_date'=>$tDate[0],
+			'transac_time'=>$tDate[1],
+		);
+		$this->AccountHistory->save($history);
+
+		$transaction = array(
+			'account_id'=>$account['id'],
+			'transaction_type_id'=>$trnxObj['id'],
+			'ref_no'=>$ref_no,
+			'amount'=>$amount,
+			'source'=>$source
+		);
+
+		$this->AccountTransaction->save($transaction);		
+	}
 
 	/**
 	 * Distribute the payment among the payment schedule based on the payment amount.
