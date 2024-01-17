@@ -93,21 +93,27 @@ define(['app','util','api'],function(app,util) {
 			var due_date = new Date(sched.due_date);
 			var due_year = due_date.getFullYear();
 			var due_month = due_date.getMonth()+1;
-
+			var due_check = parseInt(due_year+''+(due_month<10?'0'+due_month:due_month));
 			var today = new Date();
 			var tod_year = today.getFullYear();
 			var tod_month = today.getMonth()+1;
-			
+			var tod_check =parseInt(tod_year+''+(tod_month<10?'0'+tod_month:tod_month));
 			var isDue = due_year<tod_year || (due_year==tod_year && due_month<=tod_month);
+			var isOverDue = isDue && tod_check>due_check;
+			
 			var trnx = list[listIndex[ttid]];
 			
 			if(sched.status=='PAID') {
 				paysched[index].class='success';
+				paysched[index].disp_status = 'PAID';
 				return;
 			}
 			if(!isDue && trnx.amount>0) return;
 			paysched[index].class=isDue?'danger':'warning';
-				switch(ttid){
+			paysched[index].disp_status =isDue?'DUE':'UNPAID';
+			if(isOverDue)
+				paysched[index].disp_status= 'OVER DUE';
+			switch(ttid){
 					case 'INIPY':
 						updateAmount(ttid,'set',sched.due_amount);
 						return;

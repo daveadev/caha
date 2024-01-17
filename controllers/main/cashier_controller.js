@@ -38,7 +38,7 @@ define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 			$scope.PSType = 'regular';
 			$rootScope.hasMultiplePS = false;
 			$scope.PSHeaders = ['Due Date', 'Due Amount','Status'];
-			$scope.PSProps = ['disp_date','disp_amount','status'];
+			$scope.PSProps = ['disp_date','disp_amount','disp_status'];
 			$scope.Paysched = [];
 			$scope.StudFields = ['id','full_name','enroll_status','student_type','department_id','year_level_id','section'];
 			$scope.TransacDetails=[];
