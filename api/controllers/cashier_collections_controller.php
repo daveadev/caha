@@ -188,9 +188,10 @@ class CashierCollectionsController extends AppController {
 					$cl['total_due'] = 'N/A';
 					$cl['total_paid'] = 'N/A';
 					$cl['balance'] = 'N/A';
-					$cl['level'] = 'N/A';
-					$cl['section'] = 'N/A';
-					
+					if($acct['account_type']!='student'){
+						$cl['level'] = 'N/A';
+						$cl['section'] = 'N/A';
+					}
 					if($acct['account_type']=='inquiry'||isset($col['Inquiry']['full_name'])){
 						$cl['status']='New';
 						$cl['received_from'] = $col['Inquiry']['full_name'];
