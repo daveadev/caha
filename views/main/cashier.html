@@ -181,6 +181,18 @@ div[align="right"] input[disabled]{
 		<a-modal id="CashierPaymentModal" title="Payment">
 			<a-modal-body>
 				<a-row>
+					<a-col size="4">
+						<m-formgroup ng-model="CMC.PayObj.doc_type" label="Doc Type" options="CMC.DocTypes"></m-formgroup>
+					</a-col>
+					<a-col size="4">
+						<m-formgroup ng-model="CMC.PayObj.transac_date_display" label="Date" type="'display'"></m-formgroup>
+					</a-col>
+					<a-col size="4" align="right">
+						<m-formgroup ng-model="CMC.PayObj.series_no" label="Series No" size="'input-lg'" ></m-formgroup>
+					</a-col>
+				</a-row>
+				
+				<a-row>
 					<a-col size="8">
 						<m-formgroup ng-model="CMC.PayObj.student" label="Student" ng-disabled="true"></m-formgroup>
 					</a-col>
@@ -189,24 +201,15 @@ div[align="right"] input[disabled]{
 					</a-col>
 				</a-row>
 				<a-row>
-					<a-col size="4">
-						<m-formgroup ng-model="CMC.PayObj.doc_type" label="Doc Type" options="CMC.DocTypes"></m-formgroup>
-					</a-col>
-					<a-col size="4">
-						<m-formgroup ng-model="CMC.PayObj.transac_date" label="Date" type="'date'"></m-formgroup>
-					</a-col>
-					<a-col size="4" align="right">
-						<m-formgroup ng-model="CMC.PayObj.series_no" label="Series No" size="'input-lg'" ></m-formgroup>
-					</a-col>
-				</a-row>
-				<a-row>
 					<a-col size="8">
 						<m-formgroup ng-model="CMC.PayObj.pay_type" label="Payment Type" options="CMC.PayTypes"></m-formgroup>
 					</a-col>
 					<a-col size="4" align="right">
-						<m-formgroup ng-model="CMC.PayObj.pay_amount" label="Amount" type="'number'" size="'input-lg'"></m-formgroup>
+						<m-formgroup ng-model="CMC.PayObj.pay_display" label="Amount" type="'display'" size="'input-lg'"></m-formgroup>
 					</a-col>
 				</a-row>
+				
+				
 				<a-row>
 					<a-col size="8">
 						<m-formgroup ng-model="CMC.PayObj.pay_details" label="Check Details" ng-show="CMC.PayObj.pay_type=='CHCK'"></m-formgroup>

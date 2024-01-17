@@ -113,7 +113,7 @@ define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 		});
 
 		$scope.openPaymentModal = function(){
-			$selfScope.$broadcast('OpenPayModal',{total_amount:$scope.TotalAmount,details:$scope.TransacDetails});
+			$selfScope.$broadcast('OpenPayModal',{total_amount:$scope.TotalAmount,total_amount_display:$scope.TotalDispAmount,details:$scope.TransacDetails});
 		}
 
 		$selfScope.$on('PaymentSucess',function(evt,args){
@@ -271,8 +271,10 @@ define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 			$scope.PayObj.doc_type = defaultDocType;
 			$scope.PayObj.pay_type = 'CASH';
 			$scope.PayObj.transac_date = new Date();
+			$scope.PayObj.transac_date_display = $filter('date')(new Date(),'dd MMM yyyy');
 			$scope.PayObj.pay_due = args.total_amount
 			$scope.PayObj.pay_amount = args.total_amount;
+			$scope.PayObj.pay_display =  args.total_amount_display;
 			$scope.PayObj.details =  args.details;
 			loadBooklet();
 			
