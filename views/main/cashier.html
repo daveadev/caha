@@ -64,17 +64,28 @@ div[align="right"] input[disabled]{
 				<a-content>
 					<a-row>
 						<a-col size="8">
-							<div class="pull-right" style="width:140px;margin-right:33px;">
+							<div class="pull-right" style="width:140px;">
 								<m-formgroup ng-model="CAC.ActiveSY" label="School Year" options="CAC.SchoolYears" option-label="label"></m-formgroup>
 							</div>
 							<uib-tabset type="pills" active="CAC.ActiveTabIndex">
 								<uib-tab index="0" heading="Transactions" classes="btn-lg">
-										<div ng-controller="CashierTransactionsController as CTC" ng-init="CTC.init()">
+
+									<div class="empty-state" ng-hide="CAC.ActiveStudent.id">
+										<div class="well text-center">
+											<div class="empty-state-icon text-center">
+												<i class="glyphicon glyphicon-user"></i>
+											</div>
+											<h4>Select Student to begin transaction.</h4>
+											<p>Search by Name, Student Number or tap their ID.</p>
+										</div>
+									</div>
+										<div ng-controller="CashierTransactionsController as CTC" ng-init="CTC.init()" ng-show="CAC.ActiveStudent.id">
 											<!--- Transactions - allowed & defaults -->
 											<a-button size="lg" class="btn-action" ng-class="{'btn-active':CTC.ActiveTrnx[TItem.id]}" ng-repeat="TItem in CTC.TransacList" ng-hide="TItem.hide" ng-disabled="(TItem.disabled || !TItem.amount) || CAC.TrnxDtlMode=='EDIT'" ng-click="CTC.addTrnx(TItem.id)">
 												<div class="action-label">{{TItem.description}}</div>
 												<span class="peso amount">{{TItem.amount|currency}}</span>
 											</a-button>
+										
 											<!-- Transactions -->
 											<a-button size="lg" class="btn-action text-center hide">
 												
@@ -88,23 +99,35 @@ div[align="right"] input[disabled]{
 										</div>
 								</uib-tab>
 								<uib-tab index="1" heading="Schedule" classes="btn-lg">
-									<a-table headers="CAC.PSHeaders" props="CAC.PSProps" data="CAC.Paysched" is-preload="false"></a-table>
-									<div class="text-center"  ng-show="hasMultiplePS">
-										<a-navpill  ng-model="CAC.PSType" options="CAC.PSTypes" type="button" ></a-navpill>
+
+									<div class="empty-state" ng-hide="CAC.ActiveStudent.id">
+										<div class="well text-center">
+											<div class="empty-state-icon text-center">
+												<i class="glyphicon glyphicon-calendar"></i>
+											</div>
+											<h4>Select Student to view payment schedule.</h4>
+											<p>Search by Name, Student Number or tap their ID.</p>
+										</div>
+									</div>
+									<div ng-show="CAC.ActiveStudent.id">
+										<div class="text-center"  ng-show="hasMultiplePS" style="margin-bottom:15px;">
+											<a-navpill  ng-model="CAC.PSType" options="CAC.PSTypes" type="button" ></a-navpill>
+										</div>
+										<a-table headers="CAC.PSHeaders" props="CAC.PSProps" data="CAC.Paysched" is-preload="false"></a-table>
 									</div>
 								</uib-tab>
 
 								<uib-tab index="2" heading="Statement" classes="btn-lg">
 									<div style="height: 500px;" ng-show="CAC.ActiveStudent.id" >
+										<div class="text-center"  ng-show="hasMultiplePS" style="margin-bottom:15px;">
+											<a-navpill  ng-model="CAC.PSType" options="CAC.PSTypes" type="button" ></a-navpill>
+										</div>
 										<form action="api/reports/statement" method="GET" target="PPSOA2frame2" id="PrintPPSoa2">
 											<input type="hidden" name="account_id" value="{{CAC.ActiveStudent.id}}"/>
 											<input type="hidden" name="sy" value="{{CAC.ActiveSY}}"/>
 											<input type="hidden" name="type" value="{{__PSType=='old'?'old':'current'}}"/>
 										</form>
 										<iframe name="PPSOA2frame2"  id="PPSOA2frame" frameborder="0" style="width:100%;height:100%;display:block;"></iframe>
-										<div class="text-center"  ng-show="hasMultiplePS">
-											<a-navpill  ng-model="CAC.PSType" options="CAC.PSTypes" type="button" ></a-navpill>
-										</div>
 									</div>
 									
 									<div class="empty-state" ng-hide="CAC.ActiveStudent.id">
@@ -113,6 +136,7 @@ div[align="right"] input[disabled]{
 												<i class="glyphicon glyphicon-list-alt"></i>
 											</div>
 											<h4>Select Student to view Statement of Account</h4>
+											<p>Search by Name, Student Number or tap their ID.</p>
 										</div>
 									</div>
 								</uib-tab>
@@ -188,10 +212,10 @@ div[align="right"] input[disabled]{
 						<m-formgroup ng-model="CMC.PayObj.transac_date_display" label="Date" type="'display'"></m-formgroup>
 					</a-col>
 					<a-col size="4" align="right">
-						<m-formgroup ng-model="CMC.PayObj.series_no" label="Series No" size="'input-lg'" ></m-formgroup>
+						<m-formgroup ng-model="CMC.PayObj.series_no" label="Series No" size="'input-lg'" ng-disabled="CMC.isCheckingSeries" ></m-formgroup>
 					</a-col>
 				</a-row>
-				
+
 				<a-row>
 					<a-col size="8">
 						<m-formgroup ng-model="CMC.PayObj.student" label="Student" ng-disabled="true"></m-formgroup>
@@ -222,7 +246,7 @@ div[align="right"] input[disabled]{
 			</a-modal-body>
 			<a-modal-footer>
 				<a-button opt-class="pull-left" ng-click="CMC.closeModal()">Close</a-button>
-				<a-button type="primary" ng-click="CMC.confirmPayment()">Confirm</a-button>
+				<a-button type="primary" ng-click="CMC.confirmPayment()" ng-disabled="!CMC.isPayObjValid">Confirm</a-button>
 			</a-modal-footer>
 		</a-modal>
 	</div>

@@ -32,7 +32,7 @@ define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 			});
 			$scope.Headers = ['Description',{class:'col-md-4',label:'Amount'}];
 			$scope.Props = ['description','disp_amount'];
-			$scope.Inputs = [{field:'description',disabled:true},{field:'amount',type:'number'}];
+			$scope.Inputs = [{field:'description',disabled:true, enableIf:'OTHRS'},{field:'amount',type:'number'}];
 			$scope.PSTypes = [{id:'regular',name:'Current Account'},{id:'old', name:'Ext. Payment Plan'}];
 			$rootScope.__PSType = 'regular';
 			$scope.PSType = 'regular';
@@ -125,7 +125,7 @@ define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 				$scope.ActiveTabIndex = 1;
 			},1500);
 			
-			aModal.close('CashierPaymentModal');
+			$selfScope.$broadcast('ClosePayModal');
 			$selfScope.$broadcast('PrintPaymentReceipt',{details:args.details});
 		});
 		$selfScope.$on('PaymentError',function(evt,args){
@@ -244,8 +244,8 @@ define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 	}]);
 	
 
-	app.register.controller('CashierModalController',['$scope','$rootScope','$filter','api','aModal',
-	function($scope,$rootScope,$filter,api,aModal){
+	app.register.controller('CashierModalController',['$scope','$rootScope','$filter','$timeout','api','aModal',
+	function($scope,$rootScope,$filter,$timeout,api,aModal){
 		const $selfScope =  $scope;
 		$scope = this;
 		$scope.init = function(){
@@ -274,10 +274,24 @@ define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 			$scope.PayObj.transac_date_display = $filter('date')(new Date(),'dd MMM yyyy');
 			$scope.PayObj.pay_due = args.total_amount
 			$scope.PayObj.pay_amount = args.total_amount;
-			$scope.PayObj.pay_display =  args.total_amount_display;
+			$scope.PayObj.pay_display =args.total_amount_display;
 			$scope.PayObj.details =  args.details;
-			loadBooklet();
-			
+			$scope.isPayObjValid = false;
+		});
+		$selfScope.$on('ClosePayModal',function(evt,args){
+			$scope.PayObj.series_no =null;
+			$scope.PayObj.doc_type =null;
+			$scope.PayObj.pay_due =null;
+			$scope.PayObj.pay_amount =null;
+			$scope.PayObj.pay_display =null;
+			$scope.PayObj.transac_date =null;
+			$scope.PayObj.transac_date_display =null;
+			$scope.PayObj.details =null;
+			aModal.close('CashierPaymentModal');
+		});
+		$selfScope.$watch('CMC.PayObj.doc_type',loadBooklet);
+		$selfScope.$watchGroup(['CMC.PayObj.series_no'],function(values){
+			$scope.isPayObjValid  = $scope.PayObj.series_no!=null || $scope.isCheckingSeries;
 		});
 		$selfScope.$on('StudentSelected',function(evt,args){
 			$scope.PayObj.student = args.student.name;
@@ -292,8 +306,9 @@ define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 			$scope.PayObj.pay_change = pay_change; 
 		});
 		$scope.closeModal = function(){
-			aModal.close('CashierPaymentModal');
+			$selfScope.$emit('ClosePayModal');
 		}
+		
 		$scope.confirmPayment = function(){
 			let payment = angular.copy($scope.PayObj);
 				payment.transac_date =  $filter('date')(new Date(payment.transac_date),DATE_FORMAT);;
@@ -310,15 +325,23 @@ define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 
 		function loadBooklet(){
 			let doc_type = $scope.PayObj.doc_type;
-			BKLT.requestBooklets(doc_type).then(setDefaults);
-			
+			$scope.PayObj.series_no = 'Checking...';
+			$scope.isCheckingSeries = true;
+			$timeout(function(){
+				BKLT.requestBooklets(doc_type).then(setDefaults,errDefaults);
+			},250);
 		}
 		function setDefaults(){
+			$scope.isCheckingSeries = false;
 			$scope.Booklets = BKLT.getBooklets();
 			let bklt_id = $scope.Booklets[0].id;
 			let active_BL = BKLT.setActiveBL(bklt_id);
 			$scope.PayObj.booklet_id = bklt_id;
 			$scope.PayObj.series_no = active_BL.series_no;
+		}
+		function errDefaults(){
+			$scope.isCheckingSeries = false;
+			$scope.PayObj.series_no = null;
 		}
 	
 		

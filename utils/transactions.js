@@ -4,8 +4,9 @@ define(['app','util','api'],function(app,util) {
 				{id:'INIPY', description:'Initial Payment',amount:0, docType:'OR'},
 				{id:'SBQPY', description:'Subsequent Payment',amount:0, docType:'OR'},
 				{id:'OLDAC', description:'Old Account',amount:0, docType:'OR'},
-				{id:'EXTPY', description:'Ext. Payment Plan',amount:0, docType:'A2O'}
-				//{id:'UNIFM', description:'Uniform',amount:0},
+				{id:'EXTPY', description:'Ext. Payment Plan',amount:0, docType:'A2O'},
+				//{id:'UNIFM', description:'Uniform',amount:100},
+				{id:'OTHRS', description:'Others',amount:0.10, docType:'A2O'}
 				//{id:'FORMS', description:'Forms',amount:0}
 			];
 	var api,list,listIndex,paysched,payscheds;
@@ -132,10 +133,17 @@ define(['app','util','api'],function(app,util) {
 		updateAmount('SBQPY','set',0);
 		updateAmount('OLDAC','set',0);
 		updateAmount('EXTPY','set',0);
-		//updateAmount('UNIFM','set',100);
+		
+		
 		updateDisplay('INIPY','hide');
 		updateDisplay('SBQPY','hide');
 		updateDisplay('OLDAC','hide');
+		updateDisplay('EXTPY','hide');
+		updateAmount('OTHRS','set',0.10);
+		updateDisplay('OTHRS','disable');
+
+		//updateAmount('UNIFM','set',100);
+		//updateDisplay('UNIFM','disable');
 	}
 	function updateDisplays(is_old){
 		list.map(function(lItem){
@@ -174,6 +182,9 @@ define(['app','util','api'],function(app,util) {
 			refresh: timestamp
 		};
 		updateDisplay('OLDAC','show');
+		updateDisplay('OTHRS','enable');
+		
+		//updateDisplay('UNIFM','enable');
 		payscheds.regular = [];
 		return TRNX.requestAccount('accounts',filter,'Paysched');
 	}
