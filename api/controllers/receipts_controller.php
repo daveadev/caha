@@ -95,6 +95,10 @@ class ReceiptsController extends AppController{
 		return;	
 	}
 
+	function cash_or(){
+		$this->cash_a2o();
+	}	
+
 	function cash_a2o(){
 		$details = json_decode($_POST['details'],true);
 
