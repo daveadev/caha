@@ -1,14 +1,13 @@
 <?php
 class ReceiptsController extends AppController{
 	var $name = 'Receipts';
-	var $uses = array('MasterConfig','Student');
+	var $uses = array('MasterConfig','Student','Transaction');
 	function view($id=null){
 		$this->adjust_memo();
 	}
 
 	protected function adjust_memo(){
 		if(isset($_POST['details'])):
-
 			$details = json_decode($_POST['details'],true);
 			$user = $this->Auth->user()['User'];
 			$details['cashier']=$user['username'];
@@ -100,15 +99,36 @@ class ReceiptsController extends AppController{
 	}	
 
 	function cash_a2o(){
-		$details = json_decode($_POST['details'],true);
-
+		$details = array();
+		// Regenerate printout via GET
+		if(isset($_GET['series_no'])):
+			$seriesNo = $_GET['series_no'];
+			$TRNX = $this->Transaction->findByRefNo($seriesNo);
+			$details['account_id']=$TRNX['Transaction']['account_id'];
+			$TRNS = $TRNX['Transaction'];
+			$details['esp']=$TRNS['esp'];
+			$details['series_no']=$TRNS['ref_no'];
+			$TDTL = array();
+			foreach($TRNX['TransactionDetail'] as $dV){
+				$dV['description']=$dV['details'];
+				$TDTL[]=$dV;
+			}
+			$details['details'] = $TDTL;
+			$details['pay_amount']=$TRNS['amount'];
+			$details['transac_date']=$TRNS['transac_date'];
+			$details['cashier']=$TRNS['cashier'];
+		elseif(isset($_POST['details'])):
+			$details = json_decode($_POST['details'],true);
+			$user = $this->Auth->user()['User'];
+			$details['cashier'] = $user['username'];
+		endif;
 		$sid = $details['account_id'];
 		$this->Student->recursive=-1;
 		$stud = $this->Student->findInfoBySID($sid);
 		$details['student']=$stud['Student']['full_name'];
 		$details['transac_date'] = date('d M Y',strtotime($details['transac_date']));
-		$user = $this->Auth->user()['User'];
-		$details['cashier']=$user['username'];
+		
+		
 
 		
 		$trnxDtls  =array();
@@ -132,7 +152,7 @@ class ReceiptsController extends AppController{
 			'sy'=>$syAlias,
 			'transac_details'=> $trnxDtls,
 			'total_paid'=>$details['pay_amount'],
-			'cashier'=>$user['username']
+			'cashier'=>$details['cashier']
 		);
 		$this->set(compact('details','or_details'));
 		$this->render('cash_a2o');
