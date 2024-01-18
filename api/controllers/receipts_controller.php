@@ -104,7 +104,7 @@ class ReceiptsController extends AppController{
 
 		$sid = $details['account_id'];
 		$this->Student->recursive=-1;
-		$stud = $this->Student->findById($sid);
+		$stud = $this->Student->findInfoBySID($sid);
 		$details['student']=$stud['Student']['full_name'];
 		$details['transac_date'] = date('d M Y',strtotime($details['transac_date']));
 		$user = $this->Auth->user()['User'];
@@ -117,14 +117,19 @@ class ReceiptsController extends AppController{
 			$amount= number_format($dtl['amount'],2,'.',',');
 			$trnxDtls[] =  array('item'=>$item,'amount'=>$amount);
 		}
+		$sno = $stud['Student']['sno'];
+		$yearLevel = $stud['YearLevel']['name'];
+		$sectionName = $stud['Section']['name'];
+		$syAlias = (int)substr($details['esp'], 2);
+		$syAlias = "SY $syAlias - ".($syAlias+1);
 		$or_details = array(
 			'ref_no'=>$details['series_no'],
 			'transac_date'=>$details['transac_date'],
 			'student'=>$details['student'],
-			'sno'=>'',
-			'year_level'=>'',
-			'section'=>'',
-			'sy'=>$details['esp'],
+			'sno'=>$sno,
+			'year_level'=>$yearLevel,
+			'section'=>$sectionName,
+			'sy'=>$syAlias,
 			'transac_details'=> $trnxDtls,
 			'total_paid'=>$details['pay_amount'],
 			'cashier'=>$user['username']
