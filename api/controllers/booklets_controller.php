@@ -9,7 +9,7 @@ class BookletsController extends AppController {
 		$cashier = $this->Booklet->Cashier->findByUserId($uid);
 		// Add current user filter if cashier is available
 		if($cashier):
-			$this->paginate['Booklet']['conditions'][] = array('cashier_id'=>$cashier['Cashier']['id']);
+			$this->paginate['Booklet']['conditions'][] = array('cashier_id'=>array($cashier['Cashier']['id'],'SHARED'));
 		endif;
 		if(isset($_GET['receipt_type'])):
 			if($_GET['receipt_type']=='A2O'):
