@@ -80,6 +80,14 @@ class Student extends AppModel {
 		}
 		
 	}
+	function findInfoBySID($sid){
+		$cond = array('Student.id'=>$sid);
+		$cont =  array('YearLevel','Section');
+		$conf = array('conditions'=>$cond,'contain'=>$cont);
+		$info = $this->find('first',$conf);
+		return $info;
+
+	}
 
 	// Student Unified Search
 	function search($keyword,$fields =null){
