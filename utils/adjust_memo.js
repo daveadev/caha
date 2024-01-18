@@ -15,6 +15,7 @@ define(['app','util','api'],function(app,util) {
 			{id:'AMSPOV', code:'SPV',name:'Sponsorship Voucher'},
 			{id:'AMTMCA', code:'TBD',name:'Temporary Clear Account',applyToPaysched:false},
 			{id:'AMPBDT', code:'PBD',name:'Permanent Bad Debt',applyToPaysched:false},
+			{id:'AMACLR', code:'ACLR',name:'Cleared Account',applyToPaysched:false},
 			{id:'AMREFU', code:'Refund',name:'Refund Account',applyToPaysched:false, adjustType:'fee'}
 		];
 
