@@ -284,6 +284,8 @@ define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 			$scope.PayObj.pay_due =null;
 			$scope.PayObj.pay_amount =null;
 			$scope.PayObj.pay_display =null;
+			$scope.PayObj.pay_details =null;
+			$scope.PayObj.pay_date =null;
 			$scope.PayObj.transac_date =null;
 			$scope.PayObj.transac_date_display =null;
 			$scope.PayObj.details =null;
