@@ -119,6 +119,13 @@ class ReceiptsController extends AppController{
 			$details['cashier']=$TRNS['cashier'];
 		elseif(isset($_POST['details'])):
 			$details = json_decode($_POST['details'],true);
+			if($details['pay_type']=='CHCK'):
+				if(isset($details['pay_details'])):
+					$checkDetails =  $details['pay_details'];
+					$checkDetails .= '  / '.date('Y-m-d',strtotime($details['pay_date']));
+					$details['check_details']=$checkDetails;
+				endif;
+			endif;
 			$user = $this->Auth->user()['User'];
 			$details['cashier'] = $user['username'];
 		endif;
@@ -154,6 +161,9 @@ class ReceiptsController extends AppController{
 			'total_paid'=>$details['pay_amount'],
 			'cashier'=>$details['cashier']
 		);
+		if($details['pay_type']=='CHCK'):
+			$or_details['check_details'] = $details['check_details'];
+		endif;
 		$this->set(compact('details','or_details'));
 		$this->render('cash_a2o');
 		return;	

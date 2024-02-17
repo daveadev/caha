@@ -51,7 +51,18 @@ class NewPayment extends AppModel {
 				);
 				$TPay[]=$pay;
 			break;
+			case 'CHCK':
+				$validOn = date('Y-m-d',strtotime($trnxObj['pay_date']));
+				$pay = array(
+					'payment_method_id'=>'CHCK',
+					'details'=>$trnxObj['pay_details'],
+					'valid_on'=>$validOn,
+					'amount'=>$trnxObj['amount']
+				);
+				$TPay[]=$pay;
+			break;
 		}
+		
 
 		// Build complete Transaction object
 		$TObj = array(

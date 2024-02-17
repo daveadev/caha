@@ -258,7 +258,7 @@ define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 				];
 			$scope.PayTypes = [
 					{id:"CASH",name:"Cash"},
-					//{id:"CHCK",name:"Check"},
+					{id:"CHCK",name:"Check"}
 					//{id:"CARD",name:"Card"}
 				];
 
@@ -269,7 +269,7 @@ define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 			let defaultDocType =  args.details[0].docType || 'A2O';
 			$scope.PayObj.series_no = null;
 			$scope.PayObj.doc_type = defaultDocType;
-			$scope.PayObj.pay_type = 'CASH';
+			//$scope.PayObj.pay_type = 'CASH';
 			$scope.PayObj.transac_date = new Date();
 			$scope.PayObj.transac_date_display = $filter('date')(new Date(),'dd MMM yyyy');
 			$scope.PayObj.pay_due = args.total_amount

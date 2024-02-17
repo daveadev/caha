@@ -6,7 +6,7 @@ define(['app','util','api'],function(app,util) {
 			{id:'AMFAV1', code:'FAV',name:'Financial Assistance Voucher'},
 			{id:'AMLESC', code:'L-ESC',name:'Late Credit ESC/Voucher'},
 			{id:'AMRESC', code:'RegESC',name:'Regular Credit ESC/Voucher'},
-			{id:'AMFAV2', code:'AFAV',name:'Additional Financial Assistance Voucher',disabled:true},
+			{id:'AMFAV2', code:'AFAV',name:'Additional Financial Assistance Voucher'},
 			{id:'AMOTFA', code:'OTFA',name:'One Time Financial Assistance'},
 			{id:'AMVASF', code:'VSV',name:'Valedictorian Special Voucher',disabled:true},
 			{id:'AMSASV', code:'SSV',name:'Salutatorian Special Voucher',disabled:true},
