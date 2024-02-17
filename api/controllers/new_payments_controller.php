@@ -5,7 +5,8 @@ class NewPaymentsController extends AppController {
 	var $uses = array('NewPayment','Transaction');
 
 	function add(){
-		
+		$_DATA =  $this->data;
+		$this->logData($_DATA);
 		// Get current cashier 
 		$cashier = $this->Auth->user()['User']['username'];
 		// Prepare paymentObject
@@ -41,6 +42,17 @@ class NewPaymentsController extends AppController {
     	// Dispatch an event to update legder
 		$ledger_action = $this->requestAction('/ledgers/new_payment',array('pass'=>$this->data));
     	$this->data['NewPayment']['ledger']=$ledger_action;
+	}
+
+	function logData($__DATA){
+		$__DATA['__'] =  date('Y-m-d-h-i-A',time());
+		$__DATA['__USER'] = $this->Auth->user();
+		$_NEWPAY = $__DATA['NewPayment'];
+		$filename = sprintf("%s-%s.txt",$_NEWPAY['series_no'],$__DATA['__'] );
+		$path = APP.DS.'tmp'.DS.'logs'.DS.'payments'.DS.$filename;
+		
+		$content =  json_encode($__DATA, JSON_PRETTY_PRINT);
+		file_put_contents($path,$content);
 	}
 
 }
