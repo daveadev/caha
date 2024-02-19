@@ -266,10 +266,11 @@ define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 		}
 		$selfScope.$on('OpenPayModal',function(evt,args){
 			aModal.open('CashierPaymentModal');
+
 			let defaultDocType =  args.details[0].docType || 'A2O';
 			$scope.PayObj.series_no = null;
 			$scope.PayObj.doc_type = defaultDocType;
-			//$scope.PayObj.pay_type = 'CASH';
+			$scope.PayObj.pay_type = 'CASH';
 			$scope.PayObj.transac_date = new Date();
 			$scope.PayObj.transac_date_display = $filter('date')(new Date(),'dd MMM yyyy');
 			$scope.PayObj.pay_due = args.total_amount
@@ -290,8 +291,12 @@ define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 			aModal.close('CashierPaymentModal');
 		});
 		$selfScope.$watch('CMC.PayObj.doc_type',loadBooklet);
-		$selfScope.$watchGroup(['CMC.PayObj.series_no'],function(values){
-			$scope.isPayObjValid  = $scope.PayObj.series_no!=null || $scope.isCheckingSeries;
+		$selfScope.$watchGroup(['CMC.PayObj.series_no','CMC.isCheckingSeries','CMC.PayObj.pay_type','CMC.PayObj.pay_details','CMC.PayObj.pay_date'],function(values){
+			$scope.isPayObjValid  = $scope.PayObj.series_no!=null && !$scope.isCheckingSeries;
+			if(values[2]=='CHCK'){
+				let checkDetails = $scope.PayObj.pay_details && $scope.PayObj.pay_date;
+				$scope.isPayObjValid  =  $scope.isPayObjValid  && checkDetails
+			}
 		});
 		$selfScope.$on('StudentSelected',function(evt,args){
 			$scope.PayObj.student = args.student.name;
@@ -327,17 +332,21 @@ define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 			let doc_type = $scope.PayObj.doc_type;
 			$scope.PayObj.series_no = 'Checking...';
 			$scope.isCheckingSeries = true;
+			$scope.isPayObjValid = false;
 			$timeout(function(){
 				BKLT.requestBooklets(doc_type).then(setDefaults,errDefaults);
-			},250);
+			},350);
 		}
 		function setDefaults(){
-			$scope.isCheckingSeries = false;
+			
 			$scope.Booklets = BKLT.getBooklets();
 			let bklt_id = $scope.Booklets[0].id;
 			let active_BL = BKLT.setActiveBL(bklt_id);
 			$scope.PayObj.booklet_id = bklt_id;
 			$scope.PayObj.series_no = active_BL.series_no;
+			$timeout(function(){
+				$scope.isCheckingSeries = false;	
+			},2500);
 		}
 		function errDefaults(){
 			$scope.isCheckingSeries = false;

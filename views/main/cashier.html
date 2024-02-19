@@ -226,7 +226,7 @@ div[align="right"] input[disabled]{
 				</a-row>
 				<a-row>
 					<a-col size="8">
-						<m-formgroup ng-model="CMC.PayObj.pay_type" label="Payment Type" options="CMC.PayTypes"></m-formgroup>
+						<m-formgroup ng-model="CMC.PayObj.pay_type" label="Payment Type"  type="'btn-group'" options="CMC.PayTypes"></m-formgroup>
 					</a-col>
 					<a-col size="4" align="right">
 						<m-formgroup ng-model="CMC.PayObj.pay_display" label="Amount" type="'display'" size="'input-lg'"></m-formgroup>
@@ -245,10 +245,25 @@ div[align="right"] input[disabled]{
 
 					</a-col>
 				</a-row>
+				<a-row ng-show="CMC.isCheckingSeries">
+					<a-col align="center">
+						<div class="alert alert-info" style="margin-bottom:-5px;">
+							<a-glyph icon="refresh animate spin"></a-glyph>
+							Checking booklet, please wait.
+						</div>
+					</a-col>
+				</a-row>
 			</a-modal-body>
 			<a-modal-footer>
-				<a-button opt-class="pull-left" ng-click="CMC.closeModal()">Close</a-button>
-				<a-button type="primary" ng-click="CMC.confirmPayment()" ng-disabled="!CMC.isPayObjValid">Confirm</a-button>
+				<a-row>
+					<a-col>
+						<a-button opt-class="pull-left" ng-click="CMC.closeModal()">Close</a-button>
+						<a-button type="primary"ng-click="CMC.confirmPayment()" ng-disabled="!CMC.isPayObjValid">
+							Confirm
+					</a-button>
+					</a-col>
+				</a-row>
+				
 			</a-modal-footer>
 		</a-modal>
 	</div>
