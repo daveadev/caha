@@ -346,7 +346,7 @@ define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 			$scope.PayObj.series_no = active_BL.series_no;
 			$timeout(function(){
 				$scope.isCheckingSeries = false;	
-			},2500);
+			},700);
 		}
 		function errDefaults(){
 			$scope.isCheckingSeries = false;
