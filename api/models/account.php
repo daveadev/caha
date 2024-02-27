@@ -214,6 +214,28 @@ class Account extends AppModel {
 		$this->setSource('accounts_'.$sy);
 		$this->AccountSchedule->setSource('account_schedules_'.$sy);
 	}
+
+	function generateId($prefix){
+		$lastAccount = $this->find('first', array(
+			'recursive'=>-1,
+		    'conditions' => array('Account.id LIKE'=>$prefix.'%'),
+		    'fields' => array('id'),
+		    'order' => array('id' => 'desc')
+		));
+
+		// Extract the ID and remove the "LSO" prefix
+		$lastIdStr = $lastAccount['Account']['id']; 
+		$numericPart = substr($lastIdStr, 3); // Remove the "LSO" prefix
+
+		// Convert the numeric part to an integer and increment it
+		$numericPartInt = (int)$numericPart;
+		$newIdInt = $numericPartInt + 1;
+
+		// Pad the new ID and prepend "LSO"
+		$newIdStr = str_pad($newIdInt, 5, '0', STR_PAD_LEFT);
+		$newAccountId = $prefix . $newIdStr;
+		return $newAccountId;
+	}
 	protected function lookupAmount($obj,$key="amount"){
 		$amount = $obj[$key];
 		if(!is_numeric($amount)){

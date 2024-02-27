@@ -86,6 +86,7 @@ class AccountsController extends AppController {
 	function add() {
 		if (!empty($this->data)) {
 			$this->Account->create();
+			$this->data['Account']['id']=$this->Account->generateId('LSO');
 			if ($this->Account->save($this->data)) {
 				$this->Session->setFlash(__('The account has been saved', true));
 				$this->redirect(array('action' => 'index'));
