@@ -88,10 +88,19 @@ define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 		$selfScope.$watchGroup(['CAC.ActiveOther.id','CAC.ActiveStudent.id'],function(entity){
 			$scope.hasValidPayee = entity[0] ||  entity[1];
 		});
-		$selfScope.$watchGroup(['CAC.ActiveOther','CAC.ActiveSY'],function(entity){
+		$selfScope.$watchGroup(['CAC.ActiveOther','CAC.ActiveSY','CAC.ActiveOtherId'],function(entity){
 			var othr = entity[0];
 			var sy = entity[1];
+			var oid = entity[2];
 			if(!othr||!sy) return;
+			if(oid && !othr.id){
+				let name = othr.name || othr;
+				othr = {id:oid,name:name};
+				$scope.ActiveOther = othr;
+				$scope.ActiveOtherId = null;
+				othr.account_details = name;
+
+			}
 			if(!othr.id){
 				$selfScope.$broadcast('UpdatePaysched',{paysched:[]});
 				$selfScope.$broadcast('ResetTransactions');
@@ -140,14 +149,25 @@ define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 		}
 
 		$selfScope.$on('PaymentSucess',function(evt,args){
-			let stud = $scope.ActiveStudent;
-			let sy = $scope.ActiveSY;
-			$selfScope.$broadcast('ResetTransactions');
-			$timeout(function(){
-				$selfScope.$broadcast('StudentSelected',{student:stud,sy:sy});
-				$scope.ActiveTabIndex = 1;
-			},1500);
-			
+			let account_type = args.details.account_type;
+			if(account_type=='others'){
+				let othr = $scope.ActiveOther;
+				let sy = $scope.ActiveSY;
+				$selfScope.$broadcast('ResetTransactions');
+				$timeout(function(){
+					$selfScope.$broadcast('OtherSelected',{other:othr,sy:sy});
+					$scope.ActiveTabIndex = 0;
+				},1500);
+			}else{
+
+				let stud = $scope.ActiveStudent;
+				let sy = $scope.ActiveSY;
+				$selfScope.$broadcast('ResetTransactions');
+				$timeout(function(){
+					$selfScope.$broadcast('StudentSelected',{student:stud,sy:sy});
+					$scope.ActiveTabIndex = 1;
+				},1500);
+			}
 			$selfScope.$broadcast('ClosePayModal');
 			$selfScope.$broadcast('PrintPaymentReceipt',{details:args.details});
 		});

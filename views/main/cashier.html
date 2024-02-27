@@ -81,9 +81,7 @@ div.simple-typeahead{
 					<a-col size="11">
 						<m-search-entity  ng-show="CAC.PayeeType=='STU'" ng-model="CAC.ActiveStudent" endpoint="'students/search'" search-fields="CAC.StudSearch" obj-fields="CAC.StudFields" is-large="true" display-field="CAC.StudDisplay" placeholder="Search Students"></m-search-entity>
 						
-						<m-search-entity   ng-show="CAC.PayeeType=='OTH'" ng-model="CAC.ActiveOther" endpoint="'accounts'" search-fields="CAC.OthrSearch" obj-fields="CAC.OthrFields" is-large="true" display-field="CAC.OthrDisplay" placeholder="Search Other Accounts"></m-search-entity>
-
-						
+						<m-search-entity   ng-show="CAC.PayeeType=='OTH'" ng-model="CAC.ActiveOther" endpoint="'accounts'" search-fields="CAC.OthrSearch" obj-fields="CAC.OthrFields" is-large="true" display-field="CAC.OthrDisplay" placeholder="Search Other Accounts"  filter="CAC.OthrFilter" allow-create="true" created-id="CAC.ActiveOtherId"></m-search-entity>
 					</a-col>
 				</a-row>
 				
