@@ -1,10 +1,10 @@
 <div class="row"  ng-controller="LoginController" > 
 	<div class="col-md-4 col-md-offset-4">
-		<h2 class="text-center">{{__SHOW_REG?'Register':'Let\'s do this!'}}</h2>
+		<h2 class="text-center">{{__SHOW_REG?'Register':'Welcome to SRP!'}}</h2>
 		<form action="" class="form-vertical"  ng-show="!__SHOW_REG">
 			
 			<div class="list-group-item">
-			<p class="help-text">You know the drill.</p>
+			<p class="help-text">Login Account</p>
 			<div class="loader fade"  ng-class="{'out':!LoggingIn,'in':LoggingIn}" style="margin-bottom:5px;"></div>
 			<div class=" alert-danger help-text" style="color:#a94442;margin-bottom:5px;padding:1rem;border-radius:4px;" ng-show="loginMessage">
 				{{loginMessage}}
@@ -25,24 +25,7 @@
 			
 			<div class="text-center" style="margin-bottom:10px;" ng-show="!__SHOW_REG">
 				<hr class="help-bar"/>
-					<div>or</div>
-				<div class="row">
-					<!-- <div class="col-md-6">
-						<p class="help-text">Start something new.</p>
-						<button class="btn btn-help btn-default btn-xs" ng-class="{'btn-default':!__HOV_REG_BTN,'btn-success':_HOV_REG_BTN}" ng-mouseenter="_HOV_REG_BTN=true" ng-mouseleave="_HOV_REG_BTN=false"type="button" ng-click="__SHOW_REG=true">
-							 &nbsp; R E G I S T E R &nbsp;
-						</button>
-						
-					</div> -->
-					<div class="col-md-12">
-						<p class="help-text">Forgot something old.</p>
-						<a href="#/signin/challenge" class="btn btn-help btn-default btn-md" ng-class="{'btn-default':!__HOV_RES_BTN,'btn-warning':_HOV_RES_BTN}" ng-mouseenter="_HOV_RES_BTN=true" ng-mouseleave="_HOV_RES_BTN=false"type="button">
-							 &nbsp;&nbsp; R &nbsp;E S E&nbsp; T &nbsp;&nbsp;
-						</a>
-
-					</div>
-				</div>
-				
+					<div>SRP {{_APP_VersionNo}}</div>				
 			</div>
 			</div>
 		</form>
