@@ -319,7 +319,7 @@ class Account extends AppModel {
 					if($details=='Subsidy' || $code=='DSESC'):
 						$DSC = $this->lookupAmount($entry);
 					endif;
-					if($details=='FAV'  || $code =='AMFAV' || $details=='SPV' || $code =='AMSPO'  || $code == 'AMOTF' ):
+					if($details=='FAV'  || $code =='AMFAV' || $details=='SPV' || $code =='AMSPO'  || $code == 'AMOTF' || $code =='EDV' || $details =='AMEMD'):
 						$VOU += $this->lookupAmount($entry);
 					endif;
 
