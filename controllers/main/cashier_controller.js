@@ -41,9 +41,16 @@ define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 			$scope.PSProps = ['disp_date','disp_amount','disp_status'];
 			$scope.Paysched = [];
 			$scope.StudFields = ['id','full_name','enroll_status','student_type','department_id','year_level_id','section'];
+			$scope.StudSearch = ['first_name','last_name','middle_name','sno','rfid'];
+			$scope.StudDisplay = 'display_name';
+			$scope.OthrFields = ['id','account_details','account_type'];
+			$scope.OthrSearch = ['id','account_details'];
+			$scope.OthrDisplay = 'account_details';
+			$scope.OthrFilter = {account_type:"others"};
 			$scope.TransacDetails=[];
 			$scope.TotalAmount = 0;
 			$scope.SeriesNo = '';
+			$scope.PayeeType='STU'; 
 			$scope.TransacDate = new Date();
 			$scope.TotalDispAmount = TRNX.util.formatMoney($scope.TotalAmount);
 		}
@@ -77,6 +84,21 @@ define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 			if(hasZero) return;
 			$scope.EditTransacDetails = details;
 		}
+
+		$selfScope.$watchGroup(['CAC.ActiveOther.id','CAC.ActiveStudent.id'],function(entity){
+			$scope.hasValidPayee = entity[0] ||  entity[1];
+		});
+		$selfScope.$watchGroup(['CAC.ActiveOther','CAC.ActiveSY'],function(entity){
+			var othr = entity[0];
+			var sy = entity[1];
+			if(!othr||!sy) return;
+			if(!othr.id){
+				$selfScope.$broadcast('UpdatePaysched',{paysched:[]});
+				$selfScope.$broadcast('ResetTransactions');
+				
+			}
+			$selfScope.$broadcast('OtherSelected',{other:othr,sy:sy});
+		});
 		$selfScope.$watchGroup(['CAC.ActiveStudent','CAC.ActiveSY'],function(entity){
 			var stud = entity[0];
 			var sy = entity[1];
@@ -89,8 +111,9 @@ define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 			$selfScope.$broadcast('StudentSelected',{student:stud,sy:sy});
 		});
 		$selfScope.$watch('CAC.TotalAmount',function(amount){
-			if(!$scope.ActiveStudent) return;
-			$scope.allowPay = $scope.ActiveStudent.id && $scope.ActiveSY && amount>0;
+			let isValid = $scope.hasValidPayee;
+			if(!isValid) return;
+			$scope.allowPay = isValid && $scope.ActiveSY && amount>0;
 			$scope.allowClear = $scope.allowPay && $scope.TrnxDtlMode!=='EDIT';
 			$scope.allowEdit = $scope.allowPay && $scope.TrnxDtlMode!=='EDIT';
 		});
@@ -187,6 +210,23 @@ define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 				$scope.TransacList[index].isActive = !!$scope.ActiveTrnx[item.id];
 			});
 		}
+		$selfScope.$on('OtherSelected',function(evt,args){
+			console.log(args);
+			let OTH = args.other;
+			let oid = OTH.id;
+			let sy = args.sy;
+
+			TRNX.runDefault();
+			$selfScope.$emit('UpdatePaysched',{paysched:[]});
+				
+			function updateTrnx(response){
+				var account =  response.data.data[0];
+				console.log(response);
+				$scope.TransacList = angular.copy(TRNX.getList());
+			}
+			TRNX.getAccount(oid,sy).then(updateTrnx);
+
+		});
 		$selfScope.$on('StudentSelected',function(evt,args){
 			var STU =  args.student;
 			var sy = args.sy;
@@ -196,6 +236,7 @@ define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 
 
 			TRNX.runDefault();
+			$scope.TransacList = angular.copy(TRNX.getList());
 			$selfScope.$emit('UpdatePaysched',{paysched:[]});
 
 			if(!sid) return;
@@ -300,10 +341,17 @@ define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 				$scope.isPayObjValid  =  $scope.isPayObjValid  && checkDetails
 			}
 		});
+		$selfScope.$on('OtherSelected',function(evt,args){
+			$scope.PayObj.other = args.other.account_details;
+			$scope.PayObj.account_id = args.other.id;
+			$scope.PayObj.account_type = 'others';
+			$scope.PayObj.esp = args.sy;
+		});
 		$selfScope.$on('StudentSelected',function(evt,args){
 			$scope.PayObj.student = args.student.name;
 			$scope.PayObj.section = args.student.section;
 			$scope.PayObj.account_id = args.student.id;
+			$scope.PayObj.account_type = 'student';
 			$scope.PayObj.esp = args.sy;
 			
 		});

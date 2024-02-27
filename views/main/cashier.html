@@ -53,12 +53,40 @@ div[align="right"] input[disabled]{
     font-size: 21px;
     height: auto;
 }
+#PTypeSelect{
+	width: 104px;
+  margin-left: 15px;
+  margin-right: -32px;
+  border-top-right-radius: 0px;
+  border-bottom-right-radius: 0px;
+  z-index: 3;
+  position: absolute;
+  font-size: 14px;
+}
+div.simple-typeahead{
+	margin-left:20px;
+}
 </style>
 <div ng-controller="CashierController as CAC" ng-init="CAC.init()">
 	<a-module>
 		<a-container>
 			<a-header is-main="true">
-				<m-search-entity  ng-model="CAC.ActiveStudent" endpoint="'students/search'" search-fields="['first_name','last_name','middle_name','sno','rfid']" obj-fields="CAC.StudFields" is-large="true" display-field="'display_name'"/>
+				<a-row>
+					<a-col size="1">
+						<select  ng-model="CAC.PayeeType" class="input-lg pull-right" a-select id="PTypeSelect" ng-disabled="CAC.hasValidPayee">
+							<option value="STU">Student</option>
+							<option value="OTH"> Others</option>
+						</select>
+					</a-col>
+					<a-col size="11">
+						<m-search-entity  ng-show="CAC.PayeeType=='STU'" ng-model="CAC.ActiveStudent" endpoint="'students/search'" search-fields="CAC.StudSearch" obj-fields="CAC.StudFields" is-large="true" display-field="CAC.StudDisplay" placeholder="Search Students"></m-search-entity>
+						
+						<m-search-entity   ng-show="CAC.PayeeType=='OTH'" ng-model="CAC.ActiveOther" endpoint="'accounts'" search-fields="CAC.OthrSearch" obj-fields="CAC.OthrFields" is-large="true" display-field="CAC.OthrDisplay" placeholder="Search Other Accounts"></m-search-entity>
+
+						
+					</a-col>
+				</a-row>
+				
 			</a-header>
 			<a-canvas>
 				<a-content>
@@ -70,16 +98,18 @@ div[align="right"] input[disabled]{
 							<uib-tabset type="pills" active="CAC.ActiveTabIndex">
 								<uib-tab index="0" heading="Transactions" classes="btn-lg">
 
-									<div class="empty-state" ng-hide="CAC.ActiveStudent.id">
+									<div class="empty-state" ng-hide="CAC.hasValidPayee">
 										<div class="well text-center">
 											<div class="empty-state-icon text-center">
-												<i class="glyphicon glyphicon-user"></i>
+												<i  ng-if="CAC.PayeeType=='STU'"class="glyphicon glyphicon-user"></i>
+												<i ng-if="CAC.PayeeType=='OTH'" class="glyphicon glyphicon-magnet"></i>
 											</div>
-											<h4>Select Student to begin transaction.</h4>
-											<p>Search by Name, Student Number or tap their ID.</p>
+											<h4>Select {{CAC.PayeeType=='STU'?'Student':'Other Account'}} to begin transaction.</h4>
+											<p ng-if="CAC.PayeeType=='STU'">Search by Name, Student Number or tap their ID.</p>
+											<p ng-if="CAC.PayeeType=='OTH'">Search by Account Name.</p>
 										</div>
 									</div>
-										<div ng-controller="CashierTransactionsController as CTC" ng-init="CTC.init()" ng-show="CAC.ActiveStudent.id">
+										<div ng-controller="CashierTransactionsController as CTC" ng-init="CTC.init()" ng-show="CAC.hasValidPayee">
 											<!--- Transactions - allowed & defaults -->
 											<a-button size="lg" class="btn-action" ng-class="{'btn-active':CTC.ActiveTrnx[TItem.id]}" ng-repeat="TItem in CTC.TransacList" ng-hide="TItem.hide" ng-disabled="(TItem.disabled || !TItem.amount) || CAC.TrnxDtlMode=='EDIT'" ng-click="CTC.addTrnx(TItem.id)">
 												<div class="action-label">{{TItem.description}}</div>
@@ -98,7 +128,7 @@ div[align="right"] input[disabled]{
 											</a-button>
 										</div>
 								</uib-tab>
-								<uib-tab index="1" heading="Schedule" classes="btn-lg">
+								<uib-tab index="1" heading="Schedule" classes="btn-lg" disable="CAC.PayeeType=='OTH'">
 
 									<div class="empty-state" ng-hide="CAC.ActiveStudent.id">
 										<div class="well text-center">
@@ -117,7 +147,7 @@ div[align="right"] input[disabled]{
 									</div>
 								</uib-tab>
 
-								<uib-tab index="2" heading="Statement" classes="btn-lg">
+								<uib-tab index="2" heading="Statement" classes="btn-lg" disable="CAC.PayeeType=='OTH'">
 									<div style="height: 500px;" ng-show="CAC.ActiveStudent.id" >
 										<div class="text-center"  ng-show="hasMultiplePS" style="margin-bottom:15px;">
 											<a-navpill  ng-model="CAC.PSType" options="CAC.PSTypes" type="button" ></a-navpill>
@@ -216,12 +246,17 @@ div[align="right"] input[disabled]{
 					</a-col>
 				</a-row>
 
-				<a-row>
+				<a-row ng-show="CMC.PayObj.account_type=='student'">
 					<a-col size="8">
 						<m-formgroup ng-model="CMC.PayObj.student" label="Student" ng-disabled="true"></m-formgroup>
 					</a-col>
 					<a-col size="4">
 						<m-formgroup ng-model="CMC.PayObj.section" label="Level / Section" ng-disabled="true"></m-formgroup>
+					</a-col>
+				</a-row>
+				<a-row ng-show="CMC.PayObj.account_type=='others'">
+					<a-col>
+						<m-formgroup ng-model="CMC.PayObj.other" label="Account Name" ng-disabled="true"></m-formgroup>
 					</a-col>
 				</a-row>
 				<a-row>

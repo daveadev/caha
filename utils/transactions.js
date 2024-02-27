@@ -208,9 +208,18 @@ define(['app','util','api'],function(app,util) {
 			var data =  response.data[0];
 			var _paysched = data[field];
 			var is_old = endpoint=='payment_plans';
-			formatPaysched(_paysched,is_old);
-			computeAmounts();
-			updateDisplays(is_old);
+			var accountType = data.account_type;
+			switch(accountType){
+				case 'student':
+					formatPaysched(_paysched,is_old);
+					computeAmounts();
+					updateDisplays(is_old);
+				break;
+				case 'others':
+					updateDisplay('OLDAC','show');
+					updateDisplay('OTHRS','enable');
+				break;
+			}
 		};
 		var error  =function(response){
 
