@@ -1,7 +1,7 @@
 <?php
 class ReceiptsController extends AppController{
 	var $name = 'Receipts';
-	var $uses = array('MasterConfig','Student','Transaction');
+	var $uses = array('MasterConfig','Student','Transaction','Account');
 	function view($id=null){
 		$this->adjust_memo();
 	}
@@ -129,10 +129,29 @@ class ReceiptsController extends AppController{
 			$user = $this->Auth->user()['User'];
 			$details['cashier'] = $user['username'];
 		endif;
-		$sid = $details['account_id'];
-		$this->Student->recursive=-1;
-		$stud = $this->Student->findInfoBySID($sid);
-		$details['student']=$stud['Student']['full_name'];
+		$sno = $yearLevel = $sectionName = '';
+		switch($details['account_type']):
+			case 'others':
+				$oid = $details['account_id'];
+				$this->Account->recursive=-1;
+				$other = $this->Account->findById($oid);
+				$details['student']=$other['Account']['account_details'];
+				$sno=$other['Account']['id'];
+				$yearLevel = '-';
+				$sectionName = '-';
+			break;
+			case 'student':
+			default:
+				$sid = $details['account_id'];
+				$this->Student->recursive=-1;
+				$stud = $this->Student->findInfoBySID($sid);
+				$details['student']=$stud['Student']['full_name'];
+				$sno = $stud['Student']['sno'];
+				$yearLevel = $stud['YearLevel']['name'];
+				$sectionName = $stud['Section']['name'];
+			break;
+		endswitch;
+		
 		$details['transac_date'] = date('d M Y',strtotime($details['transac_date']));
 		
 		
@@ -144,9 +163,7 @@ class ReceiptsController extends AppController{
 			$amount= number_format($dtl['amount'],2,'.',',');
 			$trnxDtls[] =  array('item'=>$item,'amount'=>$amount);
 		}
-		$sno = $stud['Student']['sno'];
-		$yearLevel = $stud['YearLevel']['name'];
-		$sectionName = $stud['Section']['name'];
+		
 		$syAlias = (int)substr($details['esp'], 2);
 		$syAlias = "SY $syAlias - ".($syAlias+1);
 		$or_details = array(
