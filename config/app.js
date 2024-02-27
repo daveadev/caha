@@ -40,7 +40,7 @@ function (root,directives,settings,angularAMD) {
         templateUrl: function (rp) {
 			return "views/auth/login."+settings.VIEW_EXTENSION;
 		},
-		controllerUrl: "controllers/auth_controller"            
+		controllerUrl: settings.CTRLS_DIRECTORY+"/auth_controller"            
     }))
 	.when("/logout", angularAMD.route({
         templateUrl: function (rp) {

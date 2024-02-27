@@ -4,6 +4,9 @@ define(['app','api'], function (app) {
        $scope.init = function (module_name) { 
 			$rootScope.__MODULE_NAME = module_name || app.settings.DEFAULT_MODULE_NAME;
 			$rootScope.__MODULE_NAME = 'SRP';
+			$rootScope._APP = $rootScope._APP ||{};
+			$rootScope._APP.CopyRight =  document.querySelector('meta[name="copyright"]').getAttribute('content');
+			$rootScope._APP.VersionNo =  document.querySelector('meta[name="version"]').getAttribute('content');
 			console.log($rootScope.__USER);
 			$scope.ActiveUser = $rootScope.__USER;
 			$scope.openListItem = function($index){

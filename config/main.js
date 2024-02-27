@@ -1,6 +1,16 @@
 require.config({
     baseUrl:'app',
-	urlArgs :(function(){for(var s = Math.random()+'',c = 0x123456,i=0;i<s.length;i++)c += (s.charCodeAt(i)*(i + 1));return c;}()),
+	urlArgs :(function(){
+    var metaVersion = document.querySelector('meta[name="version"]').getAttribute('content');
+    var d =  new Date();
+    var c=metaVersion || 'v1.3.060i';
+    
+    if(window.location.hostname=="localhost")
+        c+='.'+(new Date().valueOf().toString().substr(9));
+    
+    return c;
+
+    }()),
 	waitSeconds: 60,
     paths: {     
         'app': '../config/app',

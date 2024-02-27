@@ -3,7 +3,15 @@ define(function() {
 	DEMO_MODE: false,
 	CTRLS_DIRECTORY: '../controllers',
 	VIEWS_DIRECTORY: 'views',
-	VIEW_EXTENSION: 'html?'+ Math.random(),
+	VIEW_EXTENSION: (
+		function(){
+			var ext = 'html?'+ document.querySelector('meta[name="version"]').getAttribute('content');
+
+			if(window.location.hostname=="localhost")
+				ext+='.'+(new Date().valueOf().toString().substr(9));
+			
+			return ext;
+		})(),
 	APP_TRANSITION_DELAY: 111,
 	FAB_TRANSITION_DELAY: 333,
 	DEFAULT_MODULE_NAME: 'Module',
