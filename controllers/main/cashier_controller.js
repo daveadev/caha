@@ -2,7 +2,7 @@
 define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 	const DATE_FORMAT = "yyyy-MM-dd";
 	const TRNX_LIST = TRNX.__LIST;
-	const NEXT_SY = false;
+	let NEXT_SY = false;
 	app.register.controller('CashierController',['$scope','$rootScope','$filter','$timeout','api','aModal','Atomic',
 	function($scope,$rootScope,$filter,$timeout,api,aModal,atomic){
 		const $selfScope =  $scope;
@@ -12,10 +12,14 @@ define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 			$rootScope.$watch('_APP',function(app){
 				if(!app) return;
 				$scope.ActiveSY = $rootScope._APP.ACTIVE_SY;	
+				console.log($rootScope._APP);
+				NEXT_SY = $rootScope._APP.MOD_ESP;
 			});
 			
 			atomic.ready(function(){
 				var sys = atomic.SchoolYears;
+					sys = $filter('orderBy')(sys,'-id');
+					sys = [sys[0]];
 				var sy = atomic.ActiveSY;
 				if(NEXT_SY){
 					var asy = sy +1;

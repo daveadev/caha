@@ -8,7 +8,7 @@ class MasterConfigsController extends AppController {
 	}
 	function index() {
 		$this->MasterConfig->recursive = 0;
-		
+		$this->paginate['MasterConfig']['limit']=999;
 		$masterConfig =  $this->paginate();
 		$config = array();
 		foreach($masterConfig as $mcv){

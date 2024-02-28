@@ -125,7 +125,8 @@ class Student extends AppModel {
 
 			// Active SY to filter in ASM
 			$ESP = $CNF->findBySysKey('ACTIVE_SY')['MasterConfig']['sys_value'];
-			
+			$MOD_ESP = $CNF->findBySysKey('MOD_ESP')['MasterConfig']['sys_value'];
+			if($MOD_ESP) $ESP = $ESP+1;
 			// Check INQ with ASM not yet enrolled 
 			$inqOptions['joins']=array(
 				array(
