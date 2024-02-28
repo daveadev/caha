@@ -282,10 +282,9 @@ define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 			if(!sid) return;
 			$scope.loadingTrnx = true;
 			TRNX.runDefault();
-			if(sy>asy && NEXT_SY ){
-				TRNX.updateAmount('INRES','set',3000);
-			}
 			$scope.TransacList = angular.copy(TRNX.getList());
+
+			
 			$selfScope.$emit('UpdatePaysched',{paysched:[]});
 
 			if(!sid) return;
@@ -315,6 +314,11 @@ define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 				TRNX.getAssessment(sid,sy).then(updateTrnx).finally(function(){
 					$scope.loadingTrnx = false;	
 				});
+
+				TRNX.updateAmount('INRES','set',3000);
+				TRNX.updateDisplay('INRES','show');
+				$scope.TransacList = angular.copy(TRNX.getList());
+				
 				return;
 			}
 				

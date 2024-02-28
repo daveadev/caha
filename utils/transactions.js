@@ -216,6 +216,7 @@ define(['app','util','api'],function(app,util) {
 					formatPaysched(_paysched,is_old);
 					computeAmounts();
 					updateDisplays(is_old);
+					updateDisplay('OTHRS','enable');
 				break;
 				case 'others':
 					updateDisplay('INRES','hide');
@@ -230,5 +231,6 @@ define(['app','util','api'],function(app,util) {
 		return api.GET(endpoint,filter,success,error);
 	}
 	TRNX.updateAmount = updateAmount;
+	TRNX.updateDisplay = updateDisplay;
 	return TRNX;
 });
