@@ -125,8 +125,14 @@ define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 			var stud = entity[0];
 			var sy = entity[1];
 			if(!stud||!sy) return;
-			if(!stud.id)
+			if(!stud.id){
 				resetTransactionUI();
+			}
+			let asy = atomic.ActiveSY;
+			if(NEXT_SY && sy<asy+1 && stud.enroll_status=='NEW'){
+				$scope.ActiveSY = asy+1; 
+			}
+
 			$selfScope.$broadcast('StudentSelected',{student:stud,sy:sy});
 		});
 		$selfScope.$watch('CAC.TotalAmount',function(amount){

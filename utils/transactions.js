@@ -218,6 +218,7 @@ define(['app','util','api'],function(app,util) {
 					updateDisplays(is_old);
 				break;
 				case 'others':
+					updateDisplay('INRES','hide');
 					updateDisplay('OLDAC','show');
 					updateDisplay('OTHRS','enable');
 				break;
