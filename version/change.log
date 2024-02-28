@@ -1,2 +1,9 @@
 #v 1.1.0 : 27 Feb 2024
 - Setup new UI structure
+- Enable others in cashier payment
+- Added Employee Discount Voucher in Adjustment Memo
+
+#v 1.1.1 : 28 Feb 2024
+- Enable SY 2024 - 2025 in cashier
+- Added Initial Reservation in available transactions
+- Improve UI validation when switching between Student and Other Payee
