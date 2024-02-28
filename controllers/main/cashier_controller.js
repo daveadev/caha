@@ -65,8 +65,11 @@ define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 			$scope.EditTransacDetails = angular.copy($scope.TransacDetails);
 		}
 		$scope.clearTrnxDetails = function(){
+			let asy = angular.copy(atomic.ActiveSY);
+			$scope.ActiveSY = asy;
 			$scope.TrnxDtlMode = 'RESET';
 			$selfScope.$broadcast('ResetTransactions');
+			
 		}
 		$scope.closeTrnxDetails = function(){
 			$scope.TrnxDtlMode = 'VIEW';
@@ -91,6 +94,14 @@ define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 
 		$selfScope.$watchGroup(['CAC.ActiveOther.id','CAC.ActiveStudent.id'],function(entity){
 			$scope.hasValidPayee = entity[0] ||  entity[1];
+			if(!$scope.hasValidPayee){
+				let asy = angular.copy(atomic.ActiveSY);
+				$scope.ActiveSY = asy;
+			}
+		});
+		$selfScope.$watch('CAC.PayeeType',function(){
+			let asy = angular.copy(atomic.ActiveSY);
+				$scope.ActiveSY = asy;
 		});
 		$selfScope.$watchGroup(['CAC.ActiveOther','CAC.ActiveSY','CAC.ActiveOtherId'],function(entity){
 			var othr = entity[0];
@@ -105,22 +116,17 @@ define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 				othr.account_details = name;
 
 			}
-			if(!othr.id){
-				$selfScope.$broadcast('UpdatePaysched',{paysched:[]});
-				$selfScope.$broadcast('ResetTransactions');
+			if(!othr.id)
+				resetTransactionUI();
 				
-			}
 			$selfScope.$broadcast('OtherSelected',{other:othr,sy:sy});
 		});
 		$selfScope.$watchGroup(['CAC.ActiveStudent','CAC.ActiveSY'],function(entity){
 			var stud = entity[0];
 			var sy = entity[1];
 			if(!stud||!sy) return;
-			if(!stud.id){
-				$selfScope.$broadcast('UpdatePaysched',{paysched:[]});
-				$selfScope.$broadcast('ResetTransactions');
-				
-			}
+			if(!stud.id)
+				resetTransactionUI();
 			$selfScope.$broadcast('StudentSelected',{student:stud,sy:sy});
 		});
 		$selfScope.$watch('CAC.TotalAmount',function(amount){
@@ -188,6 +194,12 @@ define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 				document.getElementById(payForm).submit();			
 			},200);
 		});
+
+		function resetTransactionUI(){
+			$selfScope.$broadcast('UpdatePaysched',{paysched:[]});
+			$selfScope.$broadcast('ResetTransactions');
+			
+		}
 	}]);
 
 	app.register.controller('CashierTransactionsController',['$scope','$rootScope','$filter','$timeout','api','Atomic',
@@ -202,6 +214,7 @@ define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 		};
 
 		$scope.addTrnx = function(id){
+			$scope.ActiveTrnx = {};
 			$scope.ActiveTrnx[id]=!$scope.ActiveTrnx[id];
 			updateTrnxUI();
 			let activeTrnx = $filter('filter')($scope.TransacList,{isActive:true});
@@ -235,11 +248,12 @@ define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 			});
 		}
 		$selfScope.$on('OtherSelected',function(evt,args){
-			console.log(args);
+			$scope.ActiveTrnx = {};
 			let OTH = args.other;
 			let oid = OTH.id;
 			let sy = args.sy;
-
+			if(!oid) return;
+			$scope.loadingTrnx = true;
 			TRNX.runDefault();
 			$selfScope.$emit('UpdatePaysched',{paysched:[]});
 				
@@ -247,19 +261,24 @@ define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 				var account =  response.data.data[0];
 				console.log(response);
 				$scope.TransacList = angular.copy(TRNX.getList());
+				$scope.loadingTrnx = false;
 			}
 			TRNX.getAccount(oid,sy).then(updateTrnx);
 
 		});
 		$selfScope.$on('StudentSelected',function(evt,args){
+			$scope.ActiveTrnx = {};
 			var STU =  args.student;
 			var sy = args.sy;
 			var sid = STU.id;
 			var type =  STU.enroll_status;
 			var asy = atomic.ActiveSY;
-
-
+			if(!sid) return;
+			$scope.loadingTrnx = true;
 			TRNX.runDefault();
+			if(sy>asy && NEXT_SY ){
+				TRNX.updateAmount('INRES','set',3000);
+			}
 			$scope.TransacList = angular.copy(TRNX.getList());
 			$selfScope.$emit('UpdatePaysched',{paysched:[]});
 
@@ -286,11 +305,19 @@ define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 				
 			}
 			$selfScope.$emit('DisplaySOA');
-			if(loadNextSY)
-				return TRNX.getAssessment(sid,sy).then(updateTrnx);
+			if(loadNextSY){
+				TRNX.getAssessment(sid,sy).then(updateTrnx).finally(function(){
+					$scope.loadingTrnx = false;	
+				});
+				return;
+			}
 				
 			TRNX.getOldAccount(sid,sy).then(updateTrnx).finally(function(){
-				TRNX.getAccount(sid,sy).then(updateTrnx);
+				$timeout(function(){
+					TRNX.getAccount(sid,sy).then(updateTrnx);
+					$scope.loadingTrnx = false;	
+				},300);
+				
 			});
 			
 		});

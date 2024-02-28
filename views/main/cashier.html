@@ -90,8 +90,8 @@ div.simple-typeahead{
 				<a-content>
 					<a-row>
 						<a-col size="8">
-							<div class="pull-right" style="width:140px;">
-								<m-formgroup ng-model="CAC.ActiveSY" label="School Year" options="CAC.SchoolYears" option-label="label"></m-formgroup>
+							<div class="pull-right" style="width:230px;">
+								<m-formgroup ng-model="CAC.ActiveSY" label="School Year" options="CAC.SchoolYears" option-label="label"  ng-change="CAC.changeASY()"></m-formgroup>
 							</div>
 							<uib-tabset type="pills" active="CAC.ActiveTabIndex">
 								<uib-tab index="0" heading="Transactions" classes="btn-lg">
@@ -108,6 +108,8 @@ div.simple-typeahead{
 										</div>
 									</div>
 										<div ng-controller="CashierTransactionsController as CTC" ng-init="CTC.init()" ng-show="CAC.hasValidPayee">
+
+											<div class="loader fade in" ng-class="{'out':!CTC.loadingTrnx,'in':CTC.loadingTrnx}"></div>
 											<!--- Transactions - allowed & defaults -->
 											<a-button size="lg" class="btn-action" ng-class="{'btn-active':CTC.ActiveTrnx[TItem.id]}" ng-repeat="TItem in CTC.TransacList" ng-hide="TItem.hide" ng-disabled="(TItem.disabled || !TItem.amount) || CAC.TrnxDtlMode=='EDIT'" ng-click="CTC.addTrnx(TItem.id)">
 												<div class="action-label">{{TItem.description}}</div>
