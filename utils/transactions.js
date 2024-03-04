@@ -90,18 +90,25 @@ define(['app','util','api'],function(app,util) {
 	}
 	function computeAmounts(is_old){
 		paysched.map(function(sched,index){
+			function checkDue(due_date){
+				var due_year = due_date.getFullYear();
+				var due_month = due_date.getMonth()+1;
+				var due_check = parseInt(due_year+''+(due_month<10?'0'+due_month:due_month));
+				var today = new Date();
+				var tod_year = today.getFullYear();
+				var tod_month = today.getMonth()+1;
+				var tod_check =parseInt(tod_year+''+(tod_month<10?'0'+tod_month:tod_month));
+				var isDue = due_year<tod_year || (due_year==tod_year && due_month<=tod_month);
+				var isOverDue = isDue && tod_check>due_check;	
+				var dueObj = {due:isDue,overDue:isOverDue};
+				return dueObj;
+			}
+
 			var ttid=  sched.transaction_type_id;
 			var due_date = new Date(sched.due_date);
-			var due_year = due_date.getFullYear();
-			var due_month = due_date.getMonth()+1;
-			var due_check = parseInt(due_year+''+(due_month<10?'0'+due_month:due_month));
-			var today = new Date();
-			var tod_year = today.getFullYear();
-			var tod_month = today.getMonth()+1;
-			var tod_check =parseInt(tod_year+''+(tod_month<10?'0'+tod_month:tod_month));
-			var isDue = due_year<tod_year || (due_year==tod_year && due_month<=tod_month);
-			var isOverDue = isDue && tod_check>due_check;
-			
+			var dueObj = checkDue(due_date);
+			var isDue =  dueObj.due;
+			var isOverDue =  dueObj.isOverDue;
 			var trnx = list[listIndex[ttid]];
 			
 			if(sched.status=='PAID') {
@@ -116,8 +123,16 @@ define(['app','util','api'],function(app,util) {
 				paysched[index].disp_status= 'OVER DUE';
 			switch(ttid){
 					case 'INIPY':
-						updateAmount(ttid,'set',sched.due_amount);
-						return;
+						updateAmount('INIPY','set',sched.due_amount);
+						// NOTE: Override Initial Payment if overdue already combine to Subsequent Payment
+						let nextPAY = paysched[index+1];
+						let nextDueDate =  new Date(nextPAY.due_date);
+						let nextDueObj = checkDue(nextDueDate);
+						let combineToSBQ = nextDueObj.due ||nextDueObj.overDue;
+						if(combineToSBQ){
+							updateAmount('INIPY','set',0);
+							updateAmount('SBQPY','set',sched.due_amount);
+						}
 					break;
 					case 'SBQPY':
 						updateAmount('SBQPY','add',sched.due_amount);
