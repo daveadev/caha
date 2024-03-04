@@ -301,7 +301,10 @@ class Account extends AppModel {
 		$OR_PAY = 0;
 		$LE = $statement['ledger_'.$type]; 
 		$TUIIndex =null;
-		
+		$voucher = array(
+				'codes'=>array('AMFAV','AMSPO','AMOTF','EDV','AMTMC'),
+				'details'=>array('FAV','SPV','AMEMD','TBD'),
+			);
 		foreach($LE as $index=>$entry):
 			$details = $entry['details'];
 			$code = $entry['transaction_type_id'];
@@ -341,7 +344,9 @@ class Account extends AppModel {
 					if($details=='Subsidy' || $code=='DSESC'):
 						$DSC = $this->lookupAmount($entry);
 					endif;
-					if($details=='FAV'  || $code =='AMFAV' || $details=='SPV' || $code =='AMSPO'  || $code == 'AMOTF' || $code =='EDV' || $details =='AMEMD'):
+					$isVCode = in_array($code, $voucher['codes']);
+					$isVDetail = in_array($details, $voucher['details']);
+					if($isVCode || $isVDetail) :
 						$VOU += $this->lookupAmount($entry);
 					endif;
 
