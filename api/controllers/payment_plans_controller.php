@@ -10,6 +10,7 @@ class PaymentPlansController extends AppController {
 		$payPlans = $this->paginate();
 		foreach($payPlans as $pi=>$po):
 			$payPlans[$pi]['PaymentPlan']['schedule']=$po['PayPlanSchedule'];
+			$payPlans[$pi]['PaymentPlan']['account_type']='student';
 		endforeach;
 		$this->set('paymentPlans',$payPlans);
 	}
