@@ -290,11 +290,16 @@ define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 			if(!sid) return;
 			
 			var loadNextSY = NEXT_SY && sy> asy;
+			var hasOldAccount = false;
+
 			function updateTrnx(response){
+				
 				var account =  response.data.data[0];
 				var type =  account.hasOwnProperty('Paysched')?'regular':'old';
 				var sched =  TRNX.getSched(type);
 				$selfScope.$emit('UpdatePaysched',{paysched:sched});
+				if(type=='old' &&sched.length>1)
+					hasOldAccount = true;
 				
 				let specialPay = [];
 				$scope.TransacList = angular.copy(TRNX.getList());
@@ -305,30 +310,37 @@ define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 				});
 				$scope.PSType = type;
 				$rootScope.__PSType = type;
-				$rootScope.hasMultiplePS =  specialPay.length>1;
+				$rootScope.hasMultiplePS =  specialPay.length>1 || hasOldAccount;
+				console.log(hasOldAccount,specialPay);
 				$selfScope.$emit('DisplaySOA');
 				
 			}
-			$selfScope.$emit('DisplaySOA');
+			
+			function loadCurrentAccount(){
+				TRNX.getOldAccount(sid,sy).then(updateTrnx).finally(function(){
+					$timeout(function(){
+						TRNX.getAccount(sid,sy).then(updateTrnx);
+						$scope.loadingTrnx = false;	
+						$selfScope.$emit('DisplaySOA');
+					},300);
+					
+				});
+
+			}
+
 			if(loadNextSY){
 				TRNX.getAssessment(sid,sy).then(updateTrnx).finally(function(){
 					$scope.loadingTrnx = false;	
+					TRNX.updateAmount('INRES','set',3000);
+					TRNX.updateDisplay('INRES','show');
+					$scope.TransacList = angular.copy(TRNX.getList());
+					return loadCurrentAccount(sid,sy);
 				});
-
-				TRNX.updateAmount('INRES','set',3000);
-				TRNX.updateDisplay('INRES','show');
-				$scope.TransacList = angular.copy(TRNX.getList());
-				
-				return;
 			}
-				
-			TRNX.getOldAccount(sid,sy).then(updateTrnx).finally(function(){
-				$timeout(function(){
-					TRNX.getAccount(sid,sy).then(updateTrnx);
-					$scope.loadingTrnx = false;	
-				},300);
-				
-			});
+
+			return loadCurrentAccount(sid,sy);
+
+			
 			
 		});
 		$selfScope.$watch('CAC.PSType',function(type){
