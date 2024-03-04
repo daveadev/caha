@@ -7,3 +7,8 @@
 - Enable SY 2024 - 2025 in cashier
 - Added Initial Reservation in available transactions
 - Improve UI validation when switching between Student and Other Payee
+
+#v 1.1.2 : 04 Mar 2024
+- Resolve EPP payment option in cashier module, display both Current and Old account
+- Combine due amounts in Subsequent Payment when student has not fully-paid Inital Payment
+- Fix voucher checking for TBD and apply it to EPP
