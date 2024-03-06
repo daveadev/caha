@@ -82,7 +82,7 @@ class CashierCollectionsController extends AppController {
 				$refno = explode(" ",$col['CashierCollection']['ref_no']);
 				//pr($refno); exit();
 				switch($col['TransactionDetail'][0]['transaction_type_id']){
-					case 'OLDAC': 
+					case 'OLDAC':  case 'EXTPY':
 						$old_accounts+=$col['CashierCollection']['amount'];
 						array_push($o_ors,$refno[1]);
 						break;
