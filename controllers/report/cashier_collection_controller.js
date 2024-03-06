@@ -114,7 +114,8 @@ define(['app','api','atomic/bomb'],function(app){
 		
 		$scope.SaveNPrint = function(){
 			$scope.Saving = true;
-			var data = {cashier_id: $scope.ActiveUser.cashier_id};
+			let $CID = $scope.ActiveUser.cashier_id;
+			var data = {cashier_id: $CID};
 			data.remittance_date = $filter('date')(new Date($scope.cash_date),'yyyy-MM-dd');
 			data.total_collection = 0;
 			data.details = [];
@@ -158,7 +159,7 @@ define(['app','api','atomic/bomb'],function(app){
 			var error = function(response){
 				
 			}
-			var daily_collections = {};
+			var daily_collections = {cashier_id:$CID};
 			daily_collections['date'] = $filter('date')(new Date($scope.cash_date),'yyyy-MM-dd');
 			daily_collections['tuition'] = $scope.Breakdown.tuitions;
 			daily_collections['old_account'] = $scope.Breakdown.old_accounts;
