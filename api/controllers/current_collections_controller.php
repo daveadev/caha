@@ -41,11 +41,10 @@ class CurrentCollectionsController extends AppController {
 		}
 		
 		//GET BREAKDOWNS
-		$breakdowns = $this->DailyTotalCollection->find('all',array('recursive'=>0,
-																	'conditions'=>
-																		array('AND'=>array('DailyTotalCollection.date >= '=>date('Y-m-d',strtotime($from)),
-																							'DailyTotalCollection.date <= '=>date('Y-m-d',strtotime($to)))),
-																	'order'=>'DailyTotalCollection.date'));
+		$breakdowns = $this->DailyTotalCollection->find('all',
+									array('recursive'=>0,
+										'conditions'=>array('DailyTotalCollection.date >= '=>date('Y-m-d',strtotime($from))),
+										'order'=>'DailyTotalCollection.date'));
 		//pr($breakdowns); exit();
 		$total_collection = 0;
 		foreach($breakdowns as $i=>$b){
