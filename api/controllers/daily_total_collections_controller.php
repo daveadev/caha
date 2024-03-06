@@ -18,6 +18,7 @@ class DailyTotalCollectionsController extends AppController {
 
 	function add() {
 		if (!empty($this->data)) {
+			$this->data['DailyTotalCollection']['created'] = date('Y-m-d H:i:s',time());
 			$this->DailyTotalCollection->create();
 			if ($this->DailyTotalCollection->save($this->data)) {
 				$this->Session->setFlash(__('The DailyTotalCollection has been saved', true));
