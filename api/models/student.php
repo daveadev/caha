@@ -119,8 +119,9 @@ class Student extends AppModel {
 		if($includeNewStud):
 			$inqOptions = array(
 				'conditions'=>$condInq,
-				'recursive'=>-1,
-				'fields'=>$flds
+				'recursive'=>1,
+				'fields'=>$flds,
+				'group'=>'Inquiry.id',
 			);
 
 			// Active SY to filter in ASM
@@ -141,6 +142,8 @@ class Student extends AppModel {
 		            )
 		        )
 			);
+			$inqOptions['fields'][] = 'Assessment.id';
+			$inqOptions['fields'][] = 'Assessment.section_id';
 			$I = $INQ->find('all',$inqOptions);
 		endif;
 		
@@ -184,6 +187,7 @@ class Student extends AppModel {
 			$inq['sno']='N/A'; // No SNO yet since new student
 			$inq['enroll_status']='NEW';
 			$hash = md5($inq['full_name']);
+			$inq['section'] = sprintf('Incoming %s',$IO['YearLevel']['name']);
 			// Add hash to check for duplicate names
 			$inq['hash']=$hash;
 			if(isset($hashes[$hash]))
