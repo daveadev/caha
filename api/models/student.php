@@ -267,4 +267,8 @@ class Student extends AppModel {
 
 	    return 10 * $number + $sum; 
 	}
+
+	function createNew201($inq_info){
+		pr($inq_info);
+	}
 }

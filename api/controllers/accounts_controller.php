@@ -143,16 +143,34 @@ class AccountsController extends AppController {
 	        // Iterate through transaction details
 	        foreach ($transaction['details'] as $dtl) {
 	            // Check if the detail is for account schedule ('SBQPY')
-	            if ($dtl['id'] == 'SBQPY') {
-	                // Extract the amount from the detail
-	                $amount = $dtl['amount'];
-					$trnxObj = array('id'=>$dtl['id'],'name'=>$dtl['description']);
-					$source = 'cashier2';
-	                // Forward the payment using the Account model's forwardPayment function
-	              $account=  $this->Account->forwardPayment($account_id, $esp, $ref_no, $amount,$trnxObj,$source);
-	              return $account;
+	            $TXID = $dtl['id'];
+	            switch($TXID){
+	            	case 'INIPY':
+	            		$is_new_stud  =substr($account_id, 0, 3) === 'LSN';
+	            		if($is_new_stud)
+	            			$this->new_student($account_id);
+	            	break;
+	            	case 'SBQPY':
+		            	 // Extract the amount from the detail
+		                $amount = $dtl['amount'];
+						$trnxObj = array('id'=>$dtl['id'],'name'=>$dtl['description']);
+						$source = 'cashier2';
+		                // Forward the payment using the Account model's forwardPayment function
+		              	$account=  $this->Account->forwardPayment($account_id, $esp, $ref_no, $amount,$trnxObj,$source);
+		              	return $account;
+	            	break;
 	            }
 	        }
 	    }
+	}
+
+	function new_student($inquiry_id){
+		App::import('Model','Inquiry');
+		$INQ = new Inquiry();
+		$INQ->recursive=0;
+		$IObj = $INQ->findById($inquiry_id);
+		$IInfo = $IObj['Inquiry'];
+		$this->Account->Student->createNew201($IInfo);exit;
+
 	}
 }
