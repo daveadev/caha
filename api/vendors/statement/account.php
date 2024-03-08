@@ -346,14 +346,14 @@ class AccountStatement extends Formsheet{
 		Barcode::fpdf($this, $color, $bx, $by, $angle, $type, $code,$w,$h);  
 		$font_size = 9.5;
 		$this->GRID['font_size']=$font_size;
-		$this->leftText(16.5,2,'Notes:',10,'');
+		//$this->leftText(16.5,2,'Notes:',10,'');
 		$notes = $this->config['notes'];
 		if(isset($this->config['font_size'])):
 			$font_size = $this->config['font_size'];
 		endif;
 		$this->GRID['font_size']=$font_size;
 		$this->DrawBox(15.5,1,22.5,8,'D');
-		$this->wrapText(16.25,2.5,$notes,21,'i',0.7);
+		$this->wrapText(16.25,2,$notes,21,'i',0.7);
 		$h = $this->GRID['cell_height'];
 		$y=6.5;
 		$this->data['last_y'] = $metrics['base_y']+ ($h*$y);
