@@ -1,0 +1,77 @@
+#!/bin/bash
+
+# Function to increment version
+increment_version() {
+    echo $(($1 + 1))
+}
+
+# Function to update a specific line in version.info
+update_line() {
+    local line_key=$1
+    local new_value=$2
+    local file_path=$3
+
+    # Use a different sed command for macOS and Linux
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+        sed -i '' "s/^$line_key=.*/$line_key=$new_value/" "$file_path"
+    else
+        sed -i "s/^$line_key=.*/$line_key=$new_value/" "$file_path"
+    fi
+}
+
+# Extract the last commit message
+COMMIT_MSG=$(git log -1 HEAD --pretty=%B)
+
+# Get the hash of the last commit
+LATEST_COMMIT_HASH=$(git rev-parse HEAD)
+
+# Determine version update type
+VERSION_TYPE=""
+if [[ $COMMIT_MSG == *"#MAJOR"* ]]; then
+    VERSION_TYPE="MAJOR"
+elif [[ $COMMIT_MSG == *"#MINOR"* ]]; then
+    VERSION_TYPE="MINOR"
+elif [[ $COMMIT_MSG == *"#PATCH"* ]]; then
+    VERSION_TYPE="PATCH"
+fi
+
+# Proceed if a version keyword is found or if commit message contains "#UPDATE"
+if [[ ! -z $VERSION_TYPE ]] || [[ $COMMIT_MSG == *"#UPDATE"* ]]; then
+    # Load current versions
+    source ./version/version.info
+
+    # Increment the respective version
+    case $VERSION_TYPE in
+        MAJOR)
+            MAJOR=$(increment_version $MAJOR)
+            MINOR=0
+            PATCH=0
+            ;;
+        MINOR)
+            MINOR=$(increment_version $MINOR)
+            PATCH=0
+            ;;
+        PATCH)
+            PATCH=$(increment_version $PATCH)
+            ;;
+    esac
+
+    # Update version.info file with new version and hash
+    update_line "MAJOR" $MAJOR "./version/version.info"
+    update_line "MINOR" $MINOR "./version/version.info"
+    update_line "PATCH" $PATCH "./version/version.info"
+    update_line "HASH" $LATEST_COMMIT_HASH "./version/version.info"
+
+    # Stage the updated version.info file
+    git add ./version/version.info
+
+    # Check if the commit message contains "#UPDATE" to determine the commit message
+    if [[ $COMMIT_MSG == *"#UPDATE"* ]]; then
+        NEW_COMMIT_MSG="Updating v$MAJOR.$MINOR.$PATCH"
+    else
+        NEW_COMMIT_MSG="Release v$MAJOR.$MINOR.$PATCH"
+    fi
+
+    git commit -m "$NEW_COMMIT_MSG"
+fi
+
