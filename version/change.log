@@ -16,3 +16,8 @@
 #v 1.1.3 : 06 Mar 2024
 - Resolve Cashier Remittance Module to reflect correct amounts for Others & Old Account
 - Add EPP to Old Account in remittance totals and daily collection breakdown
+
+#v 1.2.0 : 09 Mar 2024
+- Fix search in cashier for new student, display only one item instead of multiple results
+- Handle Initial Payment(IP) to new student, setup ledger entries, paysched and account details
+- Copy Inquiry info to student 201 upon payment of IP
