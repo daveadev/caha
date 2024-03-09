@@ -2,7 +2,7 @@
 class AccountsController extends AppController {
 
 	var $name = 'Accounts';
-	var $uses = array('Account','AccountSchedule','AccountFee');
+	var $uses = array('Account','AccountSchedule','AccountFee','Assessment');
 
 	function index() {
 		$this->Account->recursive = 0;
@@ -147,16 +147,17 @@ class AccountsController extends AppController {
 	            switch($TXID){
 	            	case 'INIPY':
 	            		$is_new_stud  =substr($account_id, 0, 3) === 'LSN';
-	            		if($is_new_stud)
-	            			$this->new_student($account_id);
+	            		$new_account_id = null;
+	            		if($is_new_stud):
+	            			$new_account_id = $this->new_student($account_id,$esp);
+	            		endif;
+	            		$this->setup_account($account_id,$esp,$new_account_id);
+	            		$account = $this->forward_payment($account_id,$ref_no,$dtl,$esp);
+	            		$account['account_id']=$account_id;
+	            		return $account;
 	            	break;
 	            	case 'SBQPY':
-		            	 // Extract the amount from the detail
-		                $amount = $dtl['amount'];
-						$trnxObj = array('id'=>$dtl['id'],'name'=>$dtl['description']);
-						$source = 'cashier2';
-		                // Forward the payment using the Account model's forwardPayment function
-		              	$account=  $this->Account->forwardPayment($account_id, $esp, $ref_no, $amount,$trnxObj,$source);
+	            		$account = $this->forward_payment($account_id,$ref_no,$dtl,$esp);
 		              	return $account;
 	            	break;
 	            }
@@ -164,13 +165,34 @@ class AccountsController extends AppController {
 	    }
 	}
 
-	function new_student($inquiry_id){
+	function new_student($inquiry_id,$sy){
 		App::import('Model','Inquiry');
 		$INQ = new Inquiry();
 		$INQ->recursive=0;
 		$IObj = $INQ->findById($inquiry_id);
 		$IInfo = $IObj['Inquiry'];
-		$this->Account->Student->createNew201($IInfo);exit;
+		$STU = $this->Account->Student->createNew201($IInfo,$sy);
+		$SID = $STU['id'];
+		return $SID;
 
+	}
+
+	function setup_account(&$account_id,$esp,$new_account_id=null){
+		$esp = $esp +0.25;
+		$AObj = $this->Assessment->getDetails($account_id,$esp);
+		$account_id = $this->Account->setupDetails($AObj,$new_account_id);
+		$section_id = $AObj['Assessment']['section_id'];
+		$this->Account->Student->updateSection($account_id,$section_id,$esp);
+		return $AObj;
+	}
+
+	function forward_payment($account_id,$ref_no,$dtl,$esp){
+		 // Extract the amount from the detail
+        $amount = $dtl['amount'];
+		$trnxObj = array('id'=>$dtl['id'],'name'=>$dtl['description']);
+		$source = 'cashier2';
+        // Forward the payment using the Account model's forwardPayment function
+      	$account=  $this->Account->forwardPayment($account_id, $esp, $ref_no, $amount,$trnxObj,$source);
+      	return $account;
 	}
 }

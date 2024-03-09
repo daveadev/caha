@@ -615,4 +615,53 @@ class Account extends AppModel {
 	    return $schedule;
 	}
 
+	function setupDetails($assessment,$new_account_id=null){
+		$AObj = $assessment;
+		$account = $AObj['Assessment'];
+		$paysched = $AObj['AssessmentPaysched'];
+		$fees = $AObj['AssessmentFee'];
+		$esp = $account['esp'];
+		// Setup Account Info
+		if($new_account_id):
+			$account_id = $new_account_id;
+			$account['ref_no']=$AObj['Assessment']['id'];
+			$account['account_details']='ENROLL-'.$esp;
+			$account['account_type']='student';
+		endif;
+		$account['id'] = $account_id;
+
+		// Setup Paysched
+		foreach($paysched as $si=>$sched):
+			unset($sched['id']);
+			unset($sched['created']);
+			unset($sched['modified']);
+			$sched['account_id']=$account_id;
+			$paysched[$si] = $sched;
+		endforeach;
+
+		// Setup Fees
+		foreach($fees as $fi=>$fee):
+			unset($sched['id']);
+			unset($sched['created']);
+			unset($sched['modified']);
+			$fee['account_id']=$account_id;
+			$fees[$fi] = $fee;
+		endforeach;
+
+
+		// Update Assessment status to enrolled
+		$asmt = array('id'=>$AObj['Assessment']['id'],'status'=>'NROLD');
+		$this->Student->Assessment->save($asmt);
+
+		$AObj = array(
+			'Account'=>$account,
+			'AccountSchedule'=>$paysched,
+			'AccountFee'=>$fees
+		);
+		$this->create();
+		// Save New Account Details
+		$this->saveAll($AObj);
+		return $account_id;
+	}
+
 }

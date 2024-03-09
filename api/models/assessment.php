@@ -84,5 +84,18 @@ class Assessment extends AppModel {
 			'counterQuery' => ''
 		),
 	);
-	
+	function getDetails($sid,$esp){
+		$assCond = array(
+			'student_id'=>$sid,
+			'esp'=>$esp,
+			'status'=>'ACTIV'
+		);
+		
+		$assConf = array(
+				'recursive'=>1,
+				'conditions'=>$assCond
+		);
+		$AObj = $this->find('first',$assConf);
+		return $AObj;
+	}
 }

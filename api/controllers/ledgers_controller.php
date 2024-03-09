@@ -228,16 +228,68 @@ class LedgersController extends AppController {
 			);
 			$entries = array();
 			foreach($transaction['details'] as $dtl):
-				if($dtl['id']=='EXTPY' ||$dtl['id']=='SBQPY'):
-					
-					$entry['transaction_type_id']=$dtl['id'];
-					$entry['details']=$dtl['description'];
-					$entry['amount']=$dtl['amount'];
-					$entries[]=$this->Ledger->insertEntry($entry);
-				endif;
+				$TXID = $dtl['id'];
+				switch($TXID){
+					case 'INIPY':
+						// Use the updated Account ID
+						$account_id = $entry['account_id']= $transaction['account']['account_id'];
+						$entries = $this->initLegder($entry);
+						$entries[]= $this->inserEntry($entry,$dtl);
+					break;
+					case 'EXTPY': case 'SBQPY':
+						$entries[]= $this->inserEntry($entry,$dtl);
+					break;
+				}
 			endforeach;
 			return $entries;
 		endif;
 	}
+
+	function inserEntry($entry,$dtl){
+		$entry['transaction_type_id']=$dtl['id'];
+		$entry['details']=$dtl['description'];
+		$entry['amount']=$dtl['amount'];
+		$entry=$this->Ledger->insertEntry($entry);
+		return $entry;
+	}
 	
+	function initLegder($entry){
+		$account_id = $entry['account_id'];
+		$AObj = $this->Account->findById($account_id);
+		$account = $AObj['Account'];
+		$fees = $AObj['AccountFee'];
+		$entry['ref_no'] = $account['ref_no'];
+
+		$FEES = [];
+		$TUI = array('description'=>'Tuition & Other Fees');
+		$TUI['id'] = 'TUIXN';
+		$TUI['amount'] = $account['assessment_total'];
+		$TUI['type'] = '+';
+		$FEES[] = $TUI;
+
+		
+		if($account['discount_amount']):
+			$SUB = array('description'=>'Subsidy');
+			$SUB['id']= $account['subsidy_status'];
+			$SUB['amount']= abs($account['discount_amount']);
+			$SUB['type'] = '-';
+			$FEES[] = $SUB;
+		endif;
+		
+		foreach($fees as $fee):
+			$amount = $fee['due_amount'];
+			if($amount<0):
+				$fAmount = abs($amount);
+				$FEES[] = array('id'=>$fee['fee_id'],
+							'description'=>$fee['fee_id'],
+							'amount'=>$fAmount,'type'=>'-');
+			endif;
+		endforeach;
+		$entries = [];
+		foreach($FEES as $dtl):
+			$entry['type'] = $dtl['type'];
+			$entries[] = $this->inserEntry($entry,$dtl);
+		endforeach;
+		return $entries;
+	}
 }
