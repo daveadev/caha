@@ -268,7 +268,106 @@ class Student extends AppModel {
 	    return 10 * $number + $sum; 
 	}
 
-	function createNew201($inq_info){
-		pr($inq_info);
+	function createNew201($inq_info,$sy){
+		$STU = $inq_info;
+		$deptCode = $STU['department_id']=='HS'?'J':'S';
+		$SID = $this->generateSID('LK',$deptCode);
+		$SNO = $this->generateSNO($sy);
+		
+		// Student basic info mapping
+		$STU['id']=$SID;
+		$STU['sno']=$SNO;
+		$STU['status']='NEW'.$sy;
+		$STU['nationality']=$STU['citizenship'];
+
+
+		// Previous School Info
+		$STU['elgb_school']=$STU['prev_school'];
+		$STU['elgb_school_type']=$STU['prev_school_type'];
+		$STU['elgb_school_address']=$STU['prev_school_address'];
+		$this->create();
+		$this->save($STU);
+
+		// Build Household Info
+		$HInfo = array(
+			'street'=>$STU['c_address'],
+			'barangay'=>$STU['c_barangay'],
+			'city'=>$STU['c_city'],
+			'province'=>$STU['c_province'],
+			'mobile'=>$STU['mobile'],
+			'guardians'=>array(),
+		);
+		$HInfo['guardians'][]=array(
+				'first_name'=>$STU['f_first_name'],
+				'middle_name'=>$STU['f_middle_name'],
+				'last_name'=>$STU['f_last_name'],
+				'rel'=>'Father',
+		);
+
+		$HInfo['guardians'][]=array(
+				'first_name'=>$STU['m_first_name'],
+				'middle_name'=>$STU['m_middle_name'],
+				'last_name'=>$STU['m_last_name'],
+				'rel'=>'Mother',
+		);
+
+
+		$HInfo['guardians'][]=array(
+				'first_name'=>$STU['g_first_name'],
+				'middle_name'=>$STU['g_middle_name'],
+				'last_name'=>$STU['g_last_name'],
+				'rel'=>$STU['g_rel'],
+		);
+
+		App::import('Model','Household');
+		$HH = new Household();
+		$HH->saveFamily($SID,$HInfo);
+
+		// Build Student Aux Info
+		$SInfo =array(
+			'father_mobile'=>$STU['f_mobile'],
+			'mother_mobile'=>$STU['m_mobile'],
+			'guardian_mobile'=>$STU['g_contact_no'],
+			'father_occup'=>$STU['f_occupation'],
+			'mother_occup'=>$STU['m_occupation'],
+			'guardian_occup'=>$STU['g_occupation'],
+		);
+		
+		App::import('Model','StudentAuxField');
+		$SAX = new StudentAuxField();
+		$SAX->saveFields($SID,$SInfo);
+
+		return $STU;
+
+	}
+
+	function updateSection($sid, $sectId,$esp){
+		$STU['id']=$sid;
+		$this->Section->recursive=-1;
+		$sectObj = $this->Section->findById($sectId);
+		$deptId = $sectObj['Section']['department_id'];
+		$progId = $sectObj['Section']['program_id'];
+		$esp = floor($esp);
+
+		// Update student info
+		$STU['program_id']=$progId;
+		$STU['section_id']=$sectId;
+		$STU['status']='NROLD';
+		$STU['remarks'] = sprintf("Enrolled for %s",$esp);
+		$this->save($STU);
+
+		// Save into classlist block
+		if($deptId=='SH')
+			$esp = $esp+0.1;
+		App::import('Model','ClasslistBlock');
+		$CLB = new ClasslistBlock();
+		$CObj = array(
+			'student_id'=>$sid,
+			'section_id'=>$sectId,
+			'esp'=>$esp,
+			'status'=>'ACT',
+		);
+		$CLB->create();
+		$CLB->save($CObj);
 	}
 }
