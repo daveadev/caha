@@ -142,13 +142,24 @@ class ReceiptsController extends AppController{
 			break;
 			case 'student':
 			default:
-				$sid = $details['account_id'];
+				$acid = $sid = $details['account_id'];
+				$is_new_stud  =substr($sid, 0, 3) === 'LSN';
+				if($is_new_stud):
+					$sid = $details['account']['account_id'];
+				endif;
 				$this->Student->recursive=-1;
 				$stud = $this->Student->findInfoBySID($sid);
 				$details['student']=$stud['Student']['full_name'];
 				$sno = $stud['Student']['sno'];
 				$yearLevel = $stud['YearLevel']['name'];
 				$sectionName = $stud['Section']['name'];
+
+				if($is_new_stud):
+					$desc = "New student: $sno";
+					$sno = $acid;
+					$details['details'][] = array('description'=>$desc,'amount'=>null);
+				endif;
+
 			break;
 		endswitch;
 		
@@ -160,7 +171,10 @@ class ReceiptsController extends AppController{
 		$trnxDtls  =array();
 		foreach($details['details'] as $dtl){
 			$item = $dtl['description'];
-			$amount= number_format($dtl['amount'],2,'.',',');
+			if($dtl['amount'])
+				$amount= number_format($dtl['amount'],2,'.',',');
+			else
+				$amount ="";
 			$trnxDtls[] =  array('item'=>$item,'amount'=>$amount);
 		}
 		
