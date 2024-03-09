@@ -21,3 +21,4 @@
 - Fix search in cashier for new student, display only one item instead of multiple results
 - Handle Initial Payment(IP) to new student, setup ledger entries, paysched and account details
 - Copy Inquiry info to student 201 upon payment of IP
+- Display correct details in OR for new students
