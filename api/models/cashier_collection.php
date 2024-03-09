@@ -48,7 +48,7 @@ class CashierCollection extends AppModel {
 			'className' => 'Inquiry',
 			'foreignKey' => 'account_id',
 			'conditions' => '',
-			'fields' => array('Inquiry.full_name'),
+			'fields' => array('Inquiry.full_name','Inquiry.year_level_id'),
 			'order' => ''
 		),
 		'Booklet' => array(

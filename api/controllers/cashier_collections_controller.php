@@ -111,6 +111,7 @@ class CashierCollectionsController extends AppController {
 					}
 				}
 				$st = $col['Student'];
+				$inq = $col['Inquiry'];
 				$cl = $col['CashierCollection'];
 				$acct = $col['Account'];
 				$book = $col['Booklet'];
@@ -145,9 +146,16 @@ class CashierCollectionsController extends AppController {
 					$cl['status'] = $status;
 					$yl_ref = $st['year_level_id'];
 					$sec_ref = $st['section_id'];
+				}else if($acct['account_type']=='inquiry'){
+					$cl['date'] ='-';
+					$cl['received_from'] =$inq['full_name'];
+					$cl['sno'] =$acct['id'];
+					$cl['status'] ='New';
+					$cl['section'] = '-';
+					$cl['level'] ='Incoming '.$inq['year_level_id'];
 				}else{
 					$cl['date'] ='-';
-					$cl['received_from'] ='-';
+					$cl['received_from'] =$acct['account_details'];
 					$cl['sno'] =$acct['id'];
 					$cl['status'] ='-';
 					
