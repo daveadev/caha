@@ -3,6 +3,7 @@ class ReceiptsController extends AppController{
 	var $name = 'Receipts';
 	var $uses = array('MasterConfig','Student','Transaction','Account');
 	function view($id=null){
+		if($id=='cash_or') return $this->cash_or();
 		$this->adjust_memo();
 	}
 
@@ -108,6 +109,8 @@ class ReceiptsController extends AppController{
 			$TRNS = $TRNX['Transaction'];
 			$details['esp']=$TRNS['esp'];
 			$details['series_no']=$TRNS['ref_no'];
+			$details['account_type'] = 'student';
+			$details['pay_type'] = 'CASH';
 			$TDTL = array();
 			foreach($TRNX['TransactionDetail'] as $dV){
 				$dV['description']=$dV['details'];
@@ -192,6 +195,7 @@ class ReceiptsController extends AppController{
 			'total_paid'=>$details['pay_amount'],
 			'cashier'=>$details['cashier']
 		);
+
 		if($details['pay_type']=='CHCK'):
 			$or_details['check_details'] = $details['check_details'];
 		endif;

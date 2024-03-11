@@ -54,18 +54,20 @@ class OfficialReceipt extends Formsheet{
 		//Date
 		$this->leftText(14.2,7,$data['transac_date'],'','');
 		//Student No.
-		$this->leftText(8,7,$data['sno'],'','');
+		$this->leftText(6,7,$data['sno'],'','');
 		//Receive payment from
-		$this->leftText(6,8.7,utf8_decode($data['student']),'','');
+		$this->GRID['font_size']=9.5;
+		$this->leftText(8,8.7,utf8_decode($data['student']),'','');
+		$this->GRID['font_size']=9;
 		//Payment for
-		$this->leftText(8,10.25,$data['sy'],'','');
+		$this->leftText(6,11.5,$data['sy'],'','');
 		//Year
-		$this->leftText(15,10.05,$data['year_level'].' / ','','');
+		$this->leftText(15,11.125,$data['year_level'].' / ','','');
 		//Section
-		$this->leftText(15,10.75,$data['section'],'','');
+		$this->leftText(15,11.75,$data['section'],'','');
 		
-		
-		$y=11.7;
+		$this->GRID['font_size']=10;
+		$y=14;
 		$this->GRID['font_size']=9;
 		foreach($data['transac_details'] as $itm){
 			//pr($itm);exit;
@@ -80,12 +82,14 @@ class OfficialReceipt extends Formsheet{
 			$this->rightText(15,$y,'','','');
 			$this->rightText(15,$y,$data['check_details'],'','');
 		}
+
+		$this->GRID['font_size']=9;
 		
 		//Total
-		$this->rightText(20,26.3,$data['total_paid'],'','');
+		$this->rightText(20,28.5,$data['total_paid'],'','');
 		
 		//Cashier
-		$this->centerText(13,28.3,$data['cashier'],7,'');
+		$this->centerText(13,31.3,$data['cashier'],7,'');
 		
 	
 		
