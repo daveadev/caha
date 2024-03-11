@@ -140,7 +140,7 @@ define(['app','util','api'],function(app,util) {
 					let nextDueDate =  new Date(nextPAY.due_date);
 					let nextDueObj = checkDue(nextDueDate);
 					let combineToSBQ = nextDueObj.due ||nextDueObj.overDue;
-					let isPartial =  sched.status!='PAID'
+					let isPartial =  sched.status!='PAID' && sched.due_amount!=5000;
 					if(combineToSBQ || isPartial){
 						updateAmount('INIPY','set',0);
 						updateAmount('SBQPY','set',sched.due_amount);
