@@ -145,7 +145,7 @@ class AccountsController extends AppController {
 	            // Check if the detail is for account schedule ('SBQPY')
 	            $TXID = $dtl['id'];
 	            switch($TXID){
-	            	case 'INIPY':
+	            	case 'INIPY': case 'INRES':
 	            		$is_new_stud  =substr($account_id, 0, 3) === 'LSN';
 	            		$new_account_id = null;
 	            		if($is_new_stud):

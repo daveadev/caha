@@ -230,7 +230,7 @@ class LedgersController extends AppController {
 			foreach($transaction['details'] as $dtl):
 				$TXID = $dtl['id'];
 				switch($TXID){
-					case 'INIPY':
+					case 'INIPY': case 'INRES':
 						// Use the updated Account ID
 						$account_id = $entry['account_id']= $transaction['account']['account_id'];
 						$entries = $this->initLegder($entry);
