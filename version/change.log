@@ -22,3 +22,7 @@
 - Handle Initial Payment(IP) to new student, setup ledger entries, paysched and account details
 - Copy Inquiry info to student 201 upon payment of IP
 - Display correct details in OR for new students
+
+#v 1.2.1 : 11 Mar 2024
+- Handle Initial Reservation transaction for new students
+- Display correct details in OR & SOA for New Students
