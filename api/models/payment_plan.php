@@ -235,6 +235,9 @@ class PaymentPlan extends AppModel {
 	    // Return the statement containing all relevant data
 	    return $statement;
 	}
+	function buildSchedule($schedule){
+		return $this->formatSchedule($schedule);
+	}
 	protected function formatSchedule(&$schedule){
 		$dueNow = $this->dueThisMonth($schedule);
 		$total_due = 0;
@@ -278,7 +281,11 @@ class PaymentPlan extends AppModel {
 		    $hasBal = $sched['paid_amount'] < $sched['due_amount'];
 		    $isOverDue = $dueDate <= time();
 		    $isDueNow = $dueDateFormat === $currentMonth;
-			
+
+		    // Check if INIPY is UNPAID
+			if($sched['bill_month']=='UPONNROL' && $sched['status']!='UNPAID'){
+				$isDueNow= true;
+			}
 		    if($isDueNow||$isOverDue){
 		    	$dueNow['date'] = date('d M Y',$dueDate);
 		    }

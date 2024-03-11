@@ -132,20 +132,51 @@ class ReportsController extends AppController{
 			}
 			$ids = $this->ClasslistBlock->getIds($sec_id,$sy);
 		endif;
+		
+		
 		$statements=array();
 		foreach($ids as $accId):
-			$STO = $this->PaymentPlan->getDetails($accId ,$sy,$type);
-			$isValid = $this->Account->review($STO,$type);
-			if(!$isValid):
-				App::import('Model','SoaCorrection');
-				$SOAC = new SoaCorrection();
-				$user = $this->Auth->user()['User']['username'];
-				$SOAC->log($sy,$type,$STO,$user);
-				$ammend = $this->Account->ammend($STO,$type);
-				if($ammend['corrected']):
-					$SOAC->log($sy,$type.'_correction',$STO,$user);
+			$is_new_stud  =substr($accId, 0, 3) === 'LSN';
+			if($is_new_stud):
+				App::import('Model','Assessment');
+				$ASM = new Assessment();
+				$esp = $sy+0.25;
+				$AObj = $ASM->getDetails($account_id,$esp);
+				$STO = array();
+				$STO['account'] = $AObj['Assessment'];
+				$STO['student'] = $AObj['Inquiry'];
+				$schedule = $this->PaymentPlan->buildSchedule($AObj['AssessmentPaysched']);
+				$STO['paysched_current'] = $schedule;
+				$STO['ledger_current'] = array();
+				$STO['account']['school_year'] = sprintf("%s -  %s",$sy,$sy+1);
+				$names = array();
+				$names[] = $STO['student']['first_name'];
+				$names[] = $STO['student']['middle_name'][0];
+				$names[] = $STO['student']['last_name'];
+				$STO['account']['name']=implode($names," ");
+				$STO['student']['section']=$AObj['Section']['name'];
+				$STO['student']['sno']=$STO['account']['id'];
+				$STO['account']['sno']=$STO['account']['id'];
+				
+				
+			else:
+
+				$STO = $this->PaymentPlan->getDetails($accId ,$sy,$type);
+				$isValid = $this->Account->review($STO,$type);
+				if(!$isValid):
+					App::import('Model','SoaCorrection');
+					$SOAC = new SoaCorrection();
+					$user = $this->Auth->user()['User']['username'];
+					$SOAC->log($sy,$type,$STO,$user);
+					$ammend = $this->Account->ammend($STO,$type);
+					if($ammend['corrected']):
+						$SOAC->log($sy,$type.'_correction',$STO,$user);
+					endif;
 				endif;
+				
+
 			endif;
+
 			$PS =  $STO['paysched_'.$type];
 			$PSLen =  count($PS);
 			if($PSLen):
@@ -159,9 +190,10 @@ class ReportsController extends AppController{
 					$STO['account'] =  $account;
 				endif;
 			endif;
+
+			
 			$statements[] =  $STO;
 		endforeach;
-
 		
 		$this->set(compact('statements','type'));
 		$this->render('statement');

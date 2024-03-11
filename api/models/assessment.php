@@ -96,6 +96,10 @@ class Assessment extends AppModel {
 				'conditions'=>$assCond
 		);
 		$AObj = $this->find('first',$assConf);
+		
+		$this->Student->Section->recursive=-1;
+		$sectId = $AObj['Assessment']['section_id'];
+		$AObj['Section'] = $this->Student->Section->findById($sectId)['Section'];
 		return $AObj;
 	}
 }
