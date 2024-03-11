@@ -56,7 +56,7 @@ class OfficialReceipt extends Formsheet{
 		//Student No.
 		$this->leftText(6,7,$data['sno'],'','');
 		//Receive payment from
-		$this->GRID['font_size']=9.5;
+		$this->GRID['font_size']=10;
 		$this->leftText(8,8.7,utf8_decode($data['student']),'','');
 		$this->GRID['font_size']=9;
 		//Payment for
