@@ -140,11 +140,17 @@ define(['app','util','api'],function(app,util) {
 					let nextDueDate =  new Date(nextPAY.due_date);
 					let nextDueObj = checkDue(nextDueDate);
 					let combineToSBQ = nextDueObj.due ||nextDueObj.overDue;
-					if(combineToSBQ){
+					let isPartial =  sched.status!='PAID'
+					if(combineToSBQ || isPartial){
 						updateAmount('INIPY','set',0);
 						updateAmount('SBQPY','set',sched.due_amount);
+						if(isPartial){
+							updateAmount('INRES','set',0);
+							updateDisplay('INRES','hide');
+						}
 					}else if(isDue){
 						INIPY_UNPAID = true;
+
 					}
 
 				break;
