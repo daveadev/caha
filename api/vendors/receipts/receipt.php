@@ -64,7 +64,7 @@ class OfficialReceipt extends Formsheet{
 		//Year
 		$this->leftText(15,11,$data['year_level'].' / ','','');
 		//Section
-		$this->leftText(15,11.5,$data['section'],'','');
+		$this->leftText(15,11.75,$data['section'],'','');
 		
 		$this->GRID['font_size']=10;
 		$y=14;
