@@ -60,11 +60,11 @@ class OfficialReceipt extends Formsheet{
 		$this->leftText(8,8.7,utf8_decode($data['student']),'','');
 		$this->GRID['font_size']=9;
 		//Payment for
-		$this->leftText(6,11.5,$data['sy'],'','');
+		$this->leftText(6,11,$data['sy'],'','');
 		//Year
-		$this->leftText(15,11.125,$data['year_level'].' / ','','');
+		$this->leftText(15,11,$data['year_level'].' / ','','');
 		//Section
-		$this->leftText(15,11.75,$data['section'],'','');
+		$this->leftText(15,11.5,$data['section'],'','');
 		
 		$this->GRID['font_size']=10;
 		$y=14;
