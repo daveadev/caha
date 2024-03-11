@@ -89,6 +89,7 @@ define(['app','util','api'],function(app,util) {
 		paysched = angular.copy( _paysched);
 	}
 	function computeAmounts(is_old){
+		let INIPY_UNPAID = false;
 		paysched.map(function(sched,index){
 			function checkDue(due_date){
 				var due_year = due_date.getFullYear();
@@ -116,34 +117,47 @@ define(['app','util','api'],function(app,util) {
 				paysched[index].disp_status = 'PAID';
 				return;
 			}
-			if(!isDue && trnx.amount>0) return;
+			paysched[index].class='';
+			paysched[index].disp_status='-';
+			
+			if(sched.bill_month=="UPONNROL" && sched.status!='PAID')
+				isDue = true;
+			
+			
+			if(!isDue && trnx.amount>0  || INIPY_UNPAID ){
+				// Prevent update for next schedule
+				return;	
+			}
 			paysched[index].class=isDue?'danger':'warning';
 			paysched[index].disp_status =isDue?'DUE':'UNPAID';
 			if(isOverDue)
 				paysched[index].disp_status= 'OVER DUE';
 			switch(ttid){
-					case 'INIPY':
-						updateAmount('INIPY','set',sched.due_amount);
-						// NOTE: Override Initial Payment if overdue already combine to Subsequent Payment
-						let nextPAY = paysched[index+1];
-						let nextDueDate =  new Date(nextPAY.due_date);
-						let nextDueObj = checkDue(nextDueDate);
-						let combineToSBQ = nextDueObj.due ||nextDueObj.overDue;
-						if(combineToSBQ){
-							updateAmount('INIPY','set',0);
-							updateAmount('SBQPY','set',sched.due_amount);
-						}
-					break;
-					case 'SBQPY':
-						updateAmount('SBQPY','add',sched.due_amount);
-					break;
-					case 'OLDAC':
-						updateAmount('OLDAC','add',sched.due_amount);
-					break;
-					case 'EXTPY':
-						updateAmount('EXTPY','add',sched.due_amount);
-					break;
-				}
+				case 'INIPY':
+					updateAmount('INIPY','set',sched.due_amount);
+					// NOTE: Override Initial Payment if overdue already combine to Subsequent Payment
+					let nextPAY = paysched[index+1];
+					let nextDueDate =  new Date(nextPAY.due_date);
+					let nextDueObj = checkDue(nextDueDate);
+					let combineToSBQ = nextDueObj.due ||nextDueObj.overDue;
+					if(combineToSBQ){
+						updateAmount('INIPY','set',0);
+						updateAmount('SBQPY','set',sched.due_amount);
+					}else if(isDue){
+						INIPY_UNPAID = true;
+					}
+
+				break;
+				case 'SBQPY':
+					updateAmount('SBQPY','add',sched.due_amount);
+				break;
+				case 'OLDAC':
+					updateAmount('OLDAC','add',sched.due_amount);
+				break;
+				case 'EXTPY':
+					updateAmount('EXTPY','add',sched.due_amount);
+				break;
+			}
 		});
 		if(is_old) 
 			payscheds.old = angular.copy(paysched);

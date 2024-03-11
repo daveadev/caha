@@ -166,6 +166,7 @@ define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 
 		$selfScope.$on('PaymentSucess',function(evt,args){
 			let account_type = args.details.account_type;
+			let account = args.details.account;
 			if(account_type=='others'){
 				let othr = $scope.ActiveOther;
 				let sy = $scope.ActiveSY;
@@ -180,6 +181,10 @@ define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 				let sy = $scope.ActiveSY;
 				$selfScope.$broadcast('ResetTransactions');
 				$timeout(function(){
+					if(account.hasOwnProperty('account_id')){
+						stud.id = account.account_id;
+						stud.enroll_status = 'OLD';
+					}
 					$selfScope.$broadcast('StudentSelected',{student:stud,sy:sy});
 					$scope.ActiveTabIndex = 1;
 				},1500);
@@ -265,7 +270,6 @@ define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 				
 			function updateTrnx(response){
 				var account =  response.data.data[0];
-				console.log(response);
 				$scope.TransacList = angular.copy(TRNX.getList());
 				$scope.loadingTrnx = false;
 			}
@@ -274,6 +278,8 @@ define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 		});
 		$selfScope.$on('StudentSelected',function(evt,args){
 			$scope.ActiveTrnx = {};
+			
+
 			var STU =  args.student;
 			var sy = args.sy;
 			var sid = STU.id;
@@ -311,12 +317,19 @@ define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 				$scope.PSType = type;
 				$rootScope.__PSType = type;
 				$rootScope.hasMultiplePS =  specialPay.length>1 || hasOldAccount;
-				console.log(hasOldAccount,specialPay);
+				$scope.loadingTrnx = false;
 				$selfScope.$emit('DisplaySOA');
 				
 			}
 			
 			function loadCurrentAccount(){
+				if(STU.enroll_status=='NEW'){
+					$timeout(function(){
+						$scope.loadingTrnx = false;
+						$scope.hasMultiplePS = false;
+					},300);
+					return;
+				}
 				TRNX.getOldAccount(sid,sy).then(updateTrnx).finally(function(){
 					$timeout(function(){
 						TRNX.getAccount(sid,sy).then(updateTrnx);
