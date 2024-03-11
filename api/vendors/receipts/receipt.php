@@ -62,7 +62,7 @@ class OfficialReceipt extends Formsheet{
 		//Payment for
 		$this->leftText(6,11,$data['sy'],'','');
 		//Year
-		$this->leftText(15,10.5,$data['year_level'].' / ','','');
+		$this->leftText(15,10.75,$data['year_level'].' / ','','');
 		//Section
 		$this->leftText(15,11.75,$data['section'],'','');
 		
