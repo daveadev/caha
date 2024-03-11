@@ -44,7 +44,7 @@ define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 			$scope.PSHeaders = ['Due Date', 'Due Amount','Status'];
 			$scope.PSProps = ['disp_date','disp_amount','disp_status'];
 			$scope.Paysched = [];
-			$scope.StudFields = ['id','full_name','enroll_status','student_type','department_id','year_level_id','section'];
+			$scope.StudFields = ['id','full_name','enroll_status','student_type','department_id','year_level_id','section','sno'];
 			$scope.StudSearch = ['first_name','last_name','middle_name','sno','rfid'];
 			$scope.StudDisplay = 'display_name';
 			$scope.OthrFields = ['id','account_details','account_type'];
@@ -132,7 +132,9 @@ define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 			if(NEXT_SY && sy<asy+1 && stud.enroll_status=='NEW'){
 				$scope.ActiveSY = asy+1; 
 			}
-
+			if(stud.sno.startsWith(asy+1)){
+				$scope.ActiveSY = asy+1; 	
+			}
 			$selfScope.$broadcast('StudentSelected',{student:stud,sy:sy});
 		});
 		$selfScope.$watch('CAC.TotalAmount',function(amount){
@@ -285,6 +287,7 @@ define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 			var sid = STU.id;
 			var type =  STU.enroll_status;
 			var asy = atomic.ActiveSY;
+			let skipINRES = STU.sno.startsWith(asy+1);
 			if(!sid) return;
 			$scope.loadingTrnx = true;
 			TRNX.runDefault();
@@ -342,10 +345,12 @@ define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 			}
 
 			if(loadNextSY){
-				TRNX.getAssessment(sid,sy).then(updateTrnx).finally(function(){
+				TRNX.getAssessment(sid,sy).then(updateTrnx).finally(function(response){
 					$scope.loadingTrnx = false;	
+					
 					TRNX.updateAmount('INRES','set',3000);
 					TRNX.updateDisplay('INRES','show');
+					
 					$scope.TransacList = angular.copy(TRNX.getList());
 					return loadCurrentAccount(sid,sy);
 				});
