@@ -26,3 +26,8 @@
 #v 1.2.1 : 11 Mar 2024
 - Handle Initial Reservation transaction for new students
 - Display correct details in OR & SOA for New Students
+
+#v 1.2.3 : 13 Mar 2024
+- Fix new students with invalid OR transactions
+- Fix SOA ledger entries for SY 2024 - 2025
+- Improve available transactions for SID 2024
