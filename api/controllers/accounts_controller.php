@@ -75,7 +75,8 @@ class AccountsController extends AppController {
 		$this->set('accounts',$accounts);
 	}
 
-	function view($id = null) {
+	function view($id = null,$inqId=null, $refNo=null) {
+		if($id=='init_new_student') return $this->init_new_student($inqId,$refNo);
 		if (!$id) {
 			$this->Session->setFlash(__('Invalid account', true));
 			$this->redirect(array('action' => 'index'));
@@ -139,7 +140,6 @@ class AccountsController extends AppController {
 	        $esp = $transaction['esp'];  
 	        $ref_no = $transaction['series_no']; 
 	        $account_id = $transaction['account_id']; 
-
 	        // Iterate through transaction details
 	        foreach ($transaction['details'] as $dtl) {
 	            // Check if the detail is for account schedule ('SBQPY')
@@ -194,5 +194,28 @@ class AccountsController extends AppController {
         // Forward the payment using the Account model's forwardPayment function
       	$account=  $this->Account->forwardPayment($account_id, $esp, $ref_no, $amount,$trnxObj,$source);
       	return $account;
+	}
+
+	function init_new_student($inquiry_id,$ref_no){
+		App::import('Model','Transaction');
+		$TNX = new Transaction();
+		$TObj = $TNX->findByRefNo($ref_no);
+		$transaction = $TObj['Transaction'];
+		$transaction['series_no'] = $TObj['Transaction']['ref_no'];
+		$transaction['details'] = $TObj['TransactionDetail'];
+		foreach($transaction['details'] as $i=>$o):
+			$transaction['details'][$i]['id']=$o['transaction_type_id'];
+			$transaction['details'][$i]['description']=$o['details'];
+		endforeach;
+		$newPay = $this->new_payment($transaction);
+		$transaction['account'] = $newPay;
+		$transaction =array('Ledger'=>$transaction);
+		try {
+		    $ledger_action = $this->requestAction('/ledgers/new_payment',array('pass'=>$transaction,'action'=>'new_payment'));
+		} catch (Exception $e) {
+		    $this->log($e->getMessage(), 'error');
+		}
+		return $transaction;
+		
 	}
 }

@@ -216,6 +216,7 @@ class LedgersController extends AppController {
 	
 
 	function new_payment($transaction){
+		$this->log('new_payment action called', 'debug');
 		if(isset($transaction)):
 			$transac_time = date("h:i:s");
 			$entry = array(
