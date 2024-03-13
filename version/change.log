@@ -31,3 +31,7 @@
 - Fix new students with invalid OR transactions
 - Fix SOA ledger entries for SY 2024 - 2025
 - Improve available transactions for SID 2024
+
+#v 1.2.3 : 13 Mar 2024
+- Fix collection report filter by date
+- Display per school year breakdown in cashier collection report
