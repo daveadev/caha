@@ -115,6 +115,10 @@ define(['app','util','api'],function(app,util) {
 			if(sched.status=='PAID') {
 				paysched[index].class='success';
 				paysched[index].disp_status = 'PAID';
+				if(sched.bill_month=="UPONNROL"){
+					updateAmount('INRES','set',0);
+					updateDisplay('INRES','hide');
+				}
 				return;
 			}
 			paysched[index].class='';
