@@ -1,7 +1,7 @@
 <?php
 class ReceiptsController extends AppController{
 	var $name = 'Receipts';
-	var $uses = array('MasterConfig','Student','Transaction','Account');
+	var $uses = array('MasterConfig','Student','Transaction','Account','Ledger');
 	function view($id=null){
 		if($id=='cash_or') return $this->cash_or();
 		$this->adjust_memo();
@@ -105,6 +105,10 @@ class ReceiptsController extends AppController{
 		if(isset($_GET['series_no'])):
 			$seriesNo = $_GET['series_no'];
 			$TRNX = $this->Transaction->findByRefNo($seriesNo);
+			$LDG = $this->Ledger->findByRefNo($seriesNo);
+			if(isset($LDG['Account'])):
+				$details['account'] =array('account_id'=>$LDG['Ledger']['account_id']);
+			endif;
 			$details['account_id']=$TRNX['Transaction']['account_id'];
 			$TRNS = $TRNX['Transaction'];
 			$details['esp']=$TRNS['esp'];
@@ -148,6 +152,7 @@ class ReceiptsController extends AppController{
 				$acid = $sid = $details['account_id'];
 				$is_new_stud  =substr($sid, 0, 3) === 'LSN';
 				if($is_new_stud):
+					if(isset($details['account']))
 					$sid = $details['account']['account_id'];
 				endif;
 				$this->Student->recursive=-1;
