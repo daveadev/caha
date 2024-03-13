@@ -271,7 +271,7 @@ class Student extends AppModel {
 	function createNew201($inq_info,$sy){
 		$STU = $inq_info;
 		$deptCode = $STU['department_id']=='HS'?'J':'S';
-		$SID = $this->generateSID('LK',$deptCode);
+		$SID = $this->generateSID('LS',$deptCode);
 		$SNO = $this->generateSNO($sy);
 		
 		// Student basic info mapping
