@@ -200,6 +200,7 @@ class AccountsController extends AppController {
 		App::import('Model','Transaction');
 		$TNX = new Transaction();
 		$TObj = $TNX->findByRefNo($ref_no);
+		pr($ref_no);
 		$transaction = $TObj['Transaction'];
 		$transaction['series_no'] = $TObj['Transaction']['ref_no'];
 		$transaction['details'] = $TObj['TransactionDetail'];
@@ -207,9 +208,12 @@ class AccountsController extends AppController {
 			$transaction['details'][$i]['id']=$o['transaction_type_id'];
 			$transaction['details'][$i]['description']=$o['details'];
 		endforeach;
+		pr($transaction);
 		$newPay = $this->new_payment($transaction);
 		$transaction['account'] = $newPay;
 		$transaction =array('Ledger'=>$transaction);
+
+		pr($newPay);
 		try {
 		    $ledger_action = $this->requestAction('/ledgers/new_payment',array('pass'=>$transaction,'action'=>'new_payment'));
 		} catch (Exception $e) {

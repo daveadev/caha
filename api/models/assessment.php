@@ -90,7 +90,6 @@ class Assessment extends AppModel {
 			'esp'=>$esp,
 			'status'=>'ACTIV'
 		);
-		
 		$assConf = array(
 				'recursive'=>1,
 				'conditions'=>$assCond
