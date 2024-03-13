@@ -284,6 +284,8 @@ class LedgersController extends AppController {
 				$FEES[] = array('id'=>$fee['fee_id'],
 							'description'=>$fee['fee_id'],
 							'amount'=>$fAmount,'type'=>'-');
+				// NOTE: Add discounts to reverse amounts
+				$FEES[0]['amount']+=$fAmount;
 			endif;
 		endforeach;
 		$entries = [];
