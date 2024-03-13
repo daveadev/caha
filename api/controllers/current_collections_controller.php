@@ -15,7 +15,7 @@ class CurrentCollectionsController extends AppController {
 		$date_diff = round($date_diff / (60 * 60 * 24))+1;
 		$getFirst = $this->Ledger->find('all',array('recursive'=>0,'conditions'=>array('Ledger.transaction_type_id'=>'TUIXN','Ledger.esp'=>$esp),'order'=>'Ledger.transac_date'));
 		$cut_off = $getFirst[0]['Ledger']['transac_date'];
-		$rcvd = array('INIPY','SBQPY','FULLP','RSRVE','ADVPT');
+		$rcvd = array('INIPY','SBQPY','FULLP','RSRVE','ADVPT','INRES');
 		$cond_collect = array('type'=>'-','transaction_type_id'=>$rcvd,'esp'=>$esp,'AND'=>array('transac_date <'=>date('Y-m-d',strtotime($from)),'transac_date >='=>date('Y-m-d',strtotime($cut_off))));
 		
 		
@@ -43,7 +43,10 @@ class CurrentCollectionsController extends AppController {
 		//GET BREAKDOWNS
 		$breakdowns = $this->DailyTotalCollection->find('all',
 									array('recursive'=>0,
-										'conditions'=>array('DailyTotalCollection.date >= '=>date('Y-m-d',strtotime($from))),
+										'conditions'=>array(
+											'DailyTotalCollection.date >= '=> $from,
+											'DailyTotalCollection.date <= '=> $to
+										),
 										'order'=>'DailyTotalCollection.date'));
 		//pr($breakdowns); exit();
 		$total_collection = 0;

@@ -127,6 +127,19 @@ class CashierDailyCollections extends Formsheet{
 			$this->leftText(4,31,'Old Accounts: '.number_format($breakdown['old_accounts'],2),'','');
 			$this->leftText(4,32,'Modules: '.number_format($breakdown['modules'],2),'','');
 			$this->leftText(0,33,'Others: '.number_format($breakdown['others'],2),'','');
+
+			if(isset($breakdown['sy_coll'])):
+				$syColl = $breakdown['sy_coll'];
+				if(count($syColl)>1):
+					$tY = 31;
+					foreach($syColl as $sObj):
+						$tAmnt = number_format($sObj['amount'],2);
+						$tLbl = sprintf("SY: %s   %s",$sObj['label'],$tAmnt);
+						$this->leftText(8,$tY,$tLbl,'','');
+						$tY++;
+					endforeach;
+				endif;
+			endif;
 			
 		}
 		//FOOTER DETAILS

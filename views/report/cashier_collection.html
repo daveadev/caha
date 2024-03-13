@@ -96,7 +96,12 @@
 								<span class="total amount peso " >{{CS.Breakdown.vouchers | currency}}</span>
 							</h5>
 						</a-col>
-						
+						<a-col size="3">
+							<h5 ng-show="CS.Breakdown.sy_coll.length>1" ng-repeat="syObj in CS.Breakdown.sy_coll"> 
+								 SY {{syObj.label}}
+								<span class="total amount peso" >{{syObj.amount | currency}}</span>
+							</h5>
+						</a-col>
 					</a-row>
 					<a-row>
 						<a-col ng-if="CS.ActiveUser.user_type!=='cashr'">

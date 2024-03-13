@@ -77,25 +77,31 @@ class CashierCollectionsController extends AppController {
 			$o_ors = array();
 			$t_ors = array();
 			$m_ors = array();
+			$school_years = array();
 			foreach($collections as $i=>$col){
-				//pr($col); exit();
+				$sy_col = floor($col['CashierCollection']['esp']);
+				$amt_col = $col['CashierCollection']['amount'];
+				if(!isset($school_years[$sy_col]))
+					$school_years[$sy_col] = 0;
+				$school_years[$sy_col] +=$amt_col;
+
 				$refno = explode(" ",$col['CashierCollection']['ref_no']);
 				//pr($refno); exit();
 				switch($col['TransactionDetail'][0]['transaction_type_id']){
 					case 'OLDAC':  case 'EXTPY':
-						$old_accounts+=$col['CashierCollection']['amount'];
+						$old_accounts+=$amt_col;
 						array_push($o_ors,$refno[1]);
 						break;
 					case 'INIPY': 
-						$tuitions+=$col['CashierCollection']['amount'];
+						$tuitions+=$amt_col;
 						array_push($t_ors,$refno[1]);
 						break;
 					case 'FULLP': 
-						$tuitions+=$col['CashierCollection']['amount'];
+						$tuitions+=$amt_col;
 						array_push($t_ors,$refno[1]);
 						break;
 					case 'MODUL': 
-						$modules+=$col['CashierCollection']['amount'];
+						$modules+=$amt_col;
 						array_push($m_ors,$refno[1]);
 						break;
 				}
@@ -241,13 +247,23 @@ class CashierCollectionsController extends AppController {
 				$old_accounts-=$deduct;
 		} 
 		$others = $total-($old_accounts+$tuitions+$modules+$vouchers);
+		$sy_coll =array();
+		foreach($school_years as $syKey=>$syAmount):
+			$label = $syKey.' - '.($syKey+1);
+			$sy_coll[] = array('label'=>$label,'amount'=>$syAmount);
+		endforeach;
+		$sy_coll = array_reverse($sy_coll);
 		$collections = array('collections'=>$collections,
 							'booklets'=>$booklets,
 							'vouchers'=>$vouchers,
 							'tuitions'=>$tuitions,
 							'modules'=>$modules,
 							'old_accounts'=>$old_accounts,
-							'others'=>$others);
+							'others'=>$others,
+							'school_years'=>$school_years,
+							'sy_coll'=>$sy_coll,
+
+						);
 		
 		
 		$cashierCollections = array(array('CashierCollection'=>$collections));

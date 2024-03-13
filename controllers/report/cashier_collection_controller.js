@@ -55,8 +55,8 @@ define(['app','api','atomic/bomb'],function(app){
 			$scope.Loading = true;
 			$scope.DataReady = false;
 			getCollections(1);
-			if($scope.ActiveUser.user_type=='cashr')
-				getOrs();
+			//if($scope.ActiveUser.user_type=='cashr')
+			getOrs();
 		}
 		
 		$scope.gotoPage = function(page){
@@ -332,27 +332,28 @@ define(['app','api','atomic/bomb'],function(app){
 				type:$scope.ActiveOpt,
 				limit: "less",
 			}
-			/* if($scope.ActiveUser.user_type!='cashr'){
+			if($scope.ActiveUser.user_type!='cashr'){
 				data.from = $scope.date_from;
 				data.to = $scope.date_to;
 				data.from = $filter('date')(new Date(data.from),'yyyy-MM-dd');
 				data.to = $filter('date')(new Date(data.to),'yyyy-MM-dd');
-			}else{ */
+			}else{ 
 				data.date = $filter('date')(new Date($scope.cash_date),'yyyy-MM-dd');
 				data.cashr = true;
-			//}
+			}
 			//data.limit = 'less';
 			api.GET('cashier_collections',data, function success(response){
 				
 				$scope.Booklet = response.data[0].booklets;
 				$scope.Breakdown = response.data[0];
-				console.log($scope.Breakdown);
 				$scope.bForPrinting = [{
 					'vouchers':$scope.Breakdown.vouchers,
 					'tuitions':$scope.Breakdown.tuitions,
 					'modules':$scope.Breakdown.modules,
 					'old_accounts':$scope.Breakdown.old_accounts,
 					'others':$scope.Breakdown.others,
+					'school_years':$scope.Breakdown.school_years,
+					'sy_coll':$scope.Breakdown.sy_coll,
 					}];
 				getRemittance();
 			},function error(response){
