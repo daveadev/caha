@@ -117,7 +117,7 @@ class ReportsController extends AppController{
 				$sy = $_GET['sy'];
 			if(isset($_GET['type']))
 				$type = $_GET['type'];
-			$ids[] = $account_id;
+			$ids = explode(',', $account_id);
 		endif;
 
 		if(isset($_GET['section_id']) && isset($_GET['sy'])):
