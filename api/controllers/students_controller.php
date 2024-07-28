@@ -32,9 +32,8 @@ class StudentsController extends AppController {
 				$this->Session->setFlash(__('The student could not be saved. Please, try again.', true));
 			}
 		}
-		$educLevels = $this->Student->EducLevel->find('list');
 		$yearLevels = $this->Student->YearLevel->find('list');
-		$this->set(compact('educLevels', 'yearLevels'));
+		$this->set(compact('yearLevels'));
 	}
 
 	function edit($id = null) {
