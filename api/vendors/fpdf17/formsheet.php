@@ -112,6 +112,7 @@ require(__DIR__.'/fpdf.php');
 			$this->Text($disp_x,$disp_y,$txt);
 		}
 		public function rightText($x,$y,$txt,$w,$style=''){
+			if(!is_numeric($w)) $w = 0;
 			$disp_x = $this->GRID['base_x']+($this->GRID['cell_width']*$x);
 			$disp_y = $this->GRID['base_y']+($this->GRID['cell_height']*$y);
 			$disp_x = $disp_x - $this->GetStringWidth($txt);
