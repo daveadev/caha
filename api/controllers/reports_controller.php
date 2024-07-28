@@ -167,10 +167,10 @@ class ReportsController extends AppController{
 					App::import('Model','SoaCorrection');
 					$SOAC = new SoaCorrection();
 					$user = $this->Auth->user()['User']['username'];
-					$SOAC->log($sy,$type,$STO,$user);
+					$SOAC->logDetails($sy,$type,$STO,$user);
 					$ammend = $this->Account->ammend($STO,$type);
 					if($ammend['corrected']):
-						$SOAC->log($sy,$type.'_correction',$STO,$user);
+						$SOAC->logDetails($sy,$type.'_correction',$STO,$user);
 					endif;
 				endif;
 				

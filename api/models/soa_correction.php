@@ -2,7 +2,7 @@
 class SoaCorrection extends AppModel {
 	var $name = 'SoaCorrection';
 
-	function log($esp,$type,$statement,$user){
+	function logDetails($esp,$type,$statement,$user){
 		$logObj = array();
 		$logObj['details']=json_encode($statement);
 		$hash = md5($logObj['details']);
