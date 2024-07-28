@@ -1,7 +1,6 @@
 <?php
 require('vendors/fpdf17/formsheet.php');
 require('vendors/fpdf17/barcode/php-barcode.php');
-
 class AccountStatement extends Formsheet{
 	protected static $_width = 8.5;
 	protected static $_height = 11;
@@ -23,6 +22,13 @@ class AccountStatement extends Formsheet{
 		$contents = file_get_contents($path);
 		$this->config = json_decode($contents,true);
 		$this->config['artwork']['basePath']=$basePath.'/images/';
+
+		App::import('Model','MasterConfig');
+		$MF = new MasterConfig();
+		$info=$MF->getInfo();
+		foreach($info as $key=>$value){
+			$this->config[$key]=$value;
+		}
 
 	}
 	function headerInfo(){
@@ -59,14 +65,17 @@ class AccountStatement extends Formsheet{
 		$this->leftText(0,4.25,'School Year',10,'');
 		$this->leftText(5,4.25,$sy,10,'b');
 		
-		
-		
-
-		$this->DrawImage(23,-1,3,1,__DIR__ ."/../images/new_logo.jpg");
+		$imgX = 24;
+		$imgY = -0.25;
+		$imgS = 0.8;
+		$imgW = 3*$imgS;
+		$imgH = 0.75*$imgS;
+		$this->DrawImage($imgX ,$imgY,$imgW,$imgH,__DIR__ ."/../images/caha-pay-wordmark.png");
 
 		$this->GRID['font_size']=9;
-		$adddress = utf8_decode("A. Bonifacio St, Brgy. Canlalay Binãn, Laguna ");
-		$contact = "(049) 511 4328 |  accounting@lakeshore.edu.ph";
+
+		$adddress = utf8_decode($this->config['SCHOOL_ADDRESS']);
+		$contact = $this->config['SCHOOL_CONTACT'];
 		$this->leftText(24,3.5,$adddress,15);
 		$this->leftText(24,4.25,$contact,15);
 		
@@ -197,7 +206,8 @@ class AccountStatement extends Formsheet{
 
 
 		$this->GRID['font_size']=10;
-		$note = "For any discrepancies/clarifications, please consult with the LSEI Finance Department immediately.";
+		$alias = $this->config['SCHOOL_INITIALS'];
+		$note = "For any discrepancies/clarifications, please consult with the $alias Finance Department immediately.";
 		if(isset($this->config['reminder'])):
 			$note =$this->config['reminder'];
 		endif;
@@ -434,7 +444,8 @@ class AccountStatement extends Formsheet{
 		
 		$y+=1.5;
 		$this->GRID['font_size']=7.5;
-		$message= 'By signing this form, I hereby confirm the receipt of the Statement of Account with Ref No. '.$billingNo .' from Lake Shore Educational Insitution\'s Finance Office.';
+		$school = $this->config['SCHOOL_NAME'];
+		$message= 'By signing this form, I hereby confirm the receipt of the Statement of Account with Ref No. '.$billingNo .' from '.$school.'\'s Finance Office.';
 		$this->centerText(0,$y,$message,40,'i');
 
 	}
