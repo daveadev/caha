@@ -143,7 +143,7 @@ div.simple-typeahead{
 										<div class="text-center"  ng-show="hasMultiplePS" style="margin-bottom:15px;">
 											<a-navpill  ng-model="CAC.PSType" options="CAC.PSTypes" type="button" ></a-navpill>
 										</div>
-										<a-table headers="CAC.PSHeaders" props="CAC.PSProps" data="CAC.Paysched" is-preload="false"></a-table>
+										<a-table headers="CAC.PSHeaders" props="CAC.PSProps" data="CAC.Paysched" ></a-table>
 									</div>
 								</uib-tab>
 
@@ -200,7 +200,7 @@ div.simple-typeahead{
 
 								<!-- Transaction Details -->
 								<div ng-show="CAC.TrnxDtlMode!=='EDIT'">
-									<a-table headers="CAC.Headers" props="CAC.Props" data="CAC.TransacDetails" is-preload="false"></a-table>
+									<a-table headers="CAC.Headers" props="CAC.Props" data="CAC.TransacDetails" ></a-table>
 								</div>
 								<div ng-show="CAC.TrnxDtlMode==='EDIT'">
 									
