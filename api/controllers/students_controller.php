@@ -2,6 +2,7 @@
 class StudentsController extends AppController {
 
 	var $name = 'Students';
+	var $uses = array('Student','MasterConfig');
 
 	function index() {
 		$this->Student->recursive = 0;
@@ -24,6 +25,12 @@ class StudentsController extends AppController {
 
 	function add() {
 		if (!empty($this->data)) {
+			if(!$this->data['Student']['id']):
+				$_CONF = $this->MasterConfig->findBySysKey('SCHOOL_ALIAS');
+				$_ALIAS = $_CONF['MasterConfig']['sys_value'];
+				$SID = $this->Student->generateSID($_ALIAS,'S');
+				$this->data['Student']['id'] = $SID;
+			endif;
 			$this->Student->create();
 			if ($this->Student->save($this->data)) {
 				$this->Session->setFlash(__('The student has been saved', true));
@@ -33,7 +40,9 @@ class StudentsController extends AppController {
 			}
 		}
 		$yearLevels = $this->Student->YearLevel->find('list');
-		$this->set(compact('yearLevels'));
+		$sections = $this->Student->Section->find('list');
+		$programs = $this->Student->Program->find('list');
+		$this->set(compact('yearLevels','sections','programs'));
 	}
 
 	function edit($id = null) {
@@ -52,9 +61,10 @@ class StudentsController extends AppController {
 		if (empty($this->data)) {
 			$this->data = $this->Student->read(null, $id);
 		}
-		$educLevels = $this->Student->EducLevel->find('list');
 		$yearLevels = $this->Student->YearLevel->find('list');
-		$this->set(compact('educLevels', 'yearLevels'));
+		$sections = $this->Student->Section->find('list');
+		$programs = $this->Student->Program->find('list');
+		$this->set(compact('yearLevels','sections','programs'));
 	}
 
 	function delete($id = null) {
