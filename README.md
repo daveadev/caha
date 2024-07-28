@@ -1,2 +1,2 @@
-# srp
-Simplified Receivables &amp; Payables
+# Caha Pay
+A fork from SRP (Simplified Receivables &amp; Payables)
