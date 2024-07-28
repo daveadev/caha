@@ -13,8 +13,8 @@
     </div>
     <ul class="sidebar-nav">
         <li class="sidebar-brand">
-            <div id="user-name"> User Name</div>
-            <div id="company-name">School Name</div>
+            <div id="user-name"> {{__USER.user.username}}</div>
+            <div id="company-name">{{_APP.SCHOOL_NAME}}</div>
         </li>
         <li class="separator">
         </li>
@@ -43,5 +43,5 @@
             <a href="#/logout">Logout</a>
         </li>
     </ul>
-    <div id="app-version">SRP <?php echo $versionNo;?></div>
+    <div id="app-version"><?php echo "$alias $versionNo";?></div>
 </div>

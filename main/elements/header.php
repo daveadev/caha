@@ -13,6 +13,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="title" content="<?php echo $title; ?>" />
 <meta name="application-name" content="<?php echo $product; ?>" />
+<meta name="application-alias" content="<?php echo $alias; ?>" />
 <meta name="description" content="<?php echo $description; ?>" />
 <meta name="author" content="<?php echo $author; ?>" />
 <meta name="version" content="<?php echo $versionNo; ?>"/>

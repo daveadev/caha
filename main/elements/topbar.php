@@ -15,7 +15,7 @@
                         <span class="caret"></span>
                     </a>
                     <ul class="dropdown-menu open">
-                        <li><a href="#/account">
+                        <li><a href="#/admin/account_info">
                             <span class="glyphicon glyphicon-user"></span>
                             Account Info</a></li>
                         <li><a href="#/">
@@ -28,7 +28,7 @@
                             Log out</a></li>
                         <li role="separator" class="divider"> </li>
                         
-                        <li class="dropdown-header">SRP VERSION </li>
+                        <li class="dropdown-header"><?php echo $alias;?> VERSION </li>
                         <li> <a href="#/?latest=<?php echo $versionNo;?>" ng-click="__showVersionDialog($event,'<?php echo $versionNo;?>')"><?php echo $versionNo;?></a></li>
                     </ul>
                 </li>
