@@ -7,6 +7,9 @@ define(['app','api'], function (app) {
 			$rootScope._APP = $rootScope._APP ||{};
 			$rootScope._APP.CopyRight =  document.querySelector('meta[name="copyright"]').getAttribute('content');
 			$rootScope._APP.VersionNo =  document.querySelector('meta[name="version"]').getAttribute('content');
+			$rootScope._APP._Name =  document.querySelector('meta[name="application-name"]').getAttribute('content');
+        	$rootScope._APP._Alias =  document.querySelector('meta[name="application-alias"]').getAttribute('content');
+		
 			console.log($rootScope.__USER);
 			$scope.ActiveUser = $rootScope.__USER;
 			$scope.openListItem = function($index){

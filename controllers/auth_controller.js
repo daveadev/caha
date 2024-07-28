@@ -26,6 +26,8 @@ define(['app','api'], function (app) {
 		$rootScope.__SHOW_REG = false;
         $rootScope._APP_CopyRight =  document.querySelector('meta[name="copyright"]').getAttribute('content');
         $rootScope._APP_VersionNo =  document.querySelector('meta[name="version"]').getAttribute('content');
+        $rootScope._APP_Name =  document.querySelector('meta[name="application-name"]').getAttribute('content');
+        $rootScope._APP_Alias =  document.querySelector('meta[name="application-alias"]').getAttribute('content');
 		
 		if($window.location.hash=='#/logout'){
 			$rootScope.__SIDEBAR_OPEN = false;
