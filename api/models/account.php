@@ -356,7 +356,7 @@ class Account extends AppModel {
 
 		$PS = $statement['paysched_'.$type];
 		$PSEndBal = $this->getEndBal($PS,'paysched');
-		$PSTotals= &$this->getEndItem($PS);
+		$PSTotals= $this->getEndItem($PS);
 		$PSTotalDue = $this->lookupAmount($PSTotals,'total_due');
 
 		$LE = &$statement['ledger_'.$type];
