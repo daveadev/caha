@@ -1,6 +1,6 @@
-PRODUCT=Simplified Receipts and Payments
-ALIAS=SRP
-DESCRIPTION=Simply pay.
+PRODUCT=Caha Pay
+ALIAS=CAHA
+DESCRIPTION=Make every cent count.
 AUTHOR=Dave A Dev Web Solutions
 COPYRIGHT=2020-2024
 MAJOR=1
