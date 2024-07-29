@@ -2,6 +2,7 @@ define(['app','util','api'],function(app,util) {
 	const TRNX ={};
 	const INI_TRNX = [
 				{id:'INRES', description:'Initial Reservation',amount:3000, docType:'OR'},
+				{id:'REGFE', description:'Registration Fee',amount:1500, docType:'OR'},
 				{id:'INIPY', description:'Initial Payment',amount:0, docType:'OR'},
 				{id:'SBQPY', description:'Subsequent Payment',amount:0, docType:'OR'},
 				{id:'OLDAC', description:'Old Account',amount:0, docType:'OR'},
@@ -167,6 +168,9 @@ define(['app','util','api'],function(app,util) {
 				case 'EXTPY':
 					updateAmount('EXTPY','add',sched.due_amount);
 				break;
+				default:
+					updateAmount(ttid,'set',sched.due_amount);
+				break;
 			}
 		});
 		if(is_old) 
@@ -180,12 +184,14 @@ define(['app','util','api'],function(app,util) {
 		updateAmount('SBQPY','set',0);
 		updateAmount('OLDAC','set',0);
 		updateAmount('EXTPY','set',0);
+		updateAmount('REGFE','set',0);
 		
 		
 		updateDisplay('INIPY','hide');
 		updateDisplay('SBQPY','hide');
 		updateDisplay('OLDAC','hide');
 		updateDisplay('EXTPY','hide');
+		updateDisplay('REGFE','hide');
 		updateAmount('OTHRS','set',0.10);
 		updateDisplay('OTHRS','disable');
 

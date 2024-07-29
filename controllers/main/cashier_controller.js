@@ -313,7 +313,7 @@ define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 				let specialPay = [];
 				$scope.TransacList = angular.copy(TRNX.getList());
 				$scope.TransacList.map(function(trl){
-					let ispayment = /^(EXTPY|SBQPY)$/.test(trl.id) && trl.amount>0;
+					let ispayment = /^(REGFE|EXTPY|SBQPY)$/.test(trl.id) && trl.amount>0;
 					if (ispayment)
 						specialPay.push(trl.id);
 				});
