@@ -156,7 +156,7 @@ class AccountsController extends AppController {
 	            		$account['account_id']=$account_id;
 	            		return $account;
 	            	break;
-	            	case 'SBQPY':
+	            	case 'SBQPY': case 'REGFE':
 	            		$account = $this->forward_payment($account_id,$ref_no,$dtl,$esp);
 		              	return $account;
 	            	break;

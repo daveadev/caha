@@ -237,7 +237,7 @@ class LedgersController extends AppController {
 						$entries = $this->initLegder($entry);
 						$entries[]= $this->inserEntry($entry,$dtl);
 					break;
-					case 'EXTPY': case 'SBQPY':
+					case 'EXTPY': case 'SBQPY': case 'REGFE':
 						$entries[]= $this->inserEntry($entry,$dtl);
 					break;
 				}
