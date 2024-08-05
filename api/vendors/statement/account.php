@@ -1,6 +1,7 @@
 <?php
 require('vendors/fpdf17/formsheet.php');
 require('vendors/fpdf17/barcode/php-barcode.php');
+include_once(ROOT.'/main/utility.php');
 class AccountStatement extends Formsheet{
 	protected static $_width = 8.5;
 	protected static $_height = 11;
@@ -42,42 +43,58 @@ class AccountStatement extends Formsheet{
 		);
 		$this->section($metrics);
 		$this->GRID['font_size']=12;
-		$this->leftText(0,1,'Statement Of Account',10,'b');
+
+		$headerX = 23;
+		$this->leftText($headerX,1,'Statement Of Account',10,'b');
 		
 		$student = $this->data['student'];
 
 		$account = $this->data['account'];
 		$sy = $account['school_year'];
 		$this->section($metrics);
-		$this->GRID['font_size']=10;
-		$this->leftText(0,2.25,'Student Name',10,'');
+		$this->GRID['font_size']=9;
+		$this->leftText($headerX,2.25,'Student Name:',10,'');
 		$name  =$account['name'];
 		if(mb_check_encoding($account['name'],'utf8')):
 			$name =  utf8_decode($name);
 		endif;
 
+		$this->GRID['font_size']=10;
 		$this->data['account']['name']=$name;
-		$this->leftText(5,2.25, $name,10,'b');
-
-		$this->leftText(0,3.25,'Level / Section',10,'');
-		$this->leftText(5,3.25,$student['section'],10,'b');
-
-		$this->leftText(0,4.25,'School Year',10,'');
-		$this->leftText(5,4.25,$sy,10,'b');
-		
-		$imgX = 24;
-		$imgY = -0.25;
-		$imgS = 0.8;
-		$imgW = 3*$imgS;
-		$imgH = 0.75*$imgS;
-		$this->DrawImage($imgX ,$imgY,$imgW,$imgH,__DIR__ ."/../images/caha-pay-wordmark.png");
+		$this->leftText($headerX,3.25, $name,10,'b');
 
 		$this->GRID['font_size']=9;
+		$this->leftText($headerX,4.5,'Level / Section.....................................',10,'');
+		$this->rightText($headerX+5,4.5,$student['section'],10,'');
 
+		$this->leftText($headerX,5.25,'School Year.........................................',10,'');
+		$this->rightText($headerX+5,5.25,$sy,10,'');
+		
+		$headerX = 4.5;
+		$imgS = 0.8;
+		$imgW = 1.5*$imgS;
+		$imgH = 0.35*$imgS;
+		$imgB = 1*$imgS;
+
+		$imgX = $headerX - ($imgB +3.75) ;
+		$imgY = 0;
+		
+		$imgLogo = __DIR__ ."/../images/";
+		$imgLogo .= $this->config['SCHOOL_LOGO'];
+		$this->DrawImage($imgX ,$imgY,$imgB,$imgB,$imgLogo);
+
+		
+
+		$school = utf8_decode($this->config['SCHOOL_NAME']);
 		$adddress = utf8_decode($this->config['SCHOOL_ADDRESS']);
 		$contact = $this->config['SCHOOL_CONTACT'];
-		$this->leftText(24,3.5,$adddress,15);
-		$this->leftText(24,4.25,$contact,15);
+		$infoY = 1;
+		$this->GRID['font_size']=10;
+		$this->leftText($headerX,$infoY,$school,15,'b');
+
+		$this->GRID['font_size']=9;
+		$this->leftText($headerX,$infoY+=1,$adddress,15);
+		$this->leftText($headerX,$infoY+=0.75,$contact,15);
 		
 		$h = $this->GRID['cell_height'];
 		$y=4;
@@ -103,7 +120,10 @@ class AccountStatement extends Formsheet{
 		$ledger_key = 'ledger_'.$type;
 		$ledger = $this->data[$ledger_key];
 		$totalPages =  count($ledger)> AccountStatement::$_MAX_LINES?2:1;
+		$this->GRID['font_size']=8;
+		$this->leftText(0,0,'Powered by Caha Pay',10,'i');
 		$this->GRID['font_size']=10.5;
+		
 		$this->leftText(0,1.25,$sched_title,10,'b');
 		
 		$this->rightText(33,1.25,"Page 1 of $totalPages",5,'b');
@@ -139,7 +159,7 @@ class AccountStatement extends Formsheet{
 			if(isset($sched['due_date'])):
 				if(in_array($index,$dueNow['months'])):
 					if($type=='current'):
-						$this->SetFillColor(195,237,209);
+						$this->SetFillColor(252,246,219);
 					else:
 						$this->SetFillColor(252,246,219);
 					endif;
@@ -188,7 +208,7 @@ class AccountStatement extends Formsheet{
 		
 		$this->SetDrawColor(27,151,68);
 		if($type=='current'):
-			$this->SetFillColor(195,237,209);
+			$this->SetFillColor(252,246,219);
 		else:
 			$this->SetFillColor(252,246,219);
 		endif;
@@ -284,6 +304,7 @@ class AccountStatement extends Formsheet{
 		$dateGen = sprintf("** Generated as of %s",date('d M Y , h:i:a **', time()));
 		$this->centerText(0,$y,$dateGen,38,'i');
 
+
 		
 		$h = $this->GRID['cell_height'];
 		$this->data['last_y'] = $metrics['base_y']+ ($h*$y);
@@ -364,6 +385,12 @@ class AccountStatement extends Formsheet{
 		$this->GRID['font_size']=$font_size;
 		$this->DrawBox(15.5,1,22.5,8,'D');
 		$this->wrapText(16.25,2,$notes,21,'i',0.7);
+		$this->GRID['font_size']=7;
+
+		$versionNo = Utility::getVersionNo();
+		$versionName = Utility::$versionData['ALIAS'].' '.$versionNo;
+
+		$this->RotateText(-0.25,9,$versionName,90);
 		$h = $this->GRID['cell_height'];
 		$y=6.5;
 		$this->data['last_y'] = $metrics['base_y']+ ($h*$y);
@@ -385,7 +412,7 @@ class AccountStatement extends Formsheet{
 		
 		$this->GRID['font_size']=9;
 		if($type=='current'):
-			$this->SetFillColor(195,237,209);
+			$this->SetFillColor(252,246,219);
 		else:
 			$this->SetFillColor(252,246,219);
 		endif;
