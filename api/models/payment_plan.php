@@ -246,6 +246,16 @@ class PaymentPlan extends AppModel {
 		foreach($schedule as &$sched):
 			if($sched['due_date']!='Old Account')
 			$sched['due_date']= date("d M Y",strtotime($sched['due_date']));
+
+			if($sched['transaction_type_id']=='ACECF'):
+				$sched['due_date'] =date('M',strtotime($sched['due_date'])).' ACEC';
+			endif;
+			if($sched['transaction_type_id']=='REGFE'):
+				$sched['due_date'] = 'Registration';
+			endif;
+			if($sched['transaction_type_id']=='INIPY'):
+				$sched['due_date'] = 'Upon Enrollment';
+			endif;
 			$sched['balance'] =  $sched['due_amount'] - $sched['paid_amount'];
 			$total_due += $sched['due_amount'];
 			$total_pay += $sched['paid_amount'];

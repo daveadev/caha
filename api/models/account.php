@@ -87,7 +87,7 @@ class Account extends AppModel {
 			'dependent' => false,
 			'conditions' => '',
 			'fields' => '',
-			'order' => '',
+			'order' => array('AccountSchedule.order'=>'ASC','AccountSchedule.transaction_type_id'=>'DESC'),
 			'limit' => '',
 			'offset' => '',
 			'exclusive' => '',
@@ -297,6 +297,7 @@ class Account extends AppModel {
 		$DSC = 0;
 		$LOY = 0;
 		$OLD = 0;
+		$ACEC = 0;
 		$VOU = 0;
 		$OR_PAY = 0;
 		$LE = $statement['ledger_'.$type]; 
@@ -339,6 +340,9 @@ class Account extends AppModel {
 				// Late & Regular ESC Voucher
 				case  'AMLES': case 'AMRES':
 					$VOU += $this->lookupAmount($entry);
+				break;
+				case 'ACECF':
+					$ACEC += $this->lookupAmount($entry);
 				break;
 				default:
 					if($details=='Subsidy' || $code=='DSESC'):
