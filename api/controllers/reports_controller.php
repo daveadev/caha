@@ -163,14 +163,17 @@ class ReportsController extends AppController{
 
 				$STO = $this->PaymentPlan->getDetails($accId ,$sy,$type);
 				$isValid = $this->Account->review($STO,$type);
+				$ammendSOA = false;
 				if(!$isValid):
 					App::import('Model','SoaCorrection');
 					$SOAC = new SoaCorrection();
 					$user = $this->Auth->user()['User']['username'];
 					$SOAC->logDetails($sy,$type,$STO,$user);
-					$ammend = $this->Account->ammend($STO,$type);
-					if($ammend['corrected']):
-						$SOAC->logDetails($sy,$type.'_correction',$STO,$user);
+					if($ammendSOA):
+						$ammend = $this->Account->ammend($STO,$type);
+						if($ammend['corrected']):
+							$SOAC->logDetails($sy,$type.'_correction',$STO,$user);
+						endif;
 					endif;
 				endif;
 				
