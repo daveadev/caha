@@ -79,4 +79,20 @@ class StudentsController extends AppController {
 		$this->Session->setFlash(__('Student was not deleted', true));
 		$this->redirect(array('action' => 'index'));
 	}
+	
+	function generateSIDS($count=1){
+		
+		for($ctr =0; $ctr<$count; $ctr++):
+			$this->data = array('Student'=>array('id'=>null));
+			if(!$this->data['Student']['id']):
+				$_CONF = $this->MasterConfig->findBySysKey('SCHOOL_ALIAS');
+				$_ALIAS = $_CONF['MasterConfig']['sys_value'];
+				$SID = $this->Student->generateSID($_ALIAS,'S');
+				$this->data['Student']['id'] = $SID;
+			endif;
+			$this->Student->create();
+			$this->Student->save($this->data);
+		endfor;
+		
+	}
 }
