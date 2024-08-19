@@ -1,0 +1,105 @@
+<style>
+.tab-content{
+	padding-left: 15px;
+}
+.btn-action{
+	width: 220px;
+	height:100px;
+	text-align:left;
+	margin-right: 10px;
+	margin-bottom: 10px;
+
+}
+.btn-action>span.peso.amount{
+	width: auto;
+	float: none;
+	color: inherit;
+}
+.btn-action div.action-label {
+  width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  height: 40px;
+}
+.btn-action:hover div.action-label{
+	white-space: normal;
+}
+.btn-active,.btn-active:hover,.btn-active:focus,
+.btn-active[disabled],.btn-active[disabled]:hover,.btn-active[disabled]:focus{
+	border:1px solid #337ab7;
+	color:#337ab7;
+	background: white;
+}
+.btn-action.btn-active,
+.btn-action.btn-active:hover,
+.btn-action.btn-active:focus{
+	background: #d9edf7;
+	border:2px solid #337ab7;
+}
+.btn-active[disabled],
+.btn-active[disabled]:hover,
+.btn-active[disabled]:focus{
+	background: white;
+}
+div[align="right"] input{
+	text-align: right;
+}
+div[align="right"] input[disabled]{
+	background: white;
+    border: none;
+    padding: 0;
+    color: black;
+    font-size: 21px;
+    height: auto;
+}
+#PTypeSelect{
+	width: 104px;
+  margin-left: 15px;
+  margin-right: -32px;
+  border-top-right-radius: 0px;
+  border-bottom-right-radius: 0px;
+  z-index: 3;
+  position: absolute;
+  font-size: 14px;
+}
+div.simple-typeahead{
+	margin-left:20px;
+}
+</style>
+
+<div ng-controller="CashierAdminController as CAD" ng-init="CAD.init()">
+	<a-module>
+		<a-container>
+			<a-header is-main="true">
+				<a-row>
+					<a-col size="1">
+						<select  ng-model="CAD.PayeeType" class="input-lg pull-right" a-select id="PTypeSelect" ng-disabled="CAD.hasValidPayee">
+							<option value="STU">Student</option>
+							<option value="OTH"> Others</option>
+						</select>
+					</a-col>
+					<a-col size="11">
+						<m-search-entity  ng-show="CAD.PayeeType=='STU'" ng-model="CAD.ActiveStudent" endpoint="'students/search'" search-fields="CAD.StudSearch" obj-fields="CAD.StudFields" is-large="true" display-field="CAD.StudDisplay" placeholder="Search Students"></m-search-entity>
+						
+						<m-search-entity   ng-show="CAD.PayeeType=='OTH'" ng-model="CAD.ActiveOther" endpoint="'accounts'" search-fields="CAD.OthrSearch" obj-fields="CAD.OthrFields" is-large="true" display-field="CAD.OthrDisplay" placeholder="Search Other Accounts"  filter="CAD.OthrFilter" allow-create="true" created-id="CAD.ActiveOtherId"></m-search-entity>
+					</a-col>
+				</a-row>
+				
+			</a-header>
+			<a-canvas>
+				<a-content>
+					<a-row >
+						<a-col size="4">
+							<m-formgroup ng-model="CAD.ActiveSY" label="School Year" options="CAD.SchoolYears" option-label="label"  ng-change="CAD.changeASY()"></m-formgroup>
+							<m-formgroup ng-model="CAD.TransactDate" label="Transaction Date"  type="'date'" size="'input-lg'"></m-formgroup>
+							<m-formgroup ng-model="CAD.SeriesNo" label="Series No." size="'input-lg'"></m-formgroup>
+							<m-formgroup ng-model="CAD.Amount" label="Amount" type="'number'" size="'input-lg'" ></m-formgroup>
+							<a-button type="success" class="btn-block" size="lg">Save</a-button>
+						</a-col>
+						<a-col size="6"></a-col>
+					</a-row>
+				</a-content>
+			</a-canvas>
+		</a-container>
+	</a-module>
