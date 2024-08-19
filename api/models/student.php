@@ -90,7 +90,7 @@ class Student extends AppModel {
 	}
 
 	// Student Unified Search
-	function search($keyword,$fields =null){
+	function search($keywords,$fields =null){
 		// Import Inquiry Model
 		App::import('Model','Inquiry');
 		App::import('Model','MasterConfig');
@@ -98,14 +98,17 @@ class Student extends AppModel {
 		$CNF =  new MasterConfig();
 		// Set up conditions filter by fields and keywords
 		if(!$fields):
-			$cond = array("full_name LIKE"=>"$keyword%");
+			$cond = array("full_name LIKE"=>"$keywords%");
 		else:
-			$cond=array();
-			// fields can be first_name, last_name, middle_name etc.
-			foreach($fields as $f):
-				$cond["$f LIKE"]="$keyword%"; // Build cond from fields
+			$condK=array();
+			foreach(explode(' ', $keywords) as $keyword):
+				$condK=array();
+				// fields can be first_name, last_name, middle_name etc.
+				foreach($fields as $f):
+					$condK["$f LIKE"]="$keyword%"; // Build cond from fields
+				endforeach;
+				$cond[] = array('OR'=>$condK); // Make sure to use OR operator
 			endforeach;
-			$cond = array('OR'=>$cond); // Make sure to use OR operator
 		endif;
 
 		// Define response fields
@@ -115,7 +118,7 @@ class Student extends AppModel {
 		unset($condInq['OR']['sno LIKE']);
 		unset($condInq['OR']['rfid LIKE']);
 		$I = array();
-		$includeNewStud = true;
+		$includeNewStud = false;
 		if($includeNewStud):
 			$inqOptions = array(
 				'conditions'=>$condInq,
@@ -157,7 +160,7 @@ class Student extends AppModel {
 		$STU->contain('Account.subsidy_status','Program','YearLevel','Section');
 		// Find all students based on filter
 		$S = $STU->find('all',array('conditions'=>$cond,'fields'=>$flds));
-
+		
 
 		// Setup RES to contain all RESults
 		$RES = array();
