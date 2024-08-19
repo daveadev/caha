@@ -96,12 +96,13 @@ class Student extends AppModel {
 		App::import('Model','MasterConfig');
 		$INQ =  new Inquiry();
 		$CNF =  new MasterConfig();
+		$keywords = explode(' ', $keywords);
 		// Set up conditions filter by fields and keywords
 		if(!$fields):
 			$cond = array("full_name LIKE"=>"$keywords%");
 		else:
 			$condK=array();
-			foreach(explode(' ', $keywords) as $keyword):
+			foreach($keywords as $keyword):
 				$condK=array();
 				// fields can be first_name, last_name, middle_name etc.
 				foreach($fields as $f):
@@ -110,6 +111,8 @@ class Student extends AppModel {
 				$cond[] = array('OR'=>$condK); // Make sure to use OR operator
 			endforeach;
 		endif;
+		//$cond = array('OR'=>$cond);
+		
 
 		// Define response fields
 		$flds = array('id','lrn','full_name','program_id','year_level_id','student_type','department_id');
@@ -159,8 +162,12 @@ class Student extends AppModel {
 		$STU =$this; 
 		$STU->contain('Account.subsidy_status','Program','YearLevel','Section');
 		// Find all students based on filter
-		$S = $STU->find('all',array('conditions'=>$cond,'fields'=>$flds));
-		
+		$contain = array('YearLevel','Section');
+		$S = $STU->find('all',array('conditions'=>$cond,'fields'=>$flds,'contain'=>$contain));
+		if(!$S):
+			$cond = array('Student.class_name LIKE' => implode('%', $keywords).'%','Student.first_name LIKE'=>$keyword.'%');
+			$S = $STU->find('all',array('conditions'=>$cond,'fields'=>$flds,'contain'=>$contain));
+		endif;
 
 		// Setup RES to contain all RESults
 		$RES = array();
