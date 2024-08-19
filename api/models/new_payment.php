@@ -5,10 +5,15 @@ class NewPayment extends AppModel {
 
 	function prepareTrnx($trnxObj,$TRNX){
 		// Check if ref no already used
-		$is_transacted = $TRNX->findByRefNo($trnxObj['ref_no']);
+		$tCond = array(
+					'Transaction.ref_no'=>$trnxObj['ref_no'],
+					'Transaction.amount'=>$trnxObj['pay_amount']
+					);
+		$is_transacted = $TRNX->find('first',array('conditions'=>$tCond));
 		if($is_transacted):
-			$TObj = array('is_valid'=>false,'ref_no'=>$trnxObj['ref_no']);
-			return $TObj;
+				$TObj = array('is_valid'=>false,'ref_no'=>$trnxObj['ref_no']);
+				return $TObj;
+			
 		endif;
 		
 		// Prepare Transaction object
