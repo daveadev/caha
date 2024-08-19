@@ -95,9 +95,15 @@ div.simple-typeahead{
 							<m-formgroup ng-model="CAD.TransactDate" label="Transaction Date"  type="'date'" size="'input-lg'"></m-formgroup>
 							<m-formgroup ng-model="CAD.SeriesNo" label="Series No." size="'input-lg'"></m-formgroup>
 							<m-formgroup ng-model="CAD.Amount" label="Amount" type="'number'" size="'input-lg'" ></m-formgroup>
-							<a-button type="success" class="btn-block" size="lg">Save</a-button>
+							<a-button type="success" class="btn-block" size="lg" ng-click="CAD.saveInputs()">Save</a-button>
 						</a-col>
-						<a-col size="6"></a-col>
+						<a-col size="8">
+							<m-fileupload ng-model="CAD.Records" accept="csv"></m-fileupload>
+							{{CAD.OverallProgress}}
+							{{CAD.ProgressText}}
+							<a-table headers="CAD.Headers" props="CAD.Props" data="CAD.CleanRecords" ng-model="CAD.ActiveRecord"> </a-table>
+							
+						</a-col>
 					</a-row>
 				</a-content>
 			</a-canvas>

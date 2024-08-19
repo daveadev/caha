@@ -34,8 +34,8 @@ define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 				$scope.ActiveSY = sy;
 				
 			});
-			$scope.Headers = ['Description',{class:'col-md-4',label:'Amount'}];
-			$scope.Props = ['description','disp_amount'];
+			$scope.Headers = [{class:'col-md-4',label:'Student'},'Date','Series No',{class:'col-md-2 text-right',label:'Amount'}];
+			$scope.Props = ['search','transact_date','series_no','amount'];
 			$scope.Inputs = [{field:'description',disabled:true, enableIf:'OTHRS'},{field:'amount',type:'number'}];
 			$scope.PSTypes = [{id:'regular',name:'Current Account'},{id:'old', name:'Ext. Payment Plan'}];
 			$rootScope.__PSType = 'regular';
@@ -55,6 +55,7 @@ define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 			$scope.TotalAmount = 0;
 			$scope.SeriesNo = '';
 			$scope.PayeeType='STU'; 
+			$scope.ActiveRecord = {};
 			$scope.TransacDate = new Date();
 			$scope.TotalDispAmount = TRNX.util.formatMoney($scope.TotalAmount);
 		}
@@ -63,15 +64,17 @@ define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 			var trnxSeriesNo = $scope.SeriesNo;
 			var trnxAmount = $scope.Amount;
 			var trnxDate = $scope.TransactDate;
-				trnxDateFormat = $filter('date')(new Date(trnxDate),DATE_FORMAT);
+			var	trnxDateFormat = $filter('date')(new Date(trnxDate),DATE_FORMAT);
 			var trnxSY = $scope.ActiveSY;
+			var student = $scope.ActiveStudent;
+			
 			var trnxData= {
-				    "series_no":$trnxSeriesNo,
+				    "series_no":trnxSeriesNo,
 				    "pay_change": 0,
 				    "booklet_id": 334,
-				    "student": "2024-0112 Francis Noel B Maginangca ",
-				    "section": "Grade 3 Emerald",
-				    "account_id": "GRS80044",
+				    "student": student.display_name,
+				    "section": student.section,
+				    "account_id": student.id,
 				    "account_type": "student",
 				    "esp": trnxSY,
 				    "doc_type": "OR",
@@ -88,7 +91,17 @@ define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 				            "isActive": true
 				        }
 				    ]
-				}
+				};
+			let success = function(response){
+				let data = response.data;
+				$selfScope.$emit('PaymentSucess',{details:data});
+			};
+			let error = function(response){
+				$selfScope.$emit('PaymentError',{message:response.message});
+
+
+			};
+			api.POST('new_payments',trnxData,success,error);
 		}
 		$selfScope.$watchGroup(['CAD.ActiveOther.id','CAD.ActiveStudent.id'],function(entity){
 			$scope.hasValidPayee = entity[0] ||  entity[1];
@@ -102,10 +115,83 @@ define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 				$scope.ActiveSY = asy;
 		});
 
-		$selfScope.$on('PaymentError',function(evt,args){
-
-			alert(args.message);
+		$selfScope.$watch('CAD.Records',function(cad_records){
+			if(!cad_records.length) return;
+			let records = [];
+			cad_records.forEach(function(record,i){
+				let r = angular.copy(record);
+				r.id = i+1;
+				const nameDetails = extractNameDetails(r.student);
+				r.search =  `${nameDetails.lastname} ${nameDetails.firstname}`
+				records.push(r);
+			});
+			$scope.CleanRecords = records;
+			$scope.StarBatch = true;
+			$scope.BatchIndex=0;
+			$scope.OverallProgress = `Batch process started...`;
+			$timeout(function(){
+				loadRecord($scope.BatchIndex);
+			},1500);
 		});
+
+		$selfScope.$on('PaymentSucess',function(evt,args){
+			console.log(args);
+			$timeout(function(){
+				loadRecord($scope.BatchIndex++);
+			},500);
+			
+		});
+		$selfScope.$on('PaymentError',function(evt,args){
+			$scope.ProgressText = `${args.message}`;
+			console.error(args.message);
+			$timeout(function(){
+				loadRecord($scope.BatchIndex++);
+			},500);
+		});
+
+		function extractNameDetails(fullName) {
+		    // Step 1: Extract the last name (everything before the semicolon)
+		    const [lastNamePart, rest] = fullName.split(';').map(part => part.trim());
+
+		    // Step 2: Extract the first word after the semicolon (the first name)
+		    const [firstName] = rest.split(' ').map(part => part.trim());
+
+		    // Step 3: Return the extracted components
+		    return {
+		        lastname: lastNamePart,
+		        firstname: firstName,
+		    };
+		}
+
+		function loadRecord(index){
+			let itemCount = index+1;
+			let recordLen = $scope.CleanRecords.length;
+			$scope.OverallProgress = `Loading records  ${itemCount} of ${recordLen}...`
+			let record = $scope.CleanRecords[index];
+			$scope.ActiveStudent = null;
+			$scope.TransactDate = new Date(record.transact_date);
+			$scope.SeriesNo = record.series_no;
+			$scope.Amount = parseFloat(record.amount);
+			let filter = {
+				keyword:record.search,
+				fields:'last_name,first_name'
+			};
+			let success = function(response){
+				let elem = document.querySelector('#searchEntity-1001');
+				let data = response.data;
+				if(data.length==1){
+					$scope.ProgressText = `Tagging record of ${record.series_no}`
+					$scope.ActiveStudent = data[0];
+					$scope.ActiveRecord = record;
+					$timeout(function(){
+						angular.element(elem).val($scope.ActiveStudent.display_name);
+						$scope.saveInputs();
+					},150);
+				}
+			};
+			let error = function(response){};
+			api.GET('students/search',filter,success,error);
+		}
 	}]);
 
 });
