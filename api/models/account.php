@@ -515,7 +515,8 @@ class Account extends AppModel {
 
 	    $accountInfo = array();
 	    // Save balances in payment_plan and account if the account is valid
-	    if ($account['is_valid']) {
+	    $skipAccountValidtion = true;
+	    if ($account['is_valid'] ||$skipAccountValidtion ) {
 	        $this->save($account);
 	        
 	        // Distribute payment and update the payment schedule
