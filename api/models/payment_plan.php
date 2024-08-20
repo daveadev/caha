@@ -68,7 +68,7 @@ class PaymentPlan extends AppModel {
 
 	    $planInfo = array();
 	    // Save balances in payment_plan and account if the account is valid
-	    if ($account['is_valid']) {
+	    if ($account['is_valid']||1) {
 	        $this->save($plan);
 	        $this->Account->save($account);
 
@@ -113,7 +113,7 @@ class PaymentPlan extends AppModel {
 	protected function distributePayments(&$schedule, $totalPayment) {
 	    foreach ($schedule as &$payment) {
 	        // Check if the payment is unpaid and there's a remaining payment to be made
-	        $isPAID = $payment['status'] === 'UNPAID' || $payment['status'] === 'NONE';
+	        $isPAID = $payment['status'] === 'UNPAID' || $payment['status'] === 'NONE' || $payment['paid_amount']<$payment['due_amount'];
 	        if ($isPAID && $totalPayment > 0) {
 	            // Calculate the amount to be paid for this schedule
 	            $amountToPay = min($totalPayment, $payment['due_amount'] - $payment['paid_amount']);
