@@ -2,7 +2,7 @@
 class NewPaymentsController extends AppController {
 
 	var $name = 'NewPayments';
-	var $uses = array('NewPayment','Transaction');
+	var $uses = array('NewPayment','Transaction','Ledger');
 
 	function add(){
 		$_DATA =  $this->data;
@@ -16,7 +16,8 @@ class NewPaymentsController extends AppController {
 		$paymentObj['cashier'] = $cashier;
 		// Prepare Transaction in NewPayment
 		$TRNX = $this->Transaction;
-		$trnxObj = $this->NewPayment->prepareTrnx($paymentObj,$TRNX);
+		$LDGR = $this->Ledger;
+		$trnxObj = $this->NewPayment->prepareTrnx($paymentObj,$TRNX,$LDGR);
 
 		// Handle Error before saving
 		if(!$trnxObj['is_valid'])
