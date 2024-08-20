@@ -3,13 +3,24 @@ class NewPayment extends AppModel {
 	var $name = 'NewPayment';
 	var $useTable = false;
 
-	function prepareTrnx($trnxObj,$TRNX){
+	function prepareTrnx($trnxObj,$TRNX,$LDGR=null){
 		// Check if ref no already used
 		$tCond = array(
 					'Transaction.ref_no'=>$trnxObj['ref_no'],
 					'Transaction.amount'=>$trnxObj['pay_amount']
 					);
 		$is_transacted = $TRNX->find('first',array('conditions'=>$tCond));
+
+		
+		// Double check in ledger entry if OR is used
+		if($LDGR ):
+			$LRefNo = '%'.preg_replace('/\D/','',$trnxObj['ref_no']);
+			$LCond = array('Ledger.ref_no LIKE'=>$LRefNo);
+			$LDGR->recursive = -1;
+			$is_transacted = $LDGR->find('first',array('conditions'=>$LCond));
+			$trnxObj['ref_no'] = $is_transacted['Ledger']['ref_no'];
+		endif;
+		
 		if($is_transacted):
 				$TObj = array('is_valid'=>false,'ref_no'=>$trnxObj['ref_no']);
 				return $TObj;
