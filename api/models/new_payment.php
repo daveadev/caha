@@ -5,7 +5,12 @@ class NewPayment extends AppModel {
 
 	function prepareTrnx($trnxObj,$TRNX,$LDGR=null){
 		// Check if ref no already used
-		$is_transacted = $TRNX->findByRefNo($trnxObj['ref_no']);
+		$tCond = array(
+					'Transaction.ref_no'=>$trnxObj['ref_no'],
+					'Transaction.amount'=>$trnxObj['pay_amount']
+					);
+		$is_transacted = $TRNX->find('first',array('conditions'=>$tCond));
+
 		
 		// Double check in ledger entry if OR is used
 		if($LDGR ):
@@ -15,9 +20,11 @@ class NewPayment extends AppModel {
 			$is_transacted = $LDGR->find('first',array('conditions'=>$LCond));
 			$trnxObj['ref_no'] = $is_transacted['Ledger']['ref_no'];
 		endif;
+		
 		if($is_transacted):
-			$TObj = array('is_valid'=>false,'ref_no'=>$trnxObj['ref_no']);
-			return $TObj;
+				$TObj = array('is_valid'=>false,'ref_no'=>$trnxObj['ref_no']);
+				return $TObj;
+			
 		endif;
 		
 		// Prepare Transaction object
