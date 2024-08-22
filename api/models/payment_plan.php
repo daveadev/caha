@@ -248,7 +248,7 @@ class PaymentPlan extends AppModel {
 			$sched['due_date']= date("d M Y",strtotime($sched['due_date']));
 
 			if($sched['transaction_type_id']=='ACECF'):
-				$sched['due_date'] =date('M',strtotime($sched['due_date'])).' ACEC';
+				$sched['due_date'] =date('M',strtotime('-1 month',strtotime($sched['due_date']))).' ACEC';
 			endif;
 			if($sched['transaction_type_id']=='REGFE'):
 				$sched['due_date'] = 'Registration';

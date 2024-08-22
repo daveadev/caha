@@ -74,14 +74,19 @@ define(['app','util','api'],function(app,util) {
 				sched.due_amount -= sched.paid_amount;
 			sched.disp_amount =  util.formatMoney(sched.due_amount);
 			
-			if(sched.transaction_type_id=="INIPY")
+			if(sched.transaction_type_id=="INIPY"){
 				sched.disp_date = "Upon Enrollment";
-			else if(sched.transaction_type_id=="REGFE")
+			}
+			else if(sched.transaction_type_id=="REGFE"){
 				sched.disp_date = "Registration";
-			else if(sched.transaction_type_id=="ACECF")
-				sched.disp_date = new Date(sched.due_date).toLocaleString('en-US',{month:'short'})+" ACEC";
-			else
+			}else if(sched.transaction_type_id=="ACECF"){
+				let dueDate = new Date(sched.due_date);
+				dueDate.setMonth(dueDate.getMonth() - 1);
+				let formattedDate = dueDate.toLocaleString('en-US', { month: 'short' }) + " ACEC";
+				sched.disp_date = formattedDate;
+			}else{
 				sched.disp_date = util.formatDate(new Date(sched.due_date));
+			}
 			if(is_old){
 				sched.transaction_type_id ='EXTPY';
 				sched.amount = sched.due_amount;
