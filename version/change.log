@@ -35,3 +35,6 @@
 #v 1.2.3 : 13 Mar 2024
 - Fix collection report filter by date
 - Display per school year breakdown in cashier collection report
+
+#v 1.2.4 : 22 Aug 2024
+- Fix Ac/EC Month label
