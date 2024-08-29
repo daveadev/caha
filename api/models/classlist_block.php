@@ -14,6 +14,7 @@ class ClasslistBlock extends AppModel {
 			'foreignKey' => 'student_id',
 			'conditions' => '',
 			'fields' => array(
+				'Student.id',
 				'Student.sno',
 				'Student.gender',
 				'Student.short_name',
@@ -118,14 +119,19 @@ class ClasslistBlock extends AppModel {
 	}
 	
 	function getIds($secId,$sy){
-		$list = $this->find('all',array(
-									'conditions'=>array('ClasslistBlock.section_id'=>$secId,'ClasslistBlock.esp'=>$sy),
-									//'order'=>array('Student.class_name')
-							));
+		$cond = array('conditions'=>
+					array('ClasslistBlock.section_id'=>$secId,
+						'ClasslistBlock.esp'=>$sy));
+		
+		$list = $this->find('all',$cond);
 		$sorted = array();
+		
 		foreach($list as $i=>$item){
-			$sorted[$item['Student']['last_name']] = $item;
+			$key = $item['Student']['last_name'].'-';
+			$key .=$item['Student']['id'];
+			$sorted[$key] = $item;
 		};
+		
 		ksort($sorted,SORT_STRING );
 		//pr($sorted); exit();
 		$ids = array();
