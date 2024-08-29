@@ -1,0 +1,53 @@
+UPDATE ledgers
+	SET ref_no='#10238'
+	WHERE id=673;
+UPDATE ledgers
+	SET ref_no='#9350'
+	WHERE id=672;
+UPDATE account_schedules
+	SET due_date='2024-08-07'
+	WHERE id=2525;
+UPDATE account_schedules
+	SET `order`=3
+	WHERE id=2525;
+UPDATE ledgers
+	SET ref_no='#10432'
+	WHERE id=666;
+UPDATE ledgers
+	SET ref_no='#9692'
+	WHERE id=665;
+UPDATE ledgers
+	SET transac_date='2024-07-01'
+	WHERE id=666;
+UPDATE ledgers
+	SET transac_date='2024-04-16'
+	WHERE id=665;
+DELETE FROM ledgers
+	WHERE id=886;
+UPDATE account_schedules
+	SET due_amount=470,paid_amount=470
+	WHERE id=1843;
+UPDATE account_schedules
+	SET due_amount=1980.0,paid_amount=0
+	WHERE id=1843;
+UPDATE account_schedules
+	SET paid_amount=470.0
+	WHERE id=1842;
+UPDATE ledgers
+	SET ref_no='#10356'
+	WHERE id=867;
+UPDATE ledgers
+	SET ref_no='#9687'
+	WHERE id=866;
+UPDATE ledgers
+	SET ref_no='#9681'
+	WHERE id=859;
+UPDATE ledgers
+	SET ref_no='#10317'
+	WHERE id=860;
+UPDATE ledgers
+	SET ref_no='#10289'
+	WHERE id=839;
+UPDATE ledgers
+	SET ref_no='#9373'
+	WHERE id=838;
