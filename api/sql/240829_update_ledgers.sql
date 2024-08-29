@@ -1,0 +1,59 @@
+INSERT INTO ledgers (account_id,`type`,transaction_type_id,esp,transac_date,transac_time,ref_no,details,amount,notes,created)
+	VALUES ('GRS82800','-','DSCNT',2024.00,'2024-07-15','00:34:56','GRA000095','Honor Discount',940.6,'','2024-08-03 00:34:56');
+UPDATE account_schedules
+	SET paid_amount=785.2
+	WHERE id=1424;
+UPDATE account_schedules
+	SET paid_amount=17999.4
+	WHERE id=1420;
+UPDATE account_schedules
+	SET paid_amount=0
+	WHERE id=1423;
+UPDATE account_schedules
+	SET paid_amount=0
+	WHERE id=1422;
+UPDATE account_schedules
+	SET paid_amount=0
+	WHERE id=1425;
+UPDATE account_schedules
+	SET paid_amount=0
+	WHERE id=1424;
+UPDATE account_schedules
+	SET due_amount=1460.0
+	WHERE id=1429;
+UPDATE account_schedules
+	SET due_amount=1460.0
+	WHERE id=1428;
+UPDATE account_schedules
+	SET due_amount=1460.0
+	WHERE id=1427;
+UPDATE account_schedules
+	SET due_amount=1460.0
+	WHERE id=1426;
+UPDATE account_schedules
+	SET paid_amount=1460.0,due_amount=1460.0
+	WHERE id=1425;
+UPDATE account_schedules
+	SET paid_amount=1460.0,due_amount=1460.0
+	WHERE id=1424;
+UPDATE account_schedules
+	SET paid_amount=1460.0,due_amount=1460.0
+	WHERE id=1423;
+UPDATE account_schedules
+	SET paid_amount=1460.0,due_amount=1460.0
+	WHERE id=1422;
+UPDATE account_schedules
+	SET paid_amount=1460.0,due_amount=1460
+	WHERE id=1421;
+UPDATE account_schedules
+	SET paid_amount=0.6
+	WHERE id=1422;
+UPDATE ledgers
+	SET ref_no='#9379'
+	WHERE id=1118;
+UPDATE ledgers
+	SET ref_no='#10285'
+	WHERE id=1143;
+UPDATE ledgers
+	SET ref_no='#9682'
+	WHERE id=1142
