@@ -311,8 +311,11 @@ class PaymentPlan extends AppModel {
 		$dueNow['amount']=number_format($dueAmount,2,'.',',');
 		$dueNow['months']=$dueMos;
 		// Move due date to current month when dueAmount is zero
-		if($dueAmount==0)
-			$dueNow['date'] = date('15 M Y',time());
+		if($dueAmount==0):
+			$dueDate = substr($sched['due_date'],-2);
+			$dueDate = $currentMonth.'-'.$dueDate;
+			$dueNow['date'] = date('d M Y',strtotime($dueDate));
+		endif;
 		
 		return $dueNow;
 	}
