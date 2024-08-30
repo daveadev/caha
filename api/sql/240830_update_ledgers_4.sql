@@ -1,22 +1,42 @@
 INSERT INTO account_schedules (transaction_type_id,account_id,bill_month,due_amount,paid_amount,due_date,status,`order`,created,modified)
-	VALUES ('SBQPY','GRS93211','APR2025',1902.50,0.00,'2025-04-07','NONE',11,'2024-08-03 13:23:45','2024-08-03 13:23:45')
+	VALUES ('SBQPY','GRS37788','APR2025',1902.50,0.00,'2025-04-07','NONE',11,'2024-08-03 13:23:45','2024-08-03 13:23:45');
 INSERT INTO account_schedules (transaction_type_id,account_id,bill_month,due_amount,paid_amount,due_date,status,`order`,created,modified)
-	VALUES ('SBQPY','GRS93211','MAR2025',1902.50,0.00,'2025-03-07','NONE',10,'2024-08-03 13:23:45','2024-08-03 13:23:45')
+	VALUES ('SBQPY','GRS37788','MAR2025',1902.50,0.00,'2025-03-07','NONE',10,'2024-08-03 13:23:45','2024-08-03 13:23:45');
 INSERT INTO account_schedules (transaction_type_id,account_id,bill_month,due_amount,paid_amount,due_date,status,`order`,created,modified)
-	VALUES ('SBQPY','GRS93211','FEB2025',1902.50,0.00,'2025-02-07','NONE',9,'2024-08-03 13:23:45','2024-08-03 13:23:45')
+	VALUES ('SBQPY','GRS37788','FEB2025',1902.50,0.00,'2025-02-07','NONE',9,'2024-08-03 13:23:45','2024-08-03 13:23:45');
 INSERT INTO account_schedules (transaction_type_id,account_id,bill_month,due_amount,paid_amount,due_date,status,`order`,created,modified)
-	VALUES ('SBQPY','GRS93211','JAN2025',4402.50,0.00,'2025-01-07','NONE',8,'2024-08-03 13:23:45','2024-08-03 13:23:45')
+	VALUES ('SBQPY','GRS37788','JAN2025',4402.50,0.00,'2025-01-07','NONE',8,'2024-08-03 13:23:45','2024-08-03 13:23:45');
 INSERT INTO account_schedules (transaction_type_id,account_id,bill_month,due_amount,paid_amount,due_date,status,`order`,created,modified)
-	VALUES ('SBQPY','GRS93211','NOV2024',1902.50,0.00,'2024-12-07','NONE',7,'2024-08-03 13:23:45','2024-08-03 13:23:45')
+	VALUES ('SBQPY','GRS37788','NOV2024',1902.50,0.00,'2024-12-07','NONE',7,'2024-08-03 13:23:45','2024-08-03 13:23:45');
 INSERT INTO account_schedules (transaction_type_id,account_id,bill_month,due_amount,paid_amount,due_date,status,`order`,created,modified)
-	VALUES ('SBQPY','GRS93211','OCT2024',1902.50,0.00,'2024-11-07','NONE',6,'2024-08-03 13:23:45','2024-08-03 13:23:45')
+	VALUES ('SBQPY','GRS37788','OCT2024',1902.50,0.00,'2024-11-07','NONE',6,'2024-08-03 13:23:45','2024-08-03 13:23:45');
 INSERT INTO account_schedules (transaction_type_id,account_id,bill_month,due_amount,paid_amount,due_date,status,`order`,created,modified)
-	VALUES ('SBQPY','GRS93211','SEP2024',4402.50,0.00,'2024-10-07','NONE',5,'2024-08-03 13:23:45','2024-08-03 13:23:45')
+	VALUES ('SBQPY','GRS37788','SEP2024',4402.50,0.00,'2024-10-07','NONE',5,'2024-08-03 13:23:45','2024-08-03 13:23:45');
 INSERT INTO account_schedules (transaction_type_id,account_id,bill_month,due_amount,paid_amount,due_date,status,`order`,created,modified)
-	VALUES ('SBQPY','GRS93211','AUG2024',1902.50,1902.5,'2024-09-07','PAID',4,'2024-08-03 13:23:45','2024-08-03 13:23:45')
+	VALUES ('SBQPY','GRS37788','AUG2024',1902.50,1902.5,'2024-09-07','PAID',4,'2024-08-03 13:23:45','2024-08-03 13:23:45');
 INSERT INTO account_schedules (transaction_type_id,account_id,bill_month,due_amount,paid_amount,due_date,status,`order`,created,modified)
-	VALUES ('SBQPY','GRS93211','JUL2024',1902.50,1902.50,'2024-08-07','PAID',3,'2024-08-03 13:23:45','2024-08-03 13:23:45')
+	VALUES ('SBQPY','GRS37788','JUL2024',1902.50,1902.50,'2024-08-07','PAID',3,'2024-08-03 13:23:45','2024-08-03 13:23:45');
 INSERT INTO account_schedules (transaction_type_id,account_id,bill_month,due_amount,paid_amount,due_date,paid_date,status,`order`,created,modified)
-	VALUES ('INIPY','GRS93211','UPONNROL',11132.50,11132.50,'2024-07-01','2024-07-15','PAID',2,'2024-08-03 13:23:45','2024-08-03 13:23:45')
+	VALUES ('INIPY','GRS37788','UPONNROL',11132.50,11132.50,'2024-07-01','2024-07-15','PAID',2,'2024-08-03 13:23:45','2024-08-03 13:23:45');
 INSERT INTO account_schedules (transaction_type_id,account_id,bill_month,due_amount,paid_amount,due_date,paid_date,status,`order`,created,modified)
-	VALUES ('REGFE','GRS93211','UPONNROL',1750,1750,'2024-07-01','2024-07-15','PAID',1,'2024-08-03 13:23:45','2024-08-03 13:23:45')
+	VALUES ('REGFE','GRS37788','UPONNROL',1750,1750,'2024-07-01','2024-07-15','PAID',1,'2024-08-03 13:23:45','2024-08-03 13:23:45');
+	INSERT INTO ledgers (account_id,`type`,transaction_type_id,esp,transac_date,transac_time,ref_no,details,amount,notes,created)
+	VALUES ('GRS37788','-','SBQPY',2024.00,'2024-07-30','00:34:56','#10511','Subsequent Payment',1902.5,'','2024-08-03 00:34:56');
+INSERT INTO ledgers (account_id,`type`,transaction_type_id,esp,transac_date,transac_time,ref_no,details,amount,notes,created)
+	VALUES ('GRS37788','-','SBQPY',2024.00,'2024-07-30','00:34:56','#10511','Subsequent Payment',1902.5,'','2024-08-03 00:34:56');
+INSERT INTO ledgers (account_id,`type`,transaction_type_id,esp,transac_date,transac_time,ref_no,details,amount,notes,created)
+	VALUES ('GRS37788','-','SBQPY',2024.00,'2024-07-30','00:34:56','#10511','Subsequent Payment',11132.5,'','2024-08-03 00:34:56');
+INSERT INTO ledgers (account_id,`type`,transaction_type_id,esp,transac_date,transac_time,ref_no,details,amount,notes,created)
+	VALUES ('GRS37788','-','REGFE',2024.00,'2024-07-30','00:34:56','#10511','Registration Fee',1400.00,'','2024-08-03 00:34:56');
+INSERT INTO ledgers (account_id,`type`,transaction_type_id,esp,transac_date,transac_time,ref_no,details,amount,notes,created)
+	VALUES ('GRS37788','+','LERMA',2024.00,'2024-07-15','00:34:56','GRA000211','Learning Material',7500.00,'','2024-08-03 00:34:56');
+INSERT INTO ledgers (account_id,`type`,transaction_type_id,esp,transac_date,transac_time,ref_no,details,amount,notes,created)
+	VALUES ('GRS37788','+','ENERF',2024.00,'2024-07-15','00:34:56','GRA000211','Energy Fee',1200.00,'','2024-08-03 00:34:56');
+INSERT INTO ledgers (account_id,`type`,transaction_type_id,esp,transac_date,transac_time,ref_no,details,amount,notes,created)
+	VALUES ('GRS37788','+','TUIXN',2024.00,'2024-07-15','00:34:56','GRA000211','Tuition',17825.00,'','2024-08-03 00:34:56');
+INSERT INTO ledgers (account_id,`type`,transaction_type_id,esp,transac_date,transac_time,ref_no,details,amount,notes,created)
+	VALUES ('GRS37788','+','ANNSF',2024.00,'2024-07-15','00:34:56','GRA000211','Annual School Fee',6730.00,'','2024-08-03 00:34:56');
+INSERT INTO ledgers (account_id,`type`,transaction_type_id,esp,transac_date,transac_time,ref_no,details,amount,notes,created)
+	VALUES ('GRS37788','+','REGFE',2024.00,'2024-07-15','00:34:56','GRA000211','Registration Fee',1400.00,'','2024-08-03 00:34:56');
+	INSERT INTO accounts (id,account_type,ref_no,assessment_total,subsidy_status,payment_total,old_balance,outstanding_balance,module_balance,rounding_off,created,modified)
+	VALUES ('GRS37788','student','GRA00040',34655.00,'0',14545.50,0.00,20109.50,0.00,0.00000,'2024-08-03 12:34:56','2024-08-03 12:34:56');
