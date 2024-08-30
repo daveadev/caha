@@ -24,3 +24,6 @@ UPDATE classlist_blocks
 UPDATE classlist_blocks
 	SET section_id=2301
 	WHERE id=114;
+UPDATE students
+	SET year_level_id='KN',section_id=1100
+	WHERE id='GRS37788';
