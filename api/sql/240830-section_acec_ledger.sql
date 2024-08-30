@@ -52,5 +52,7 @@ UNLOCK TABLES;
 
 -- Dump completed on 2024-08-30 14:41:18
 
-INSERT INTO account_schedules  (SELECT null, 'ACECF', cb.student_id, 'SEP2024',sac.amount , 0 , sac.bill_month ,null,'NONE',4, NOW(), NOW()   from marqa_one_240830.classlist_blocks cb   inner join section_acec_charges sac    on (cb.section_id = sac.section_id)
-where sac.bill_month  ='2024-09-07')
+INSERT INTO account_schedules  (SELECT null, 'ACECF', cb.student_id, 'SEP2024',sac.amount , 0 , sac.bill_month ,null,'NONE',4, NOW(), NOW()   from marqa_one_240805.classlist_blocks cb   inner join section_acec_charges sac    on (cb.section_id = sac.section_id)
+where sac.bill_month  ='2024-09-07');
+INSERT INTO ledgers  (SELECT null,  cb.student_id,'+', 'ACEC',2024, '2024-09-01','01:23:45','GRF240901','AC/EC',sac.amount ,'', NOW()   from marqa_one_240805.classlist_blocks cb   inner join section_acec_charges sac    on (cb.section_id = sac.section_id)
+where sac.bill_month  ='2024-09-07');
