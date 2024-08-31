@@ -116,6 +116,8 @@ define(['app','util','api'],function(app,util) {
 			}
 
 			var ttid=  sched.transaction_type_id;
+			if(ttid=='ACECF')
+				ttid ='SBQPY';
 			var due_date = new Date(sched.due_date);
 			var dueObj = checkDue(due_date);
 			var isDue =  dueObj.due;
