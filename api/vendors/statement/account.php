@@ -324,7 +324,7 @@ class AccountStatement extends Formsheet{
 			'rows'=> 7.5,	
 		);
 		if(isset($this->data['payment_ins_printed'])):
-			$metrics['base_y']+=1;
+			$metrics['base_y']+=0.5;
 		endif;
 
 		$this->data['payment_ins_printed']=true;
