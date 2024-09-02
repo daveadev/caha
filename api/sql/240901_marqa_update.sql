@@ -1,9 +1,5 @@
-UPDATE students
-	SET section_id=1100
-	WHERE id='GRS98863';
-UPDATE classlist_blocks
-	SET section_id=1100
-	WHERE id=203;
+INSERT INTO classlist_blocks (student_id,section_id,esp,status,created,modified)
+	VALUES ('GRS37788',1100,2024.00,'ACT','2024-08-08 01:23:45','2024-08-08 01:23:45');
 UPDATE students set sno = '2025-005' WHERE id='GRS99903';
 UPDATE students set sno = '2025-006' WHERE id='GRS99630';
 UPDATE students set sno = '2025-007' WHERE id='GRS99473';
@@ -72,3 +68,30 @@ UPDATE students set sno = '2024-030' WHERE id='GRS89268';
 UPDATE students set sno = '2024-034' WHERE id='GRS89250';
 UPDATE students set sno = '2024-037' WHERE id='GRS89029';
 UPDATE students set sno = '2024-041' WHERE id='GRS88732';
+UPDATE students
+	SET sno='2022-020'
+	WHERE id='GRS84376';
+UPDATE students
+	SET sno='2024-042'
+	WHERE id='GRS93211';
+UPDATE students
+	SET sno='2024-043'
+	WHERE id='GRS94656';
+UPDATE students
+	SET sno='2024-044'
+	WHERE id='GRS10645';
+UPDATE students
+	SET sno='2024-045'
+	WHERE id='GRS10835';
+UPDATE students
+	SET mobile='09451721588'
+	WHERE id='GRS10835';
+UPDATE students
+	SET mobile='09451721588'
+	WHERE id='GRS10645';
+UPDATE students
+	SET mobile='09277744621'
+	WHERE id='GRS37788';
+UPDATE students
+	SET mobile='09184053600'
+	WHERE id='GRS98863';
