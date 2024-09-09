@@ -79,13 +79,15 @@ class CashierCollectionsController extends AppController {
 			$m_ors = array();
 			$school_years = array();
 			foreach($collections as $i=>$col){
+				$vchr=null;
 				$sy_col = floor($col['CashierCollection']['esp']);
 				$amt_col = $col['CashierCollection']['amount'];
 				if(!isset($school_years[$sy_col]))
 					$school_years[$sy_col] = 0;
 				$school_years[$sy_col] +=$amt_col;
 
-				$refno = explode(" ",$col['CashierCollection']['ref_no']);
+				$_REFNO =$col['CashierCollection']['ref_no'];
+				$refno = $this->parseRefNo($_REFNO);
 				//pr($refno); exit();
 				switch($col['TransactionDetail'][0]['transaction_type_id']){
 					case 'OLDAC':  case 'EXTPY':
@@ -117,22 +119,21 @@ class CashierCollectionsController extends AppController {
 					}
 				}
 				$st = $col['Student'];
-				$inq = $col['Inquiry'];
+				$inq = isset($col['Inquiry'])?$col['Inquiry']:array();
 				$cl = $col['CashierCollection'];
 				$acct = $col['Account'];
 				$book = $col['Booklet'];
 				$booknum = $book['booklet_number'];
+				$ref = $this->parseRefNo($cl['ref_no']);
 				if(!isset($booklets[$booknum])){
 					$booklets[$booknum] = array(
 						'booklet_no'=>$booknum,
 						'ref_nos'=>array(),
 						'amount'=>$cl['amount'],
 					);
-					$ref = explode(" ",$cl['ref_no']);
 					$ref = $ref[1];
 					$booklets[$booknum]['ref_nos'][0]=$ref;
 				}else{
-					$ref = explode(" ",$cl['ref_no']);
 					$ref = $ref[1];
 					array_push($booklets[$booknum]['ref_nos'],$ref);
 					$booklets[$booknum]['amount'] += $cl['amount'];
@@ -269,6 +270,13 @@ class CashierCollectionsController extends AppController {
 		$cashierCollections = array(array('CashierCollection'=>$collections));
 		
 		$this->set('cashierCollections', $cashierCollections);
+	}
+
+	protected function parseRefNo($_REFNO, $type='OR'){
+		$refno = array();
+		preg_match('/\d+/', $_REFNO, $refno);
+		array_unshift($refno, $type);
+		return $refno;
 	}
 
 }

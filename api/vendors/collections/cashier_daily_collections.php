@@ -13,9 +13,10 @@ class CashierDailyCollections extends Formsheet{
 	protected static $total_paid = 0;
 	protected static $total_balance = 0;
 	
-	function CashierDailyCollections(){
+	function CashierDailyCollections($config=null){
 		$this->showLines = !true;
 		$this->FPDF(CashierDailyCollections::$_orient, CashierDailyCollections::$_unit,array(CashierDailyCollections::$_width,CashierDailyCollections::$_height));
+		$this->config = $config;
 		$this->createSheet();
 	}
 	
@@ -33,9 +34,12 @@ class CashierDailyCollections extends Formsheet{
 		$this->section($metrics);
 		$this->GRID['font_size']=9;
 		$y=1;
-		$this->leftText(0,$y++,'Lake Shore Educational Institution','','');
+		$school_name = $this->config['SCHOOL_NAME'];
+		$active_sy = (int)$this->config['ACTIVE_SY'];
+		$school_year = $active_sy .' - '.($active_sy+1);
+		$this->leftText(0,$y++,$school_name,'','');
 		$this->leftText(0,$y++,'Cashier Daily Collection Report','','');
-		$this->leftText(0,$y++,'School Year: 2021-2022','','');
+		$this->leftText(0,$y++,'School Year: '.$school_year,'','');
 		
 		//$this->leftText(0,$y++,'Date: '.date('d M Y',strtotime($hdr['date'])),'','');
 	}
@@ -79,9 +83,12 @@ class CashierDailyCollections extends Formsheet{
 		foreach($data as $d){
 			//pr($d); 
 			$amount+= $d['amount'];
-			$total_due+= $d['total_due'];
-			$total_paid+= $d['total_paid'];
-			$balance+= $d['balance'];
+			if(is_numeric($d['total_due']))
+				$total_due+= $d['total_due'];
+			if(is_numeric($d['total_paid']))
+				$total_paid+= $d['total_paid'];
+			if(is_numeric($d['balance']))
+				$balance+= $d['balance'];
 			$this->centerText(0,$y,$d['cnt'],1,'');
 			$this->leftText(1,$y,$d['sno'],'','');
 			$this->leftText(3.5,$y,$d['received_from'],'','');

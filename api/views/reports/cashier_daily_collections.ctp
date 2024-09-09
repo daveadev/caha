@@ -6,7 +6,7 @@ $chunk_data = array_chunk($data['data'][0]['collections'],28,true);
 $total_page = count($chunk_data);
 $i = 1;
 
-$pr= new CashierDailyCollections();
+$pr= new CashierDailyCollections($config);
 
 foreach($chunk_data as $dt){
 	//pr($data['breakdowns']); exit();

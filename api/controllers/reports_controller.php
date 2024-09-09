@@ -336,12 +336,14 @@ class ReportsController extends AppController{
 		}else{
 			$data = $_POST['Cashier'];
 		}
+		$flds = array('sys_key','sys_value');
+		$config = $this->MasterConfig->find('list',array('fields'=>$flds));
 		//pr($data); exit();
 		
 		$data = json_decode($data,true);
 		//$data = $data['data'];
 		//$data  = array();
-		$this->set(compact('data'));
+		$this->set(compact('data','config'));
 	}
 	
 	function student_account_collection_report(){
