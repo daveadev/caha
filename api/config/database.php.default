@@ -21,6 +21,16 @@ class DATABASE_CONFIG {
 		'encoding' =>'utf8'
 	);
 
+	var $sem = array(
+		'driver' => 'mysql',
+		'persistent' => false,
+		'host' => 'localhost',
+		'login' => 'root',
+		'password' => '',
+		'database' => 'YOUR_SEM_DB',
+		'encoding' =>'utf8'
+	);
+
 	
 }
 ?>
