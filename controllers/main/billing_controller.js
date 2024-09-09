@@ -30,8 +30,34 @@ define(['app','api','atomic/bomb'],function(app){
 
 				$scope.SchoolYears = $filter('orderBy')(sys,'-id');
 				$scope.ActiveSY = sy;
-				
+				$scope.YearLevels = atomic.YearLevels;
+				$scope.Sections = atomic.Sections;
+				$scope.ActiveYearLevel = $scope.YearLevels[0].id;
 			});
+
+			$scope.BillHeaders = [{class:'col-md-2',label:'Stud No.'},{class:'col-md-3',label:'Name'},'Section','Bill No.',{class:'col-md-2',label:'Due Amount'},{class:'col-md-2',label:'Paid Amount'},'Status'];
+			$scope.BillProps = ['sno','student','section','billing_no','due_amount','paid_amount','status'];
+			$scope.BillData=[];
+		}
+		$selfScope.$watch('BLC.ActiveSY',function(sy){
+			if(!sy) return;
+			$scope.getBillDetails();
+		});
+		$scope.filterBill = function(yObj){
+			$scope.SearchPlaceHolder ='Search '+yObj.name;
+			let fltrObj = {year_level_id:yObj.id};
+			$scope.FilteredBillData=$filter('filter')($scope.BillData,fltrObj);
+		}
+		$scope.getBillDetails = function(){
+			let data = {'limit':'less'};
+			let success = function(response){
+				$scope.BillData = response.data;
+			};
+			let error = function(response){
+				alert(response.meta.message);
+
+			};
+			api.GET('billings',data,success,error);
 		}
 	}]);
 

@@ -1,7 +1,5 @@
 <style>
-.tab-content{
-	padding-left: 15px;
-}
+
 .btn-action{
 	width: 220px;
 	height:100px;
@@ -42,6 +40,7 @@
 .btn-active[disabled]:focus{
 	background: white;
 }
+
 div[align="right"] input{
 	text-align: right;
 }
@@ -53,14 +52,37 @@ div[align="right"] input[disabled]{
     font-size: 21px;
     height: auto;
 }
+div.search-box{
+	margin:10px 0px;
+}
 </style>
 <div ng-controller="BillingController as BLC" ng-init="BLC.init()">
 	<a-module>
 		<a-container>
 			<a-header is-main="true">
-				<h4>Billing</h4>
+				<a-row>
+					<a-col size="6"><h4>Billing</h4></a-col>
+					<a-col size="6" align="right">
+						<a-button type="default" >SEP 2024</a-button>
+					</a-col>
+				</a-row>
+				<div class="clearfix"></div>
 			</a-header>
 			<a-content>
+				<a-row>
+					<a-col>
+						
+							<uib-tabset type="tabs" active="activeJustified" justified="true"  active="BLC.ActiveTabIndex">
+								<uib-tab index="$index + 1" ng-repeat="YL in BLC.YearLevels| orderBy: '-department_id'" heading="{{YL.name}}" select="BLC.filterBill(YL)">
+									
+								</uib-tab>
+							</uib-tabset>
+							<div class="search-box">
+								<a-textbox ng-model="BLC.Search" placeholder="BLC.SearchPlaceHolder"></a-textbox>
+							</div>
+							<a-table headers="BLC.BillHeaders" props="BLC.BillProps" data="BLC.FilteredBillData"></a-table>
+					</a-col>
+				</a-row>
 			</a-content>
 			</a-canvas>
 		</a-container>

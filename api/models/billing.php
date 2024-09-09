@@ -1,6 +1,7 @@
 <?php
 class Billing extends AppModel {
 	var $name = 'Billing';
+	var $actsAs = array('Containable'); 
 	var $belongsTo = array(
 		'Account' => array(
 			'className' => 'Account',
@@ -8,7 +9,17 @@ class Billing extends AppModel {
 			'conditions' => '',
 			'fields' => '',
 			'order' => ''
-		)
+		),
+		'Student' => array(
+            'className' => 'Student',
+            'foreignKey' => 'account_id',
+            'order'=>array(
+            	'Student.section_id',
+            	'Student.gender',
+            	'Student.last_name',
+            	'Student.first_name',
+            ),
+        )
      );
 
      function generateREFNO($sy,$prefix=null){
@@ -64,5 +75,30 @@ class Billing extends AppModel {
         	'hash'=>$hash
         );
         return $hashObj;
+    }
+    protected function getLatestBills() {
+        $contains = array('Student.sno',
+        				 'Student.print_name',
+        				 'Student.year_level_id',
+        				 'Student.section_id',
+        				 'Student.Section.name',
+        				 'Student.YearLevel.name',
+        				);
+        
+        $latestBills = $this->find('all', array(
+            'fields' => array(
+                'Billing.account_id',
+                'MAX(Billing.id) as bill_id',
+                'Billing.due_amount',
+            ),
+            'group' => 'Billing.account_id',
+            'contain'=>$contains
+        ));
+
+        return $latestBills;
+    }
+    function getStudentBillingDetails() {
+      $latestBills=  $this->getLatestBills();
+      return $latestBills;
     }
 }
