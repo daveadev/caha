@@ -182,7 +182,7 @@ define(['app','api','atomic/bomb'],function(app){
 		
 		function getCollections(page){
 			var data = {
-				type:$scope.ActiveOpt,
+				type:'payment',
 				'page': page,
 			}
 			if($scope.ActiveUser.user_type!='cashr'){
