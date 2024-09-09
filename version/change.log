@@ -38,3 +38,6 @@
 
 #v 1.2.4 : 22 Aug 2024
 - Fix Ac/EC Month label
+
+#v 1.2.5 : 9 Sep 2024
+- Fix cashier incorrect default SY
