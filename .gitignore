@@ -6,3 +6,4 @@ node_modules/*
 api/files/latest ledger.xlsx
 api/cache/
 api/logs/
+api/reports/
