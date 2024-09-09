@@ -44,4 +44,7 @@ UPDATE account_schedules
 UPDATE account_schedules
 	SET paid_amount=1902.5
 	WHERE id=597;
+UPDATE marqa_one_240805.students
+	SET first_name='Cale Huenix'
+	WHERE id='GRS89888'	
 
