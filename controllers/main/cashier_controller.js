@@ -128,11 +128,12 @@ define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 			if(!stud.id){
 				resetTransactionUI();
 			}
+			
 			let asy = atomic.ActiveSY;
 			if(NEXT_SY && sy<asy+1 && stud.enroll_status=='NEW'){
 				$scope.ActiveSY = asy+1; 
 			}
-			if(stud.sno.startsWith(asy+1)){
+			if(stud.sno.startsWith(asy+1)&& false){
 				$scope.ActiveSY = asy+1; 	
 			}
 			$selfScope.$broadcast('StudentSelected',{student:stud,sy:sy});
