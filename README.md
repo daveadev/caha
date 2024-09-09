@@ -4,6 +4,7 @@ A fork from SRP (Simplified Receivables &amp; Payables)
 # Setup
  * mkdir caha
  * git clone --recursive --depth=20 https://github.com/daveadev/caha.git .
+  or git clone git@github.com:daveadev/caha.git .
  * Copy & modify config & webroot files:
  	- api/config/core.php.default --> api/config/core.php
  	- api/config/database.php.default --> api/config/database.php
@@ -22,5 +23,5 @@ A fork from SRP (Simplified Receivables &amp; Payables)
  	- mkdir reports
  	- chmod -R 777 reports
  * Import database from backup
- 
+
 
