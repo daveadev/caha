@@ -61,9 +61,9 @@ div.search-box{
 		<a-container>
 			<a-header is-main="true">
 				<a-row>
-					<a-col size="6"><h4>Billing</h4></a-col>
-					<a-col size="6" align="right">
-						<a-button type="default" >SEP 2024</a-button>
+					<a-col size="10"><h4>Billing</h4></a-col>
+					<a-col size="2" align="right">
+						<m-formgroup ng-model="BLC.BillMonth" options="BLC.BillingMonths" hide-label="true"></m-formgroup>
 					</a-col>
 				</a-row>
 				<div class="clearfix"></div>
@@ -90,7 +90,7 @@ div.search-box{
 	</a-module>
 
 	<!-- Modal -->
-	<a-modal id="BillingModal" title="Bill No. {{BLC.ActiveBillObj.billing_no}}">
+	<a-modal id="BillingModal" title="Billing Details">
 		<a-modal-body>
 			<uib-tabset type="tabs" active="BLC.ModalActiveTabIndex">
 				<uib-tab index="0" heading="Billing Info">
@@ -104,7 +104,7 @@ div.search-box{
 						</a-row>
 						<a-row>
 							<a-col size="3">
-								<m-formgroup ng-model="BLC.ActiveBillObj.status" label="Status"></m-formgroup>
+								<m-formgroup ng-model="BLC.ActiveBillObj.status" label="Status" type="'display'"></m-formgroup>
 							</a-col>
 							<a-col size="4">
 								<m-formgroup ng-model="BLC.ActiveBillObj.due_amount_disp" label="Due Amount" type="'display'"></m-formgroup>	
@@ -144,11 +144,7 @@ div.search-box{
 		<a-modal-footer>
 			<a-button opt-class="pull-left" ng-click="BLC.closeModal()" > Close</a-button>
 			
-			<a-button type="primary" ng-show="BLC.ModalActiveTabIndex==0"  ng-click="BLC.updateBill()"> 
-				<a-glyph icon="file"></a-glyph>
-				Update Bill
-			</a-button>
-			<a-button type="active" ng-show="BLC.ModalActiveTabIndex==0"  ng-click="BLC.resendBill()">
+			<a-button type="active" ng-show="BLC.ModalActiveTabIndex==0 " ng-disabled="BLC.ActiveBillObj.status=='PAID'" ng-click="BLC.resendBill()">
 				<a-glyph icon="send"></a-glyph>
 				Resend SMS
 			</a-button>

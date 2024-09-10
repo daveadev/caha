@@ -52,6 +52,7 @@ class Billing extends AppModel {
             $this->create();
             $this->save($hashObj);
         }else{
+            $account['billing_no']=$hashObj['id'];
             $hashObj['statement']=json_encode($statement);
             $this->save($hashObj);
         }
@@ -83,7 +84,7 @@ class Billing extends AppModel {
         );
         return $hashObj;
     }
-    protected function getLatestBills() {
+    protected function getLatestBills($year,$month) {
         $contains = array('Student.sno',
         				 'Student.print_name',
         				 'Student.year_level_id',
@@ -98,11 +99,23 @@ class Billing extends AppModel {
         				);
         $joins =array(
             array(
-                    'table' => '(SELECT account_id, MAX(bill.id) AS bill_id FROM billings AS bill  GROUP BY bill.account_id)',
+                    'table' => "(
+                            SELECT
+                                account_id,
+                                MIN(bill.id) AS min_bill_id,
+                                GROUP_CONCAT(bill.id ORDER BY bill.id ASC) AS bill_ids,
+                                GROUP_CONCAT(bill.due_amount ORDER BY bill.id ASC) AS bill_amounts
+                            FROM
+                                billings AS bill
+                            WHERE 
+                             YEAR(bill.due_date) = $year AND  MONTH(bill.due_date) =  $month
+                            GROUP BY
+                                bill.account_id  
+                            )",
                     'alias' => 'LatestBill',
                     'type' => 'INNER',
                     'conditions' => array(
-                        'Billing.id = LatestBill.bill_id'
+                        'Billing.id = LatestBill.min_bill_id'
                     )
                 )
         );
@@ -111,17 +124,24 @@ class Billing extends AppModel {
                 'Billing.account_id',
                 'Billing.id as bill_id',
                 'Billing.due_amount',
-                'LatestBill.account_id',
-                'LatestBill.bill_id'
+                'Billing.due_date',
+                'LatestBill.min_bill_id',
+                'LatestBill.bill_ids',
+                'LatestBill.bill_amounts',
+                "CAST(IFNULL(SUBSTRING_INDEX(LatestBill.bill_amounts, ',', 1), 0) AS DECIMAL(10,2)) - 
+                CAST(IFNULL(SUBSTRING_INDEX(LatestBill.bill_amounts, ',', -1), 0) AS DECIMAL(10,2)) as paid_amount"
             ),
+            'group' => 'Billing.account_id',
             'contain'=>$contains,
             'joins'=>$joins
         ));
-
         return $latestBills;
     }
-    function getStudentBillingDetails() {
-      $latestBills=  $this->getLatestBills();
-      return $latestBills;
+    function getStudentBillingDetails($dueDate) {
+        $year_month = strtotime($dueDate);
+        $year = date('Y',$year_month);
+        $month = date('m',$year_month);
+        $latestBills=  $this->getLatestBills($year,$month);
+    return $latestBills;
     }
 }

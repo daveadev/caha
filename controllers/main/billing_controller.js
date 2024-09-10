@@ -41,6 +41,11 @@ define(['app','api','atomic/bomb'],function(app){
 			$scope.SearchFields =['student', 'sno'];
 			$scope.BillObj =null;
 			$scope.BillObj =null;
+			$scope.BillingMonths =[
+					{id:'2024-08-07', name:'AUG 2024'},
+					{id:'2024-09-07', name:'SEP 2024'}
+				];
+			$scope.BillMonth = $scope.BillingMonths[1].id;
 		}
 		$selfScope.$watch('BLC.ActiveSY',function(sy){
 			if(!sy) return;
@@ -79,8 +84,15 @@ define(['app','api','atomic/bomb'],function(app){
 			$scope.BillObj =null;
 			aModal.close('BillingModal');
 		}
+		$selfScope.$watch('BLC.BillMonth',function(bMonth){
+			if(!bMonth) return;
+			$scope.FilteredBillData=[];
+			$scope.getBillDetails();
+		});
 		$scope.getBillDetails = function(){
-			let data = {'limit':'less'};
+			let dueDate = $scope.BillMonth;
+			$scope.BillData=[];
+			let data = {'limit':'less',due_date:dueDate};
 			let success = function(response){
 				let billData =  response.data;
 				for(var i in billData){
@@ -92,8 +104,12 @@ define(['app','api','atomic/bomb'],function(app){
 					billData[i].paid_amount_disp =  dispPayAmt;
 					let mobile = billData[i].mobile;
 					billData[i].mobile =  `0${mobile}`;
+					let status =  billData[i].status;
+					billData[i].class = status=='PAID'?'': status=='PARTIAL'?'warning':'danger';
+
 				}
 				$scope.BillData = billData;
+				$scope.filterBill();
 			};
 			let error = function(response){
 				alert(response.meta.message);

@@ -210,6 +210,9 @@ class ReportsController extends AppController{
 		$Billing =  new Billing();
 		$BObj = $Billing->findById($bill_no);
 		$statement = json_decode($BObj['Billing']['statement'],true);
+		if($statement)
+			$statement['account']['billing_no'] = $BObj['Billing']['id'];
+
 		$statements = [$statement];
 		if(!$statement):
 			$account_id=$BObj['Account']['id'];
@@ -217,6 +220,7 @@ class ReportsController extends AppController{
 			$type='current';
 			$render=false;
 			$statements = $this->statement($account_id,$sy,$type,$render);
+
 		endif;
 		
 		$type='current';
