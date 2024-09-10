@@ -67,10 +67,13 @@ define(['app','api','atomic/bomb'],function(app){
 		$selfScope.$watch('BLC.SearchText',$scope.filterBill);
 
 		$scope.showBillDetails = function(){
-
-			aModal.open('BillingModal');
-			console.log($scope.ActiveBillDetail);
-			$scope.BillObj =  angular.copy($scope.ActiveBillDetail);
+			$timeout(function(){
+				let billNo = $scope.ActiveBillObj.billing_no;
+				$scope.BillURL = 'api/reports/billings/'+billNo;
+				aModal.open('BillingModal');
+			},500);
+			
+			
 		}
 		$scope.closeModal = function(){
 			$scope.BillObj =null;
