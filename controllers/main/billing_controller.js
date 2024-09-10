@@ -35,23 +35,47 @@ define(['app','api','atomic/bomb'],function(app){
 				$scope.ActiveYearLevel = $scope.YearLevels[0].id;
 			});
 
-			$scope.BillHeaders = [{class:'col-md-2',label:'Stud No.'},{class:'col-md-3',label:'Name'},'Section','Bill No.',{class:'col-md-2',label:'Due Amount'},{class:'col-md-2',label:'Paid Amount'},'Status'];
-			$scope.BillProps = ['sno','student','section','billing_no','due_amount','paid_amount','status'];
+			$scope.BillHeaders = [{class:'col-md-2',label:'Stud No.'},{class:'col-md-3',label:'Name'},'Section','Billing No.',{class:'col-md-2 amount',label:'Due Amount'},{class:'col-md-2 amount' ,label:'Paid Amount'},'Status'];
+			$scope.BillProps = ['sno','student','section','billing_no','due_amount_disp','paid_amount_disp','status'];
 			$scope.BillData=[];
+			$scope.SearchFields =['student', 'sno'];
 		}
 		$selfScope.$watch('BLC.ActiveSY',function(sy){
 			if(!sy) return;
 			$scope.getBillDetails();
 		});
 		$scope.filterBill = function(yObj){
-			$scope.SearchPlaceHolder ='Search '+yObj.name;
-			let fltrObj = {year_level_id:yObj.id};
+			if(typeof yObj=='object'){
+				let placeholderText = `Search ${yObj.name} students`;
+				$scope.SearchPlaceHolder =[placeholderText,'Search by name or sno'];
+				$scope.ActiveYearLevel =  yObj;
+			}
+			
+			let fltrObj = {};
+			if($scope.ActiveYearLevel)
+				fltrObj.year_level_id =  $scope.ActiveYearLevel.id;
+
+			
 			$scope.FilteredBillData=$filter('filter')($scope.BillData,fltrObj);
 		}
+		
+		$scope.clearSearch = function(){
+
+		}
+		$selfScope.$watch('BLC.SearchText',$scope.filterBill);
 		$scope.getBillDetails = function(){
 			let data = {'limit':'less'};
 			let success = function(response){
-				$scope.BillData = response.data;
+				let billData =  response.data;
+				for(var i in billData){
+					let dispDueAmt = billData[i].due_amount;
+						dispDueAmt = !dispDueAmt||dispDueAmt<=0?'-':$filter('currency')(dispDueAmt);
+					let dispPayAmt = billData[i].paid_amount;
+						dispPayAmt = !dispPayAmt||dispPayAmt<=0?'-':$filter('currency')(dispPayAmt);
+					billData[i].due_amount_disp  =  dispDueAmt;
+					billData[i].paid_amount_disp =  dispPayAmt;
+				}
+				$scope.BillData = billData;
 			};
 			let error = function(response){
 				alert(response.meta.message);

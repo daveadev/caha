@@ -71,16 +71,15 @@ div.search-box{
 			<a-content>
 				<a-row>
 					<a-col>
-						
 							<uib-tabset type="tabs" active="activeJustified" justified="true"  active="BLC.ActiveTabIndex">
 								<uib-tab index="$index + 1" ng-repeat="YL in BLC.YearLevels| orderBy: '-department_id'" heading="{{YL.name}}" select="BLC.filterBill(YL)">
-									
 								</uib-tab>
 							</uib-tabset>
+
 							<div class="search-box">
-								<a-textbox ng-model="BLC.Search" placeholder="BLC.SearchPlaceHolder"></a-textbox>
+								<a-searchbox ng-model="BLC.SearchText" placeholder="BLC.SearchPlaceHolder" on-clear="BLC.clearSearch" is-large="true"></a-searchbox>
 							</div>
-							<a-table headers="BLC.BillHeaders" props="BLC.BillProps" data="BLC.FilteredBillData"></a-table>
+							<a-table headers="BLC.BillHeaders" search-word="BLC.SearchText" search-by="BLC.SearchFields" props="BLC.BillProps" data="BLC.FilteredBillData" ng-model="BLC.ActiveBillDetail"></a-table>
 					</a-col>
 				</a-row>
 			</a-content>
