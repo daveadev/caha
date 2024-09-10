@@ -8,9 +8,13 @@ class BillingsController extends AppController {
 			if(!isset($bill['Student']['sno'])):
 				continue;
 			endif;
-			$bill['Billing']['sno']=$bill['Student']['sno'];
-			$bill['Billing']['student']=($bill['Student']['print_name']);
-			$bill['Billing']['year_level_id']=$bill['Student']['year_level_id'];
+			foreach($bill['Student'] as $fld=>$val):
+				if(gettype($val)=='array') continue;
+				if(gettype($val)=='string')
+					$val = trim(ucwords(strtolower($val)));
+				$bill['Billing'][$fld]=$val;
+			endforeach;
+			$bill['Billing']['student']=$bill['Billing']['print_name'];
 			$bill['Billing']['year_level']=$bill['Student']['YearLevel']['name'];
 			$bill['Billing']['section_id']=$bill['Student']['section_id'];
 			$bill['Billing']['section']=$bill['Student']['Section']['name'];

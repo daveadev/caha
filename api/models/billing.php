@@ -81,6 +81,11 @@ class Billing extends AppModel {
         				 'Student.print_name',
         				 'Student.year_level_id',
         				 'Student.section_id',
+                         'Student.last_name',
+                         'Student.first_name',
+                         'Student.middle_name',
+                         'Student.mobile',
+                         'Student.email',
         				 'Student.Section.name',
         				 'Student.YearLevel.name',
         				);

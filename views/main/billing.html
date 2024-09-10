@@ -79,10 +79,90 @@ div.search-box{
 							<div class="search-box">
 								<a-searchbox ng-model="BLC.SearchText" placeholder="BLC.SearchPlaceHolder" on-clear="BLC.clearSearch" is-large="true"></a-searchbox>
 							</div>
-							<a-table headers="BLC.BillHeaders" search-word="BLC.SearchText" search-by="BLC.SearchFields" props="BLC.BillProps" data="BLC.FilteredBillData" ng-model="BLC.ActiveBillDetail"></a-table>
+							<a-table headers="BLC.BillHeaders" props="BLC.BillProps" data="BLC.FilteredBillData" 
+											ng-model="BLC.ActiveBillObj" search-word="BLC.SearchText" search-by="BLC.SearchFields"
+											on-row-click="BLC.showBillDetails"></a-table>
 					</a-col>
 				</a-row>
 			</a-content>
 			</a-canvas>
 		</a-container>
 	</a-module>
+
+	<!-- Modal -->
+	<a-modal id="BillingModal" title="Bill No. {{BLC.ActiveBillObj.billing_no}}">
+		<a-modal-body>
+			<uib-tabset type="tabs" active="BLC.ModalActiveTabIndex">
+				<uib-tab index="0" heading="Billing Info">
+						<a-row>
+							<a-col size="3">
+								<m-formgroup ng-model="BLC.ActiveBillObj.sno" label="Student No." type="'display'"></m-formgroup>
+							</a-col>
+							<a-col size="9">
+								<m-formgroup ng-model="BLC.ActiveBillObj.student" label="Student" type="'display'"></m-formgroup>	
+							</a-col>
+						</a-row>
+						<a-row>
+							<a-col size="3">
+								<m-formgroup ng-model="BLC.ActiveBillObj.status" label="Status"></m-formgroup>
+							</a-col>
+							<a-col size="4">
+								<m-formgroup ng-model="BLC.ActiveBillObj.due_amount_disp" label="Due Amount" type="'display'"></m-formgroup>	
+							</a-col>
+							<a-col size="5">
+								<m-formgroup ng-model="BLC.ActiveBillObj.paid_amount_disp" label="Paid Amount" type="'display'"></m-formgroup>	
+							</a-col>
+							
+						</a-row>
+				</uib-tab>
+				<uib-tab index="1" heading="View Statement">
+				</uib-tab>
+				<uib-tab index="2" heading="Online Payments">
+				</uib-tab>
+					<uib-tab index="3" heading="Student Info">
+					<a-row>
+							<a-col>
+								<m-formgroup ng-model="BLC.ActiveBillObj.last_name" label="Last Name"></m-formgroup>	
+							</a-col>
+							<a-col>
+								<m-formgroup ng-model="BLC.ActiveBillObj.first_name" label="First Name"></m-formgroup>	
+							</a-col>
+							<a-col>
+								<m-formgroup ng-model="BLC.ActiveBillObj.middle_name" label="Middle Name"></m-formgroup>	
+							</a-col>
+							<a-col size="6">
+								<m-formgroup ng-model="BLC.ActiveBillObj.mobile" label="Mobile"></m-formgroup>	
+							</a-col>
+							<a-col size="6">
+								<m-formgroup ng-model="BLC.ActiveBillObj.email" label="Email"></m-formgroup>	
+							</a-col>
+						</a-row>
+				</uib-tab>
+			</uib-tabset>
+		</a-modal-body>
+		<a-modal-footer>
+			<a-button opt-class="pull-left" ng-click="BLC.closeModal()" > Close</a-button>
+			
+			<a-button type="primary" ng-show="BLC.ModalActiveTabIndex==0"  ng-click="BLC.updateBill()"> 
+				<a-glyph icon="file"></a-glyph>
+				Update Bill
+			</a-button>
+			<a-button type="active" ng-show="BLC.ModalActiveTabIndex==0"  ng-click="BLC.resendBill()">
+				<a-glyph icon="send"></a-glyph>
+				Resend SMS
+			</a-button>
+			<a-button type="active" ng-show="BLC.ModalActiveTabIndex==1" ng-click="BLC.updateSOA()">
+				<a-glyph icon="list-alt"></a-glyph>
+				Update SOA
+			</a-button>
+			<a-button type="active" ng-show="BLC.ModalActiveTabIndex==2"  ng-click="BLC.updateOnline()">
+				<a-glyph icon="new-window"></a-glyph>
+				Update Payment
+			</a-button>
+			<a-button type="active" ng-show="BLC.ModalActiveTabIndex==3"  ng-click="BLC.updateInfo()">
+				<a-glyph icon="user"></a-glyph>
+				Update Info
+			</a-button>
+			
+		</a-modal-footer>
+	</a-modal>

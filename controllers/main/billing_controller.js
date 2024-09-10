@@ -39,6 +39,8 @@ define(['app','api','atomic/bomb'],function(app){
 			$scope.BillProps = ['sno','student','section','billing_no','due_amount_disp','paid_amount_disp','status'];
 			$scope.BillData=[];
 			$scope.SearchFields =['student', 'sno'];
+			$scope.BillObj =null;
+			$scope.BillObj =null;
 		}
 		$selfScope.$watch('BLC.ActiveSY',function(sy){
 			if(!sy) return;
@@ -63,6 +65,17 @@ define(['app','api','atomic/bomb'],function(app){
 
 		}
 		$selfScope.$watch('BLC.SearchText',$scope.filterBill);
+
+		$scope.showBillDetails = function(){
+
+			aModal.open('BillingModal');
+			console.log($scope.ActiveBillDetail);
+			$scope.BillObj =  angular.copy($scope.ActiveBillDetail);
+		}
+		$scope.closeModal = function(){
+			$scope.BillObj =null;
+			aModal.close('BillingModal');
+		}
 		$scope.getBillDetails = function(){
 			let data = {'limit':'less'};
 			let success = function(response){
@@ -74,6 +87,8 @@ define(['app','api','atomic/bomb'],function(app){
 						dispPayAmt = !dispPayAmt||dispPayAmt<=0?'-':$filter('currency')(dispPayAmt);
 					billData[i].due_amount_disp  =  dispDueAmt;
 					billData[i].paid_amount_disp =  dispPayAmt;
+					let mobile = billData[i].mobile;
+					billData[i].mobile =  `0${mobile}`;
 				}
 				$scope.BillData = billData;
 			};
