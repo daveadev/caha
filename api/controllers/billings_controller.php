@@ -18,7 +18,7 @@ class BillingsController extends AppController {
 			$bill['Billing']['year_level']=$bill['Student']['YearLevel']['name'];
 			$bill['Billing']['section_id']=$bill['Student']['section_id'];
 			$bill['Billing']['section']=$bill['Student']['Section']['name'];
-			$bill['Billing']['billing_no']=$bill['0']['bill_id'];
+			$bill['Billing']['billing_no']=$bill['Billing']['bill_id'];
 			$billings[$bi]=$bill;
 		endforeach;
 		$this->set('billings',$billings);

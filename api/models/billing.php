@@ -38,7 +38,7 @@ class Billing extends AppModel {
 		return $REFNO;
 	}
 
-    function checkAccount(&$account){
+    function checkAccount(&$account,$statement){
         $dueNow  =$account['due_now'];
         $hashObj = $this->checkHashObj($account['id'], $dueNow['date'], $dueNow['amount']);
         $hasID = isset($hashObj['id']);
@@ -47,7 +47,12 @@ class Billing extends AppModel {
 			$prefix = substr($account['id'],0,2).'B';
             $BNO = $this->generateREFNO($sy,$prefix);
             $hashObj['id']=$BNO;
+            $hashObj['sy']=$sy;
+            $hashObj['statement']=json_encode($statement);
             $this->create();
+            $this->save($hashObj);
+        }else{
+            $hashObj['statement']=json_encode($statement);
             $this->save($hashObj);
         }
         
@@ -58,8 +63,10 @@ class Billing extends AppModel {
         
         $billObj = $this->find('first',array('conditions'=>array('hash'=>$hashObj['hash'])));
         
-        if($billObj)
+        if($billObj):
         	$hashObj['id'] = $billObj['Billing']['id'];
+            $hashObj['statement'] = $billObj['Billing']['statement'];
+        endif;
         return $hashObj;
     }
     protected function generateHash($account_id,$date,$amount){
@@ -89,15 +96,26 @@ class Billing extends AppModel {
         				 'Student.Section.name',
         				 'Student.YearLevel.name',
         				);
-        
+        $joins =array(
+            array(
+                    'table' => '(SELECT account_id, MAX(bill.id) AS bill_id FROM billings AS bill  GROUP BY bill.account_id)',
+                    'alias' => 'LatestBill',
+                    'type' => 'INNER',
+                    'conditions' => array(
+                        'Billing.id = LatestBill.bill_id'
+                    )
+                )
+        );
         $latestBills = $this->find('all', array(
             'fields' => array(
                 'Billing.account_id',
-                'MAX(Billing.id) as bill_id',
+                'Billing.id as bill_id',
                 'Billing.due_amount',
+                'LatestBill.account_id',
+                'LatestBill.bill_id'
             ),
-            'group' => 'Billing.account_id',
-            'contain'=>$contains
+            'contain'=>$contains,
+            'joins'=>$joins
         ));
 
         return $latestBills;

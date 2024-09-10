@@ -109,8 +109,8 @@ class ReportsController extends AppController{
 		}
 
 	}
-	function statement($account_id=null,$sy=null,$type='old'){
-		$ids = array();
+	function statement($account_id=null,$sy=null,$type='old',$render=true){
+		$ids = array($account_id);
 		if(isset($_GET['account_id'])):
 			$account_id = $_GET['account_id'];
 			if(isset($_GET['sy']))
@@ -132,8 +132,7 @@ class ReportsController extends AppController{
 			}
 			$ids = $this->ClasslistBlock->getIds($sec_id,$sy);
 		endif;
-		
-		
+	
 		$statements=array();
 		foreach($ids as $accId):
 			$is_new_stud  =substr($accId, 0, 3) === 'LSN';
@@ -162,6 +161,7 @@ class ReportsController extends AppController{
 			else:
 
 				$STO = $this->PaymentPlan->getDetails($accId ,$sy,$type);
+
 				$isValid = $this->Account->review($STO,$type);
 				$ammendSOA = false;
 				if(!$isValid):
@@ -189,7 +189,7 @@ class ReportsController extends AppController{
 					$Billing =  new Billing();
 					$account =  $STO['account'];
 					$account['due_now'] =  $dueNowObj['due_now'];
-					$Billing->checkAccount($account);
+					$Billing->checkAccount($account,$STO);
 					$STO['account'] =  $account;
 				endif;
 			endif;
@@ -197,11 +197,32 @@ class ReportsController extends AppController{
 			
 			$statements[] =  $STO;
 		endforeach;
-		
-		$this->set(compact('statements','type'));
+		if(!$render)
+			return $statements;
+		$createFile = true;
+		$this->set(compact('statements','type','createFile'));
 		$this->render('statement');
 		
 
+	}
+	function billings($bill_no){
+		App::import('Model','Billing');
+		$Billing =  new Billing();
+		$BObj = $Billing->findById($bill_no);
+		$statement = json_decode($BObj['Billing']['statement'],true);
+		$statements = [$statement];
+		if(!$statement):
+			$account_id=$BObj['Account']['id'];
+			$sy=$BObj['Billing']['sy'];
+			$type='current';
+			$render=false;
+			$statements = $this->statement($account_id,$sy,$type,$render);
+		endif;
+		
+		$type='current';
+		$createFile = false;
+		$this->set(compact('statements','type','createFile'));
+		$this->render('statement');
 	}
 	function daily_collections(){
 		$data = $_POST['Collections'];
