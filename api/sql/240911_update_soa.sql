@@ -1,0 +1,110 @@
+UPDATE ledgers
+	SET amount=1498.80
+	WHERE id=1451;
+UPDATE account_schedules
+	SET paid_amount=0;
+	WHERE id=1038;
+UPDATE account_schedules
+	SET status='NONE',paid_amount=0
+	WHERE id=1037;
+UPDATE account_schedules
+	SET due_amount=17450,paid_amount=17450.0
+	WHERE id=1035;
+UPDATE account_schedules
+	SET status='NONE',paid_amount=98
+	WHERE id=2364;
+UPDATE account_schedules
+	SET due_amount=2090.0
+	WHERE id=1041;
+UPDATE account_schedules
+	SET due_amount=2090.0
+	WHERE id=1038;
+UPDATE account_schedules
+	SET paid_amount=97.00
+	WHERE id=2364;
+UPDATE account_schedules
+	SET paid_amount=98.20
+	WHERE id=2364;
+INSERT INTO master_modules (name,link,is_parent,is_child,`sequence`,icon)
+	VALUES ('Billing','main/billing',0,9,22,'glyphicon glyphicon-usd');
+INSERT INTO user_grants (user_type_id,master_module_id)
+	VALUES ('cashr',24);
+INSERT INTO user_grants (user_type_id,master_module_id)
+	VALUES ('admin',24);
+UPDATE account_schedules
+	SET due_amount=3511.25
+	WHERE id=690;
+UPDATE account_schedules
+	SET due_amount=3511.25
+	WHERE id=687;
+UPDATE account_schedules
+	SET due_amount=1011.25
+	WHERE id=686;
+UPDATE account_schedules
+	SET due_amount=1011.25
+	WHERE id=685;
+UPDATE account_schedules
+	SET due_amount=1011.25
+	WHERE id=692;
+UPDATE account_schedules
+	SET due_amount=1011.25
+	WHERE id=691;
+UPDATE account_schedules
+	SET due_amount=1011.25
+	WHERE id=689;
+UPDATE account_schedules
+	SET due_amount=1011.25
+	WHERE id=2488;
+UPDATE account_schedules
+	SET due_amount=1011.25
+	WHERE id=688;
+UPDATE account_schedules
+	SET paid_amount=NULL
+	WHERE id=685;
+UPDATE account_schedules
+	SET due_amount=1011.25,paid_amount=1010.87
+	WHERE id=684;
+UPDATE account_schedules
+	SET due_amount=10241.25,paid_amount=10241.25
+	WHERE id=683;
+UPDATE account_schedules
+	SET paid_amount=126.00
+	WHERE id=2348;
+UPDATE account_schedules
+	SET paid_amount=1011.25
+	WHERE id=684;
+DELETE FROM account_schedules
+	WHERE id=685;
+UPDATE ledgers
+	SET amount=7700
+	WHERE id=1650;
+UPDATE ledgers
+	SET amount=9750
+	WHERE id=1649;
+UPDATE account_schedules
+	SET paid_amount=0.0
+	WHERE id=922;
+UPDATE account_schedules
+	SET paid_amount=0.0,status='NONE'
+	WHERE id=921;
+UPDATE account_schedules
+	SET paid_amount=0.0,status='NONE'
+	WHERE id=920;
+UPDATE account_schedules
+	SET paid_amount=0.0,status='NONE'
+	WHERE id=919;
+UPDATE account_schedules
+	SET paid_amount=0.0,status='NONE'
+	WHERE id=918;
+UPDATE account_schedules
+	SET paid_amount=0.0,status='NONE'
+	WHERE id=917;
+UPDATE account_schedules
+	SET paid_amount=0,status='NONE'
+	WHERE id=916;
+UPDATE account_schedules
+	SET paid_amount=103
+	WHERE id=2375;
+UPDATE account_schedules
+	SET status='NONE'
+	WHERE id=2375;
