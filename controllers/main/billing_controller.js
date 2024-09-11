@@ -46,6 +46,10 @@ define(['app','api','atomic/bomb'],function(app){
 					{id:'2024-09-07', name:'SEP 2024'}
 				];
 			$scope.BillMonth = $scope.BillingMonths[1].id;
+
+			if(!$scope.YearLevels && atomic.YearLevels)
+				atomic.fuse();
+			
 		}
 		$selfScope.$watch('BLC.ActiveSY',function(sy){
 			if(!sy) return;

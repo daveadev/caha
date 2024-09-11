@@ -57,6 +57,8 @@ define(['app','transact','booklet','api','atomic/bomb'],function(app,TRNX,BKLT){
 			$scope.PayeeType='STU'; 
 			$scope.TransacDate = new Date();
 			$scope.TotalDispAmount = TRNX.util.formatMoney($scope.TotalAmount);
+			if(!$scope.ActiveSY && atomic.ActiveSY)
+				atomic.fuse();
 		}
 		$scope.editTrnxDetails = function(){
 			$scope.TrnxDtlMode = 'EDIT';
