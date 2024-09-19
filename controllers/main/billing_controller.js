@@ -2,8 +2,42 @@
 define(['app','api','atomic/bomb'],function(app){
 	const DATE_FORMAT = "yyyy-MM-dd";
 	let NEXT_SY = false;
-	app.register.controller('BillingController',['$scope','$rootScope','$filter','$timeout','api','aModal','Atomic',
-	function($scope,$rootScope,$filter,$timeout,api,aModal,atomic){
+
+	 app.register.service('cahaApiService', ['$http', function($http) {
+        this.uploadSOA = function(pdfUrl, fileName, success,error) {
+            let uploadURL = 'https://rainbow.marqa.one/caha-api/upload-soa';
+            // Fetch the PDF
+            return $http({
+                method: 'GET',
+                url: pdfUrl,
+                responseType: 'blob'
+            }).then(function(response) {
+                // Convert to Blob
+                var pdfBlob = new Blob([response.data], { type: 'application/pdf' });
+
+                // Create FormData
+                var formData = new FormData();
+                formData.append('file', pdfBlob, fileName);
+
+                // Upload to server
+                return $http.post(uploadURL, formData, {
+                    transformRequest: angular.identity,
+                    headers: { 'Content-Type': undefined }
+                }).then(success,error);
+            });
+        };
+        this.updateSOA = function(sno, billMonth,data,success,error){
+        	let updateURL = `https://rainbow.marqa.one/caha-api/update-info/${sno}/${billMonth}`;
+
+        	  // Upload to the server
+		    return $http.post(updateURL, data, {
+		        headers: { 'Content-Type': 'application/json' } // Use 'application/json' since you're sending JSON
+		    }).then(success, error);
+
+        }
+    }]);
+	app.register.controller('BillingController',['$scope','$http','$rootScope','$filter','$timeout','api','aModal','Atomic','cahaApiService',
+	function($scope,$http,$rootScope,$filter,$timeout,api,aModal,atomic,cahaapi){
 		const $selfScope =  $scope;
 		$scope = this;
 
@@ -46,6 +80,11 @@ define(['app','api','atomic/bomb'],function(app){
 					{id:'2024-09-07', name:'SEP 2024'}
 				];
 			$scope.BillMonth = $scope.BillingMonths[1].id;
+			$scope.BillStatuses = [
+				{id:'UNPAID',name:"UNPAID"},
+				{id:'PARTIAL',name:"PARTIAL"},
+				{id:'PAID',name:"PAID"}
+				];
 
 			if(!$scope.YearLevels && atomic.YearLevels)
 				atomic.fuse();
@@ -120,6 +159,41 @@ define(['app','api','atomic/bomb'],function(app){
 
 			};
 			api.GET('billings',data,success,error);
+		}
+
+		$scope.updateSOA = function(){
+			$scope.isUpdating = true;
+			//pdfUrl, fileName, uploadUrl
+			let pdfURL = $scope.BillURL;
+			let billObj = $scope.ActiveBillObj;
+			let sno = '2024-999';// billObj.sno
+			let billMonth = billObj.bill_month;
+			let fileName = `${sno}-${billMonth}-${billObj.full_name}.pdf` ;
+
+			let successUpload = function(response){
+				if(response.data.status ==200){
+					let data = {
+						bill_id:billObj.bill_id,
+						paid_amount:billObj.paid_amount,
+						status:billObj.status
+					};
+					let successUpdate = function(response){
+						$scope.isUpdating = false;
+						console.log(response.data);
+					}
+					let errorUpdate = function(response){
+						$scope.isUpdating = false;
+						console.log(response.data);
+					}
+					cahaapi.updateSOA(sno, billMonth, data, successUpdate, errorUpdate);
+				}
+				
+			};
+			let errorUpload = function(response){
+				console.log(response);
+			};
+
+			cahaapi.uploadSOA(pdfURL,fileName, successUpload, errorUpload);
 		}
 	}]);
 

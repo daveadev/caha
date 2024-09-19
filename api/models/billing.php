@@ -86,7 +86,8 @@ class Billing extends AppModel {
     }
     protected function getLatestBills($year,$month) {
         $contains = array('Student.sno',
-        				 'Student.print_name',
+        				 'Student.full_name',
+                         'Student.print_name',
         				 'Student.year_level_id',
         				 'Student.section_id',
                          'Student.last_name',

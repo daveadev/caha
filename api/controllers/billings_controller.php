@@ -22,10 +22,12 @@ class BillingsController extends AppController {
 			$bill['Billing']['section_id']=$bill['Student']['section_id'];
 			$bill['Billing']['section']=$bill['Student']['Section']['name'];
 			$bill['Billing']['billing_no']=$bill['Billing']['bill_id'];
+			$bill['Billing']['bill_month']=strtoupper(date('d-M-Y',strtotime($bill['Billing']['due_date'])));
 			$bill['Billing']['paid_amount']=$bill['0']['paid_amount'];
 
+
 			$status = 'UNPAID';
-			if($bill['Billing']['due_amount']==0)
+			if($bill['Billing']['due_amount']==0 ||$bill['Billing']['paid_amount'] <0 )
 				$status = 'PAID';
 			if($bill['Billing']['paid_amount']>0):
 				if($bill['Billing']['paid_amount']>=$bill['Billing']['due_amount'])
