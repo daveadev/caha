@@ -2,7 +2,7 @@ UPDATE ledgers
 	SET amount=1498.80
 	WHERE id=1451;
 UPDATE account_schedules
-	SET paid_amount=0;
+	SET paid_amount=0
 	WHERE id=1038;
 UPDATE account_schedules
 	SET status='NONE',paid_amount=0
