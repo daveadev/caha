@@ -45,6 +45,7 @@ require.config({
         'transact':'../utils/transactions',
         'booklet':'../utils/booklets',
         'adjust-memo':'../utils/adjust_memo',
+        'caha':'../vendors/caha_api'
     },
     shim: {
 		'angular' : {exports : 'angular'},
