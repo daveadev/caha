@@ -164,7 +164,7 @@ div.search-box{
 		<a-modal-footer>
 			<a-button opt-class="pull-left" ng-click="BLC.closeModal()" > Close</a-button>
 			
-			<a-button type="active" ng-show="BLC.ModalActiveTabIndex==0 " ng-disabled="BLC.ActiveBillObj.status=='PAID'" ng-click="BLC.resendBill()">
+			<a-button type="active" ng-show="BLC.ModalActiveTabIndex==0 && false" ng-disabled="BLC.ActiveBillObj.status=='PAID'" ng-click="BLC.resendBill()">
 				<a-glyph icon="send"></a-glyph>
 				Resend SMS
 			</a-button>
@@ -173,9 +173,9 @@ div.search-box{
 				{{ BLC.isUpdating?'Updating SOA':'Update SOA'}}
 
 			</a-button>
-			<a-button type="primary" ng-show="BLC.ModalActiveTabIndex==2"   ng-disabled="BLC.isUpdating || !BLC.OLPRecords.length"  ng-click="BLC.updateOnline()">
+			<a-button type="primary" ng-show="BLC.ModalActiveTabIndex==2"   ng-disabled="BLC.isUpdating || !BLC.OLPRecords.length"  ng-click="BLC.updatePayment()">
 				<a-glyph icon="new-window"></a-glyph>
-				Update Payment
+				{{ BLC.isUpdating?'Updating Payment':'Update Payment'}}
 			</a-button>
 			<a-button type="active" ng-show="BLC.ModalActiveTabIndex==3"  ng-disabled="BLC.isUpdating" ng-click="BLC.updateInfo()">
 				<a-glyph icon="user"></a-glyph>

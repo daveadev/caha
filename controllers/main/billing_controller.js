@@ -142,7 +142,7 @@ define(['app','api','atomic/bomb','caha/api'],function(app){
 			//pdfUrl, fileName, uploadUrl
 			let pdfURL = $scope.BillURL;
 			let billObj = $scope.ActiveBillObj;
-			let sno = '2024-999';// billObj.sno
+			let sno = billObj.sno;
 			let billMonth = billObj.bill_month;
 			let fileName = `${sno}-${billMonth}-${billObj.full_name}.pdf` ;
 
@@ -175,7 +175,7 @@ define(['app','api','atomic/bomb','caha/api'],function(app){
 		$scope.updateInfo =function(){
 			$scope.isUpdating = true;
 			let billObj = $scope.ActiveBillObj;
-			let sno = '2024-999';// billObj.sno
+			let sno = billObj.sno;
 			let data = {
 				id:billObj.account_id,
 				last_name:billObj.last_name,
@@ -195,6 +195,26 @@ define(['app','api','atomic/bomb','caha/api'],function(app){
 			cahaapi.updateInfo(sno, data,successUpdate,errorUpdate);
 		}
 
+		$scope.updatePayment =function(){
+			$scope.isUpdating = true;
+			let olpObj = $scope.ActiveOLPObj;
+			let sno = olpObj.sno;
+			let token = olpObj.token;
+			let data = {
+				status:olpObj.status,
+				ornum:olpObj.ornum,
+				paid_amount:olpObj.amount
+			}
+			let successUpdate = function(response){
+				$scope.isUpdating = false;
+				console.log(response.data);
+			}
+			let errorUpdate = function(response){
+				$scope.isUpdating = false;
+				console.log(response.data);
+			}
+			cahaapi.updatePayment(sno, token,data,successUpdate,errorUpdate);
+		}
 		function loadPayments(sno){
 			let status = 'ALL';
 			$scope.OLPRecords =[];
