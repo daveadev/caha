@@ -2,8 +2,8 @@
 define(['app','api','atomic/bomb','caha/api'],function(app){
 	const DATE_FORMAT = "yyyy-MM-dd";
 	let NEXT_SY = false;
-	app.register.controller('BillingController',['$scope','$http','$rootScope','$filter','$timeout','api','aModal','Atomic','cahaApiService',
-	function($scope,$http,$rootScope,$filter,$timeout,api,aModal,atomic,cahaapi){
+	app.register.controller('BillingController',['$scope','$sce','$rootScope','$filter','$timeout','api','aModal','Atomic','cahaApiService',
+	function($scope,$sce,$rootScope,$filter,$timeout,api,aModal,atomic,cahaapi){
 		const $selfScope =  $scope;
 		$scope = this;
 
@@ -52,6 +52,14 @@ define(['app','api','atomic/bomb','caha/api'],function(app){
 				{id:'PAID',name:"PAID"}
 				];
 
+			$scope.OLPHeaders =[{class:'col-md-2',label:'Ref No.'},'Source',{class:'col-md-2',label:'Amount'},{class:'col-md-2',label:'Status'}];
+			$scope.OLPProps =['refno','pay_channel','amount','status'];
+			$scope.OLPStatuses =[
+					{id:'Pending',name:"Pending"},
+					{id:'Verified',name:"Verified"},
+					{id:'Cancelled',name:"Cancelled"}
+				];
+			$scope.OLPRecords =[];
 			if(!$scope.YearLevels && atomic.YearLevels)
 				atomic.fuse();
 			
@@ -83,8 +91,10 @@ define(['app','api','atomic/bomb','caha/api'],function(app){
 		$scope.showBillDetails = function(){
 			$timeout(function(){
 				let billNo = $scope.ActiveBillObj.billing_no;
+				let sno = $scope.ActiveBillObj.sno;
 				$scope.BillURL = 'api/reports/billings/'+billNo;
 				aModal.open('BillingModal');
+				loadPayments(sno);
 			},500);
 			
 			
@@ -184,6 +194,23 @@ define(['app','api','atomic/bomb','caha/api'],function(app){
 			}
 			cahaapi.updateInfo(sno, data,successUpdate,errorUpdate);
 		}
+
+		function loadPayments(sno){
+			let status = 'ALL';
+			$scope.OLPRecords =[];
+			$scope.preload =true;
+			let successGet =function(response){
+				$scope.preload =false;
+				$scope.OLPRecords = response.data;
+			};
+			let errorGet =function(response){};
+			cahaapi.getPayments(sno,status,successGet, errorGet);
+		}
+		$selfScope.$watch('BLC.ActiveOLPObj',function(obj){
+			$scope.ProofURL='';
+			if(!obj) return;
+			$scope.ProofURL =  $sce.trustAsResourceUrl(`https://rainbow.marqa.one/proof-api/view/${obj.token}`);
+		});
 	}]);
 
 });

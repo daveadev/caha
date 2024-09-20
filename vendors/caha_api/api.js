@@ -45,5 +45,15 @@ define(['app','api','atomic/bomb'],function(app){
             });
 
         }
+
+        this.getPayments = function(sno,status,success,error){
+            let getURL = `https://rainbow.marqa.one/proof-api/status_by/${sno}/${status}`;
+
+              // Upload to the server
+            return $http.post(getURL, {
+                headers: { 'Content-Type': 'application/json' } // Use 'application/json' since you're sending JSON
+            }).then(success, error);
+
+        }
     }]);
 });

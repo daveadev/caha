@@ -122,6 +122,19 @@ div.search-box{
 
 				</uib-tab>
 				<uib-tab index="2" heading="Online Payments">
+						<a-row>
+							<a-col>
+									<a-table ng-model="BLC.ActiveOLPObj" headers="BLC.OLPHeaders" props="BLC.OLPProps" data="BLC.OLPRecords" is-preload="BLC.preload"></a-table>
+							</a-col>
+						</a-row>
+						<a-row ng-if="BLC.ActiveOLPObj.refno">
+							<a-col size="8">
+								<m-formgroup label="Status" ng-model="BLC.ActiveOLPObj.status" options="BLC.OLPStatuses"></m-formgroup>
+							</a-col>
+							<a-col size="4">
+								<a href="#" target="_blank" style="margin-top:25px;" ng-href="{{BLC.ProofURL}}" class="btn btn-active btn-block">View Attachment </a>
+							</a-col>
+						</a-row>
 				</uib-tab>
 					<uib-tab index="3" heading="Student Info">
 					<a-row>
@@ -156,7 +169,7 @@ div.search-box{
 				{{ BLC.isUpdating?'Updating SOA':'Update SOA'}}
 
 			</a-button>
-			<a-button type="active" ng-show="BLC.ModalActiveTabIndex==2"  ng-click="BLC.updateOnline()">
+			<a-button type="primary" ng-show="BLC.ModalActiveTabIndex==2"   ng-disabled="BLC.isUpdating || !BLC.OLPRecords.length"  ng-click="BLC.updateOnline()">
 				<a-glyph icon="new-window"></a-glyph>
 				Update Payment
 			</a-button>
