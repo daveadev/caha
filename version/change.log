@@ -42,3 +42,7 @@
 #v 1.2.5 : 9 Sep 2024
 - Fix cashier incorrect default SY
 - Fix cashier collection report
+
+#v 1.2.6 : 20 Sep 2024
+- Enable billing module to monitor SOA and online payments
+- Enable update of SOA, Proof of Payment and student info
