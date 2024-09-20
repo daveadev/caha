@@ -52,8 +52,8 @@ define(['app','api','atomic/bomb','caha/api'],function(app){
 				{id:'PAID',name:"PAID"}
 				];
 
-			$scope.OLPHeaders =[{class:'col-md-2',label:'Ref No.'},'Source',{class:'col-md-2',label:'Amount'},{class:'col-md-2',label:'Status'}];
-			$scope.OLPProps =['refno','pay_channel','amount','status'];
+			$scope.OLPHeaders =[{class:'col-md-2',label:'Ref No.'},'Source',{class:'col-md-2',label:'Amount'},{class:'col-md-3',label:'SI No.'},{class:'col-md-3',label:'Status'}];
+			$scope.OLPProps =['refno','pay_channel','amount','ornum','status'];
 			$scope.OLPStatuses =[
 					{id:'Pending',name:"Pending"},
 					{id:'Verified',name:"Verified"},

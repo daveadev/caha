@@ -128,12 +128,16 @@ div.search-box{
 							</a-col>
 						</a-row>
 						<a-row ng-if="BLC.ActiveOLPObj.refno">
-							<a-col size="8">
-								<m-formgroup label="Status" ng-model="BLC.ActiveOLPObj.status" options="BLC.OLPStatuses"></m-formgroup>
-							</a-col>
-							<a-col size="4">
+							<a-col size="6">
 								<a href="#" target="_blank" style="margin-top:25px;" ng-href="{{BLC.ProofURL}}" class="btn btn-active btn-block">View Attachment </a>
 							</a-col>
+							<a-col size="3">
+								<m-formgroup label="SI No." ng-model="BLC.ActiveOLPObj.ornum"></m-formgroup>
+							</a-col>
+								<a-col size="3">
+								<m-formgroup label="Status" ng-model="BLC.ActiveOLPObj.status" options="BLC.OLPStatuses"></m-formgroup>
+							</a-col>
+							
 						</a-row>
 				</uib-tab>
 					<uib-tab index="3" heading="Student Info">
