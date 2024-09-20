@@ -160,9 +160,9 @@ div.search-box{
 				<a-glyph icon="new-window"></a-glyph>
 				Update Payment
 			</a-button>
-			<a-button type="active" ng-show="BLC.ModalActiveTabIndex==3"  ng-click="BLC.updateInfo()">
+			<a-button type="active" ng-show="BLC.ModalActiveTabIndex==3"  ng-disabled="BLC.isUpdating" ng-click="BLC.updateInfo()">
 				<a-glyph icon="user"></a-glyph>
-				Update Info
+				{{ BLC.isUpdating?'Updating Info':'Update Info'}}
 			</a-button>
 			
 		</a-modal-footer>

@@ -156,10 +156,33 @@ define(['app','api','atomic/bomb','caha/api'],function(app){
 				
 			};
 			let errorUpload = function(response){
-				console.log(response);
+				console.log(response.data);
 			};
 
 			cahaapi.uploadSOA(pdfURL,fileName, successUpload, errorUpload);
+		}
+
+		$scope.updateInfo =function(){
+			$scope.isUpdating = true;
+			let billObj = $scope.ActiveBillObj;
+			let sno = '2024-999';// billObj.sno
+			let data = {
+				id:billObj.account_id,
+				last_name:billObj.last_name,
+				first_name:billObj.first_name,
+				middle_name:billObj.middle_name,
+				mobile:billObj.mobile,
+				email:billObj.email
+			}
+			let successUpdate = function(response){
+				$scope.isUpdating = false;
+				console.log(response.data);
+			}
+			let errorUpdate = function(response){
+				$scope.isUpdating = false;
+				console.log(response.data);
+			}
+			cahaapi.updateInfo(sno, data,successUpdate,errorUpdate);
 		}
 	}]);
 
