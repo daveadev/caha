@@ -103,7 +103,7 @@ class Billing extends AppModel {
                     'table' => "(
                             SELECT
                                 account_id,
-                                MIN(bill.id) AS min_bill_id,
+                                MAX(bill.id) AS eff_bill_id,
                                 GROUP_CONCAT(bill.id ORDER BY bill.id ASC) AS bill_ids,
                                 GROUP_CONCAT(bill.due_amount ORDER BY bill.id ASC) AS bill_amounts
                             FROM
@@ -116,9 +116,21 @@ class Billing extends AppModel {
                     'alias' => 'LatestBill',
                     'type' => 'INNER',
                     'conditions' => array(
-                        'Billing.id = LatestBill.min_bill_id'
+                        'Billing.id = LatestBill.eff_bill_id'
                     )
-                )
+                ),
+            array(
+                'table'=>'ledgers',
+                'alias'=>'Ledger',
+                'type'=>'LEFT',
+                'conditions'=>array(
+                            "Ledger.account_id = Billing.account_id",
+                            "YEAR(Ledger.transac_date)"=>$year,
+                            "MONTH(Ledger.transac_date)"=>$month,
+                            "Ledger.type"=>'-',
+                            "Ledger.transaction_type_id"=>array('SBQPY')
+                         )
+            )
         );
         $latestBills = $this->find('all', array(
             'fields' => array(
@@ -126,11 +138,12 @@ class Billing extends AppModel {
                 'Billing.id as bill_id',
                 'Billing.due_amount',
                 'Billing.due_date',
-                'LatestBill.min_bill_id',
+                'LatestBill.eff_bill_id',
                 'LatestBill.bill_ids',
                 'LatestBill.bill_amounts',
                 "CAST(IFNULL(SUBSTRING_INDEX(LatestBill.bill_amounts, ',', 1), 0) AS DECIMAL(10,2)) - 
-                CAST(IFNULL(SUBSTRING_INDEX(LatestBill.bill_amounts, ',', -1), 0) AS DECIMAL(10,2)) as paid_amount"
+                CAST(IFNULL(SUBSTRING_INDEX(LatestBill.bill_amounts, ',', -1), 0) AS DECIMAL(10,2)) as paid_amount",
+                " COALESCE(SUM(Ledger.amount), 0) AS ledger_paid_amount"
             ),
             'group' => 'Billing.account_id',
             'contain'=>$contains,

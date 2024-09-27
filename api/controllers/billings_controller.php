@@ -7,6 +7,7 @@ class BillingsController extends AppController {
 		if($_GET['due_date'])
 			$dueDate = $_GET['due_date'];
 		$billings =$this->Billing->getStudentBillingDetails($dueDate);
+
 		foreach($billings as $bi=>$bill):
 			if(!isset($bill['Student']['sno'])):
 				continue;
@@ -24,6 +25,9 @@ class BillingsController extends AppController {
 			$bill['Billing']['billing_no']=$bill['Billing']['bill_id'];
 			$bill['Billing']['bill_month']=strtoupper(date('d-M-Y',strtotime($bill['Billing']['due_date'])));
 			$bill['Billing']['paid_amount']=$bill['0']['paid_amount'];
+			// FIX: Display correct ledger amount based on actual ledger entries
+			$bill['Billing']['paid_amount']=$bill['0']['ledger_paid_amount'];
+
 
 
 			$status = 'UNPAID';
