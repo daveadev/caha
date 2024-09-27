@@ -1,0 +1,16 @@
+DELETE FROM billings where account_id  in ('GRS98129',
+'GRS96826',
+'GRS99465',
+'GRS98228',
+'GRS99630',
+'GRS96156',
+'GRS98772',
+'GRS99317',
+'GRS96107',
+'GRS98301',
+'GRS95653',
+'GRS96958',
+'GRS96255',
+'GRS97170',
+'GRS99390') and due_date  ='1970-01-01';
+UPDATE ledgers set esp = '2024' where esp=2025;
