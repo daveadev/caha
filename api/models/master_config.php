@@ -8,7 +8,7 @@ class MasterConfig extends AppModel {
 		$conf = array();
 		$conf['fields'] = array('sys_key','sys_value');
 		if($field)
-			$conf['cond'] = array('sys_key'=>$field);
+			$conf['conditions'] = array('sys_key'=>$field);
 		$info = $this->find('list',$conf);
 		return $info;
 	}

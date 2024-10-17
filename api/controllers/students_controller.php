@@ -33,6 +33,17 @@ class StudentsController extends AppController {
 			endif;
 			$this->Student->create();
 			if ($this->Student->save($this->data)) {
+				App::import('Model','ClasslistBlock');
+				$CLB  =  new ClasslistBlock();
+				$STU =  $this->data['Student'];
+				$_CONF = $this->MasterConfig->getInfo('ACTIVE_SY');
+				$classlist = array(
+					'student_id'=>$STU['id'],
+					'section_id'=>$STU['section_id'],
+					'esp'=>$_CONF['ACTIVE_SY'],
+					'status'=>'ACT'
+				);
+				$CLB->save($classlist);
 				$this->Session->setFlash(__('The student has been saved', true));
 				$this->redirect(array('action' => 'index'));
 			} else {

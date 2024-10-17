@@ -9,9 +9,13 @@
 		echo $this->Form->input('last_name');
 		echo $this->Form->input('prefix');
 		echo $this->Form->input('suffix');
+		echo $this->Form->input('program_id');
+		echo $this->Form->input('year_level_id');
+		echo $this->Form->input('section_id');
 		echo $this->Form->input('sno');
 		echo $this->Form->input('lrn');
 		echo $this->Form->input('email');
+		echo $this->Form->input('mobile');
 		echo $this->Form->input('gender');
 	?>
 	</fieldset>

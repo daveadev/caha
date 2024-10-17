@@ -141,6 +141,26 @@ define(['app', 'api', 'simple-sheet'], function(app) {
                     $rootScope.__MODAL_OPEN = false;
                 });
             };
+			$scope.openAccountModal = function(back_log) {
+                var modalInstance = $uibModal.open({
+                    animation: true,
+                    templateUrl: 'AccountModal.html',
+                    controller: 'AccountModalController',
+                    resolve: {
+                        back_log: function() {
+                            return back_log;
+                        }
+                    }
+                });
+                $rootScope.__MODAL_OPEN = true;
+                modalInstance.result.then(function(back_log) {
+                    $scope.Account.back_log = back_log;
+                    $rootScope.__MODAL_OPEN = false;
+                }, function(source) {
+                    $rootScope.__MODAL_OPEN = false;
+                });
+            };
+			
         };
     }]);
     app.register.controller('ModalInstanceController', ['$scope', '$uibModalInstance', 'api', 'back_log', function($scope, $uibModalInstance, api, back_log) {
@@ -198,4 +218,20 @@ define(['app', 'api', 'simple-sheet'], function(app) {
             $uibModalInstance.close($scope.BackLog);	
         }
     }]);
+	
+	app.register.controller('AccountModalController', ['$scope', '$uibModalInstance', 'api', 'back_log', function($scope, $uibModalInstance, api, back_log) {
+		 $scope.closeModal = function() {
+            $uibModalInstance.dismiss('cancel');
+        };
+
+		
+		$scope.confirmAction = function() {
+			$uibModalInstance.dismiss('confirm');
+			return;
+			api.POST('accounts', data, function success(response) {
+                
+            });
+        };
+	
+	}]);
 });

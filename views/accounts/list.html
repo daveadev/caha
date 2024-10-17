@@ -1,4 +1,7 @@
 <div ng-controller="AccountController" ng-init="list()">
+	<button class="btn btn-primary btn-fab top right fixed" ng-click="openAccountModal()">
+	<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+	</button>
     <div class="row">
         <div class="col-md-6">
             <div class="list-group">
@@ -237,6 +240,59 @@
             <div class="modal-footer">
                 <button class="btn btn-primary" type="button" ng-click="confirmAction()">Confirm</button>
                 <button class="btn btn-default pull-left" type="button" ng-click="cancelChangeScheme()">Cancel</button>
+            </div>
+        </script>
+		
+		 <script type="text/ng-template" id="AccountModal.html">
+            <div class="modal-header">
+                <h3 class="modal-title">New Student Account</h3>
+            </div>
+            <div class="modal-body">
+                <uib-tabset type="tabs" active="activeJustified"  active="ActiveTabIndex">
+                    <uib-tab index="0" heading="Account Info">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>Student Number</label>
+                                    <input class="form-control" type="text" ng-model="Account.sno" />
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>Last Name</label>
+                                    <input class="form-control" type="text" ng-model="Account.last_name" />
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>First Name</label>
+                                    <input class="form-control" type="text" ng-model="Account.first_name" />
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>Middle Name</label>
+                                    <input class="form-control" type="text" ng-model="Account.middle_name" />
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>Section</label>
+                                    <input class="form-control" type="text" ng-model="Account.section" />
+                                </div>
+                            </div>
+                          </div>
+                    </uib-tab>
+                    <uib-tab index="1" heading="Schedule">
+                    </uib-tab>
+                    <uib-tab index="2" heading="Ledger">
+                    </uib-tab>
+                </uib-tabset>
+			</div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" type="button" ng-click="confirmAction()">Confirm</button>
+                <button class="btn btn-default pull-left" type="button" ng-click="closeModal()">Close</button>
             </div>
         </script>
     </div>
