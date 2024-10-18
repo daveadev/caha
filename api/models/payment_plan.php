@@ -151,12 +151,20 @@ class PaymentPlan extends AppModel {
 	 * @param float $esp The effective selling price for filtering ledgers and payment plans.
 	 * @return array An array containing account details, current and old payment schedules, and ledgers.
 	 */
-	function getDetails($account_id, $esp,$type='old') {
+	function getDetails($account_id, $esp,$type='old',$billMonth = 'current') {
 	    // Set conditions for the Ledger association based on 'esp'
 	    $this->Account->belongsTo['Student']['fields']=array('id','name','full_name','lrn','sno','section_id','year_level_id');
-	    $this->Account->hasMany['Ledger']['conditions'] = array('Ledger.esp' => floor($esp));
+		
+		$ledgerCond =  array('Ledger.esp' => floor($esp));
+		if($billMonth!='current'):
+			$billYearText = substr($billMonth, 0, 3);
+			$billMonthText = substr($billMonth, 3);
+			$date = strtotime("last day of $billYearText $billMonthText");
+			$cutoffDate = date('Y-m-d', $date);
+			$ledgerCond['Ledger.transac_date <=']=$cutoffDate;
+		endif;
+	    $this->Account->hasMany['Ledger']['conditions'] = $ledgerCond;
 	    $this->Account->hasMany['Ledger']['order'] = array('Ledger.transac_date' ,'Ledger.id');
-
 
 	    // Retrieve account information based on the 'account_id'
 	    if($esp<2023){
@@ -212,7 +220,7 @@ class PaymentPlan extends AppModel {
 	    $statement['account'] = $accountInfo['Account'];
 	    $statement['student'] = $accountInfo['Student'];
 	    if($type=='current'):
-		    $statement['paysched_current'] = $this->formatSchedule($accountInfo['AccountSchedule']);
+		    $statement['paysched_current'] = $this->formatSchedule($accountInfo['AccountSchedule'],$billMonth);
 		    $statement['ledger_current'] = $this->formatLedger($accountInfo['Ledger']);
 	   	endif;
 	   	if($type=='old'):
@@ -231,15 +239,14 @@ class PaymentPlan extends AppModel {
 		    $statement['paysched_old'] = $this->formatSchedule($payplan['PayPlanSchedule']);
 		    $statement['ledger_old'] = $this->formatLedger($payplan['PayplanLedger']);
 	   	endif;
-
 	    // Return the statement containing all relevant data
 	    return $statement;
 	}
 	function buildSchedule($schedule){
 		return $this->formatSchedule($schedule);
 	}
-	protected function formatSchedule(&$schedule){
-		$dueNow = $this->dueThisMonth($schedule);
+	protected function formatSchedule(&$schedule,$billMonth='current'){
+		$dueNow = $this->dueThisMonth($schedule,$billMonth);
 		$total_due = 0;
 		$total_pay = 0;
 		$total_bal = 0;
@@ -279,8 +286,16 @@ class PaymentPlan extends AppModel {
 		return $schedule;
 
 	}
-	protected function dueThisMonth($schedule){
-		$currentMonth = date('Y-m');
+	protected function dueThisMonth($schedule,$billMonth='current'){
+		$cutoffMonth = date('Y-m');
+		$cutoffTime = time();
+		if($billMonth!='current'):
+			$billYearText = substr($billMonth, 0, 3);
+			$billMonthText = substr($billMonth, 3);
+			$cutoffTime = strtotime("last day of $billYearText $billMonthText");
+			$cutoffMonth = date('Y-m', $cutoffTime);
+		endif;
+		
 		$dueAmount = 0;
 		$dueNow = array();
 		$dueMos = array();
@@ -289,8 +304,8 @@ class PaymentPlan extends AppModel {
 		    $dueDate = strtotime($sched['due_date']);
 			$dueDateFormat = date('Y-m',$dueDate);
 		    $hasBal = $sched['paid_amount'] < $sched['due_amount'];
-		    $isOverDue = $dueDate <= time();
-		    $isDueNow = $dueDateFormat === $currentMonth;
+		    $isOverDue = $dueDate <= $cutoffTime;
+		    $isDueNow = $dueDateFormat === $cutoffMonth;
 
 		    // Check if INIPY is UNPAID
 			if($sched['bill_month']=='UPONNROL' && $sched['status']!='UNPAID'){
@@ -313,7 +328,7 @@ class PaymentPlan extends AppModel {
 		// Move due date to current month when dueAmount is zero
 		if($dueAmount==0):
 			$dueDate = substr($sched['due_date'],-2);
-			$dueDate = $currentMonth.'-'.$dueDate;
+			$dueDate = $cutoffMonth.'-'.$dueDate;
 			$dueNow['date'] = date('d M Y',strtotime($dueDate));
 		endif;
 		

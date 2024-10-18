@@ -13,9 +13,11 @@ class ReportsController extends AppController{
 	}
 	function soa($format="old"){
 		//pr($_GET); exit();
+		$billMonth = 'current';
 		if(isset($_GET['format']))
 			$format = $_GET['format'];
-		
+		if(isset($_GET['bill_month']))
+			$billMonth = $_GET['bill_month'];
 		if(isset($_GET['account_id'])){
 			$account_id =  $_GET['account_id'];
 
@@ -31,7 +33,7 @@ class ReportsController extends AppController{
 
 			if($format=='new'):
 				
-				return $this->statement($account_id,$esp,'current');
+				return $this->statement($account_id,$esp,'current',true,$billMonth);
 			endif;
 			//Student's Details
 			$this->Student->bindModel(array('belongsTo' => array('Section')));
@@ -109,7 +111,7 @@ class ReportsController extends AppController{
 		}
 
 	}
-	function statement($account_id=null,$sy=null,$type='old',$render=true){
+	function statement($account_id=null,$sy=null,$type='old',$render=true,$billMonth ='current'){
 		$ids = array($account_id);
 		if(isset($_GET['account_id'])):
 			$account_id = $_GET['account_id'];
@@ -160,8 +162,7 @@ class ReportsController extends AppController{
 				
 			else:
 
-				$STO = $this->PaymentPlan->getDetails($accId ,$sy,$type);
-
+				$STO = $this->PaymentPlan->getDetails($accId ,$sy,$type,$billMonth);
 				$isValid = $this->Account->review($STO,$type);
 				$ammendSOA = false;
 				if(!$isValid):
@@ -219,7 +220,8 @@ class ReportsController extends AppController{
 			$sy=$BObj['Billing']['sy'];
 			$type='current';
 			$render=false;
-			$statements = $this->statement($account_id,$sy,$type,$render);
+			$billMonth = 'current';
+			$statements = $this->statement($account_id,$sy,$type,$render,$billMonth);
 
 		endif;
 		
