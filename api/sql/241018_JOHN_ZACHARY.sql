@@ -1,10 +1,10 @@
 INSERT INTO `ledgers`(`id`,`account_id`,`type`,`transaction_type_id`,`esp`,`transac_date`,`transac_time`,`ref_no`,`details`,`amount`,`notes`,`created`)VALUES(NULL,'GRS96958','-','SBQPY','2024.00','2024-07-31','00:34:56','#10515','Subsequent Payment','2000.00','','2024-08-03 00:34:56'); 
 INSERT INTO `ledgers`(`id`,`account_id`,`type`,`transaction_type_id`,`esp`,`transac_date`,`transac_time`,`ref_no`,`details`,`amount`,`notes`,`created`)VALUES(NULL,'GRS96958','-','DSC','2024.00','2024-07-15','00:34:56','GRA000017','Employee Discount','6500','','2024-08-03 00:34:56'); 
 UPDATE `ledgers` SET `transac_date`='2024-07-14' WHERE `ref_no`='GRA000017';
-UPDATE `caha_pay_241017_3`.`account_schedules` SET `due_amount`='7925' WHERE `id`='178'; 
-UPDATE `caha_pay_241017_3`.`account_schedules` SET `due_amount`='1825.00' WHERE `id`='181'; 
-UPDATE `caha_pay_241017_3`.`account_schedules` SET `due_amount`='1825.00' WHERE `id`='184'; 
-FROM account_schedules WHERE account_id ='GRS96958';
+UPDATE `account_schedules` SET `due_amount`='7925' WHERE `id`='178'; 
+UPDATE `account_schedules` SET `due_amount`='1825.00' WHERE `id`='181'; 
+UPDATE `account_schedules` SET `due_amount`='1825.00' WHERE `id`='184'; 
+DELETE FROM account_schedules WHERE account_id ='GRS96958';
 insert into `account_schedules` (`transaction_type_id`, `account_id`, `bill_month`, `due_amount`, `paid_amount`, `due_date`, `paid_date`, `status`, `order`, `created`, `modified`) values('REGFE','GRS96958','UPONNROL','1500.00','2000.00','2024-07-15','2024-07-15','PAID','1','2024-08-03 13:23:45','2024-08-03 13:23:45');
 insert into `account_schedules` (`transaction_type_id`, `account_id`, `bill_month`, `due_amount`, `paid_amount`, `due_date`, `paid_date`, `status`, `order`, `created`, `modified`) values('INIPY','GRS96958','UPONNROL','7925','7925','2024-07-15','2024-07-15','PAID','2','2024-08-03 13:23:45','2024-08-03 13:23:45');
 insert into `account_schedules` (`transaction_type_id`, `account_id`, `bill_month`, `due_amount`, `paid_amount`, `due_date`, `paid_date`, `status`, `order`, `created`, `modified`) values('SBQPY','GRS96958','JUL2024','1825.00','1825','2024-08-07',NULL,'PAID','3','2024-08-03 13:23:45','2024-08-03 13:23:45');
