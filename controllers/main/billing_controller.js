@@ -46,7 +46,7 @@ define(['app','api','atomic/bomb','caha/api'],function(app){
 					{id:'2024-09-07', name:'SEP 2024'},
 					{id:'2024-10-07', name:'OCT 2024'}
 				];
-			$scope.BillMonth = $scope.BillingMonths[0].id;
+			$scope.BillMonth = $scope.BillingMonths[1].id;
 			$scope.BillStatuses = [
 				{id:'UNPAID',name:"UNPAID"},
 				{id:'PARTIAL',name:"PARTIAL"},
