@@ -156,16 +156,22 @@ class PaymentPlan extends AppModel {
 	    $this->Account->belongsTo['Student']['fields']=array('id','name','full_name','lrn','sno','section_id','year_level_id');
 		
 		$ledgerCond =  array('Ledger.esp' => floor($esp));
+		$paySchedCond = array();
 		if($billMonth!='current'):
 			$billYearText = substr($billMonth, 0, 3);
 			$billMonthText = substr($billMonth, 3);
 			$date = strtotime("last day of $billYearText $billMonthText");
 			$cutoffDate = date('Y-m-d', $date);
 			$ledgerCond['Ledger.transac_date <=']=$cutoffDate;
+			$paySchedCond['OR'][] = array('AccountSchedule.transaction_type_id'=>array('REGFE', 'INIPY', 'SBQPY'));
+			$paySchedCond['OR'][] = array('AccountSchedule.transaction_type_id'=>'ACECF', 'AccountSchedule.due_date <='=>$cutoffDate);
+			
+			
 		endif;
 	    $this->Account->hasMany['Ledger']['conditions'] = $ledgerCond;
 	    $this->Account->hasMany['Ledger']['order'] = array('Ledger.transac_date' ,'Ledger.id');
-
+		$this->Account->hasMany['AccountSchedule']['conditions'] = $paySchedCond;
+		
 	    // Retrieve account information based on the 'account_id'
 	    if($esp<2023){
 	    	$this->Account->udpateEspSource($esp);
