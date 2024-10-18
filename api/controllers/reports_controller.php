@@ -82,7 +82,7 @@ class ReportsController extends AppController{
 			$batch = array();
 
 			if($format=='new'):
-				return $this->statement(null,$sy,'current');
+				return $this->statement(null,$sy,'current',true,$billMonth);
 			endif;
 			foreach($ids as $i=>$id){
 				$this->Student->bindModel(array('belongsTo' => array('Section')));
