@@ -12,9 +12,12 @@
 							</li>
 						</ul>
 					</a-col>
-					<a-col size="6">
+					<a-col size="4">
 						<o-dropdown-filter ng-model="SOA.Active" show-section="false" show-sem="false" show-period="false" class="pull-right" >
 						</o-dropdown-filter>
+					</a-col>
+					<a-col size="2">
+						<m-formgroup ng-model="SOA.BillMonth" options="SOA.BillingMonths" hide-label="true"></m-formgroup>
 					</a-col>
 				</a-row>
 				
@@ -73,6 +76,7 @@
 					<form action="api/soa" method="GET" target="SOAframe" id="PrintSoa">
 						<input type="hidden" name="account_id" value="{{SOA.Student.id}}"/>
 						<input type="hidden" name="sy" value="{{SOA.ActiveSy}}"/>
+						<input type="hidden" name="bill_month" value="{{SOA.BillMonth}}"/>
 						<input type="hidden" name="format" value="new">
 					</form>
 					<iframe name="SOAframe"  id="SOAframe" frameborder="0" style="width:100%;height:100%;display:block;"></iframe>
@@ -83,6 +87,7 @@
 						<input type="hidden" name="sy" value="{{SOA.ActiveSy}}"/>
 						<input type="hidden" name="sem" value="{{SOA.ActiveSem}}"/>
 						<input type="hidden" name="dept" value="{{SOA.ActiveDept}}"/>
+						<input type="hidden" name="bill_month" value="{{SOA.BillMonth}}"/>
 						<input type="hidden" name="format" value="new">
 					</form>
 					<iframe name="SOAframeBatch"  id="SOAframeBatch" frameborder="0" style="width:100%;height:100%;display:block;"></iframe>

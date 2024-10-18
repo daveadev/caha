@@ -20,6 +20,12 @@ define(['app','api','atomic/bomb'],function(app){
 					console.log($app);
 				}
 			});
+			$scope.BillingMonths =[
+					//{id:'AUG2024', name:'AUG 2024'},
+					{id:'SEP2024', name:'SEP 2024'},
+					{id:'OCT2024', name:'OCT 2024'}
+				];
+			$scope.BillMonth = $scope.BillingMonths[1].id;
 		}
 		$selfScope.$watch("SOA.Active",function(active){
 			if(!active) return false;
