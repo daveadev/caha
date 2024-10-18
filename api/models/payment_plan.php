@@ -180,6 +180,28 @@ class PaymentPlan extends AppModel {
 	    }
 		
 	    $accountInfo = $this->Account->findById($account_id);
+		
+		$paysched = $accountInfo['AccountSchedule'];
+		$entries =  $accountInfo['Ledger'];
+		$payEntries = array();
+		foreach($entries as $entry):
+			$isPayment = $entry['type']=='-' && in_array($entry['transaction_type_id'],array('SBQPY','REGFE','DSCNT'));
+			if($isPayment):
+				$payEntries[] = $entry;
+			endif;
+		endforeach;
+		$this->applyPaymentDates($paysched,$payEntries);
+		$paymentDates = array();
+		foreach($paysched as $ps):
+			$pObj = array(
+				'id'=>$ps['id'],
+				'paid_amount'=>$ps['paid_amount'],
+				'paid_date'=>$ps['paid_date'],
+				'status'=>$ps['status']
+			);
+			$paymentDates[]=$pObj;
+		endforeach;
+		$this->Account->AccountSchedule->saveAll($paymentDates);
 	    $sect_id = $accountInfo['Student']['section_id'];
 	    $sectInfo = $this->Account->Student->Section->findByid($sect_id);
 		
@@ -480,5 +502,72 @@ class PaymentPlan extends AppModel {
 		endif;
 	}
 
+	protected function applyPaymentDates(&$paysched, $ledgers) {
 	
+		foreach ($paysched as &$schedule){
+				$schedule['paid_amount']=0;
+				$schedule['status']='NONE';
+				$schedule['paid_date']=null;
+			}
+			
+		foreach ($ledgers as $payment) {
+			$amountRemaining = $payment['amount'];
+			$transacId = $payment['transaction_type_id'];
+			$paymentDate = $payment['transac_date'];
+			
+			//pr($payment['ref_no']);
+			//pr($payment['amount']);
+			// Iterate over pay schedules to apply payments
+			foreach ($paysched as &$schedule) {
+				
+				if ($amountRemaining <= 0) {
+					// No more amount to allocate
+					break;
+				}
+				$matchTID =$transacId=='SBQPY' && $schedule['transaction_type_id']!='REGFE' ;
+				if($transacId=='DSCNT' && $schedule['paid_amount']==$payment['amount']){
+					$schedule['paid_amount']=0;
+					break;
+				}
+				if($transacId=='REGFE')
+					$matchTID = $transacId == $schedule['transaction_type_id'];
+				
+					
+				
+				// Only process schedules with the same account and transaction type
+				if ($matchTID &&$schedule['status']!='PAID' ) {
+					
+					$dueAmount = $schedule['due_amount'];
+					$paidAmount =$schedule['paid_amount'];
+					
+					$remainingDue = $dueAmount - $paidAmount ;
+					
+					if ($remainingDue > 0) {
+						if ($amountRemaining >= $remainingDue) {
+							// Payment fully covers this schedule's due amount
+							$schedule['paid_amount'] = $dueAmount;
+							$schedule['paid_date'] = $paymentDate;
+							$schedule['status']='PAID';
+							//echo $amountRemaining.' '.$remainingDue;
+							$amountRemaining -= $remainingDue; // Deduct from remaining amount
+							//pr($payment);
+							//pr($schedule);
+							
+							//echo "<hr>";
+						} else {
+							// Partial payment
+							//echo $amountRemaining.' '.$remainingDue.'partial';
+							$schedule['paid_amount'] += $amountRemaining;
+							$schedule['paid_date'] = $paymentDate;
+							$schedule['status']='NONE';
+							$amountRemaining = 0; // Payment fully used
+							//pr($payment);
+							//pr($schedule);
+							
+						}
+					}
+				}
+			}
+		}
+	}
 }
