@@ -521,7 +521,7 @@ class Account extends AppModel {
 	        
 	        // Distribute payment and update the payment schedule
 	        $sched = $ACObj['AccountSchedule'];
-	        $this->distributePayments($sched, $amount);
+	        $this->distributePayments($sched, $amount,$trnxObj['paid_date']);
 			$this->logPaymentHistory($account,$ref_no,$amount,$trnxObj,$source);
 	        $this->AccountSchedule->saveAll($sched);
 	        $accountInfo['amount_paid'] = $amount; 
@@ -587,11 +587,11 @@ class Account extends AppModel {
 	 * @param array $schedule Reference to the payment schedule array.
 	 * @param float $totalPayment The total payment amount to be distributed.
 	 */
-	protected function distributePayments(&$schedule, $totalPayment) {
+	protected function distributePayments(&$schedule, $totalPayment, $paidDate) {
 	    foreach ($schedule as &$payment) {
 	        // Check if the payment is unpaid and there's a remaining payment to be made
-	        $isPAID = $payment['status'] === 'UNPAID' || $payment['status'] === 'NONE' || $payment['paid_amount']<$payment['due_amount'];
-	        if ($isPAID && $totalPayment > 0) {
+	        $isUNPAID = $payment['status'] === 'UNPAID' || $payment['status'] === 'NONE' || $payment['paid_amount']<$payment['due_amount'];
+	        if ($isUNPAID && $totalPayment > 0) {
 	            // Calculate the amount to be paid for this schedule
 	            $amountToPay = min($totalPayment, $payment['due_amount'] - $payment['paid_amount']);
 
@@ -601,6 +601,7 @@ class Account extends AppModel {
 
 	            if ($payment['paid_amount'] == $payment['due_amount']) {
 	                $payment['status'] = 'PAID';
+					$payment['paid_date'] = $paidDate;
 	            }
 
 	            // Distribute excess payment to the next schedules
@@ -611,6 +612,7 @@ class Account extends AppModel {
 	                    $nextPayment['paid_amount'] += abs($totalPayment);
 	                    if ($nextPayment['paid_amount'] == $nextPayment['due_amount']) {
 	                        $nextPayment['status'] = 'PAID';
+	                        $nextPayment['paid_date'] = $paidDate;
 	                    }
 	                }
 	            }

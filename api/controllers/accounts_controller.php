@@ -152,12 +152,14 @@ class AccountsController extends AppController {
 	            			$new_account_id = $this->new_student($account_id,$esp);
 	            		endif;
 	            		$this->setup_account($account_id,$esp,$new_account_id);
-	            		$account = $this->forward_payment($account_id,$ref_no,$dtl,$esp);
+						$pay_date = $transaction['transac_date'];
+	            		$account = $this->forward_payment($account_id,$ref_no,$dtl,$esp,$pay_date);
 	            		$account['account_id']=$account_id;
 	            		return $account;
 	            	break;
 	            	case 'SBQPY': case 'REGFE':
-	            		$account = $this->forward_payment($account_id,$ref_no,$dtl,$esp);
+						$pay_date = $transaction['transac_date'];
+	            		$account = $this->forward_payment($account_id,$ref_no,$dtl,$esp,$pay_date);
 		              	return $account;
 	            	break;
 	            }
@@ -186,10 +188,10 @@ class AccountsController extends AppController {
 		return $AObj;
 	}
 
-	function forward_payment($account_id,$ref_no,$dtl,$esp){
+	function forward_payment($account_id,$ref_no,$dtl,$esp,$pay_date){
 		 // Extract the amount from the detail
         $amount = $dtl['amount'];
-		$trnxObj = array('id'=>$dtl['id'],'name'=>$dtl['description']);
+		$trnxObj = array('id'=>$dtl['id'],'name'=>$dtl['description'],'paid_date'=>$pay_date);
 		$source = 'cashier2';
         // Forward the payment using the Account model's forwardPayment function
       	$account=  $this->Account->forwardPayment($account_id, $esp, $ref_no, $amount,$trnxObj,$source);
