@@ -180,28 +180,30 @@ class PaymentPlan extends AppModel {
 	    }
 		
 	    $accountInfo = $this->Account->findById($account_id);
-		
-		$paysched = $accountInfo['AccountSchedule'];
-		$entries =  $accountInfo['Ledger'];
-		$payEntries = array();
-		foreach($entries as $entry):
-			$isPayment = $entry['type']=='-' && in_array($entry['transaction_type_id'],array('SBQPY','REGFE','DSCNT'));
-			if($isPayment):
-				$payEntries[] = $entry;
-			endif;
-		endforeach;
-		$this->applyPaymentDates($paysched,$payEntries);
-		$paymentDates = array();
-		foreach($paysched as $ps):
-			$pObj = array(
-				'id'=>$ps['id'],
-				'paid_amount'=>$ps['paid_amount'],
-				'paid_date'=>$ps['paid_date'],
-				'status'=>$ps['status']
-			);
-			$paymentDates[]=$pObj;
-		endforeach;
-		$this->Account->AccountSchedule->saveAll($paymentDates);
+		$adjustPaymentDates = false;
+		if($adjustPaymentDates):
+			$paysched = $accountInfo['AccountSchedule'];
+			$entries =  $accountInfo['Ledger'];
+			$payEntries = array();
+			foreach($entries as $entry):
+				$isPayment = $entry['type']=='-' && in_array($entry['transaction_type_id'],array('ADVPY','SBQPY','REGFE','DSCNT'));
+				if($isPayment):
+					$payEntries[] = $entry;
+				endif;
+			endforeach;
+			$this->applyPaymentDates($paysched,$payEntries);
+			$paymentDates = array();
+			foreach($paysched as $ps):
+				$pObj = array(
+					'id'=>$ps['id'],
+					'paid_amount'=>$ps['paid_amount'],
+					'paid_date'=>$ps['paid_date'],
+					'status'=>$ps['status']
+				);
+				$paymentDates[]=$pObj;
+			endforeach;
+			$this->Account->AccountSchedule->saveAll($paymentDates);
+		endif;
 	    $sect_id = $accountInfo['Student']['section_id'];
 	    $sectInfo = $this->Account->Student->Section->findByid($sect_id);
 		
@@ -525,7 +527,7 @@ class PaymentPlan extends AppModel {
 					// No more amount to allocate
 					break;
 				}
-				$matchTID =$transacId=='SBQPY' && $schedule['transaction_type_id']!='REGFE' ;
+				$matchTID =($transacId=='SBQPY'||$transacId=='ADVPY') && $schedule['transaction_type_id']!='REGFE' ;
 				if($transacId=='DSCNT' && $schedule['paid_amount']==$payment['amount']){
 					$schedule['paid_amount']=0;
 					break;
