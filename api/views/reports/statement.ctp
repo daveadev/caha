@@ -19,8 +19,8 @@ foreach($statements as $sInd=>$sObj):
 		$ASFile->payment_ins();
 		$ASFile->reply_slip($type);
 		$sno = $sObj['account']['sno'];
-		$billMonth = '07-SEP-2024';
-		$studName = $sObj['student']['full_name'];
+		$billMonth = strtoupper(str_replace(' ','-',$sObj['account']['due_now']['date']));
+		$studName = strtoupper($sObj['student']['full_name']);
 		$fileName = sprintf('%s-%s-%s.pdf',$sno,$billMonth,$studName);
 		$fileName = APP.DS.'reports'.DS.$fileName;
 		$ASFile->output($fileName,'F');
