@@ -299,20 +299,45 @@ class LedgersController extends AppController {
 	function adjust(){
 		$entry = $this->data['Ledger'];
 		$sy = $entry['esp'];
-		$sy = $entry['esp'];
 		$refNo = $this->Ledger->generateREFNO($sy, 'BAJ');
 		$entry['ref_no']= $refNo;
 		$entry['transaction_type_id'] = $entry['transact_code'];
 		$info = $entry;
 		switch($entry['transact_code']){
-			case 'ACEC':
+			case 'ACECF':
 				$transacDate = strtotime($entry['transac_date']);
-	            $billMonth = date('M', strtotime('-1 month', $transacDate)); // Get previous month
-	            $entry['description'] = $billMonth . ' AC/EC';
+
+	            $billMonthText = date('M', strtotime('-1 month', $transacDate)); // Get previous month
+		        $entry['details'] = $billMonthText . ' AC/EC';
 	            $entry['type']='+';
 	            $info = $this->Ledger->insertEntry($entry);
+
+	            // Prepare Paysched Entry
+	            // Set due date to the 7th of the transaction month
+	            $dueDate = date('Y-m-07', $transacDate);
+	            
+	            // Starting due date (fixed starting point)
+	            $startDueDate = strtotime($sy.'-08-07');
+
+	            // Calculate the difference in months between startDueDate and transacDate
+	            $monthsDiff = (date('Y', $transacDate) - date('Y', $startDueDate)) * 12 
+	                        + (date('m', $transacDate) - date('m', $startDueDate));
+	            
+	            $billMonth = strtoupper(date('MY', $transacDate));
+				
+	            $sched = $entry;
+	            $sched['due_date'] = $dueDate;
+	            $sched['bill_month'] = $billMonth;
+	            $sched['due_amount'] = $entry['amount'];
+	            $sched['status'] = 'NONE';
+	            // Order is the starting order (3rd) plus the months difference
+	            $sched['order'] = 3 + $monthsDiff;
+	            $sched = array('AccountSchedule'=>$sched);
+	            $this->Account->AccountSchedule->save($sched);
+	            pr($sched);
 			break;
 		}
+		pr($info);exit;
 		$entries = array('Ledger'=>$info);
 		return $entries;
 	}
