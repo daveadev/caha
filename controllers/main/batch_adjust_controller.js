@@ -35,7 +35,7 @@ define(['app','api','atomic/bomb','caha/api'],function(app){
 				$scope.ActiveYearLevel = $scope.YearLevels[0].id;
 			});
 			$scope.TransactCodes = [
-					{id:'ACEC', name:'AC/EC'},
+					{id:'ACECF', name:'AC/EC'},
 				];
 			$scope.TransactCode = $scope.TransactCodes[0].id;
 			$scope.PrevHeaders = ['Student', 'Amount'];
