@@ -12,17 +12,37 @@
 				<a-content>
 					<a-row>
 						<a-col size="4">
-							<m-formgroup ng-model="BAC.ActiveSY" label="School Year" options="BAC.SchoolYears" option-label="label"  ng-change="BAC.changeASY()"></m-formgroup>
-							<m-formgroup label="Section" ng-model="BAC.Section" options="BAC.Sections" option-group="year_level_id" size="'input-lg'"></m-formgroup>
-							<m-formgroup label="Transaction Code" ng-model="BAC.TransactCode" options="BAC.TransactCodes" size="'input-lg'"></m-formgroup>
-							<m-formgroup label="Amount" ng-model="BAC.Amount" type="'number'" size="'input-lg'"></m-formgroup>
-							<a-button type="primary" class="btn-block" size="lg" ng-click="BAC.preview()" ng-show="!BAC.isPreview">Load</a-button>
-							<a-button type="default" class="btn-block" size="lg" ng-click="BAC.revert()" ng-show="BAC.isPreview">Revert</a-button>
-							<a-button type="success" class="btn-block" size="lg" ng-click="BAC.applyChanges()" ng-show="BAC.isPreview">Apply Changes</a-button>
+							<m-formgroup ng-model="BAC.ActiveSY" label="School Year" options="BAC.SchoolYears" option-label="label"  ng-change="BAC.changeASY()" ng-disabled="true"></m-formgroup>
+
+							<m-formgroup label="Transaction Code" ng-model="BAC.TransactCode" options="BAC.TransactCodes" size="'input-lg'" ng-disabled="BAC.isPreview"></m-formgroup>
+							<m-formgroup label="Transaction Date" ng-model="BAC.TransactDate" type="'date'" size="'input-lg'" ng-disabled="BAC.isPreview"></m-formgroup>
+							<m-formgroup label="Section" ng-model="BAC.Section" options="BAC.Sections" option-group="year_level_id" size="'input-lg'" ng-disabled="BAC.isPreview"></m-formgroup>
+							<m-formgroup label="Amount" ng-model="BAC.Amount" type="'number'" size="'input-lg'" ng-disabled="BAC.isPreview"></m-formgroup>
+							<a-button type="primary" class="btn-block" size="lg" ng-click="BAC.previewList()" ng-disabled="BAC.isLoading || !BAC.isComplete" ng-show="!BAC.isPreview">
+								{{BAC.isLoading?'Loading...':'Load'}}
+							</a-button>
+							<a-button type="success" class="btn-block" size="lg" ng-click="BAC.applyChanges()" ng-disabled="BAC.isSaving || BAC.isAdjusted" ng-show="BAC.isPreview">	
+
+							{{BAC.isSaving?'Saving...':(BAC.isAdjusted?'Saved':'Apply Changes')}}
+							</a-button>
+							<a-button type="default" class="btn-block" ng-click="BAC.revert()" ng-show="BAC.isPreview" ng-disabled="BAC.isSaving" >
+								{{BAC.isAdjusted?'Reset':'Revert'}}
+							</a-button>	
+							
+							
 							
 						</a-col>
 						<a-col size="8">
-							<m-table-edit headers="BAC.PrevHeaders" props="BAC.PrevProps" data="BAC.PrevData" inputs="BAC.PrevInputs" on-edit-save="BAC.updateItems"  allow-add="false" allow-del="false" active-row="BAC.ActiveRecord"></m-table-edit>
+							<div ng-show="BAC.adjustMode ==='EDIT'">
+								<m-table-edit headers="BAC.PrevHeaders" props="BAC.PrevProps" data="BAC.PrevData" inputs="BAC.PrevInputs" on-edit-save="BAC.updateItems"  allow-add="false" allow-del="false" max-height="400"></m-table-edit>
+							</div>
+
+							<div ng-show="BAC.adjustMode ==='SAVE'">
+								<a-table headers="BAC.PrevHeaders" props="BAC.PrevProps" data="BAC.AdjustData" ng-model="BAC.ActiveAdjust"></a-table>
+								
+							</div>
+							
+
 						</a-col>
 					</a-row>
 				</a-content>

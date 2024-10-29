@@ -295,4 +295,25 @@ class LedgersController extends AppController {
 		endforeach;
 		return $entries;
 	}
+
+	function adjust(){
+		$entry = $this->data['Ledger'];
+		$sy = $entry['esp'];
+		$sy = $entry['esp'];
+		$refNo = $this->Ledger->generateREFNO($sy, 'BAJ');
+		$entry['ref_no']= $refNo;
+		$entry['transaction_type_id'] = $entry['transact_code'];
+		$info = $entry;
+		switch($entry['transact_code']){
+			case 'ACEC':
+				$transacDate = strtotime($entry['transac_date']);
+	            $billMonth = date('M', strtotime('-1 month', $transacDate)); // Get previous month
+	            $entry['description'] = $billMonth . ' AC/EC';
+	            $entry['type']='+';
+	            $info = $this->Ledger->insertEntry($entry);
+			break;
+		}
+		$entries = array('Ledger'=>$info);
+		return $entries;
+	}
 }

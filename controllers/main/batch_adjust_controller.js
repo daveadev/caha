@@ -37,17 +37,108 @@ define(['app','api','atomic/bomb','caha/api'],function(app){
 			$scope.TransactCodes = [
 					{id:'ACEC', name:'AC/EC'},
 				];
+			$scope.TransactCode = $scope.TransactCodes[0].id;
 			$scope.PrevHeaders = ['Student', 'Amount'];
-			$scope.PrevProps = ['student_name', 'amount'];
+			$scope.PrevProps = ['name', 'amount'];
 			$scope.PrevData = [
-					{student_name:'Juan Dela Cruz',amount:999}
+					{name:'Juan Dela Cruz',amount:999}
 				];
-			
-			$scope.PrevInputs = [{field:'student_name',disabled:true, enableIf:'OTHRS'},{field:'amount',type:'number'}];
+			$scope.AdjustData = [];
+			$scope.PrevInputs = [{field:'name',disabled:true, enableIf:'OTHRS'},{field:'amount',type:'number'}];
 			$scope.updateItems = function(data){
-				console.log(data);
+				$scope.PrevData = data;
+			}
+			$selfScope.$watchGroup(['BAC.Amount','BAC.Section','BAC.TransactCode'],function(values){
+				$scope.isComplete = values[0] && values[1] && values[2];
+			});
+			$scope.ActiveAdjust = {};
+		}
+
+		$scope.previewList = function(){
+			$scope.isLoading = true;
+			$scope.PrevData = [];
+			$scope.AdjustData = [];
+			$scope.adjustMode = 'EDIT';
+			let filter = {
+				section_id:$scope.Section,
+				esp:$scope.ActiveSY,
+				limit:'less',
+			}
+			let success = function(response){
+				let classlist = response.data;
+				for(var i in classlist){
+					classlist[i].amount = $scope.Amount;
+				}
+				$scope.PrevData = classlist;
+				$scope.isPreview = true;
+				$scope.isLoading = false;
+			};
+			let error = function(response){
+				$scope.isLoading = false;
+			};
+			api.GET('classlist_blocks',filter,success,error);
+		}
+		$scope.revert =function(){
+			$scope.isPreview = false;
+			$scope.isLoading = false;
+			$scope.PrevData = [];
+			$scope.AdjustData = [];
+			$scope.adjustMode = 'PREVIEW';
+			if($scope.isAdjusted){
+				let amount = angular.copy($scope.Amount);
+				for(var i in $scope.Sections){
+					let sectObj = $scope.Sections[i];
+					let sectId = $scope.Section;
+					if(sectObj.id==sectId){
+						sectObj.name += ` - AC/EC ${amount}`;
+						sectObj.disabled = true;
+					}
+				}
+				$scope.isAdjusted = false;
+				$scope.Section = null;
+				$scope.Amount = null;
+
+			}
+		}
+		$scope.applyChanges = function(){
+			$scope.adjustMode = 'SAVE';
+			$scope.AdjustData =  angular.copy($scope.PrevData);
+			$scope.isSaving = true;
+			saveAdjustment($scope.AdjustData,0);
+		}
+		function saveAdjustment(records,index){
+			if(index>records.length-1){
+				adjustmentCompleted();
+				
+			}
+			let record = angular.copy(records[index]);
+			if(record.amount==0)
+				return saveAdjustment(records,index+1);
+
+
+			let adjustment = {
+				'account_id': record.student_id,
+				'transact_code':$scope.TransactCode,
+				'amount':record.amount,
+				'esp':$scope.ActiveSY
 			}
 
+			adjustment.transac_date =  $filter('date')(new Date($scope.TransactDate),DATE_FORMAT);;
+			let success = function(response){
+				console.log(response);
+				return saveAdjustment(records,index+1);
+			}
+			let error = function(response){
+				console.log(response);
+			}
+
+			$scope.ActiveAdjust = record;
+			api.POST('ledgers/adjust',adjustment,success,error);
+		}
+
+		function adjustmentCompleted(){
+			$scope.isAdjusted = true;
+			$scope.isSaving = false;
 		}
 	}]);
 
