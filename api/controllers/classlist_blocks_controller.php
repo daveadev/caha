@@ -6,7 +6,7 @@ class ClasslistBlocksController extends AppController {
 
 	function index() {
 		
-		$this->ClasslistBlock->recursive = 1;
+		$this->ClasslistBlock->recursive = 0;
 		$classlistBlocks = $this->paginate();
 		//pr($classlistBlocks);exit;
 		
@@ -28,7 +28,7 @@ class ClasslistBlocksController extends AppController {
                 $CLB['ClasslistBlock']['department_id']=$section['YearLevel']['department_id'];
                 $CLB['ClasslistBlock']['year_level_id']=$section['YearLevel']['id'];
                 $CLB['ClasslistBlock']['section']=$section['name'];
-                $CLB['ClasslistBlock']['program']=$section['Program']['name'];
+                //$CLB['ClasslistBlock']['program']=$section['Program']['name'];
 				
 				
 				$classlistBlocks[$i]=$CLB;
