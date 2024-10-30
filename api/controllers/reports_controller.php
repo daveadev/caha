@@ -134,6 +134,9 @@ class ReportsController extends AppController{
 			}
 			$ids = $this->ClasslistBlock->getIds($sec_id,$sy);
 		endif;
+		
+		if(isset($_GET['bill_month']))
+			$billMonth = $_GET['bill_month'];
 	
 		$statements=array();
 		foreach($ids as $accId):
