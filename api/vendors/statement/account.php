@@ -9,7 +9,7 @@ class AccountStatement extends Formsheet{
 	protected static $_orient = 'P';	
 	protected static $curr_page = 1;
 	protected static $page_count;
-	protected static $_MAX_LINES=10;
+	protected static $_MAX_LINES=8;
 	function AccountStatement($data=null){
 		$this->data = $data;
 		$this->loadConfig($this->data['config']);
@@ -246,7 +246,7 @@ class AccountStatement extends Formsheet{
 		$ledger = $this->data[$ledger_key];
 		$metrics = array(
 			'base_x'=> 0.5,
-			'base_y'=> 0.125+$last_y,
+			'base_y'=> 0.05+$last_y,
 			'width'=> 7.5,
 			'height'=> 1.5,
 			'cols'=> 38,
@@ -287,7 +287,7 @@ class AccountStatement extends Formsheet{
 			$this->rightText(27,$y,$entry['pay'],5,'');
 			$this->rightText(32,$y,$entry['bal'],5,'');
 			$_ln_ctr++;
-			if($_ln_ctr>AccountStatement::$_MAX_LINES):
+			if($_ln_ctr>AccountStatement::$_MAX_LINES &&$start==0 ):
 				$y+=1.5;
 				$this->centerText(0,$y,"**************** See page 2 of 2 **************** ",38,'i');
 				$this->payment_ins();
