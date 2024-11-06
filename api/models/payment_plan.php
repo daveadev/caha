@@ -157,7 +157,7 @@ class PaymentPlan extends AppModel {
 		
 		$ledgerCond =  array('Ledger.esp' => floor($esp));
 		$paySchedCond = array();
-		$cutoffDate = date('Y-m-d', time());
+		$cutoffDate = date("Y-m-d", strtotime("last day of this month"));
 		
 		if($billMonth!='current'):
 			$billYearText = substr($billMonth, 0, 3);
