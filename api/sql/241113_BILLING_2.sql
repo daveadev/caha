@@ -1,0 +1,1 @@
+DELETE FROM `billings` WHERE `id`='GRB24001842';
