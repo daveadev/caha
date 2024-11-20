@@ -115,7 +115,13 @@ class Transaction extends AppModel {
 					}
 				}
 				if(isset($typ) && isset($end) && isset($start)):
-					$conds = array('Transaction.ref_no LIKE'=> '%'.$typ.'%','and'=>array('Transaction.transac_date <='=>$end,'Transaction.transac_date >='=>$start));
+					$conds =array('Transaction.transac_date <='=>$end,
+							'Transaction.transac_date >='=>$start);
+					if($typ=='OR'):
+						$conds['Transaction.ref_no REGEXP'] = '^#|^OR[[:space:]]*[0-9]+|^SI[[:space:]]*[0-9]+';
+					else:
+						$conds['Transaction.ref_no LIKE'] = $typ.'%';
+					endif;
 				endif;
 				
 			}
