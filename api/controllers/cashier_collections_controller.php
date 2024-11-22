@@ -18,9 +18,9 @@ class CashierCollectionsController extends AppController {
 		if(!isset($_GET['cashr'])){
 			$start = $_GET['from'];
 			$end = $_GET['to'];
-			$conds =  array('Transaction.ref_no LIKE'=> '%'.$typ.'%','and'=>array('transac_date <='=>$end,'transac_date >='=>$start));
+			$conds =  array('Transaction.type LIKE'=> '%'.$typ.'%','and'=>array('transac_date <='=>$end,'transac_date >='=>$start));
 			if($type!=='OR'){
-				$this->paginate['CashierCollection']['contain'] = array('Student','Account','TransactionDetail','Booklet');
+				//$this->paginate['CashierCollection']['contain'] = array('Student','Account','TransactionDetail','Booklet');
 				//$conds =  array('Transaction.ref_no LIKE'=> $typ.'%','and'=>array('transac_date <='=>$end,'transac_date >='=>$start));
 			}
 			$cancelled = $this->Ledger->find('all',
@@ -31,7 +31,13 @@ class CashierCollectionsController extends AppController {
 									'Ledger.ref_no LIKE'=> 'X'.$typ.'%')));
 		}else{
 			$date = $_GET['date'];
-			$conds =  array('Transaction.ref_no LIKE'=> '%'.$typ.'%','transac_date'=>$date);
+			$conds =  array('transac_date'=>$date);
+			if($type=='OR'):
+				$conds['Transaction.ref_no REGEXP'] = '^#|^OR[[:space:]]*[0-9]+|^SI[[:space:]]*[0-9]+';
+			else:
+				$conds['Transaction.ref_no LIKE'] = $typ.'%';
+			endif;
+				
 			if($type!=='OR'){
 				$this->paginate['CashierCollection']['contain'] = array('Student','Account','TransactionDetail','Booklet');
 			}
@@ -78,6 +84,7 @@ class CashierCollectionsController extends AppController {
 			$t_ors = array();
 			$m_ors = array();
 			$school_years = array();
+			
 			foreach($collections as $i=>$col){
 				$vchr=null;
 				$sy_col = floor($col['CashierCollection']['esp']);
@@ -94,7 +101,7 @@ class CashierCollectionsController extends AppController {
 						$old_accounts+=$amt_col;
 						array_push($o_ors,$refno[1]);
 						break;
-					case 'INIPY': 
+					case 'INIPY':
 						$tuitions+=$amt_col;
 						array_push($t_ors,$refno[1]);
 						break;
