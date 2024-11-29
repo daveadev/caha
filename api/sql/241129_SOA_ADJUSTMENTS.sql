@@ -7,3 +7,89 @@ UPDATE account_schedules
 UPDATE account_schedules
 	SET due_date='2024-12-07'
 	WHERE id=5176;
+
+UPDATE account_schedules
+	SET paid_amount=0.11
+	WHERE id=5737;
+UPDATE account_schedules
+	SET paid_amount=0
+	WHERE id=5943;
+UPDATE account_schedules
+	SET paid_amount=0
+	WHERE id=5737;
+UPDATE account_schedules
+	SET paid_amount=2240.0,paid_date='2024-07-15',status='PAID'
+	WHERE id=5103;
+UPDATE account_schedules
+	SET status='NONE'
+	WHERE id=5943;
+UPDATE account_schedules
+	SET status='NONE'
+	WHERE id=5737;
+
+UPDATE account_schedules
+	SET status='PAID',paid_amount=246
+	WHERE id=5940;
+UPDATE account_schedules
+	SET status='PAID',paid_amount=2240.0
+	WHERE id=5136;
+UPDATE account_schedules
+	SET status='NONE',paid_amount=0
+	WHERE id=6262;
+UPDATE account_schedules
+	SET status='NONE',paid_amount=0
+	WHERE id=5940;
+UPDATE account_schedules
+	SET status='PAID',paid_amount=174
+	WHERE id=5734;
+UPDATE account_schedules
+	SET status='PAID',paid_amount=246
+	WHERE id=5940;
+UPDATE account_schedules
+	SET status='PAID',paid_amount=2240.0
+	WHERE id=5136;
+UPDATE account_schedules
+	SET status='NONE',paid_amount=0
+	WHERE id=6262;
+UPDATE account_schedules
+	SET status='NONE',paid_amount=0
+	WHERE id=5940;
+UPDATE account_schedules
+	SET status='PAID',paid_amount=174
+	WHERE id=5734;
+UPDATE account_schedules
+	SET paid_amount=36.11
+	WHERE id=6273;
+UPDATE account_schedules
+	SET paid_amount=2240,status='PAID'
+	WHERE id=5015;
+UPDATE account_schedules
+	SET `order`=4
+	WHERE id=5515;
+UPDATE account_schedules
+	SET paid_amount=0,status='NONE'
+	WHERE id=5670;
+UPDATE account_schedules
+	SET paid_amount=2170.0,status='PAID'
+	WHERE id=4289;
+UPDATE account_schedules
+	SET paid_amount=0,status='NONE'
+	WHERE id=5876;
+UPDATE account_schedules
+	SET paid_amount=2170.0,status='PAID'
+	WHERE id=4259;
+UPDATE account_schedules
+	SET paid_amount=0,status='NONE'
+	WHERE id=5879;
+UPDATE account_schedules
+	SET status='PAID',paid_amount=2230.0
+	WHERE id=4663;
+UPDATE account_schedules
+	SET status='NONE',paid_amount=0
+	WHERE id=5960;
+UPDATE account_schedules
+	SET paid_amount=0
+	WHERE id=3694;
+UPDATE account_schedules
+	SET status='PAID',paid_amount=127
+	WHERE id=5823;
