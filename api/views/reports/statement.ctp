@@ -19,10 +19,17 @@ foreach($statements as $sInd=>$sObj):
 		$ASFile->payment_ins();
 		$ASFile->reply_slip($type);
 		$sno = $sObj['account']['sno'];
-		$billMonth = strtoupper(str_replace(' ','-',$sObj['account']['due_now']['date']));
+		$billMonth = strtoupper(str_replace(' ', '-', $sObj['account']['due_now']['date']));
 		$studName = strtoupper($sObj['student']['full_name']);
-		$fileName = sprintf('%s-%s-%s.pdf',$sno,$billMonth,$studName);
-		$fileName = APP.DS.'reports'.DS.$fileName;
+		$fileName = sprintf('%s-%s-%s.pdf', $sno, $billMonth, $studName);
+		$folderPath = APP . DS . 'reports' . DS . $billMonth;
+
+		// Check if the folder exists; if not, create it
+		if (!is_dir($folderPath)) {
+			mkdir($folderPath, 0755, true); // Create folder with recursive flag
+		}
+
+		$fileName = $folderPath . DS . $fileName;
 		$ASFile->output($fileName,'F');
 	endif;
 
