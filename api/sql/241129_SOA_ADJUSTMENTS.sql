@@ -1,0 +1,9 @@
+UPDATE account_schedules
+	SET paid_amount=127.0
+	WHERE id=5818;
+UPDATE account_schedules
+	SET paid_amount=0
+	WHERE id=3748;
+UPDATE account_schedules
+	SET due_date='2024-12-07'
+	WHERE id=5176;
