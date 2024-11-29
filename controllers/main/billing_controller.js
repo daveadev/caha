@@ -35,8 +35,8 @@ define(['app','api','atomic/bomb','caha/api'],function(app){
 				$scope.ActiveYearLevel = $scope.YearLevels[0].id;
 			});
 
-			$scope.BillHeaders = [{class:'col-md-2',label:'Stud No.'},{class:'col-md-3',label:'Name'},'Section','Billing No.',{class:'col-md-2 amount',label:'Due Amount'},{class:'col-md-2 amount' ,label:'Paid Amount'},'Status'];
-			$scope.BillProps = ['sno','student','section','billing_no','due_amount_disp','paid_amount_disp','status'];
+			$scope.BillHeaders = [{class:'col-md-1',label:'Stud No.'},{class:'col-md-3',label:'Name'},'Section','Billing No.',{class:'col-md-2 amount',label:'Due Amount'},{class:'col-md-2 amount' ,label:'Paid Amount'},'Online','Status'];
+			$scope.BillProps = ['sno','student','section','billing_no','due_amount_disp','paid_amount_disp','has_online_pay','status'];
 			$scope.BillData=[];
 			$scope.SearchFields =['student', 'sno'];
 			$scope.BillObj =null;
@@ -132,12 +132,35 @@ define(['app','api','atomic/bomb','caha/api'],function(app){
 				}
 				$scope.BillData = billData;
 				$scope.filterBill();
+				$scope.getAllPayments();
 			};
 			let error = function(response){
 				alert(response.meta.message);
 
 			};
 			api.GET('billings',data,success,error);
+		}
+
+		$scope.getAllPayments = function(){
+			let success = function(response){
+				let onlinePayments = response.data;
+				let hasOnlinePay = {};
+				for(var index in onlinePayments){
+					let opObj = onlinePayments[index];
+					hasOnlinePay[opObj.sno] = true;
+				}
+				for(var index in $scope.BillData){
+					let bObj = $scope.BillData[index];
+					let sno = bObj.sno;
+					$scope.BillData[index].has_online_pay = hasOnlinePay[sno]?'Yes':'-';
+				}
+
+			}
+			let error = function(response){
+				alert(response.meta.message);
+
+			};
+			cahaapi.getAllPayments('Pending',success,error);
 		}
 
 		$scope.updateSOA = function(){

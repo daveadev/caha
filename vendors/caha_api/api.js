@@ -56,6 +56,16 @@ define(['app','api','atomic/bomb'],function(app){
 
         }
 
+        this.getAllPayments = function(status,success,error){
+            let getURL = `https://rainbow.marqa.one/proof-api/status/${status}`;
+
+              // Upload to the server
+            return $http.get(getURL, {
+                headers: { 'Content-Type': 'application/json' } // Use 'application/json' since you're sending JSON
+            }).then(success, error);
+
+        }
+
         this.updatePayment = function(sno,token,data,success,error){
             let updateURL = `https://rainbow.marqa.one/proof-api/update_payment/${sno}/${token}`;
 
