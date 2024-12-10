@@ -1,0 +1,9 @@
+UPDATE account_schedules
+	SET paid_amount=2170
+	WHERE id=4300;
+UPDATE account_schedules
+	SET paid_amount=0,status='NONE'
+	WHERE id=5875;
+UPDATE account_schedules
+	SET `order`=4
+	WHERE id=6324;
