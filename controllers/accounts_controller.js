@@ -1,9 +1,12 @@
 "use strict";
-define(['app', 'api', 'simple-sheet'], function(app) {
-    app.register.controller('AccountController', ['$scope', '$rootScope', '$uibModal', 'api', function($scope, $rootScope, $uibModal, api) {
+define(['app', 'api', 'simple-sheet','atomic/bomb'], function(app) {
+    app.register.controller('AccountController', ['$scope', '$rootScope', '$uibModal', 'api', 'aModal','Atomic',
+    	function($scope, $rootScope, $uibModal, api, aModal, atomic) {
         $scope.list = function() {
             $rootScope.__MODULE_NAME = 'Accounts';
-
+            atomic.ready(function(){
+            	$scope.Sections = atomic.Sections;
+            });
             //Get accounts.js
             function getAccounts(data) {
                 $scope.DataLoading = true;
@@ -142,6 +145,8 @@ define(['app', 'api', 'simple-sheet'], function(app) {
                 });
             };
 			$scope.openAccountModal = function(back_log) {
+				aModal.open('AccountModal');
+				return;
                 var modalInstance = $uibModal.open({
                     animation: true,
                     templateUrl: 'AccountModal.html',
@@ -219,9 +224,35 @@ define(['app', 'api', 'simple-sheet'], function(app) {
         }
     }]);
 	
-	app.register.controller('AccountModalController', ['$scope', '$uibModalInstance', 'api', 'back_log', function($scope, $uibModalInstance, api, back_log) {
-		 $scope.closeModal = function() {
-            $uibModalInstance.dismiss('cancel');
+	app.register.controller('AccountModalController', ['$scope','$rootScope','$filter','$timeout','api','aModal','Atomic',
+	function($scope,$rootScope,$filter,$timeout,api,aModal,atomic){
+		const $selfScope =  $scope;
+		$scope = this;
+
+		
+		$scope.init = function(){
+			atomic.ready(function(){
+				$scope.Sections = atomic.Sections;
+			});
+
+			$scope.SchedHeaders = ['Due Date', 'Due Amount'];
+			$scope.SchedProps = ['due_date','due_amount'];
+			$scope.SchedInputs = [{field:'due_date', type:'date'},{field:'due_amount',type:'number'}];
+
+			$scope.LedgerHeaders = ['Fee','Amount'];
+			$scope.LedgerProps = ['fee_id','amount'];
+			$scope.LedgerInputs = [{field:'fee_id'},{field:'amount',type:'number'}];
+		}
+		$scope.updateSched = function(sched){
+
+		}
+
+		$selfScope.$on('OpenAccountModal',function(){
+			$scope.init();
+		});
+
+		$scope.closeModal = function() {
+            aModal.close('AccountModal');
         };
 
 		

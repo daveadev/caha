@@ -285,6 +285,7 @@
                           </div>
                     </uib-tab>
                     <uib-tab index="1" heading="Schedule">
+
                     </uib-tab>
                     <uib-tab index="2" heading="Ledger">
                     </uib-tab>
@@ -295,5 +296,59 @@
                 <button class="btn btn-default pull-left" type="button" ng-click="closeModal()">Close</button>
             </div>
         </script>
+
+        <div ng-controller="AccountModalController as AMC" ng-init="AMC.init()">
+            <a-modal id="AccountModal" title="Student Account">
+                <a-modal-body>
+
+                    <uib-tabset type="tabs" active="activeJustified"  active="ActiveTabIndex">
+                    <uib-tab index="0" heading="Account Info">
+                        <a-row>
+                            <a-col size="6">
+                                <m-formgroup ng-model="AMC.Account.sno" label="Student Number"></m-formgroup>
+                            </a-col>
+                            <a-col size="6">
+                                <m-formgroup ng-model="AMC.Account.section_id" label="Section" options="AMC.Sections" option-group="year_level_id"></m-formgroup>
+                            </a-col>
+                        </a-row>
+                         <a-row>
+                            <a-col>
+                                <m-formgroup ng-model="AMC.Account.last_name" label="Last Name"></m-formgroup>
+                            </a-col>
+                        </a-row>
+                        <a-row>
+                            <a-col>
+                                <m-formgroup ng-model="AMC.Account.first_name" label="First Name"></m-formgroup>
+                            </a-col>
+                        </a-row>
+                        <a-row>
+                            <a-col>
+                                <m-formgroup ng-model="AMC.Account.middle_name" label="Middle Name"></m-formgroup>
+                            </a-col>
+                        </a-row>
+                        
+                    </uib-tab>
+                    <uib-tab index="1" heading="Pay Sched">
+                        <m-table-edit headers="AMC.SchedHeaders" props="AMC.SchedProps" data="AMC.SchedData" inputs="AMC.SchedInputs" on-edit-save="AMC.updateSched"  ></m-table-edit>
+
+                    </uib-tab>
+                    <uib-tab index="2" heading="Fees">
+                         <m-table-edit headers="AMC.LedgerHeaders" props="AMC.LedgerProps" data="AMC.LedgerData" inputs="AMC.LedgerInputs" on-edit-save="AMC.updateLedger"  ></m-table-edit>
+                    </uib-tab>
+                </uib-tabset>
+                </a-modal-body>
+                <a-modal-footer>
+                <a-row>
+                    <a-col>
+                        <a-button opt-class="pull-left" ng-click="AMC.closeModal()">Close</a-button>
+                        <a-button type="primary"ng-click="AMC.confirmPayment()" ng-disabled="!AMC.isAccountObjValid">
+                            Confirm
+                    </a-button>
+                    </a-col>
+                </a-row>
+                
+            </a-modal-footer>
+            </a-modal> 
+        </div>
     </div>
 </div>
