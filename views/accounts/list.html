@@ -329,11 +329,24 @@
                         
                     </uib-tab>
                     <uib-tab index="1" heading="Pay Sched">
-                        <m-table-edit headers="AMC.SchedHeaders" props="AMC.SchedProps" data="AMC.SchedData" inputs="AMC.SchedInputs" on-edit-save="AMC.updateSched"  ></m-table-edit>
+                        <a-row>
+                            <a-col size="4">
+                                <m-formgroup ng-model="AMC.Account.date_enrolled" label="Date Enrolled" type="'date'" />
+                            </a-col>
+                            <a-col size="4">
+                                <m-formgroup ng-model="AMC.Account.last_billing" label="Last Billing" type="'date'"/>
+                            </a-col>
+                            <a-col size="4">
+                                <a-button type="default-block" style="margin-top:25px;" ng-click="AMC.computeSched()">
+                                    Run Schedule
+                                </a-button>
+                            </a-col>
+                        </a-row>
+                        <m-table-edit headers="AMC.SchedHeaders" props="AMC.SchedProps" data="AMC.SchedData" inputs="AMC.SchedInputs" allow-add="false"  allow-del="false"on-edit-save="AMC.updateSched"  ></m-table-edit>
 
                     </uib-tab>
                     <uib-tab index="2" heading="Fees">
-                         <m-table-edit headers="AMC.LedgerHeaders" props="AMC.LedgerProps" data="AMC.LedgerData" inputs="AMC.LedgerInputs" on-edit-save="AMC.updateLedger"  ></m-table-edit>
+                         <m-table-edit headers="AMC.LedgerHeaders" props="AMC.LedgerProps" data="AMC.LedgerData" inputs="AMC.LedgerInputs" on-edit-save="AMC.updateLedger" max-height="'300px'"  ></m-table-edit>
                     </uib-tab>
                 </uib-tabset>
                 </a-modal-body>

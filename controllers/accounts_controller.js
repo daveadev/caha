@@ -1,5 +1,5 @@
 "use strict";
-define(['app', 'api', 'simple-sheet','atomic/bomb'], function(app) {
+define(['app', 'fee','api', 'simple-sheet','atomic/bomb'], function(app,fee) {
     app.register.controller('AccountController', ['$scope', '$rootScope', '$uibModal', 'api', 'aModal','Atomic',
     	function($scope, $rootScope, $uibModal, api, aModal, atomic) {
         $scope.list = function() {
@@ -145,7 +145,7 @@ define(['app', 'api', 'simple-sheet','atomic/bomb'], function(app) {
                 });
             };
 			$scope.openAccountModal = function(back_log) {
-				aModal.open('AccountModal');
+				$rootScope.$broadcast('OpenAccountModal');
 				return;
                 var modalInstance = $uibModal.open({
                     animation: true,
@@ -235,19 +235,27 @@ define(['app', 'api', 'simple-sheet','atomic/bomb'], function(app) {
 				$scope.Sections = atomic.Sections;
 			});
 
-			$scope.SchedHeaders = ['Due Date', 'Due Amount'];
-			$scope.SchedProps = ['due_date','due_amount'];
-			$scope.SchedInputs = [{field:'due_date', type:'date'},{field:'due_amount',type:'number'}];
+			$scope.SchedHeaders = ['Bill Month',{label:'Due Date',class:'col-md-4'}, {label:'Due Amount',class:'col-md-4'}];
+			$scope.SchedProps = ['label','due_date','due_amount'];
+			$scope.SchedInputs = [{field:'label'},{field:'due_date', type:'date'},{field:'due_amount',type:'number'}];
 
 			$scope.LedgerHeaders = ['Fee','Amount'];
 			$scope.LedgerProps = ['fee_id','amount'];
-			$scope.LedgerInputs = [{field:'fee_id'},{field:'amount',type:'number'}];
+			$scope.LedgerFees = fee.items;
+			$scope.LedgerInputs = [{field:'fee_id',options:$scope.LedgerFees},{field:'amount',type:'number'}];
+
+			$scope.Account = {};
+			$scope.Account.date_enrolled = new Date();
+			$scope.Account.last_billing = new Date('2025-04-07'); // TODOS: Add in system defaults
 		}
+
+
 		$scope.updateSched = function(sched){
 
 		}
 
 		$selfScope.$on('OpenAccountModal',function(){
+			aModal.open('AccountModal');
 			$scope.init();
 		});
 
@@ -263,6 +271,51 @@ define(['app', 'api', 'simple-sheet','atomic/bomb'], function(app) {
                 
             });
         };
+        $scope.computeSched = function(){
+        	let enrollDate = $scope.Account.date_enrolled;
+        	let lastBillDate = $scope.Account.last_billing;
+        	let schedule = computePaysched(enrollDate, lastBillDate);
+        	$scope.SchedData = schedule;
+        }
+
+        function computePaysched(enrollDate, lastBillDate) {
+		    let schedule = [];
+
+		    // 1. Upon Enrollment
+		    schedule.push({
+		        due_date: enrollDate,
+		        label: "Upon Enrollment",
+		        due_amount: 0
+		    });
+
+		    // 2. Generate subsequent months until lastBillDate
+		    let current = new Date(enrollDate);
+		    current.setMonth(current.getMonth() + 1);
+		    const dueDay = lastBillDate.getDate();
+
+		    while (current.getFullYear() < lastBillDate.getFullYear() ||
+		           (current.getFullYear() === lastBillDate.getFullYear() && current.getMonth() <= lastBillDate.getMonth())) {
+
+		        const daysInMonth = new Date(current.getFullYear(), current.getMonth() + 1, 0).getDate();
+		        current.setDate(Math.min(dueDay, daysInMonth));
+
+		        schedule.push({
+		            due_date: current,
+		            label: formatLabel(current),
+		            due_amount: 0
+		        });
+
+		        current = new Date(current);
+		        current.setMonth(current.getMonth() + 1);
+		    }
+
+		    return schedule;
+		}
+
+		function formatLabel(d) {
+		    const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+		    return `${months[d.getMonth()]} ${d.getFullYear()}`;
+		}
 	
 	}]);
 });

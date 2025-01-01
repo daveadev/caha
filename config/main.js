@@ -43,6 +43,7 @@ require.config({
         'exceljs':'../vendors/node_modules/exceljs/dist/exceljs',
 		'jszip': '../vendors/excel-reader/jszip',
         'transact':'../utils/transactions',
+        'fee':'../utils/fees',
         'booklet':'../utils/booklets',
         'adjust-memo':'../utils/adjust_memo',
         'caha':'../vendors/caha_api'
