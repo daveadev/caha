@@ -85,13 +85,15 @@ class OfficialReceipt extends Formsheet{
 			$this->rightText(31.25,$y,$itm['amount'],'','');
 			$y++;
 		}
-		$this->rightText(15,$y,'***** Nothing follows ****','','');
 		//pr($data); exit();
+		//$data['check_details']='CHECK XXX';
 		if(isset($data['check_details'])){
 			$this->rightText(15,$y,'','','');
 			$this->rightText(15,$y,$data['check_details'],'','');
+			$y++;
 		}
-
+		$this->rightText(15,$y,'***** Nothing follows ****','','');
+		
 		$this->GRID['font_size']=9;
 		
 		//Total
