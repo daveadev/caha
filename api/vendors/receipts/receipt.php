@@ -98,6 +98,9 @@ class OfficialReceipt extends Formsheet{
 		
 		//Total
 		$total_sales =  number_format($data['total_paid'],2,'.',',');
+		$this->rightText(31.25,37.25,$total_sales,'','');
+		$this->rightText(31.25,38.25,'0.00','','');
+		$this->rightText(31.25,39.25,'0.00','','');
 		$this->rightText(31.25,40.25,$total_sales,'','');
 		
 		//Cashier
