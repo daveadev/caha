@@ -27,6 +27,7 @@ define(['app','api','atomic/bomb'],function(app){
 					{id:'NOV2024', name:'NOV 2024'},
 					{id:'DEC2024', name:'DEC 2024'},
 					{id:'JAN2025', name:'JAN 2025'},
+					{id:'FEB2025', name:'FEB 2025'}
 				];
 			$scope.BillMonth = $scope.BillingMonths[4].id;
 		}
