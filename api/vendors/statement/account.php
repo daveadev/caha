@@ -9,7 +9,7 @@ class AccountStatement extends Formsheet{
 	protected static $_orient = 'P';	
 	protected static $curr_page = 1;
 	protected static $page_count;
-	protected static $_MAX_LINES=8;
+	protected static $_MAX_LINES=6;
 	function AccountStatement($data=null){
 		$this->data = $data;
 		$this->loadConfig($this->data['config']);
