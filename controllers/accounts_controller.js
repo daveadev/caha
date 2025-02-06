@@ -238,19 +238,43 @@ define(['app', 'fee','api', 'simple-sheet','atomic/bomb'], function(app,fee) {
 			$scope.SchedHeaders = ['Bill Month',{label:'Due Date',class:'col-md-4'}, {label:'Due Amount',class:'col-md-4'}];
 			$scope.SchedProps = ['label','due_date','due_amount'];
 			$scope.SchedInputs = [{field:'label'},{field:'due_date', type:'date'},{field:'due_amount',type:'number'}];
+			$scope.SchedData = [];
+			$scope.FeeDistHdr = null;
+			$scope.FeeDistProps = null;
+			$scope.FeeDistInput = null;
+			$scope.FeeDistData = [];
+			let ComputeOptions = [
+				{id:'UPREG', name:'Upon  Registration'},
+				{id:'UPNF', name:'Full Upon Enrollment'},
+				{id:'DIST', name:'Distribute Monthly'}
 
-			$scope.LedgerHeaders = ['Fee','Amount'];
-			$scope.LedgerProps = ['fee_id','amount'];
+			];
+			$scope.LedgerHeaders = ['Fee','Amount', 'Computation'];
+			$scope.LedgerProps = ['fee_id','amount','computation'];
 			$scope.LedgerFees = fee.items;
-			$scope.LedgerInputs = [{field:'fee_id',options:$scope.LedgerFees},{field:'amount',type:'number'}];
-
+			$scope.LedgerInputs = [{field:'fee_id',options:$scope.LedgerFees},{field:'amount',type:'number'},{field:'computation',options:ComputeOptions}];
+			$scope.LedgerData = [];
 			$scope.Account = {};
 			$scope.Account.date_enrolled = new Date();
 			$scope.Account.last_billing = new Date('2025-04-07'); // TODOS: Add in system defaults
+			$scope.isAccountObjValid = true;
+			// Setup Default Fees
+			fee.items.map(function(obj){
+				let item = {fee_id:obj.id,
+							amount:obj.amount,
+							computation:obj.computation};
+				$scope.LedgerData.push(item);
+			});
+				
 		}
 
-
+		$scope.updateLedger = function(fees){
+			$scope.LedgerData = fees;
+		}
 		$scope.updateSched = function(sched){
+
+		}
+		$scope.updateFeeDist = function(dist){
 
 		}
 
@@ -264,53 +288,142 @@ define(['app', 'fee','api', 'simple-sheet','atomic/bomb'], function(app,fee) {
         };
 
 		
-		$scope.confirmAction = function() {
-			$uibModalInstance.dismiss('confirm');
-			return;
-			api.POST('accounts', data, function success(response) {
-                
+		$scope.confirmAction = function(form) {
+			console.log(form);
+			form.$setSubmitted();
+
+			let account = $scope.Account;
+			account.paysched = $scope.SchedData;
+			account.ledger = $scope.Ledger
+			api.POST('accounts/new_student_account', account, function success(response) {
+            	console.log(response);    
             });
         };
         $scope.computeSched = function(){
         	let enrollDate = $scope.Account.date_enrolled;
         	let lastBillDate = $scope.Account.last_billing;
-        	let schedule = computePaysched(enrollDate, lastBillDate);
-        	$scope.SchedData = schedule;
+        	let fees = $scope.LedgerData;
+        	let schedObj = computePaysched(enrollDate, lastBillDate,fees);
+        	$scope.SchedData = schedObj.schedule;
+        	$scope.FeeDistHdrs = schedObj.headers;
+        	$scope.FeeDistProps = schedObj.props;
+        	$scope.FeeDistInputs = schedObj.inputs;
+        	$scope.FeeDistData = schedObj.data;
         }
 
-        function computePaysched(enrollDate, lastBillDate) {
+       function computePaysched(enrollDate, lastBillDate, fees) {
 		    let schedule = [];
+		    let data = [];
 
-		    // 1. Upon Enrollment
-		    schedule.push({
-		        due_date: enrollDate,
-		        label: "Upon Enrollment",
-		        due_amount: 0
+		    // 1. Upon Registration (Separate Line for UPREG)
+		    let registrationCharge = {};
+		    fees.forEach(fee => {
+		        if (fee.computation === 'UPREG') {
+		            registrationCharge[fee.fee_id] = fee.amount;
+		        }
+		    });
+		    if (Object.keys(registrationCharge).length > 0) {
+		        registrationCharge['Total'] = Object.values(registrationCharge).reduce((a, b) => a + b, 0);
+		        schedule.push({
+		            due_date: enrollDate,
+		            label: "Upon Registration",
+		            due_amount: registrationCharge['Total']
+		        });
+		        data.push(registrationCharge);
+		    }
+
+		    // 2. Upon Enrollment (Separate Line for UPNF)
+		    let enrollmentCharge = {};
+		    fees.forEach(fee => {
+		        if (fee.computation === 'UPNF') {
+		            enrollmentCharge[fee.fee_id] = fee.amount;
+		        }
 		    });
 
-		    // 2. Generate subsequent months until lastBillDate
+
+		    // 3. Generate subsequent months until lastBillDate
 		    let current = new Date(enrollDate);
 		    current.setMonth(current.getMonth() + 1);
 		    const dueDay = lastBillDate.getDate();
 
+		    let billingMonths = [];
 		    while (current.getFullYear() < lastBillDate.getFullYear() ||
 		           (current.getFullYear() === lastBillDate.getFullYear() && current.getMonth() <= lastBillDate.getMonth())) {
-
 		        const daysInMonth = new Date(current.getFullYear(), current.getMonth() + 1, 0).getDate();
 		        current.setDate(Math.min(dueDay, daysInMonth));
-
-		        schedule.push({
-		            due_date: current,
-		            label: formatLabel(current),
-		            due_amount: 0
+		        billingMonths.push({
+		            due_date: new Date(current),
+		            label: formatLabel(current)
 		        });
-
 		        current = new Date(current);
 		        current.setMonth(current.getMonth() + 1);
 		    }
+		    
+		    // Compute distributed fees (monthly tuition & energy fee)
+		    let billMonthCount = billingMonths.length + 1;
+		    let monthlyCharge = {};
+		    fees.forEach(fee => {
+		        if (fee.computation === 'DIST') {
+		            monthlyCharge[fee.fee_id] = fee.amount / billMonthCount;
+		            enrollmentCharge[fee.fee_id] = (enrollmentCharge[fee.fee_id] || 0) + monthlyCharge[fee.fee_id];
+		        }
+		    });
+		    
+		    if (Object.keys(enrollmentCharge).length > 0) {
+		        enrollmentCharge['Total'] = Object.values(enrollmentCharge).reduce((a, b) => a + b, 0);
+		        schedule.push({
+		            due_date: enrollDate,
+		            label: "Upon Enrollment",
+		            due_amount: enrollmentCharge['Total']
+		        });
+		        data.push(enrollmentCharge);
+		    }
 
-		    return schedule;
+		    
+
+		    // 4. Distribute fees across billing months
+		    billingMonths.forEach(month => {
+		        let monthlyRow = { ...monthlyCharge };
+		        monthlyRow['Total'] = Object.values(monthlyRow).reduce((a, b) => a + b, 0);
+		        schedule.push({
+		            due_date: month.due_date,
+		            label: month.label,
+		            due_amount: monthlyRow['Total']
+		        });
+		        data.push(monthlyRow);
+		    });
+
+		    // Compute total row for all columns
+		    let totalRow = {};
+		    fees.forEach(fee => {
+		        totalRow[fee.fee_id] = data.reduce((sum, row) => sum + (row[fee.fee_id] || 0), 0);
+		    });
+		    totalRow['Total'] = Object.values(totalRow).reduce((a, b) => a + b, 0);
+		    data.push(totalRow);
+
+		    // Convert data values to currency format before returning
+		    data = data.map(row => {
+		        let formattedRow = {};
+		        Object.keys(row).forEach(key => {
+		            formattedRow[key] = $filter('currency')(row[key]);
+		        });
+		        return formattedRow;
+		    });
+		    // Fee Distribution Table
+		    const headers = [...fees.map(fee => ({ label: fee.fee_id, class: 'text-right' })), { label: 'Total', class: 'text-right' }];
+    
+		    const props = [...fees.map(fee => fee.fee_id), 'Total'];
+		    const inputs = [...fees.map(fee => ({ field: fee.fee_id, type: 'number' })), { field: 'Total', type: 'number' }];
+		    data.map(function(item){
+		    	console.log(item)
+		    	
+		    });
+		    return { schedule, headers, props, inputs, data };
 		}
+
+
+
+
 
 		function formatLabel(d) {
 		    const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
