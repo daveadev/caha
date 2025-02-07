@@ -671,4 +671,77 @@ class Account extends AppModel {
 		return $account_id;
 	}
 
+	function setupNewAccount(&$account,$new_account_id){
+		$esp = $account['esp'];
+		$ref_no = $account['ref_no'];
+		// Setup Account Info
+		if($new_account_id):
+			$account['ref_no']=$ref_no;
+			$account['account_details']='ENROLL-'.$esp;
+			$account['account_type']='student';
+		endif;
+		$AID = $account['id'] = $new_account_id;
+		$total_due = 0;
+
+		// Fees
+		$ledgers = array();
+		$fee_order =1;
+		foreach($account['fees'] as &$fee):
+			$amount = $fee['amount'];
+			$total_due+=$amount;
+			$fee['account_id'] = $AID;
+			$fee['due_amount'] = $amount;
+			$fee['percentage'] = 0;
+			$fee['adjust_amoutn'] = 0;
+			$fee['paid_amount'] = 0;
+			$fee['order'] = $fee_order;
+			$fee_order++;
+			$ledgerItem = $fee;
+			$ledgerItem['ref_no'] =$ref_no;
+			$ledgerItem['type'] ='+';
+			$ledgerItem['transaction_type_id'] =$fee['fee_id'];
+			$ledgerItem['details'] =$fee['name'];
+			$ledgerItem['esp'] =$esp;
+			
+			$ledgerItem['transac_date'] =$account['date_enrolled'];
+			$ledgerItem['transac_time'] ='01:23:45';
+
+			$ledgers[]=$ledgerItem;
+		endforeach;
+		$account['ledgers']=$ledgers;
+		// Payment Schedule
+		$sched_order =1;
+		foreach($account['paysched'] as &$sched):
+			$label = $sched['label'];
+			$ttype ='SBQPY';
+			if($label=='Upon Registration'):
+				$ttype ='REGFE';
+			elseif($label=='Upon Enrollment'):
+				$ttype ='INIPY';
+			endif;
+			$sched['account_id'] = $AID;
+			$sched['transaction_type_id'] = $ttype;
+			$sched['paid_amount'] = 0;
+			$sched['status'] ='NONE';
+			$sched['order'] = $sched_order;
+
+			$sched_order++;
+		endforeach;
+		$account['assessment_total'] = $total_due;
+		$account['payment_total'] = 0;
+		$account['outstanding_balance'] = $total_due;
+
+
+		$this->save($account);
+		$this->AccountFee->deleteAll(array('AccountFee.account_id'=>$AID));
+		$this->AccountFee->saveAll($account['fees']);
+
+		$this->AccountSchedule->deleteAll(array('AccountSchedule.account_id'=>$AID));
+		$this->AccountSchedule->saveAll($account['paysched']);
+
+		$this->Ledger->deleteAll(array('Ledger.account_id'=>$AID,'esp'=>$esp));
+		$this->Ledger->saveAll($account['ledgers']);
+
+	}
+
 }

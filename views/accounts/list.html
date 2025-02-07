@@ -298,12 +298,11 @@
         </script>
 
         <div ng-controller="AccountModalController as AMC" ng-init="AMC.init()">
-            <form name="AccountInfoForm">
             <a-modal id="AccountModal" title="Student Account">
                 <a-modal-body>
-
-                    <uib-tabset type="tabs" active="activeJustified"  active="ActiveTabIndex">
+                    <uib-tabset type="tabs"  active="AMC.ActiveTabIndex">
                     <uib-tab index="0" heading="Account Info">
+                        <form name="AMC.AccountInfoForm" >
                         <a-row>
                             <a-col size="6">
                                 <m-formgroup ng-model="AMC.Account.sno" label="Student Number" ng-required="true"></m-formgroup>
@@ -318,21 +317,39 @@
                             </a-col>
                         </a-row>
                         <a-row>
-                            <a-col>
+                            <a-col size="6">
                                 <m-formgroup ng-model="AMC.Account.first_name" label="First Name" ng-required="true"></m-formgroup>
                             </a-col>
-                        </a-row>
-                        <a-row>
-                            <a-col>
+                            <a-col size="6">
                                 <m-formgroup ng-model="AMC.Account.middle_name" label="Middle Name"></m-formgroup>
                             </a-col>
                         </a-row>
-                           
+                        <a-row>
+                            <a-col size="6">
+                                 <m-formgroup ng-model="AMC.Account.mobile" label="Mobile No." ng-required="true"></m-formgroup>
+                            </a-col>
+                            <a-col size="6">
+                                
+                                <m-formgroup ng-model="AMC.Account.email" label="Email"></m-formgroup>
+                            </a-col>
+                        </a-row>
+                        <a-row>
+                            <a-col size="6">
+                                <m-formgroup ng-model="AMC.Account.date_enrolled" label="Date Enrolled" type="'date'" />
+                            </a-col>
+                            <a-col size="6">
+                                <a-button type="warning btn-block" style="margin-top:25px;" ng-click="AMC.computeSched()">
+                                    Compute Payment Schedule
+                                </a-button>
+                            </a-col>
+                        </a-row>
+
+                        </form>
                     </uib-tab>
                      <uib-tab index="1" heading="Fees">
                          <m-table-edit headers="AMC.LedgerHeaders" props="AMC.LedgerProps" data="AMC.LedgerData" inputs="AMC.LedgerInputs" on-edit-save="AMC.updateLedger" max-height="'300px'"  ></m-table-edit>
                     </uib-tab>
-                    <uib-tab index="3" heading="Pay Sched">
+                    <uib-tab index="2" heading="Pay Sched">
                         <a-row>
                             <a-col size="4">
                                 <m-formgroup ng-model="AMC.Account.date_enrolled" label="Date Enrolled" type="'date'" />
@@ -342,7 +359,7 @@
                             </a-col>
                             <a-col size="4">
                                 <a-button type="default-block" style="margin-top:25px;" ng-click="AMC.computeSched()">
-                                    Run Schedule
+                                    Compute Schedule
                                 </a-button>
                             </a-col>
                         </a-row>
@@ -358,14 +375,14 @@
                 <a-row>
                     <a-col>
                         <a-button opt-class="pull-left" ng-click="AMC.closeModal()">Close</a-button>
-                        <a-button type="primary"ng-click="AMC.confirmAction(AccountInfoForm)" ng-disabled="!AMC.isAccountObjValid">
+                        <a-button type="primary"ng-click="AMC.confirmAction(AMC.AccountInfoForm)" ng-disabled="!AMC.isAccountObjValid">
                             Confirm
                     </a-button>
                     </a-col>
                 </a-row>
             </a-modal-footer>
             </a-modal> 
-            </form>
+            
         </div>
     </div>
 </div>

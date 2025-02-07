@@ -377,6 +377,7 @@ class Student extends AppModel {
 			'esp'=>$esp,
 			'status'=>'ACT',
 		);
+		$CLB->deleteAll(array('ClasslistBlock.student_id'=>$sid,'ClasslistBlock.esp'=>$esp));
 		$CLB->create();
 		$CLB->save($CObj);
 	}

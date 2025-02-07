@@ -11,8 +11,11 @@ define(['app', 'fee','api', 'simple-sheet','atomic/bomb'], function(app,fee) {
             function getAccounts(data) {
                 $scope.DataLoading = true;
                 api.GET('accounts', data, function success(response) {
-                    console.log(response.data);
-                    $scope.Accounts = response.data;
+                    let accounts = response.data;
+                    $scope.Accounts = accounts;
+                    if(accounts.length==1){
+                    	$scope.openAccountInfo(accounts[0]);
+                    }
                     updatePaginate(response);
                 });
             }
@@ -98,6 +101,11 @@ define(['app', 'fee','api', 'simple-sheet','atomic/bomb'], function(app,fee) {
 				getSched(account.id);
 				getHist(account.id);
             };
+
+            $scope.$on('ShowAccountInfo',function(args,account){
+            	let accountId = account.id;
+            	getAccounts({page:1,id:accountId});
+            });
             //Remove account information
             $scope.removeAccountInfo = function() {
                 $scope.hasInfo = false;
@@ -262,6 +270,7 @@ define(['app', 'fee','api', 'simple-sheet','atomic/bomb'], function(app,fee) {
 			fee.items.map(function(obj){
 				let item = {fee_id:obj.id,
 							amount:obj.amount,
+							name:obj.name,
 							computation:obj.computation};
 				$scope.LedgerData.push(item);
 			});
@@ -289,17 +298,37 @@ define(['app', 'fee','api', 'simple-sheet','atomic/bomb'], function(app,fee) {
 
 		
 		$scope.confirmAction = function(form) {
-			console.log(form);
+			
 			form.$setSubmitted();
+			if(!form.$valid){
+
+				alert('Fill up required field')
+				return;
+			}
 
 			let account = $scope.Account;
+			let sectObj = $filter('filter')($scope.Sections,{id:account.section_id})[0];
+			account.date_enrolled = new Date(account.date_enrolled).toISOString().split('T')[0] 
+			account.last_billing = new Date(account.last_billing).toISOString().split('T')[0] 
+			account.year_level_id = sectObj.year_level_id;
 			account.paysched = $scope.SchedData;
-			account.ledger = $scope.Ledger
+			account.fees = $scope.LedgerData;
+
+			account.paysched = $scope.SchedData.map(item => {
+		        return {
+		            ...item,
+		            due_date: new Date(item.due_date).toISOString().split('T')[0] // Formats to YYYY-MM-DD
+		        };
+		    });
 			api.POST('accounts/new_student_account', account, function success(response) {
-            	console.log(response);    
+				alert('Account has been created');
+				$rootScope.$broadcast('ShowAccountInfo',response.data);
+            	aModal.close('AccountModal');
+
             });
         };
         $scope.computeSched = function(){
+        	$scope.ActiveTabIndex = 2;
         	let enrollDate = $scope.Account.date_enrolled;
         	let lastBillDate = $scope.Account.last_billing;
         	let fees = $scope.LedgerData;
@@ -327,7 +356,8 @@ define(['app', 'fee','api', 'simple-sheet','atomic/bomb'], function(app,fee) {
 		        schedule.push({
 		            due_date: enrollDate,
 		            label: "Upon Registration",
-		            due_amount: registrationCharge['Total']
+		            due_amount: registrationCharge['Total'],
+		            bill_month:'UPONNROL',
 		        });
 		        data.push(registrationCharge);
 		    }
@@ -353,7 +383,8 @@ define(['app', 'fee','api', 'simple-sheet','atomic/bomb'], function(app,fee) {
 		        current.setDate(Math.min(dueDay, daysInMonth));
 		        billingMonths.push({
 		            due_date: new Date(current),
-		            label: formatLabel(current)
+		            label: formatLabel(current),
+		            bill_month: formatLabel(current,'bill_month')
 		        });
 		        current = new Date(current);
 		        current.setMonth(current.getMonth() + 1);
@@ -374,7 +405,8 @@ define(['app', 'fee','api', 'simple-sheet','atomic/bomb'], function(app,fee) {
 		        schedule.push({
 		            due_date: enrollDate,
 		            label: "Upon Enrollment",
-		            due_amount: enrollmentCharge['Total']
+		            due_amount: enrollmentCharge['Total'],
+		            bill_month:'UPONNROL'
 		        });
 		        data.push(enrollmentCharge);
 		    }
@@ -388,6 +420,7 @@ define(['app', 'fee','api', 'simple-sheet','atomic/bomb'], function(app,fee) {
 		        schedule.push({
 		            due_date: month.due_date,
 		            label: month.label,
+		            bill_month: month.bill_month,
 		            due_amount: monthlyRow['Total']
 		        });
 		        data.push(monthlyRow);
@@ -414,10 +447,7 @@ define(['app', 'fee','api', 'simple-sheet','atomic/bomb'], function(app,fee) {
     
 		    const props = [...fees.map(fee => fee.fee_id), 'Total'];
 		    const inputs = [...fees.map(fee => ({ field: fee.fee_id, type: 'number' })), { field: 'Total', type: 'number' }];
-		    data.map(function(item){
-		    	console.log(item)
-		    	
-		    });
+		    
 		    return { schedule, headers, props, inputs, data };
 		}
 
@@ -425,9 +455,12 @@ define(['app', 'fee','api', 'simple-sheet','atomic/bomb'], function(app,fee) {
 
 
 
-		function formatLabel(d) {
+		function formatLabel(d,format) {
 		    const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-		    return `${months[d.getMonth()]} ${d.getFullYear()}`;
+		    let label =  `${months[d.getMonth()]} ${d.getFullYear()}`;
+		    if(format=='bill_month')
+		    	label = label.replace(' ','').toUpperCase();
+		    return label;
 		}
 	
 	}]);

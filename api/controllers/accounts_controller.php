@@ -2,7 +2,7 @@
 class AccountsController extends AppController {
 
 	var $name = 'Accounts';
-	var $uses = array('Account','AccountSchedule','AccountFee','Assessment');
+	var $uses = array('Account','AccountSchedule','AccountFee','Assessment','Ledger');
 
 	function index() {
 		$this->Account->recursive = 0;
@@ -177,6 +177,33 @@ class AccountsController extends AppController {
 		$SID = $STU['id'];
 		return $SID;
 
+	}
+
+	function new_student_account(){
+		$Student =  $this->Account->Student;
+		$STU = $this->data['Account'];
+		$SECT_ID = $STU['section_id'];
+		$esp = 2024;
+		$hasRecord = $Student->findBySno($STU['sno']);
+		if(!$hasRecord):
+			$SID = $Student->generateSID('GR','S');
+			$STU['prefix'] = ' ';
+			$STU['suffix'] = ' ';
+			$Student->create();	
+		else:
+			$SID = $hasRecord['Student']['id'];
+		endif;
+		
+		$STU['id'] = $SID;
+		$STU['esp'] = $esp;
+		$Student->save($STU);
+		$Student->updateSection($SID, $SECT_ID,$esp);
+
+		$REF_NO = $this->Ledger->generateREFNO('','GRA');
+		$STU['ref_no'] = $REF_NO;
+		$this->Account->setupNewAccount($STU,$SID);
+		$accounts = array('Account'=>$STU);
+		$this->set(compact('accounts'));
 	}
 
 	function setup_account(&$account_id,$esp,$new_account_id=null){
