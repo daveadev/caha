@@ -255,10 +255,12 @@ define(['app','billings','api','atomic/bomb','caha/api'],function(app,billings){
 			}
 			let successUpdate = function(response){
 				$scope.isUpdating = false;
+				alert('Message sent!');
 				console.log(response.data);
 			}
 			let errorUpdate = function(response){
 				$scope.isUpdating = false;
+				alert('Message not sent.');
 				console.log(response.data);
 			}
 			cahaapi.updatePayment(sno, token,data,successUpdate,errorUpdate);
