@@ -1,6 +1,8 @@
 "use strict";
-define(['app','api','atomic/bomb','caha/api'],function(app){
+define(['app','billings','api','atomic/bomb','caha/api'],function(app,billings){
 	const DATE_FORMAT = "yyyy-MM-dd";
+	const BILL_MONTHS = billings.generateBillingMonths('BILL');
+	const LAST_BILL_MO = BILL_MONTHS.length-1;
 	let NEXT_SY = false;
 	app.register.controller('BillingController',['$scope','$sce','$rootScope','$filter','$timeout','api','aModal','Atomic','cahaApiService',
 	function($scope,$sce,$rootScope,$filter,$timeout,api,aModal,atomic,cahaapi){
@@ -41,16 +43,9 @@ define(['app','api','atomic/bomb','caha/api'],function(app){
 			$scope.SearchFields =['student', 'sno'];
 			$scope.BillObj =null;
 			$scope.BillObj =null;
-			$scope.BillingMonths =[
-					//{id:'2024-08-07', name:'AUG 2024'},
-					{id:'2024-09-07', name:'SEP 2024'},
-					{id:'2024-10-07', name:'OCT 2024'},
-					{id:'2024-11-07', name:'NOV 2024'},
-					{id:'2024-12-07', name:'DEC 2024'},
-					{id:'2025-01-07', name:'JAN 2025'},
-					{id:'2025-02-07', name:'FEB 2025'}
-				];
-			$scope.BillMonth = $scope.BillingMonths[4].id;
+
+			$scope.BillingMonths =BILL_MONTHS;
+			$scope.BillMonth = BILL_MONTHS[LAST_BILL_MO].id;
 			$scope.BillStatuses = [
 				{id:'UNPAID',name:"UNPAID"},
 				{id:'PARTIAL',name:"PARTIAL"},

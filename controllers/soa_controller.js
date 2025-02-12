@@ -1,5 +1,7 @@
 "use strict";
-define(['app','api','atomic/bomb'],function(app){
+define(['app','billings','api','atomic/bomb'],function(app,billings){
+	const BILL_MONTHS = billings.generateBillingMonths('SOA');
+	const LAST_BILL_MO = BILL_MONTHS.length-1;
 	app.register.controller('SoaController',['$scope','$rootScope','api',
 	function($scope,$rootScope,api){
 		const $selfScope =  $scope;
@@ -20,16 +22,9 @@ define(['app','api','atomic/bomb'],function(app){
 					console.log($app);
 				}
 			});
-			$scope.BillingMonths =[
-					//{id:'AUG2024', name:'AUG 2024'},
-					{id:'SEP2024', name:'SEP 2024'},
-					{id:'OCT2024', name:'OCT 2024'},
-					{id:'NOV2024', name:'NOV 2024'},
-					{id:'DEC2024', name:'DEC 2024'},
-					{id:'JAN2025', name:'JAN 2025'},
-					{id:'FEB2025', name:'FEB 2025'}
-				];
-			$scope.BillMonth = $scope.BillingMonths[4].id;
+
+			$scope.BillingMonths =BILL_MONTHS;
+			$scope.BillMonth =  BILL_MONTHS[LAST_BILL_MO].id;
 		}
 		$selfScope.$watch("SOA.Active",function(active){
 			if(!active) return false;

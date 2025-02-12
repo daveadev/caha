@@ -46,6 +46,7 @@ require.config({
         'fee':'../utils/fees',
         'booklet':'../utils/booklets',
         'adjust-memo':'../utils/adjust_memo',
+        'billings':'../utils/billings',
         'caha':'../vendors/caha_api'
     },
     shim: {
