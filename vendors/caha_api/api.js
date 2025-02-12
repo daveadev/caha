@@ -75,5 +75,15 @@ define(['app','api','atomic/bomb'],function(app){
             }).then(success, error);
 
         }
+
+         this.resendBill = function(data,success,error){
+            let reminderURL = `https://rainbow.marqa.one/sms/send-reminder.php`;
+            data = JSON.stringify(data);
+              // Submit to server to the server
+            return $http.post(reminderURL, data,{
+                headers: { 'Content-Type': 'application/json' } // Use 'application/json' since you're sending JSON
+            }).then(success, error);
+
+        }
     }]);
 });

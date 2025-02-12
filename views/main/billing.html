@@ -164,9 +164,9 @@ div.search-box{
 		<a-modal-footer>
 			<a-button opt-class="pull-left" ng-click="BLC.closeModal()" > Close</a-button>
 			
-			<a-button type="active" ng-show="BLC.ModalActiveTabIndex==0 && false" ng-disabled="BLC.ActiveBillObj.status=='PAID'" ng-click="BLC.resendBill()">
+			<a-button type="active" ng-show="BLC.ModalActiveTabIndex==0  " ng-disabled="BLC.ActiveBillObj.status=='PAID' || BLC.isSending" ng-click="BLC.resendBill()">
 				<a-glyph icon="send"></a-glyph>
-				Resend SMS
+				{{ BLC.isSending?'Resending':'Resend'}} SMS
 			</a-button>
 			<a-button type="primary" ng-show="BLC.ModalActiveTabIndex==0" ng-disabled="BLC.isUpdating" ng-click="BLC.updateSOA()">
 				<a-glyph icon="list-alt"></a-glyph>

@@ -195,6 +195,31 @@ define(['app','billings','api','atomic/bomb','caha/api'],function(app,billings){
 			cahaapi.uploadSOA(pdfURL,fileName, successUpload, errorUpload);
 		}
 
+		$scope.resendBill = function(){
+			$scope.isSending = true;
+
+			let successResend = function(response){
+				$scope.isSending = false;
+				console.log(response.data);
+			}
+			let errorResend = function(response){
+				$scope.isSending = false;
+				console.log(response.data);
+			}
+			let billObj = $scope.ActiveBillObj;
+			let STUDENT = `${billObj.last_name}, ${billObj.first_name.trim().split(' ')[0]}`.toUpperCase();
+			let BALANCE = `P${$filter('currency')(billObj.due_amount)}`;
+			let DUE_DATE = billObj.bill_month;
+			let mobile = billObj.mobile;
+			let message = `Hi! This is a gentle reminder for ${STUDENT} with balance of ${BALANCE} due by ${DUE_DATE}. If PAID, pls DISREGARD. Thanks!`
+			let data = {
+				message:message,
+				mobile:mobile
+			};
+			cahaapi.resendBill(data,successResend,errorResend);
+
+		}
+
 		$scope.updateInfo =function(){
 			$scope.isUpdating = true;
 			let billObj = $scope.ActiveBillObj;
