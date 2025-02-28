@@ -178,10 +178,25 @@ define(['app','billings','api','atomic/bomb','caha/api'],function(app,billings){
 						paid_amount:billObj.paid_amount,
 						status:billObj.status
 					};
+					let successSMS = function(response){
+						console.log(response);
+					}
+					let errorSMS = function(response){
+						console.log(response);
+					}
 					let successUpdate = function(response){
 						$scope.isUpdating = false;
+						let smsData = prepareSMSObj(billObj);
+						smsData.sno = billObj.sno;
+						smsData.messages = smsData.message;
+						delete smsData.message;
+						smsData.balance = billObj.due_amount;
+						smsData.bill_month = billObj.bill_month.substring(3).replace('-','');
+						smsData.section = billObj.section;
+						let billMonth = smsData.bill_month;
+						cahaapi.prepareSMS(sno, billMonth, smsData, successSMS, errorSMS);
 						$scope.UploadedFiles[billObj.billing_no].is_uploaded = true;
-						console.log(response.data);
+						
 					}
 					let errorUpdate = function(response){
 						$scope.isUpdating = false;
@@ -210,6 +225,12 @@ define(['app','billings','api','atomic/bomb','caha/api'],function(app,billings){
 				console.log(response.data);
 			}
 			let billObj = $scope.ActiveBillObj;
+			let data = prepareSMSObj(billObj);
+			cahaapi.resendBill(data,successResend,errorResend);
+
+		}
+
+		function prepareSMSObj(billObj){
 			let STUDENT = `${billObj.last_name}, ${billObj.first_name.trim().split(' ')[0]}`.toUpperCase();
 			let BALANCE = `P${$filter('currency')(billObj.due_amount)}`;
 			let DUE_DATE = billObj.bill_month;
@@ -217,9 +238,11 @@ define(['app','billings','api','atomic/bomb','caha/api'],function(app,billings){
 			let message = `Hi! This is a gentle reminder for ${STUDENT} with balance of ${BALANCE} due by ${DUE_DATE}. If PAID, pls DISREGARD. Thanks!`
 			let data = {
 				message:message,
-				mobile:mobile
+				mobile:mobile,
+				student_name:STUDENT
 			};
-			cahaapi.resendBill(data,successResend,errorResend);
+
+			return data;
 
 		}
 

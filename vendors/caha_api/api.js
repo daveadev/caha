@@ -33,6 +33,17 @@ define(['app','api','atomic/bomb'],function(app){
 
         }
 
+         this.prepareSMS = function(sno, billMonth,data,success,error){
+            let updateURL = `https://rainbow.marqa.one/caha-api/prepare-sms/${sno}/${billMonth}`;
+
+              // Upload to the server
+            return $http.post(updateURL, data, {
+                headers: { 'Content-Type': 'application/json' } // Use 'application/json' since you're sending JSON
+            }).then(success, error);
+
+        }
+
+
         this.updateInfo = function(sno, data,success,error){
             let updateURL = `https://rainbow.marqa.one/caha-api/update-info/${sno}`;
             let studInfo = angular.copy(data);
