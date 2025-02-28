@@ -55,6 +55,14 @@ div[align="right"] input[disabled]{
 div.search-box{
 	margin:10px 0px;
 }
+a-table.uploading{
+	cursor: not-allowed;
+}
+table tr.upload{
+	font-weight: bold;
+	background: white;
+	
+}
 </style>
 <div ng-controller="BillingController as BLC" ng-init="BLC.init()">
 	<a-module>
@@ -63,23 +71,36 @@ div.search-box{
 				<a-row>
 					<a-col size="10"><h4>Billing</h4></a-col>
 					<a-col size="2" align="right">
-						<m-formgroup ng-model="BLC.BillMonth" options="BLC.BillingMonths" label="Bill Month" hide-label="true"></m-formgroup>
+						<m-formgroup ng-model="BLC.BillMonth"	 options="BLC.BillingMonths" label="Bill Month" hide-label="true" ng-disabled="BLC.isUploading"></m-formgroup>
 					</a-col>
+					
 				</a-row>
 				<div class="clearfix"></div>
 			</a-header>
 			<a-content>
 				<a-row>
 					<a-col>
-							<uib-tabset type="tabs" active="activeJustified" justified="true"  active="BLC.ActiveTabIndex">
-								<uib-tab index="$index + 1" ng-repeat="YL in BLC.YearLevels| orderBy: '-department_id'" heading="{{YL.name}}" select="BLC.filterBill(YL)">
+							<uib-tabset type="tabs" justified="true"  active="BLC.ActiveTabIndex">
+								<uib-tab index="$index + 1" ng-repeat="YL in BLC.YearLevels" heading="{{YL.name}}" select="BLC.filterBill(YL)" disable="BLC.disableTabs">
 								</uib-tab>
 							</uib-tabset>
-
-							<div class="search-box">
-								<a-searchbox ng-model="BLC.SearchText" placeholder="BLC.SearchPlaceHolder" on-clear="BLC.clearSearch" is-large="true"></a-searchbox>
-							</div>
-							<a-table headers="BLC.BillHeaders" props="BLC.BillProps" data="BLC.FilteredBillData" 
+							<a-row>
+								<a-col size="10">
+								<div class="search-box">
+									<a-searchbox ng-model="BLC.SearchText" placeholder="BLC.SearchPlaceHolder" on-clear="BLC.clearSearch" is-large="true" ng-disabled="BLC.disableSearch"></a-searchbox>
+								</div>
+								</a-col>
+								<a-col size="2">
+									<div class="search-box">
+								<a-button type="btn-block btn-success" size="lg" ng-click="BLC.portalUpload(BLC.ActiveTabIndex)"ng-disabled="BLC.disableUpload">
+									<span ng-if="!BLC.isUploading"> Upload to Portal</span>
+									<span ng-if="BLC.isUploading"> Uploading {{BLC.UploadFilesCtr}}/{{BLC.UploadFilesLen}} </span>
+									
+								 </a-button>
+									</a-col>
+								</div>
+							</a-row>
+							<a-table ng-class="{uploading:BLC.isUploading}"headers="BLC.BillHeaders" props="BLC.BillProps" data="BLC.FilteredBillData" 
 											ng-model="BLC.ActiveBillObj" search-word="BLC.SearchText" search-by="BLC.SearchFields"
 											on-row-click="BLC.showBillDetails"></a-table>
 					</a-col>

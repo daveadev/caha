@@ -32,7 +32,7 @@ define(['app','billings','api','atomic/bomb','caha/api'],function(app,billings){
 
 				$scope.SchoolYears = $filter('orderBy')(sys,'-id');
 				$scope.ActiveSY = sy;
-				$scope.YearLevels = atomic.YearLevels;
+				$scope.YearLevels = $filter('orderBy')(atomic.YearLevels,'-department_id');
 				$scope.Sections = atomic.Sections;
 				$scope.ActiveYearLevel = $scope.YearLevels[0].id;
 			});
@@ -43,6 +43,7 @@ define(['app','billings','api','atomic/bomb','caha/api'],function(app,billings){
 			$scope.SearchFields =['student', 'sno'];
 			$scope.BillObj =null;
 			$scope.BillObj =null;
+			$scope.UploadedFiles = {};
 
 			$scope.BillingMonths =BILL_MONTHS;
 			$scope.BillMonth = BILL_MONTHS[LAST_BILL_MO].id;
@@ -89,6 +90,7 @@ define(['app','billings','api','atomic/bomb','caha/api'],function(app,billings){
 		$selfScope.$watch('BLC.SearchText',$scope.filterBill);
 
 		$scope.showBillDetails = function(){
+			if($scope.isUploading) return;
 			$timeout(function(){
 				let billNo = $scope.ActiveBillObj.billing_no;
 				let sno = $scope.ActiveBillObj.sno;
@@ -160,15 +162,15 @@ define(['app','billings','api','atomic/bomb','caha/api'],function(app,billings){
 			cahaapi.getAllPayments('Pending',success,error);
 		}
 
-		$scope.updateSOA = function(){
+		$scope.updateSOA = function(billUrl,activeBill,uploadIndex){
 			$scope.isUpdating = true;
 			//pdfUrl, fileName, uploadUrl
-			let pdfURL = $scope.BillURL;
-			let billObj = $scope.ActiveBillObj;
+			let pdfURL = billUrl!=undefined?billUrl:$scope.BillURL;
+			let billObj = activeBill!=undefined?activeBill:$scope.ActiveBillObj;
 			let sno = billObj.sno;
 			let billMonth = billObj.bill_month;
 			let fileName = `${sno}-${billMonth}-${billObj.full_name}.pdf` ;
-
+			$scope.UploadedFiles[billObj.billing_no] = {index:uploadIndex,is_uploaded:false};
 			let successUpload = function(response){
 				if(response.data.status ==200){
 					let data = {
@@ -178,6 +180,7 @@ define(['app','billings','api','atomic/bomb','caha/api'],function(app,billings){
 					};
 					let successUpdate = function(response){
 						$scope.isUpdating = false;
+						$scope.UploadedFiles[billObj.billing_no].is_uploaded = true;
 						console.log(response.data);
 					}
 					let errorUpdate = function(response){
@@ -264,6 +267,57 @@ define(['app','billings','api','atomic/bomb','caha/api'],function(app,billings){
 				console.log(response.data);
 			}
 			cahaapi.updatePayment(sno, token,data,successUpdate,errorUpdate);
+		}
+
+		$scope.portalUpload = function(tabIndex){
+			$scope.disableUpload=true;
+			$scope.disableSearch = true;
+			$scope.disableTabs = true;
+			$scope.isUploading=true;
+			$scope.SearchText=null;
+			$scope.ActiveTabIndex = tabIndex;
+			let activeYL = $scope.YearLevels[tabIndex-1];
+			let tabLen = $scope.YearLevels.length;
+			
+			$scope.filterBill(activeYL);
+			let billsLen = $scope.FilteredBillData.length;
+			$scope.UploadFilesLen = billsLen;
+			$scope.UploadFilesCtr = 0;
+			$scope.UploadedFiles = {};
+			function autoUpload(uploadIndex){
+				$timeout(function(){
+					let activeBill = $scope.FilteredBillData[uploadIndex];
+						activeBill.class='upload';
+					let billNo = activeBill.billing_no;
+					let sno = activeBill.sno;
+					$scope.UploadedFiles[billNo] = {index:uploadIndex,is_uploaded:false};
+					let billUrl = 'api/reports/billings/'+billNo;
+					$scope.updateSOA(billUrl,activeBill,uploadIndex);
+					$selfScope.$watch(`BLC.UploadedFiles.${billNo}`,function(UF){
+						if(!UF) return;
+						if(UF.is_uploaded){
+							$scope.UploadFilesCtr++;
+							let uIndex = UF.index;
+							let uploadedBill = $scope.FilteredBillData[uIndex];
+							let status = uploadedBill.status;
+								uploadedBill.class = status=='PAID'?'': status=='PARTIAL'?'warning':'danger';
+							if($scope.UploadFilesCtr==$scope.UploadFilesLen){
+								$scope.disableUpload=false;
+								$scope.isUploading=false;
+								$scope.disableSearch = false;
+								$scope.disableTabs = false;
+							}
+						}
+
+					},true);
+					if(uploadIndex<billsLen-1){
+						return autoUpload(uploadIndex+1);
+					}
+				},800);
+			}
+			autoUpload(0);
+			
+			
 		}
 		function loadPayments(sno){
 			let status = 'ALL';
